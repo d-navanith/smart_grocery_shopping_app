@@ -6,19 +6,25 @@ Inspired by the **Gronur Grocery Store Mobile App UI Kit** (Figma) and the **Met
 
 ---
 
-## 📸 Screenshots & Visual Previews
+## 📸 Screenshots & Visual Previews (Captured from Live System)
 
-### 📱 Customer Supermarket Experience (Light Theme & Splash Onboarding)
-![FreshCart Customer Store Preview](screenshots/customer_store_preview.jpg)
+### 🛒 1. Customer Supermarket Storefront (Light Theme)
+![Customer Storefront Light](screenshots/01_customer_store_light.png)
 
-### 🌙 Customer OLED Dark Mode Experience
-![FreshCart OLED Dark Experience](screenshots/customer_dark_mode.jpg)
+### ✨ 2. Figma-Inspired Splash & Onboarding Flow
+![Customer Splash Screen](screenshots/02_customer_splash_screen.png)
 
-### 🖥️ Admin Operations Cockpit & Dispatch Hub
-![Admin Operations Cockpit Preview](screenshots/admin_dashboard_preview.png)
+### 🌙 3. Customer OLED Dark Mode
+![Customer Storefront Dark](screenshots/03_customer_store_dark.png)
 
-### 📦 Admin Catalog & Inventory Management (Dribbble UI)
-![Admin Products Table Dribbble UI](screenshots/admin_products_table.jpg)
+### 🔐 4. MetroCery Operations Authentication Portal
+![Admin Login Portal](screenshots/04_admin_login_portal.png)
+
+### 📊 5. MetroCery Products Cockpit (Full Supermarket Catalog)
+![Admin Products Cockpit](screenshots/05_admin_products_cockpit.png)
+
+### 📦 6. Warehouse Inventory & 1-Click Restock Actions
+![Admin Inventory Management](screenshots/06_admin_inventory_management.png)
 
 ---
 
