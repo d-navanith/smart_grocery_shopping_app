@@ -6,6 +6,22 @@ Inspired by the **Gronur Grocery Store Mobile App UI Kit** (Figma) and the **Met
 
 ---
 
+## 📸 Screenshots & Visual Previews
+
+### 📱 Customer Supermarket Experience (Light Theme & Splash Onboarding)
+![FreshCart Customer Store Preview](screenshots/customer_store_preview.jpg)
+
+### 🌙 Customer OLED Dark Mode Experience
+![FreshCart OLED Dark Experience](screenshots/customer_dark_mode.jpg)
+
+### 🖥️ Admin Operations Cockpit & Dispatch Hub
+![Admin Operations Cockpit Preview](screenshots/admin_dashboard_preview.png)
+
+### 📦 Admin Catalog & Inventory Management (Dribbble UI)
+![Admin Products Table Dribbble UI](screenshots/admin_products_table.jpg)
+
+---
+
 ## 🌟 Key Features
 
 ### 📱 1. Customer Shopping Web App (`@supermarket/client` — Port `3000`)
