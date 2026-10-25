@@ -1,8 +1,8 @@
-# 🛒 FreshCart & MetroCery — Smart Supermarket & Operations Platform
+# 🛒 FreshCart — Smart Supermarket & Operations Platform
 
 An AI-powered, omnichannel supermarket platform built with React, Vite, TypeScript, Tailwind CSS, Express, and modern monorepo workspaces.
 
-Inspired by the **Gronur Grocery Store Mobile App UI Kit** (Figma) and the **MetroCery Admin Cockpit** (Dribbble), this ecosystem provides a customer-facing e-commerce store alongside a secure, isolated operations portal.
+Inspired by modern supermarket design systems and clean operations cockpits, this unified ecosystem provides a customer-facing e-commerce store alongside a secure, isolated operations portal.
 
 ---
 
@@ -17,10 +17,10 @@ Inspired by the **Gronur Grocery Store Mobile App UI Kit** (Figma) and the **Met
 ### 🌙 3. Customer OLED Dark Mode
 ![Customer Storefront Dark](screenshots/03_customer_store_dark.png)
 
-### 🔐 4. MetroCery Operations Authentication Portal
+### 🔐 4. FreshCart Operations Authentication Portal
 ![Admin Login Portal](screenshots/04_admin_login_portal.png)
 
-### 📊 5. MetroCery Products Cockpit (Full Supermarket Catalog)
+### 📊 5. FreshCart Products Cockpit (Full Supermarket Catalog)
 ![Admin Products Cockpit](screenshots/05_admin_products_cockpit.png)
 
 ### 📦 6. Warehouse Inventory & 1-Click Restock Actions
@@ -48,7 +48,7 @@ Inspired by the **Gronur Grocery Store Mobile App UI Kit** (Figma) and the **Met
 ---
 
 ### 🖥️ 2. Admin & Operations Cockpit (`@supermarket/admin` — Port `3001`)
-- **Strict Security Gate:** Complete isolation from customer web views. Protected by an administrative authentication barrier (`admin@metrocery.com` / `admin123`).
+- **Strict Security Gate:** Complete isolation from customer web views. Protected by an administrative authentication barrier (`admin@freshcart.com` / `admin123`).
 - **Products Catalog Table:** Real-time search, "Show 50" dropdown selector, interactive Calendar popup, Add Product modal, View Details drawer, Edit Product form, and Delete actions.
 - **Warehouse Inventory & Stock Alerts:** Real-time low-stock (<30 units) and out-of-stock monitor with instant **+25**, **+50**, and **+100** 1-click restock actions.
 - **Customer Directory & Loyalty:** Shopper accounts, lifetime spend, order history, tier badges (Platinum, Gold, Silver, Bronze), and account suspend/activate toggles.
@@ -126,7 +126,7 @@ The system will start on the following ports:
 
 | Portal | URL | Email | Password |
 | :--- | :--- | :--- | :--- |
-| **Admin Cockpit** | `http://localhost:3001` | `admin@metrocery.com` | `admin123` |
+| **Admin Cockpit** | `http://localhost:3001` | `admin@freshcart.com` | `admin123` |
 | **Customer Store (Demo)** | `http://localhost:3000` | `brie@example.com` | `password123` |
 
 *(Customers can also create a new account via the Sign Up form at any time, which automatically launches the Figma splash screen and onboarding walkthrough!)*

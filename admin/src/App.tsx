@@ -121,9 +121,9 @@ interface CustomerAccount {
 export default function AdminApp() {
   // Authentication state for strict security separation
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem('metrocery_admin_auth') === 'true';
+    return localStorage.getItem('freshcart_admin_auth') === 'true' || localStorage.getItem('metrocery_admin_auth') === 'true';
   });
-  const [loginEmail, setLoginEmail] = useState('admin@metrocery.com');
+  const [loginEmail, setLoginEmail] = useState('admin@freshcart.com');
   const [loginPassword, setLoginPassword] = useState('admin123');
   const [loginError, setLoginError] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
@@ -206,7 +206,7 @@ export default function AdminApp() {
       });
       const data = await res.json();
       if (data.success) {
-        localStorage.setItem('metrocery_admin_auth', 'true');
+        localStorage.setItem('freshcart_admin_auth', 'true');
         setIsAuthenticated(true);
         fetchData();
       } else {
@@ -220,6 +220,7 @@ export default function AdminApp() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('freshcart_admin_auth');
     localStorage.removeItem('metrocery_admin_auth');
     setIsAuthenticated(false);
   };
@@ -498,7 +499,7 @@ export default function AdminApp() {
               <Lock className="w-7 h-7 text-[#78F9B8]" />
             </div>
             <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-              metro<span className="text-[#FF632B]">cery</span>
+              Fresh<span className="text-[#FF632B]">Cart</span>
             </h1>
             <p className="text-xs font-semibold text-slate-500">
               Operations & Administration Security Portal
@@ -552,7 +553,7 @@ export default function AdminApp() {
 
             <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-slate-600 text-[11px] leading-relaxed">
               <span className="font-bold text-[#044F41]">Default Credentials:</span><br />
-              Email: <code className="font-bold text-slate-800">admin@metrocery.com</code><br />
+              Email: <code className="font-bold text-slate-800">admin@freshcart.com</code><br />
               Password: <code className="font-bold text-slate-800">admin123</code>
             </div>
           </form>
@@ -571,10 +572,10 @@ export default function AdminApp() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <span className="w-8 h-8 rounded-lg bg-[#FF632B] flex items-center justify-center font-bold text-white text-lg shadow">
-              M
+              F
             </span>
             <span className="text-xl font-extrabold tracking-tight">
-              metro<span className="text-[#FF632B]">cery</span>
+              Fresh<span className="text-[#FF632B]">Cart</span>
             </span>
           </div>
         </div>

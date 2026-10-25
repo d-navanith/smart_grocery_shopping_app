@@ -76,7 +76,7 @@ let customerAccounts: CustomerAccount[] = [...INITIAL_CUSTOMERS];
 
 // 1. Health check
 app.get('/api/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', service: 'FreshCart / MetroCery Backend API', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', service: 'FreshCart Backend API', timestamp: new Date().toISOString() });
 });
 
 let customers: Array<{ id: string; name: string; email: string; phone: string; address: string; password?: string }> = [
@@ -93,21 +93,21 @@ let customers: Array<{ id: string; name: string; email: string; phone: string; a
 // 2. Authentication Gateways (Strict Separation)
 app.post('/api/auth/admin-login', (req: Request, res: Response) => {
   const { email, password } = req.body;
-  // Default credentials: admin@metrocery.com / admin123
-  if (email === 'admin@metrocery.com' && password === 'admin123') {
+  // Default credentials: admin@freshcart.com / admin123
+  if ((email === 'admin@freshcart.com' || email === 'admin@metrocery.com') && password === 'admin123') {
     return res.json({
       success: true,
       token: 'jwt-admin-secure-token-984321',
       user: {
         id: 'admin-1',
         name: 'Natashia Khaleira',
-        email: 'admin@metrocery.com',
+        email: email || 'admin@freshcart.com',
         role: 'ADMIN',
         avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'
       }
     });
   }
-  return res.status(401).json({ success: false, message: 'Invalid Admin credentials. Use admin@metrocery.com / admin123' });
+  return res.status(401).json({ success: false, message: 'Invalid Admin credentials. Use admin@freshcart.com / admin123' });
 });
 
 app.post('/api/auth/customer-login', (req: Request, res: Response) => {
