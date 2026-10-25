@@ -9,22 +9,22 @@ Inspired by modern supermarket design systems and clean operations cockpits, thi
 ## 📸 Screenshots & Visual Previews (Captured from Live System)
 
 ### 🛒 1. Customer Supermarket Storefront (Light Theme)
-![Customer Storefront Light](screenshots/01_customer_store_light.png)
+![Customer Storefront Light](screenshots/01_freshcart_customer_store.png)
 
 ### ✨ 2. Figma-Inspired Splash & Onboarding Flow
-![Customer Splash Screen](screenshots/02_customer_splash_screen.png)
+![Customer Splash Screen](screenshots/02_freshcart_splash_onboarding.png)
 
 ### 🌙 3. Customer OLED Dark Mode
-![Customer Storefront Dark](screenshots/03_customer_store_dark.png)
+![Customer Storefront Dark](screenshots/03_freshcart_customer_dark_mode.png)
 
 ### 🔐 4. FreshCart Operations Authentication Portal
-![Admin Login Portal](screenshots/04_admin_login_portal.png)
+![FreshCart Admin Login Portal](screenshots/04_freshcart_admin_login.png)
 
 ### 📊 5. FreshCart Products Cockpit (Full Supermarket Catalog)
-![Admin Products Cockpit](screenshots/05_admin_products_cockpit.png)
+![FreshCart Admin Products Cockpit](screenshots/05_freshcart_admin_products_cockpit.png)
 
 ### 📦 6. Warehouse Inventory & 1-Click Restock Actions
-![Admin Inventory Management](screenshots/06_admin_inventory_management.png)
+![FreshCart Admin Inventory Management](screenshots/06_freshcart_admin_inventory_stock.png)
 
 ---
 
