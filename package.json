@@ -1,0 +1,30 @@
+{
+  "name": "smart-grocery-shopping-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Smart Supermarket Platform - Admin Dashboard (MetroCery) & Customer Experience (FreshCart)",
+  "workspaces": [
+    "shared",
+    "server",
+    "admin",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"SERVER,ADMIN,CLIENT\" -c \"blue,green,magenta\" \"npm run dev:server\" \"npm run dev:admin\" \"npm run dev:client\"",
+    "dev:server": "npm --workspace=server run dev",
+    "dev:admin": "npm --workspace=admin run dev",
+    "dev:client": "npm --workspace=client run dev",
+    "build": "npm --workspaces run build"
+  },
+  "keywords": [
+    "supermarket",
+    "grocery",
+    "ai",
+    "ecommerce"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}

@@ -1,0 +1,250 @@
+import { Product, AdminStats, Order, RiderPartner } from './types';
+
+export const INITIAL_PRODUCTS: Product[] = [
+  {
+    id: 'prod-1',
+    sku: 'VEG-PUMP-001',
+    title: 'Pumpkin',
+    description: 'Rich in vitamins A and C, high in fiber and antioxidants. Perfect for soups, pies, and healthy meals. Our AI ensures you get the freshest pumpkins, picked at the right time.',
+    category: 'Vegetables',
+    brand: 'Bertolli Organic Farms',
+    price: 25.99,
+    originalPrice: 29.99,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: 'https://images.unsplash.com/photo-1570586437263-ab629fccc818?w=800&auto=format&fit=crop&q=80',
+    stock: 65,
+    store: 'Smart Grocer',
+    status: 'Active',
+    aiFreshnessScore: 98,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.8,
+    reviewsCount: 10420,
+    nutrition: {
+      calories: 26,
+      protein: 1.0,
+      carbs: 6.5,
+      fat: 0.1,
+      fiber: 0.5
+    },
+    recipeSuggestions: [
+      {
+        id: 'rec-1',
+        title: 'Pumpkin Soup',
+        prepTimeMinutes: 20,
+        imageUrl: 'https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=400&auto=format&fit=crop&q=80',
+        description: 'Creamy autumn soup infused with roasted garlic and coconut milk.',
+        ingredients: [
+          { productTitle: 'Pumpkin', quantity: '1 kg' },
+          { productTitle: 'Coconut Milk', quantity: '1 can' },
+          { productTitle: 'Garlic', quantity: '1 bulb' }
+        ]
+      },
+      {
+        id: 'rec-2',
+        title: 'Roasted Pumpkin Bowl',
+        prepTimeMinutes: 25,
+        imageUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&auto=format&fit=crop&q=80',
+        description: 'Tender caramelized cubes paired with fresh greens and feta cheese.',
+        ingredients: [
+          { productTitle: 'Pumpkin', quantity: '500g' },
+          { productTitle: 'Olive Oil', quantity: '2 tbsp' }
+        ]
+      }
+    ],
+    createdAt: '2026-10-20'
+  },
+  {
+    id: 'prod-2',
+    sku: 'FRU-AVOC-002',
+    title: 'Avocado Hass',
+    description: 'Creamy, nutrient-dense Haas avocados rich in heart-healthy monounsaturated fats. Perfectly ripened.',
+    category: 'Fruit',
+    brand: 'Natureland Organics',
+    price: 17.99,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=800&auto=format&fit=crop&q=80',
+    stock: 54,
+    store: 'Super Market',
+    status: 'Active',
+    aiFreshnessScore: 96,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.7,
+    reviewsCount: 8210,
+    nutrition: {
+      calories: 160,
+      protein: 2.0,
+      carbs: 8.5,
+      fat: 14.7,
+      fiber: 6.7
+    },
+    createdAt: '2026-10-21'
+  },
+  {
+    id: 'prod-3',
+    sku: 'FRU-ORNG-003',
+    title: 'Valencia Orange',
+    description: 'Juicy, sun-kissed Valencia oranges overflowing with natural Vitamin C. Ideal for fresh morning juice.',
+    category: 'Fruit',
+    brand: 'SunValley Citrus',
+    price: 14.99,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=800&auto=format&fit=crop&q=80',
+    stock: 82,
+    store: 'Save Mart',
+    status: 'Active',
+    aiFreshnessScore: 99,
+    isOrganic: false,
+    isFarmSourced: true,
+    rating: 4.9,
+    reviewsCount: 5310,
+    createdAt: '2026-10-22'
+  },
+  {
+    id: 'prod-4',
+    sku: 'VEG-BROC-004',
+    title: 'Broccoli Florets',
+    description: 'Crisp green broccoli florets freshly harvested from local eco-friendly farms.',
+    category: 'Vegetables',
+    brand: 'Bertolli Organic Farms',
+    price: 12.99,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: 'https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=800&auto=format&fit=crop&q=80',
+    stock: 35,
+    store: 'Green Grocery',
+    status: 'Active',
+    aiFreshnessScore: 97,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.6,
+    reviewsCount: 3900,
+    createdAt: '2026-10-23'
+  },
+  {
+    id: 'prod-5',
+    sku: 'VEG-TOMA-005',
+    title: 'Cherry Tomato',
+    description: 'Vibrant sweet vine-ripened tomatoes, ideal for fresh salads, pasta sauces, and roasting.',
+    category: 'Vegetables',
+    brand: 'David Seeds',
+    price: 9.99,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800&auto=format&fit=crop&q=80',
+    stock: 90,
+    store: 'Apna Bazar',
+    status: 'Active',
+    aiFreshnessScore: 95,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.8,
+    reviewsCount: 6150,
+    createdAt: '2026-10-24'
+  },
+  {
+    id: 'prod-6',
+    sku: 'FRU-KIWI-006',
+    title: 'Kiwi Gold',
+    description: 'Luscious golden kiwis with smooth skin and exceptional tropical sweetness.',
+    category: 'Fruit',
+    brand: 'Zespri Fresh',
+    price: 13.99,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: 'https://images.unsplash.com/photo-1585059895524-72359e06133a?w=800&auto=format&fit=crop&q=80',
+    stock: 45,
+    store: 'Smart Grocer',
+    status: 'Active',
+    aiFreshnessScore: 94,
+    isOrganic: false,
+    isFarmSourced: true,
+    rating: 4.5,
+    reviewsCount: 2210,
+    createdAt: '2026-10-24'
+  },
+  {
+    id: 'prod-7',
+    sku: 'VEG-CORN-007',
+    title: 'Sweet Golden Corn',
+    description: 'Tender and sweet ears of corn, delicious steamed, grilled, or mixed into festive bowls.',
+    category: 'Vegetables',
+    brand: 'Farm House Natural',
+    price: 8.99,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: 'https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=800&auto=format&fit=crop&q=80',
+    stock: 70,
+    store: 'Good Foods',
+    status: 'Active',
+    aiFreshnessScore: 98,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.9,
+    reviewsCount: 4500,
+    createdAt: '2026-10-24'
+  },
+  {
+    id: 'prod-8',
+    sku: 'VEG-CABB-008',
+    title: 'Green Cabbage',
+    description: 'Crisp green cabbage with compact leaves, packed with natural antioxidants and dietary fiber.',
+    category: 'Vegetables',
+    brand: 'Natureland Organics',
+    price: 24.99,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=800&auto=format&fit=crop&q=80',
+    stock: 28,
+    store: 'Super Market',
+    status: 'Active',
+    aiFreshnessScore: 93,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.4,
+    reviewsCount: 1800,
+    createdAt: '2026-10-25'
+  }
+];
+
+export const INITIAL_RIDER: RiderPartner = {
+  id: 'rider-1',
+  name: 'Brie Larson',
+  phone: '+1 (555) 234-8971',
+  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
+  vehicleType: 'Electric Scooter',
+  rating: 4.95,
+  currentLocation: {
+    lat: 37.7749,
+    lng: -122.4194
+  }
+};
+
+export const INITIAL_ADMIN_STATS: AdminStats = {
+  availableBalance: 1240.35,
+  totalOrders: 4592,
+  activeProducts: 300,
+  totalCustomers: 215,
+  unassignedOrders: 2,
+  todayOrders: 14,
+  activeRiders: 7,
+  activeVendors: 5,
+  salesWeekly: [
+    { day: 'Sun', sales: 12 },
+    { day: 'Mon', sales: 65 },
+    { day: 'Tue', sales: 22 },
+    { day: 'Wed', sales: 48 },
+    { day: 'Thu', sales: 15 },
+    { day: 'Fri', sales: 38 },
+    { day: 'Sat', sales: 18 }
+  ],
+  userDistribution: {
+    customers: 70,
+    vendors: 15,
+    riders: 15
+  }
+};
