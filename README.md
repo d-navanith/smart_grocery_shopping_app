@@ -20,11 +20,20 @@ Featuring the **Ceylon Foods** cultural design system, authentic Sri Lankan rupe
 ### 🔐 4. Ceylon Foods Operations Authentication Portal
 ![Ceylon Foods Admin Login Portal](screenshots/04_ceylonfoods_admin_login.png)
 
-### 📊 5. Ceylon Foods Products Cockpit (Full Supermarket Catalog in Rs.)
+### 📈 5. Ceylon Foods Operations Dashboard (Sales LKR 8.46M, Donut Order Health & Trends)
+![Ceylon Foods Operations Dashboard](screenshots/05_ceylonfoods_admin_dashboard.png)
+
+### 📦 6. Stock Control & Inventory Management (Tracked, In Stock, Low Stock, Shortage Alerts)
+![Ceylon Foods Admin Inventory Management](screenshots/06_ceylonfoods_admin_inventory_stock.png)
+
+### 📋 7. Order Management & Fulfillment Register (All Orders, Processing, Dispatched)
+![Ceylon Foods Order Management](screenshots/07_ceylonfoods_admin_orders.png)
+
+### 🏷️ 8. Products Catalog Management (Availability Statuses, Pricing, Categories)
 ![Ceylon Foods Admin Products Cockpit](screenshots/05_ceylonfoods_admin_products_cockpit.png)
 
-### 📦 6. Warehouse Inventory & 1-Click Restock Actions
-![Ceylon Foods Admin Inventory Management](screenshots/06_ceylonfoods_admin_inventory_stock.png)
+### 🗂️ 9. Catalog Organisation & Visual Categories (Photographic Aisles & Display Orders)
+![Ceylon Foods Catalog Organisation](screenshots/08_ceylonfoods_admin_categories.png)
 
 ---
 
