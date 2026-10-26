@@ -638,8 +638,8 @@ export default function ClientWebSupermarket() {
             : 'bg-[#F4F7F2] border-[#E2ECE3]'
         }`}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Left Column (7 cols) */}
-            <div className="lg:col-span-7 space-y-5">
+            {/* Left Column (5 cols) */}
+            <div className="lg:col-span-5 space-y-5 z-10">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E5EFE7] dark:bg-emerald-950/60 text-[#0C6237] dark:text-[#78F9B8] text-xs font-black tracking-wide">
                 <Leaf className="w-3.5 h-3.5 text-[#0C6237] dark:text-[#78F9B8]" />
                 <span>Fresh from our island to your home.</span>
@@ -678,16 +678,16 @@ export default function ClientWebSupermarket() {
               </div>
             </div>
 
-            {/* Right Column (5 cols) - Hero Image with Scalloped Sunburst Badge */}
-            <div className="lg:col-span-5 relative flex items-center justify-center">
-              <div className="relative w-full max-w-xl">
+            {/* Right Column (7 cols) - Large Hero Image with Scalloped Sunburst Badge */}
+            <div className="lg:col-span-7 relative flex items-center justify-center lg:justify-end">
+              <div className="relative w-full max-w-3xl flex items-center justify-center">
                 <img
                   src="/home_hero_basket.png"
                   alt="Ceylon Foods Fresh Harvest Basket"
-                  className="w-full h-auto object-contain filter drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+                  className="w-full max-h-[380px] sm:max-h-[440px] lg:max-h-[480px] object-contain filter drop-shadow-[0_25px_35px_rgba(0,0,0,0.22)] dark:drop-shadow-[0_25px_45px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform duration-500"
                 />
                 {/* Scalloped Sunburst Badge */}
-                <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 px-3.5 py-2 rounded-2xl bg-[#0C6237] text-white shadow-xl flex items-center gap-2 border-2 border-white dark:border-zinc-900 animate-pulse">
+                <div className="absolute top-2 right-2 sm:top-0 sm:right-6 px-4 py-2.5 rounded-2xl bg-[#0C6237] text-white shadow-2xl flex items-center gap-2 border-2 border-white dark:border-zinc-900 animate-pulse z-10">
                   <Sparkles className="w-4 h-4 text-amber-300" />
                   <div className="flex flex-col text-left">
                     <span className="text-[10px] font-black uppercase tracking-wider text-emerald-200">Fresh picks</span>
