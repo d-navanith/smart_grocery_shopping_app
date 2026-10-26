@@ -82,11 +82,11 @@ interface CustomerUser {
 }
 
 const DELIVERY_TIME_SLOTS = [
-  { id: 'slot-now', label: '⚡ Priority Express', time: 'Within 30-45 mins', fee: 4.99, quota: 'Express' },
-  { id: 'slot-1', label: 'Today Afternoon', time: '02:00 PM – 04:00 PM', fee: 2.50, quota: 'Available' },
-  { id: 'slot-2', label: 'Today Evening', time: '05:00 PM – 07:00 PM', fee: 2.50, quota: 'Available' },
-  { id: 'slot-3', label: 'Today Night', time: '07:30 PM – 09:30 PM', fee: 2.50, quota: 'Available' },
-  { id: 'slot-4', label: 'Tomorrow Free Slot', time: '09:00 AM – 11:00 AM', fee: 0.00, quota: 'Free Delivery' }
+  { id: 'slot-now', label: '⚡ Colombo Express 45 Min', time: 'Within 30-45 mins', fee: 350, quota: 'Express' },
+  { id: 'slot-1', label: 'Today Afternoon', time: '01:30 PM – 03:30 PM', fee: 200, quota: 'Available' },
+  { id: 'slot-2', label: 'Today Evening', time: '05:00 PM – 07:00 PM', fee: 200, quota: 'Available' },
+  { id: 'slot-3', label: 'Today Night', time: '07:30 PM – 09:30 PM', fee: 200, quota: 'Available' },
+  { id: 'slot-4', label: 'Tomorrow Morning (Free)', time: '08:30 AM – 10:30 AM', fee: 0, quota: 'Free Delivery' }
 ];
 
 export default function ClientWebSupermarket() {
@@ -102,7 +102,7 @@ export default function ClientWebSupermarket() {
 
   // Customer Authentication state (Mandatory to add to cart & buy)
   const [currentUser, setCurrentUser] = useState<CustomerUser | null>(() => {
-    const saved = localStorage.getItem('freshcart_customer_user');
+    const saved = localStorage.getItem('ceylonfoods_customer_user') || localStorage.getItem('freshcart_customer_user');
     return saved ? JSON.parse(saved) : null;
   });
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -126,7 +126,7 @@ export default function ClientWebSupermarket() {
     name: '',
     email: '',
     phone: '',
-    address: '33 York Road, Colombo 03',
+    address: '33 York Street, Colombo 01',
     password: ''
   });
 
@@ -149,7 +149,7 @@ export default function ClientWebSupermarket() {
   const [aiMessages, setAiMessages] = useState<Array<{ sender: 'user' | 'bot'; text: string; recipe?: any }>>([
     {
       sender: 'bot',
-      text: 'Hello! 👋 I am FreshBot, your supermarket AI chef and shopping assistant. Tell me what meal you want to cook (e.g. "Healthy dinner for 2", "Chicken curry recipe") and I will prepare the grocery items for you!'
+      text: 'Hello! 👋 I am CeylonBot, your Sri Lankan supermarket AI chef and shopping assistant. Tell me what meal you want to cook (e.g. "Healthy dinner for 2", "Chicken curry recipe") and I will prepare the grocery items for you!'
     }
   ]);
   const [aiInput, setAiInput] = useState('');
@@ -244,7 +244,7 @@ export default function ClientWebSupermarket() {
       const data = await res.json();
       if (data.success && data.user) {
         setCurrentUser(data.user);
-        localStorage.setItem('freshcart_customer_user', JSON.stringify(data.user));
+        localStorage.setItem('ceylonfoods_customer_user', JSON.stringify(data.user));
         setIsAuthModalOpen(false);
 
         // Resume adding pending item if user tried to add before logging in
@@ -276,7 +276,7 @@ export default function ClientWebSupermarket() {
       const data = await res.json();
       if (data.success && data.user) {
         setCurrentUser(data.user);
-        localStorage.setItem('freshcart_customer_user', JSON.stringify(data.user));
+        localStorage.setItem('ceylonfoods_customer_user', JSON.stringify(data.user));
         setIsAuthModalOpen(false);
 
         // TRIGGER ONBOARDING SPLASH SCREENS ON SIGNUP
@@ -303,7 +303,7 @@ export default function ClientWebSupermarket() {
 
   const handleLogout = () => {
     setCurrentUser(null);
-    localStorage.removeItem('freshcart_customer_user');
+    localStorage.removeItem('ceylonfoods_customer_user'); localStorage.removeItem('ceylonfoods_customer_user'); localStorage.removeItem('freshcart_customer_user');
     setCart([]);
   };
 
@@ -347,7 +347,7 @@ export default function ClientWebSupermarket() {
   // Calculations
   const subtotal = cart.reduce((sum, item) => sum + item.effectivePrice * item.quantity, 0);
   const vatAmount = subtotal * 0.05;
-  const isFreeDeliveryQualified = subtotal >= 40;
+  const isFreeDeliveryQualified = subtotal >= 5000;
   const deliveryFee = isFreeDeliveryQualified ? 0.0 : selectedSlot.fee;
   const bundleDiscount = cart.length >= 3 ? 5.00 : 0.0;
   const totalAmount = Math.max(0, subtotal + vatAmount + deliveryFee - bundleDiscount);
@@ -390,7 +390,7 @@ export default function ClientWebSupermarket() {
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5 font-bold text-[#78F9B8]">
             <Zap className="w-3.5 h-3.5" />
-            <span>FreshCart Supermarket — Guaranteed 30-45 Minute Doorstep Delivery</span>
+            <span>Ayubowan! සාදරයෙන් පිළිගනිමු — Ceylon Foods: Guaranteed 45-Min Doorstep Delivery Across Colombo & Suburbs</span>
           </span>
           <span className="hidden md:inline text-emerald-400/80">|</span>
           <span className="hidden md:inline text-emerald-200">
@@ -425,17 +425,19 @@ export default function ClientWebSupermarket() {
         isDarkMode ? 'bg-[#0D0D0D]/90 border-zinc-800' : 'bg-white/90 border-slate-200 shadow-sm'
       }`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-6">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => setSelectedCategory('All')}>
-            <span className="w-9 h-9 rounded-xl bg-[#044F41] flex items-center justify-center font-black text-white text-lg shadow-md ring-2 ring-[#78F9B8]/40">
-              <ShoppingBasket className="w-5 h-5 text-[#78F9B8]" />
-            </span>
+          {/* Ceylon Foods Brand Logo */}
+          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setSelectedCategory('All')}>
+            <img
+              src="/ceylon_foods_logo.png"
+              alt="Ceylon Foods Logo"
+              className="h-11 w-auto object-contain filter drop-shadow transition transform group-hover:scale-105"
+            />
             <div className="flex flex-col">
-              <span className="text-xl font-black tracking-tight leading-none text-[#044F41] dark:text-white">
-                Fresh<span className="text-[#FF632B]">Cart</span>
+              <span className="text-xl font-black tracking-tight leading-none text-[#0C6237] dark:text-[#78F9B8]">
+                Ceylon <span className="text-[#FF6515]">Foods</span>
               </span>
-              <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                Online Supermarket
+              <span className="text-[9px] font-extrabold tracking-widest text-[#0C6237]/80 dark:text-emerald-300/80 uppercase">
+                Sri Lanka Online Supermarket
               </span>
             </div>
           </div>
@@ -507,7 +509,7 @@ export default function ClientWebSupermarket() {
                   </span>
                 )}
               </div>
-              <span className="hidden sm:inline">${totalAmount.toFixed(2)}</span>
+              <span className="hidden sm:inline">Rs. {Math.round(totalAmount).toLocaleString()}</span>
             </button>
 
             {/* Customer Authentication Button */}
@@ -545,18 +547,18 @@ export default function ClientWebSupermarket() {
         {/* Free Delivery Threshold Bar */}
         <div className="max-w-7xl mx-auto mt-2 pt-2 border-t border-slate-100 dark:border-zinc-800/80 flex items-center justify-between text-[11px]">
           <div className="flex items-center gap-2 text-slate-500 dark:text-zinc-400 font-semibold">
-            <span>Free Express Delivery on orders over $40:</span>
+            <span>Free Express Delivery on orders over Rs. 5,000:</span>
             <div className="w-36 h-2 bg-slate-200 dark:bg-zinc-800 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-[#044F41] to-[#78F9B8] transition-all duration-300"
-                style={{ width: `${Math.min(100, (subtotal / 40) * 100)}%` }}
+                style={{ width: `${Math.min(100, (subtotal / 5000) * 100)}%` }}
               ></div>
             </div>
-            {subtotal >= 40 ? (
+            {subtotal >= 5000 ? (
               <span className="font-extrabold text-[#044F41] dark:text-[#78F9B8]">🎉 Free Delivery Unlocked!</span>
             ) : (
               <span className="font-bold text-slate-700 dark:text-zinc-300">
-                Add ${(40 - subtotal).toFixed(2)} more
+                Add Rs. {Math.max(0, 5000 - Math.round(subtotal)).toLocaleString()} more
               </span>
             )}
           </div>
@@ -577,8 +579,8 @@ export default function ClientWebSupermarket() {
                 <Sparkles className="w-3.5 h-3.5" /> Full Supermarket Stocked Daily
               </span>
               <h1 className="text-2xl sm:text-3xl font-black leading-tight">
-                Everything for Your Home, <br />
-                <span className="text-[#78F9B8]">Delivered in 30 Mins</span>
+                Ayubowan! Island-Fresh Groceries, <br />
+                <span className="text-[#78F9B8]">Delivered in 45 Mins</span>
               </h1>
               <p className="text-xs text-emerald-100 font-medium leading-relaxed">
                 From morning dairy, fresh bakery, and meats to pantry staples, Ceylon teas, and household cleaning essentials.
@@ -590,7 +592,7 @@ export default function ClientWebSupermarket() {
                 onClick={() => setSelectedCategory('Staples & Grains')}
                 className="px-5 py-2.5 rounded-2xl bg-[#FF632B] hover:bg-[#e0521d] text-white font-extrabold text-xs shadow-lg transition active:scale-95 flex items-center gap-1.5"
               >
-                <span>Browse Grocery Staples</span>
+                <span>Browse Sri Lankan Staples</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -611,17 +613,17 @@ export default function ClientWebSupermarket() {
                 Breakfast & Tea Special
               </span>
               <h3 className="text-base font-black text-slate-900 dark:text-white leading-snug">
-                Ceylon Tea & Sourdough Breakfast Kit
+                Traditional Ceylon Tea & Breakfast Combo
               </h3>
               <p className="text-xs text-slate-500 dark:text-zinc-400">
-                Fresh Milk (1L) + Sourdough Loaf + Single Origin Ceylon Tea (100 bags).
+                Roast Paan (4 slices) + Highland Fresh Milk (1L) + Dilmah Pure Ceylon BOPF Tea (400g).
               </p>
             </div>
 
             <div className="flex items-center justify-between pt-4">
               <div>
-                <span className="text-xs text-slate-400 line-through">$10.70</span>
-                <p className="text-lg font-black text-slate-900 dark:text-white">$8.99</p>
+                <span className="text-xs text-slate-400 line-through">Rs. 1,840</span>
+                <p className="text-lg font-black text-slate-900 dark:text-white">Rs. 1,640</p>
               </div>
               <button
                 onClick={() => {
@@ -661,20 +663,20 @@ export default function ClientWebSupermarket() {
               isDarkMode ? 'bg-[#18181A] border-zinc-800' : 'bg-white border-slate-200/80'
             }`}>
               <img
-                src="https://images.unsplash.com/photo-1621996346565-e3d5d6281059?w=400&auto=format&fit=crop&q=80"
-                alt="Penne Pasta"
+                src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&auto=format&fit=crop&q=80"
+                alt="Chicken Curry"
                 className="w-24 h-24 rounded-2xl object-cover shrink-0 shadow-sm"
               />
               <div className="flex-1 space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-extrabold text-sm">Creamy Chicken Penne Pasta</h4>
-                  <span className="text-[11px] font-bold text-slate-400">⏱ 25 mins</span>
+                  <h4 className="font-extrabold text-sm">Ceylon Black Pepper Village Chicken Curry</h4>
+                  <span className="text-[11px] font-bold text-slate-400">⏱ 30 mins</span>
                 </div>
                 <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                  Includes Chicken Breast (1kg), Italian Penne Pasta (500g), and Cheddar Cheese.
+                  Includes Bairaha Chicken Fillets (1kg), Araliya Keeri Samba (5kg), and Pure Ceylon Spices.
                 </p>
                 <div className="flex items-center justify-between pt-1">
-                  <span className="text-xs font-black text-slate-900 dark:text-white">$15.04</span>
+                  <span className="text-xs font-black text-slate-900 dark:text-white">Rs. 3,820</span>
                   <button
                     onClick={() => {
                       const pChik = products.find(p => p.title.includes('Chicken'));
@@ -704,14 +706,14 @@ export default function ClientWebSupermarket() {
               />
               <div className="flex-1 space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-extrabold text-sm">Fresh Garden Salad & Avocado</h4>
-                  <span className="text-[11px] font-bold text-slate-400">⏱ 15 mins</span>
+                  <h4 className="font-extrabold text-sm">Traditional Parippu (Dhal) & Roast Paan Combo</h4>
+                  <span className="text-[11px] font-bold text-slate-400">⏱ 20 mins</span>
                 </div>
                 <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                  Includes Haas Avocado, Vine Cherry Tomatoes, and Cold-Pressed Coconut Dressing.
+                  Includes Mysore Red Dhal (1kg), Crispy Roast Paan (4 pcs), and Virgin Coconut Oil (500ml).
                 </p>
                 <div className="flex items-center justify-between pt-1">
-                  <span className="text-xs font-black text-slate-900 dark:text-white">$12.08</span>
+                  <span className="text-xs font-black text-slate-900 dark:text-white">Rs. 1,550</span>
                   <button
                     onClick={() => {
                       const pAvo = products.find(p => p.title.includes('Avocado'));
@@ -865,7 +867,7 @@ export default function ClientWebSupermarket() {
                     <div className="flex items-center justify-between pt-2">
                       <div>
                         <span className="text-base font-black text-slate-900 dark:text-white">
-                          ${product.price.toFixed(2)}
+                          Rs. {Math.round(product.price).toLocaleString()}
                         </span>
                         <span className="text-[11px] text-slate-400 ml-0.5">/{product.unit}</span>
                       </div>
@@ -1131,35 +1133,32 @@ export default function ClientWebSupermarket() {
                 <span className="absolute top-72 right-10 text-2xl -rotate-12 opacity-80 animate-bounce" style={{ animationDuration: '3.5s' }}>🍃</span>
               </div>
 
-              {/* Top Branding Section matching Figma */}
-              <div className="pt-10 px-6 text-center z-10 space-y-1">
-                <div className="inline-flex items-center justify-center gap-2">
-                  <span className="w-8 h-8 rounded-xl bg-[#044F41] text-[#78F9B8] flex items-center justify-center shadow-md">
-                    <Leaf className="w-4 h-4 text-[#78F9B8]" />
-                  </span>
-                  <span className="text-2xl font-black tracking-tight text-[#044F41] dark:text-white">
-                    Fresh<span className="text-[#FF632B]">Cart</span>
-                  </span>
-                </div>
-                <p className="text-xs font-bold tracking-wide text-emerald-800/80 dark:text-[#78F9B8]/90">
-                  AI-Powered Grocery Shopping
+              {/* Top Branding Section */}
+              <div className="pt-8 px-6 text-center z-10 space-y-1">
+                <img
+                  src="/ceylon_foods_logo.png"
+                  alt="Ceylon Foods Logo"
+                  className="h-14 w-auto mx-auto object-contain filter drop-shadow-md"
+                />
+                <p className="text-xs font-extrabold tracking-wide text-[#0C6237] dark:text-[#78F9B8]">
+                  Sri Lanka Online Supermarket
                 </p>
               </div>
 
-              {/* Center Hero: 3D Shopping Basket with Fresh Produce & Radial Mint Glow */}
+              {/* Center Hero: Authentic Ceylon Foods Cultural Emblem */}
               <div className="relative flex items-center justify-center px-6 my-auto z-10">
-                <div className="absolute w-60 h-60 rounded-full bg-[#78F9B8]/25 dark:bg-[#78F9B8]/15 blur-3xl pointer-events-none animate-pulse"></div>
+                <div className="absolute w-60 h-60 rounded-full bg-[#FF6515]/20 dark:bg-[#78F9B8]/15 blur-3xl pointer-events-none animate-pulse"></div>
 
                 <div className="relative group hover:scale-105 transition-transform duration-500">
                   <img
-                    src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=800"
-                    alt="Fresh Basket"
-                    className="w-64 h-56 rounded-3xl object-cover shadow-2xl border-4 border-white/90 dark:border-emerald-950/70 ring-4 ring-[#78F9B8]/40"
+                    src="/ceylon_foods_logo.png"
+                    alt="Ceylon Foods Sri Lanka"
+                    className="w-52 h-52 object-contain filter drop-shadow-2xl"
                   />
                   {/* Floating AI Freshness badge */}
-                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap px-3.5 py-1 rounded-full bg-[#044F41] text-[#78F9B8] font-black text-[11px] shadow-lg flex items-center gap-1.5 border border-[#78F9B8]/30">
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-3.5 py-1 rounded-full bg-[#0C6237] text-[#78F9B8] font-black text-[11px] shadow-lg flex items-center gap-1.5 border border-[#78F9B8]/40">
                     <Sparkles className="w-3.5 h-3.5 text-[#78F9B8]" />
-                    <span>AI Freshness Inspected • 100% Quality</span>
+                    <span>100% Fresh • Direct from Local Growers</span>
                   </div>
                 </div>
               </div>
@@ -1172,11 +1171,11 @@ export default function ClientWebSupermarket() {
               }`}>
                 <div className="space-y-2">
                   <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-                    Smarter Groceries, <br />
-                    <span className="text-[#044F41] dark:text-[#78F9B8]">Healthier You</span>
+                    Ayubowan! සාදරයෙන් පිළිගනිමු <br />
+                    <span className="text-[#0C6237] dark:text-[#78F9B8]">Sri Lanka Online Supermarket</span>
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-zinc-400 font-medium leading-relaxed max-w-xs mx-auto">
-                    AI finds the best products, best prices and delivers them to your door.
+                    Island-fresh vegetables, Keeri Samba rice, Ceylon spices & daily groceries delivered to your door in 45 minutes.
                   </p>
                 </div>
 
@@ -1224,8 +1223,8 @@ export default function ClientWebSupermarket() {
                   <span className="w-7 h-7 rounded-lg bg-[#044F41] text-[#78F9B8] flex items-center justify-center font-black text-xs shadow">
                     <Leaf className="w-3.5 h-3.5 text-[#78F9B8]" />
                   </span>
-                  <span className="font-black text-sm tracking-tight text-[#044F41] dark:text-white">
-                    Fresh<span className="text-[#FF632B]">Cart</span>
+                  <span className="font-black text-sm tracking-tight text-[#0C6237] dark:text-white">
+                    Ceylon <span className="text-[#FF6515]">Foods</span>
                   </span>
                   <span className="ml-2 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-orange-100 text-[#FF632B] dark:bg-orange-950/60">
                     Step {onboardingStep + 1} of 4
@@ -1264,10 +1263,10 @@ export default function ClientWebSupermarket() {
 
                     <div className="space-y-2">
                       <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                        Farm-Fresh Groceries Delivered in 20 Minutes
+                        Island-Fresh Produce Delivered in 45 Minutes
                       </h2>
                       <p className="text-xs md:text-sm text-slate-500 dark:text-zinc-400 leading-relaxed">
-                        Shop hand-picked organic vegetables, orchard fruits, butcher-cut meats, fresh bakery treats, and pantry staples directly from trusted local growers and our central supermarket.
+                        Shop farm-harvested Dambulla vegetables, Nuwara Eliya fruits, fresh Mirissa seafood, Ambewela dairy, and Ceylon pantry staples delivered directly across Colombo & suburbs.
                       </p>
                     </div>
 
@@ -1448,10 +1447,10 @@ export default function ClientWebSupermarket() {
                             Welcome Voucher Added
                           </span>
                           <h4 className="font-black text-sm">
-                            Promo Code: <code className="bg-black/30 px-2 py-0.5 rounded text-[#78F9B8]">WELCOME10</code>
+                            Promo Code: <code className="bg-black/30 px-2 py-0.5 rounded text-[#78F9B8]">AYUBOWAN</code>
                           </h4>
                           <p className="text-[11px] text-emerald-100">
-                            $10 Off Your First Order (Valid on all aisles)
+                            Rs. 500 Off Your First Order (Valid on orders over Rs. 4,000)
                           </p>
                         </div>
                       </div>
@@ -1504,7 +1503,7 @@ export default function ClientWebSupermarket() {
                       onClick={handleFinishOnboarding}
                       className="px-7 py-3 rounded-2xl bg-gradient-to-r from-[#FF632B] to-[#FF814A] hover:opacity-95 text-white text-xs font-black shadow-xl shadow-orange-500/20 flex items-center gap-2 transition active:scale-95 animate-pulse"
                     >
-                      <span>Start Shopping FreshCart</span>
+                      <span>Start Shopping Ceylon Foods</span>
                       <Sparkles className="w-4 h-4 text-white" />
                     </button>
                   )}
@@ -1575,7 +1574,7 @@ export default function ClientWebSupermarket() {
                             {item.selectedWeight || item.product.unitWeight} • {item.product.brand}
                           </p>
                           <p className="text-xs font-black text-[#FF632B] mt-0.5">
-                            ${(item.effectivePrice * item.quantity).toFixed(2)}
+                            Rs. {Math.round(item.effectivePrice * item.quantity).toLocaleString()}
                           </p>
                         </div>
                       </div>
@@ -1633,7 +1632,7 @@ export default function ClientWebSupermarket() {
                           <div className="flex justify-between items-center">
                             <span className="font-bold text-[11px]">{slot.label}</span>
                             <span className="text-[10px] text-[#FF632B] font-bold">
-                              {slot.fee === 0 ? 'Free' : `$${slot.fee}`}
+                              {slot.fee === 0 ? 'Free' : `Rs. ${slot.fee}`}
                             </span>
                           </div>
                           <p className="text-[10px] text-slate-400 mt-0.5">{slot.time}</p>
@@ -1737,27 +1736,27 @@ export default function ClientWebSupermarket() {
                   <div className="space-y-1.5 text-xs font-semibold">
                     <div className="flex justify-between text-slate-400">
                       <span>Subtotal</span>
-                      <span className="text-slate-800 dark:text-white font-bold">${subtotal.toFixed(2)}</span>
+                      <span className="text-slate-800 dark:text-white font-bold">Rs. {Math.round(subtotal).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-slate-400">
                       <span>Estimated VAT (5%)</span>
-                      <span className="text-slate-800 dark:text-white font-bold">${vatAmount.toFixed(2)}</span>
+                      <span className="text-slate-800 dark:text-white font-bold">Rs. {Math.round(vatAmount).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-slate-400">
                       <span>Delivery ({selectedSlot.label})</span>
                       <span className="text-slate-800 dark:text-white font-bold">
-                        {deliveryFee === 0 ? 'FREE' : `$${deliveryFee.toFixed(2)}`}
+                        {deliveryFee === 0 ? 'FREE' : `Rs. ${deliveryFee}`}
                       </span>
                     </div>
                     {bundleDiscount > 0 && (
                       <div className="flex justify-between text-[#78F9B8] font-bold">
                         <span>Multi-Item Supermarket Savings</span>
-                        <span>-${bundleDiscount.toFixed(2)}</span>
+                        <span>-Rs. {bundleDiscount}</span>
                       </div>
                     )}
                     <div className="flex justify-between text-base font-black pt-2 border-t border-slate-100 dark:border-zinc-800">
                       <span>Total to Pay</span>
-                      <span className="text-[#FF632B] text-lg">${totalAmount.toFixed(2)}</span>
+                      <span className="text-[#FF6515] text-lg font-black">Rs. {Math.round(totalAmount).toLocaleString()}</span>
                     </div>
                   </div>
 
@@ -1807,7 +1806,7 @@ export default function ClientWebSupermarket() {
                     }}
                     className="w-full py-4 rounded-2xl bg-[#FF632B] hover:bg-[#e0521d] text-white font-black text-sm shadow-xl shadow-orange-500/20 flex items-center justify-center gap-2 transition active:scale-[0.98]"
                   >
-                    <span>Place Order (${totalAmount.toFixed(2)})</span>
+                    <span>Place Order (Rs. {Math.round(totalAmount).toLocaleString()})</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -1826,7 +1825,7 @@ export default function ClientWebSupermarket() {
                 <Sparkles className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="font-extrabold text-sm">FreshBot AI Assistant</h3>
+                <h3 className="font-extrabold text-sm">CeylonBot AI Assistant</h3>
                 <p className="text-[10px] text-[#78F9B8] font-bold">Personalized Grocery & Recipe Concierge</p>
               </div>
             </div>
@@ -1860,7 +1859,7 @@ export default function ClientWebSupermarket() {
                         {msg.recipe.ingredients.map((ing: any, idx: number) => (
                           <div key={idx} className="flex justify-between">
                             <span>• {ing.title} ({ing.quantity})</span>
-                            <span className="font-bold">${ing.price}</span>
+                            <span className="font-bold">Rs. {Math.round(ing.price).toLocaleString()}</span>
                           </div>
                         ))}
                       </div>
@@ -1875,7 +1874,7 @@ export default function ClientWebSupermarket() {
                         }}
                         className="w-full py-2 bg-[#044F41] text-[#78F9B8] font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow"
                       >
-                        + Add All To Cart (${msg.recipe.totalPrice.toFixed(2)})
+                        + Add All To Cart (Rs. {Math.round(msg.recipe.totalPrice).toLocaleString()})
                       </button>
                     </div>
                   )}
@@ -1957,7 +1956,7 @@ export default function ClientWebSupermarket() {
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-black text-base">Order #{activeOrder.orderNumber}</h4>
-                  <p className="text-xs text-slate-400">Total: ${activeOrder.totalAmount?.toFixed(2)} • {activeOrder.items?.length || 2} items</p>
+                  <p className="text-xs text-slate-400">Total: Rs. {Math.round(activeOrder.totalAmount || 0).toLocaleString()} • {activeOrder.items?.length || 2} items</p>
                 </div>
                 <span className="px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-700">
                   {activeOrder.status?.replace('_', ' ') || 'ON THE WAY'}
@@ -2027,7 +2026,7 @@ export default function ClientWebSupermarket() {
                 </div>
                 <div className="text-right">
                   <span className="text-2xl font-black text-[#FF632B]">
-                    ${(selectedProduct.price * calculateWeightMultiplier(modalSelectedWeight)).toFixed(2)}
+                    Rs. {Math.round(selectedProduct.price * calculateWeightMultiplier(modalSelectedWeight)).toLocaleString()}
                   </span>
                   <span className="text-xs text-slate-400 block">
                     {selectedProduct.availableWeights ? `for ${modalSelectedWeight}` : `per ${selectedProduct.unit}`}
@@ -2092,10 +2091,10 @@ export default function ClientWebSupermarket() {
         isDarkMode ? 'bg-[#0A0A0C] border-zinc-900' : 'bg-white border-slate-200'
       }`}>
         <p className="font-semibold text-slate-600 dark:text-zinc-400">
-          FreshCart Supermarket — All Departments Grocery Logistics.
+          Ceylon Foods Supermarket — Sri Lanka Online Supermarket & Logistics.
         </p>
         <p className="text-[11px] text-slate-400 mt-1">
-          Single Central Supermarket Hub • Fast Doorstep Delivery across the city.
+          Central Distribution Supermarket Hub • Guaranteed 45-Min Delivery across Colombo & Suburbs.
         </p>
       </footer>
     </div>

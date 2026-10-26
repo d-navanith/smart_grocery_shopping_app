@@ -121,9 +121,9 @@ interface CustomerAccount {
 export default function AdminApp() {
   // Authentication state for strict security separation
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem('freshcart_admin_auth') === 'true' || localStorage.getItem('metrocery_admin_auth') === 'true';
+    return localStorage.getItem('ceylonfoods_admin_auth') === 'true' || localStorage.getItem('freshcart_admin_auth') === 'true' || localStorage.getItem('metrocery_admin_auth') === 'true';
   });
-  const [loginEmail, setLoginEmail] = useState('admin@freshcart.com');
+  const [loginEmail, setLoginEmail] = useState('admin@ceylonfoods.lk');
   const [loginPassword, setLoginPassword] = useState('admin123');
   const [loginError, setLoginError] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
@@ -176,7 +176,7 @@ export default function AdminApp() {
     brand: 'Natureland Organics',
     price: 3.50,
     stock: 50,
-    store: 'FreshCart Supermarket',
+    store: 'Ceylon Foods Supermarket',
     imageUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800',
     aiFreshnessScore: 98,
     isOrganic: true
@@ -206,7 +206,7 @@ export default function AdminApp() {
       });
       const data = await res.json();
       if (data.success) {
-        localStorage.setItem('freshcart_admin_auth', 'true');
+        localStorage.setItem('ceylonfoods_admin_auth', 'true');
         setIsAuthenticated(true);
         fetchData();
       } else {
@@ -220,7 +220,7 @@ export default function AdminApp() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('freshcart_admin_auth');
+    localStorage.removeItem('ceylonfoods_admin_auth'); localStorage.removeItem('ceylonfoods_admin_auth'); localStorage.removeItem('freshcart_admin_auth');
     localStorage.removeItem('metrocery_admin_auth');
     setIsAuthenticated(false);
   };
@@ -297,7 +297,7 @@ export default function AdminApp() {
           brand: 'Natureland Organics',
           price: 3.50,
           stock: 50,
-          store: 'FreshCart Supermarket',
+          store: 'Ceylon Foods Supermarket',
           imageUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800',
           aiFreshnessScore: 98,
           isOrganic: true
@@ -495,14 +495,16 @@ export default function AdminApp() {
       <div className="min-h-screen bg-[#032B24] flex items-center justify-center p-6 font-sans">
         <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 border border-emerald-900/30 space-y-6">
           <div className="text-center space-y-2">
-            <div className="w-14 h-14 rounded-2xl bg-[#044F41] mx-auto flex items-center justify-center text-white shadow-lg">
-              <Lock className="w-7 h-7 text-[#78F9B8]" />
-            </div>
+            <img
+              src="/ceylon_foods_logo.png"
+              alt="Ceylon Foods Logo"
+              className="h-20 w-auto mx-auto object-contain filter drop-shadow-md mb-1"
+            />
             <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-              Fresh<span className="text-[#FF632B]">Cart</span>
+              Ceylon <span className="text-[#FF6515]">Foods</span>
             </h1>
             <p className="text-xs font-semibold text-slate-500">
-              Operations & Administration Security Portal
+              Sri Lanka Online Supermarket • Operations & Dispatch Portal
             </p>
           </div>
 
@@ -553,7 +555,7 @@ export default function AdminApp() {
 
             <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-slate-600 text-[11px] leading-relaxed">
               <span className="font-bold text-[#044F41]">Default Credentials:</span><br />
-              Email: <code className="font-bold text-slate-800">admin@freshcart.com</code><br />
+              Email: <code className="font-bold text-slate-800">admin@ceylonfoods.lk</code><br />
               Password: <code className="font-bold text-slate-800">admin123</code>
             </div>
           </form>
@@ -570,12 +572,17 @@ export default function AdminApp() {
       {/* Top Banner with Dark Forest Green accent matching Dribbble reference */}
       <header className="bg-[#044F41] text-white px-6 py-2.5 flex items-center justify-between border-b border-emerald-900 sticky top-0 z-40 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-[#FF632B] flex items-center justify-center font-bold text-white text-lg shadow">
-              F
+          <img
+            src="/ceylon_foods_logo.png"
+            alt="Ceylon Foods"
+            className="h-9 w-auto object-contain filter drop-shadow"
+          />
+          <div className="flex flex-col">
+            <span className="text-lg font-black tracking-tight leading-none text-white">
+              Ceylon <span className="text-[#FF6515]">Foods</span>
             </span>
-            <span className="text-xl font-extrabold tracking-tight">
-              Fresh<span className="text-[#FF632B]">Cart</span>
+            <span className="text-[9px] font-bold tracking-wider text-emerald-200 uppercase">
+              Operations & Dispatch
             </span>
           </div>
         </div>
@@ -952,7 +959,7 @@ export default function AdminApp() {
                           </td>
                           <td className="py-3.5 px-4 text-slate-600 font-medium">{p.category}</td>
                           <td className="py-3.5 px-4 text-slate-600 font-medium">{p.brand}</td>
-                          <td className="py-3.5 px-4 font-black text-slate-900">${p.price.toFixed(2)}</td>
+                          <td className="py-3.5 px-4 font-black text-slate-900">Rs. {Math.round(p.price).toLocaleString()}</td>
                           <td className="py-3.5 px-4">
                             <span className={`font-bold ${p.stock < 30 ? 'text-amber-600' : 'text-slate-700'}`}>
                               {p.stock}
@@ -1168,7 +1175,7 @@ export default function AdminApp() {
                   </div>
                   <div>
                     <p className="text-xs font-medium text-slate-400">Inventory Valuation</p>
-                    <p className="text-xl font-black text-slate-800">${totalRetailValuation.toFixed(2)}</p>
+                    <p className="text-xl font-black text-slate-800">Rs. {Math.round(totalRetailValuation).toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -1206,7 +1213,7 @@ export default function AdminApp() {
                             </div>
                           </td>
                           <td className="py-3 px-4 text-slate-600 font-semibold">{item.category}</td>
-                          <td className="py-3 px-4 font-bold text-slate-900">${item.price.toFixed(2)}</td>
+                          <td className="py-3 px-4 font-bold text-slate-900">Rs. {Math.round(item.price).toLocaleString()}</td>
                           <td className="py-3 px-4">
                             <div className="w-36 space-y-1">
                               <div className="flex justify-between text-[11px] font-bold">
@@ -1317,7 +1324,7 @@ export default function AdminApp() {
                   <div>
                     <p className="text-xs font-medium text-slate-400">Total Customer Spend</p>
                     <p className="text-xl font-black text-slate-800">
-                      ${customers.reduce((acc, c) => acc + (c.totalSpent || 0), 0).toFixed(2)}
+                      Rs. {Math.round(customers.reduce((acc, c) => acc + (c.totalSpent || 0), 0)).toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -1379,7 +1386,7 @@ export default function AdminApp() {
                           </span>
                         </td>
                         <td className="py-3 px-4 font-bold text-slate-800">{cust.totalOrders}</td>
-                        <td className="py-3 px-4 font-black text-slate-900">${cust.totalSpent.toFixed(2)}</td>
+                        <td className="py-3 px-4 font-black text-slate-900">Rs. {Math.round(cust.totalSpent).toLocaleString()}</td>
                         <td className="py-3 px-4">
                           <span className="font-bold text-emerald-600">🏆 {cust.loyaltyPoints} pts</span>
                         </td>
@@ -1573,7 +1580,7 @@ export default function AdminApp() {
                       <div key={order.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
                         <div>
                           <span className="font-bold text-[#044F41]">{order.orderNumber}</span>
-                          <span className="text-slate-500 ml-2">Customer: <strong>{order.customerName}</strong> (${order.totalAmount.toFixed(2)})</span>
+                          <span className="text-slate-500 ml-2">Customer: <strong>{order.customerName}</strong> (Rs. {Math.round(order.totalAmount).toLocaleString()})</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <select
@@ -1668,7 +1675,7 @@ export default function AdminApp() {
                   </div>
                   <div>
                     <p className="text-xs font-medium text-slate-400">Available Balance</p>
-                    <p className="text-xl font-black text-slate-800">${(adminMetrics?.availableBalance || 1240.35).toFixed(2)}</p>
+                    <p className="text-xl font-black text-slate-800">Rs. {Math.round(adminMetrics?.availableBalance || 485200).toLocaleString()}</p>
                   </div>
                 </div>
 
@@ -1797,7 +1804,7 @@ export default function AdminApp() {
                         <span className="text-slate-600 ml-2">Customer: <strong>{o.customerName}</strong></span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="font-black text-slate-900">${o.totalAmount.toFixed(2)}</span>
+                        <span className="font-black text-slate-900">Rs. {Math.round(o.totalAmount).toLocaleString()}</span>
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
                           {o.status}
                         </span>
@@ -1842,7 +1849,7 @@ export default function AdminApp() {
                         )}
                       </div>
                       <div className="flex items-center gap-4">
-                        <span className="text-base font-black text-slate-900">${order.totalAmount.toFixed(2)}</span>
+                        <span className="text-base font-black text-slate-900">Rs. {Math.round(order.totalAmount).toLocaleString()}</span>
                         <select
                           value={order.status}
                           onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value as Order['status'])}
@@ -2124,7 +2131,7 @@ export default function AdminApp() {
               <div className="space-y-1">
                 <h3 className="font-extrabold text-base text-slate-800">{viewingProduct.title}</h3>
                 <p className="text-xs text-slate-400">{viewingProduct.sku} • {viewingProduct.brand}</p>
-                <p className="text-base font-black text-[#FF632B]">${viewingProduct.price.toFixed(2)}</p>
+                <p className="text-base font-black text-[#FF632B]">Rs. {Math.round(viewingProduct.price).toLocaleString()}</p>
                 <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                   viewingProduct.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
                 }`}>
