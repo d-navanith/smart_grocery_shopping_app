@@ -8,10 +8,10 @@ Featuring the **Ceylon Foods** cultural design system, authentic Sri Lankan rupe
 
 ## 📸 Screenshots & Visual Previews (Captured from Live System)
 
-### 🛒 1. Customer Supermarket Storefront (Light Theme)
+### 🛒 1. Customer Supermarket Storefront (Light Theme — Authentic Ceylon Foods Home Page)
 ![Ceylon Foods Customer Storefront Light](screenshots/01_ceylonfoods_customer_store_light.png)
 
-### ✨ 2. Cultural Splash & Onboarding Walkthrough (Ayubowan! සාදරයෙන් පිළිගනිමු)
+### ✨ 2. Cultural Splash Screen (˗ˏˋ ආයුබෝවන්.! ˎˊ˗ — Sigiriya & Island Harvest Vista)
 ![Ceylon Foods Splash Screen](screenshots/02_ceylonfoods_splash_onboarding.png)
 
 ### 🌙 3. Customer OLED Dark Mode

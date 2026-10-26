@@ -352,6 +352,29 @@ export default function ClientWebSupermarket() {
   const bundleDiscount = cart.length >= 3 ? 5.00 : 0.0;
   const totalAmount = Math.max(0, subtotal + vatAmount + deliveryFee - bundleDiscount);
 
+  // Category items matching Attachment 1 navigation ribbon
+  const CATEGORY_RIBBON_ITEMS = [
+    { id: 'all', label: 'All', icon: '☰', filterKey: 'All' },
+    { id: 'fruits', label: 'Fruits', icon: '🍎', filterKey: 'Fruits' },
+    { id: 'vegetables', label: 'Vegetables', icon: '🥦', filterKey: 'Vegetables' },
+    { id: 'dairy', label: 'Dairy & Eggs', icon: '🥛', filterKey: 'Dairy & Eggs' },
+    { id: 'meat', label: 'Meat & Seafood', icon: '🥩', filterKey: 'Meat & Seafood' },
+    { id: 'bakery', label: 'Bakery', icon: '🍞', filterKey: 'Bakery' },
+    { id: 'pantry', label: 'Pantry', icon: '🌾', filterKey: 'Pantry' },
+    { id: 'beverages', label: 'Beverages', icon: '🧃', filterKey: 'Beverages' },
+    { id: 'household', label: 'Household', icon: '🧼', filterKey: 'Household' }
+  ];
+
+  // 6 visual category banner cards matching Attachment 1
+  const CATEGORY_CARDS = [
+    { id: 'cat-fruits', title: 'Fruits', subtitle: 'Sweet & juicy harvest', image: '/cat_fruits.jpg', filterKey: 'Fruits' },
+    { id: 'cat-veg', title: 'Vegetables', subtitle: 'Fresh Nuwara Eliya greens', image: '/cat_vegetables.jpg', filterKey: 'Vegetables' },
+    { id: 'cat-dairy', title: 'Dairy & Eggs', subtitle: 'Pure highland milk & eggs', image: '/cat_dairy.jpg', filterKey: 'Dairy & Eggs' },
+    { id: 'cat-meat', title: 'Meat & Seafood', subtitle: 'Fresh poultry & local cuts', image: '/cat_meat.jpg', filterKey: 'Meat & Seafood' },
+    { id: 'cat-bakery', title: 'Bakery', subtitle: 'Roast paan & fresh loaves', image: '/cat_bakery.jpg', filterKey: 'Bakery' },
+    { id: 'cat-pantry', title: 'Pantry', subtitle: 'Keeri samba & Ceylon spices', image: '/cat_pantry.jpg', filterKey: 'Pantry' }
+  ];
+
   // All 8 realistic supermarket categories
   const categories = [
     'All',
@@ -367,7 +390,33 @@ export default function ClientWebSupermarket() {
 
   // Sorting & Filtering
   let filteredProducts = products.filter(p => {
-    const matchCat = selectedCategory === 'All' || p.category.toLowerCase() === selectedCategory.toLowerCase();
+    let matchCat = true;
+    if (selectedCategory !== 'All') {
+      if (selectedCategory === 'Fruits') {
+        matchCat = p.category.toLowerCase().includes('fruit') ||
+                   p.title.toLowerCase().includes('orange') ||
+                   p.title.toLowerCase().includes('banana') ||
+                   p.title.toLowerCase().includes('apple') ||
+                   p.title.toLowerCase().includes('avocado') ||
+                   p.title.toLowerCase().includes('දොඩම්') ||
+                   p.title.toLowerCase().includes('කෙසෙල්') ||
+                   p.title.toLowerCase().includes('අලිගැටපේර');
+      } else if (selectedCategory === 'Vegetables') {
+        matchCat = p.category.toLowerCase().includes('veg') ||
+                   p.title.toLowerCase().includes('broccoli') ||
+                   p.title.toLowerCase().includes('tomato') ||
+                   p.title.toLowerCase().includes('pumpkin') ||
+                   p.title.toLowerCase().includes('වට්ටක්කා') ||
+                   p.title.toLowerCase().includes('තක්කාලි') ||
+                   p.title.toLowerCase().includes('බ්‍රොකොලි');
+      } else if (selectedCategory === 'Pantry' || selectedCategory === 'Staples & Grains') {
+        matchCat = p.category.toLowerCase().includes('staple') ||
+                   p.category.toLowerCase().includes('pantry') ||
+                   p.category.toLowerCase().includes('grain');
+      } else {
+        matchCat = p.category.toLowerCase() === selectedCategory.toLowerCase();
+      }
+    }
     const matchSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                         p.brand.toLowerCase().includes(searchQuery.toLowerCase());
     const matchOrganic = !organicFilter || p.isOrganic;
@@ -385,47 +434,42 @@ export default function ClientWebSupermarket() {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'dark bg-[#0D0D0D] text-white' : 'bg-[#F8FAF9] text-slate-800'} font-sans transition-colors duration-200 flex flex-col`}>
-      {/* 1. TOP ANNOUNCEMENT BAR */}
-      <div className="bg-[#033B31] text-emerald-100 text-xs py-2 px-6 flex items-center justify-between border-b border-emerald-900/60 select-none">
-        <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1.5 font-bold text-[#78F9B8]">
-            <Zap className="w-3.5 h-3.5" />
-            <span>Ayubowan! සාදරයෙන් පිළිගනිමු — Ceylon Foods: Guaranteed 45-Min Doorstep Delivery Across Colombo & Suburbs</span>
-          </span>
-          <span className="hidden md:inline text-emerald-400/80">|</span>
-          <span className="hidden md:inline text-emerald-200">
-            🌿 Full Supermarket Range: Groceries, Fresh Produce, Dairy, Meats, Staples & Household
-          </span>
+      {/* 1. TOP ANNOUNCEMENT BAR (MATCHING ATTACHMENT 1) */}
+      <div className="bg-[#0C6237] text-white text-xs py-2 px-6 flex items-center justify-between border-b border-emerald-950/40 select-none">
+        <div className="flex items-center gap-2 font-bold mx-auto sm:mx-0">
+          <Truck className="w-3.5 h-3.5 text-[#78F9B8]" />
+          <span>Fresh groceries delivered to your doorstep across Sri Lanka</span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-3">
           <button
             onClick={() => {
               setOnboardingStep(0);
+              setOnboardingView('SPLASH');
               setIsOnboardingOpen(true);
             }}
-            className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-900/80 hover:bg-emerald-900 text-[#78F9B8] text-[11px] font-bold transition"
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-900/90 hover:bg-emerald-950 text-[#78F9B8] text-[11px] font-bold transition"
           >
             <Sparkles className="w-3 h-3 text-[#78F9B8]" />
-            <span>App Tour</span>
+            <span className="font-sinhala">ආයුබෝවන් (App Tour)</span>
           </button>
 
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
-            className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-900/70 hover:bg-emerald-900 text-emerald-200 text-[11px] font-semibold transition"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-900/60 hover:bg-emerald-900 text-emerald-100 text-[11px] font-semibold transition"
           >
             {isDarkMode ? <Sun className="w-3 h-3 text-amber-400" /> : <Moon className="w-3 h-3 text-[#78F9B8]" />}
-            <span>{isDarkMode ? 'Light Mode' : 'OLED Dark'}</span>
+            <span>{isDarkMode ? 'Light' : 'Dark'}</span>
           </button>
         </div>
       </div>
 
-      {/* 2. MAIN HEADER (Clean, single store, with Login/Register) */}
-      <header className={`sticky top-0 z-30 px-6 py-3.5 border-b backdrop-blur-md transition ${
-        isDarkMode ? 'bg-[#0D0D0D]/90 border-zinc-800' : 'bg-white/90 border-slate-200 shadow-sm'
+      {/* 2. MAIN HEADER (MATCHING ATTACHMENT 1 LAYOUT) */}
+      <header className={`sticky top-0 z-30 px-6 py-3 border-b backdrop-blur-md transition ${
+        isDarkMode ? 'bg-[#0D0D0D]/95 border-zinc-800' : 'bg-white/95 border-slate-200 shadow-sm'
       }`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-6">
-          {/* Ceylon Foods Brand Logo */}
+          {/* Ceylon Foods Brand Logo (Official Logo from Attachment 2) */}
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setSelectedCategory('All')}>
             <img
               src="/ceylon_foods_logo.png"
@@ -442,83 +486,48 @@ export default function ClientWebSupermarket() {
             </div>
           </div>
 
-          {/* Simple Clean Delivery Address Indicator */}
-          <div className="hidden lg:flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 bg-slate-50 dark:bg-[#18181A] px-3.5 py-1.5 rounded-2xl border border-slate-200 dark:border-zinc-800">
-            <MapPin className="w-4 h-4 text-[#FF632B]" />
-            <span>
-              Deliver to: <strong className="text-slate-800 dark:text-white">{currentUser?.address || 'Colombo & Suburbs (Express)'}</strong>
-            </span>
-          </div>
-
-          {/* Search Bar with Voice Mic */}
+          {/* Search Bar matching Attachment 1 */}
           <div className="flex-1 max-w-xl relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Search groceries, milk, rice, meats, tea, snacks, household..."
+              placeholder="Search for fruits, vegetables, pantry essentials..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full py-2.5 pl-11 pr-10 rounded-full text-xs font-semibold focus:outline-none transition ${
                 isDarkMode
                   ? 'bg-[#18181A] text-white placeholder-zinc-500 border border-zinc-800 focus:border-[#78F9B8]'
-                  : 'bg-slate-100 text-slate-800 placeholder-slate-400 border border-slate-200 focus:border-[#044F41]'
+                  : 'bg-slate-50 text-slate-800 placeholder-slate-400 border border-slate-200 focus:border-[#0C6237]'
               }`}
             />
-            <button className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#FF632B] hover:scale-110 transition">
+            <button className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0C6237] transition">
               <Mic className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Header Actions: FreshBot, Cart, and Customer Profile/Login */}
+          {/* Deliver to indicator matching Attachment 1 */}
+          <div className="hidden lg:flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-zinc-300 bg-slate-50 dark:bg-[#18181A] px-3.5 py-2 rounded-full border border-slate-200 dark:border-zinc-800 cursor-pointer hover:border-[#0C6237] transition">
+            <MapPin className="w-3.5 h-3.5 text-[#0C6237]" />
+            <span>Deliver to <strong className="text-slate-900 dark:text-white">{currentUser?.address ? currentUser.address.split(',')[0] : 'Colombo'}</strong> ▾</span>
+          </div>
+
+          {/* Header Actions: Sign In & Cart with orange badge */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsAiDrawerOpen(true)}
-              className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-2xl bg-gradient-to-r from-[#044F41] to-[#087F69] hover:opacity-95 text-white text-xs font-black shadow-md transition active:scale-95"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-full bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 text-[#0C6237] dark:text-[#78F9B8] text-xs font-bold border border-emerald-200/60 dark:border-emerald-800/40 transition active:scale-95"
             >
-              <Sparkles className="w-4 h-4 text-[#78F9B8] animate-pulse" />
-              <span>FreshBot AI</span>
-            </button>
-
-            {activeOrder && (
-              <button
-                onClick={() => setIsTrackingModalOpen(true)}
-                className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 text-xs font-bold transition hover:bg-amber-100"
-              >
-                <Truck className="w-4 h-4 animate-bounce" />
-                <span>Track Order</span>
-              </button>
-            )}
-
-            {/* Cart Trigger */}
-            <button
-              onClick={() => {
-                if (!currentUser) {
-                  setAuthError('Please sign in or create an account to view your cart.');
-                  setIsAuthModalOpen(true);
-                } else {
-                  setIsCartOpen(true);
-                }
-              }}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-[#FF632B] hover:bg-[#e0521d] text-white text-xs font-black shadow-lg shadow-orange-500/20 transition active:scale-95"
-            >
-              <div className="relative">
-                <ShoppingBag className="w-4 h-4" />
-                {cart.length > 0 && (
-                  <span className="absolute -top-2 -right-2.5 w-4 h-4 rounded-full bg-white text-[#FF632B] text-[9px] font-black flex items-center justify-center">
-                    {cart.length}
-                  </span>
-                )}
-              </div>
-              <span className="hidden sm:inline">Rs. {Math.round(totalAmount).toLocaleString()}</span>
+              <Sparkles className="w-3.5 h-3.5 text-[#0C6237] dark:text-[#78F9B8]" />
+              <span>FreshBot</span>
             </button>
 
             {/* Customer Authentication Button */}
             {currentUser ? (
-              <div className="flex items-center gap-2 bg-slate-100 dark:bg-zinc-800/80 pl-2 pr-1 py-1 rounded-2xl border border-slate-200 dark:border-zinc-700 text-xs">
-                <div className="w-7 h-7 rounded-full bg-[#044F41] text-[#78F9B8] font-black flex items-center justify-center">
+              <div className="flex items-center gap-2 bg-slate-100 dark:bg-zinc-800/80 pl-2 pr-1.5 py-1.5 rounded-full border border-slate-200 dark:border-zinc-700 text-xs">
+                <div className="w-6 h-6 rounded-full bg-[#0C6237] text-white font-black flex items-center justify-center text-[10px]">
                   {currentUser.name.charAt(0).toUpperCase()}
                 </div>
-                <span className="font-extrabold max-w-[90px] truncate hidden sm:inline">
+                <span className="font-extrabold max-w-[80px] truncate hidden sm:inline">
                   {currentUser.name}
                 </span>
                 <button
@@ -535,12 +544,32 @@ export default function ClientWebSupermarket() {
                   setAuthError('');
                   setIsAuthModalOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-[#044F41] hover:bg-emerald-950 text-[#78F9B8] text-xs font-black shadow-md transition active:scale-95"
+                className="px-4 py-2 rounded-full border border-slate-300 dark:border-zinc-700 hover:border-slate-400 text-slate-800 dark:text-white font-extrabold text-xs transition"
               >
-                <LogIn className="w-3.5 h-3.5" />
-                <span>Sign In / Register</span>
+                Sign In
               </button>
             )}
+
+            {/* Cart Trigger with Circular Orange Badge matching Attachment 1 */}
+            <button
+              onClick={() => {
+                if (!currentUser) {
+                  setAuthError('Please sign in or create an account to view your cart.');
+                  setIsAuthModalOpen(true);
+                } else {
+                  setIsCartOpen(true);
+                }
+              }}
+              className="relative p-2.5 rounded-full bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-800 dark:text-white transition active:scale-95 flex items-center justify-center"
+              title="View Cart"
+            >
+              <ShoppingBag className="w-5 h-5 text-slate-800 dark:text-white" />
+              {cart.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#FF6515] text-white text-[10px] font-black flex items-center justify-center shadow">
+                  {cart.reduce((s, i) => s + i.quantity, 0)}
+                </span>
+              )}
+            </button>
           </div>
         </div>
 
@@ -548,14 +577,14 @@ export default function ClientWebSupermarket() {
         <div className="max-w-7xl mx-auto mt-2 pt-2 border-t border-slate-100 dark:border-zinc-800/80 flex items-center justify-between text-[11px]">
           <div className="flex items-center gap-2 text-slate-500 dark:text-zinc-400 font-semibold">
             <span>Free Express Delivery on orders over Rs. 5,000:</span>
-            <div className="w-36 h-2 bg-slate-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+            <div className="w-32 h-1.5 bg-slate-200 dark:bg-zinc-800 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[#044F41] to-[#78F9B8] transition-all duration-300"
+                className="h-full bg-gradient-to-r from-[#0C6237] to-[#78F9B8] transition-all duration-300"
                 style={{ width: `${Math.min(100, (subtotal / 5000) * 100)}%` }}
               ></div>
             </div>
             {subtotal >= 5000 ? (
-              <span className="font-extrabold text-[#044F41] dark:text-[#78F9B8]">🎉 Free Delivery Unlocked!</span>
+              <span className="font-extrabold text-[#0C6237] dark:text-[#78F9B8]">🎉 Free Delivery Unlocked!</span>
             ) : (
               <span className="font-bold text-slate-700 dark:text-zinc-300">
                 Add Rs. {Math.max(0, 5000 - Math.round(subtotal)).toLocaleString()} more
@@ -564,259 +593,231 @@ export default function ClientWebSupermarket() {
           </div>
 
           <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
-            <span>🛒 Complete Supermarket Catalog</span>
+            <span>🇱🇰 Sri Lanka Wide Fresh Delivery</span>
           </div>
         </div>
       </header>
 
-      {/* MAIN CONTAINER */}
-      <main className="max-w-7xl mx-auto w-full px-6 py-6 flex-1 space-y-8">
-        {/* 3. HERO PROMOTIONS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 relative rounded-3xl overflow-hidden p-8 bg-gradient-to-r from-[#044F41] via-[#05604F] to-[#087F69] text-white flex flex-col justify-between shadow-xl min-h-[220px]">
-            <div className="max-w-md space-y-3 z-10">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#78F9B8] text-[#044F41] text-xs font-black tracking-wide uppercase">
-                <Sparkles className="w-3.5 h-3.5" /> Full Supermarket Stocked Daily
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-black leading-tight">
-                Ayubowan! Island-Fresh Groceries, <br />
-                <span className="text-[#78F9B8]">Delivered in 45 Mins</span>
-              </h1>
-              <p className="text-xs text-emerald-100 font-medium leading-relaxed">
-                From morning dairy, fresh bakery, and meats to pantry staples, Ceylon teas, and household cleaning essentials.
-              </p>
-            </div>
+      {/* 2.5 CATEGORY NAVIGATION RIBBON (MATCHING ATTACHMENT 1) */}
+      <div className={`border-b select-none transition ${isDarkMode ? 'bg-[#121214] border-zinc-800' : 'bg-white border-slate-200/80 shadow-sm'}`}>
+        <div className="max-w-7xl mx-auto px-6 py-2.5 flex items-center gap-2 overflow-x-auto no-scrollbar">
+          {CATEGORY_RIBBON_ITEMS.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => {
+                setSelectedCategory(cat.filterKey);
+                const el = document.getElementById('popular-section');
+                el?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition active:scale-95 ${
+                selectedCategory === cat.filterKey
+                  ? 'bg-[#0C6237] text-white shadow-sm'
+                  : isDarkMode
+                  ? 'text-zinc-400 hover:text-white hover:bg-zinc-800/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <span>{cat.icon}</span>
+              <span>{cat.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
-            <div className="pt-4 z-10 flex items-center gap-3">
-              <button
-                onClick={() => setSelectedCategory('Staples & Grains')}
-                className="px-5 py-2.5 rounded-2xl bg-[#FF632B] hover:bg-[#e0521d] text-white font-extrabold text-xs shadow-lg transition active:scale-95 flex items-center gap-1.5"
-              >
-                <span>Browse Sri Lankan Staples</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            <img
-              src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop&q=80"
-              alt="Supermarket Produce"
-              className="absolute right-0 bottom-0 w-80 h-full object-cover opacity-30 md:opacity-90 mask-radial"
-            />
-          </div>
-
-          {/* Pantry & Breakfast Essentials Card */}
-          <div className={`p-6 rounded-3xl border flex flex-col justify-between shadow-sm relative overflow-hidden ${
-            isDarkMode ? 'bg-[#18181A] border-zinc-800' : 'bg-gradient-to-br from-amber-50 to-orange-50 border-orange-200/60'
-          }`}>
-            <div className="space-y-2">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#FF632B] bg-orange-100 dark:bg-orange-950/60 px-2 py-0.5 rounded-full inline-block">
-                Breakfast & Tea Special
-              </span>
-              <h3 className="text-base font-black text-slate-900 dark:text-white leading-snug">
-                Traditional Ceylon Tea & Breakfast Combo
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">
-                Roast Paan (4 slices) + Highland Fresh Milk (1L) + Dilmah Pure Ceylon BOPF Tea (400g).
-              </p>
-            </div>
-
-            <div className="flex items-center justify-between pt-4">
-              <div>
-                <span className="text-xs text-slate-400 line-through">Rs. 1,840</span>
-                <p className="text-lg font-black text-slate-900 dark:text-white">Rs. 1,640</p>
+      {/* MAIN CONTAINER (EXACT ATTACHMENT 1 LAYOUT) */}
+      <main className="max-w-7xl mx-auto w-full px-6 py-6 flex-1 space-y-10">
+        {/* 3. HERO BANNER (MATCHING ATTACHMENT 1) */}
+        <div className={`relative rounded-[32px] overflow-hidden p-8 sm:p-12 border transition ${
+          isDarkMode
+            ? 'bg-gradient-to-r from-[#0E1A14] to-[#12231A] border-emerald-950/60'
+            : 'bg-[#F4F7F2] border-[#E2ECE3]'
+        }`}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left Column (7 cols) */}
+            <div className="lg:col-span-7 space-y-5">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E5EFE7] dark:bg-emerald-950/60 text-[#0C6237] dark:text-[#78F9B8] text-xs font-black tracking-wide">
+                <Leaf className="w-3.5 h-3.5 text-[#0C6237] dark:text-[#78F9B8]" />
+                <span>Fresh from our island to your home.</span>
               </div>
-              <button
-                onClick={() => {
-                  const pMilk = products.find(p => p.title.includes('Milk'));
-                  const pBread = products.find(p => p.title.includes('Sourdough'));
-                  const pTea = products.find(p => p.title.includes('Ceylon'));
-                  if (pMilk) requireAuthAndAddToCart(pMilk, 1);
-                  if (pBread) requireAuthAndAddToCart(pBread, 1);
-                  if (pTea) requireAuthAndAddToCart(pTea, 1);
-                  if (currentUser) setIsCartOpen(true);
-                }}
-                className="px-4 py-2 rounded-xl bg-[#044F41] hover:bg-emerald-950 text-[#78F9B8] font-bold text-xs shadow transition active:scale-95"
-              >
-                + Add Breakfast Kit
-              </button>
+
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.12]">
+                Fresh from our island <br />
+                <span className="text-[#0C6237] dark:text-[#78F9B8]">to your home.</span>
+              </h1>
+
+              <p className="text-sm text-slate-600 dark:text-zinc-300 font-medium leading-relaxed max-w-lg">
+                Handpicked produce, organic harvest, and kitchen essentials delivered straight from Sri Lankan farms to your door.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <button
+                  onClick={() => {
+                    const el = document.getElementById('popular-section');
+                    el?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-6 py-3.5 rounded-full bg-[#0C6237] hover:bg-[#094d2b] text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-950/20 flex items-center gap-2 transition active:scale-95"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>Shop groceries</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    const el = document.getElementById('categories-section');
+                    el?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-6 py-3.5 rounded-full border border-slate-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 hover:bg-white dark:hover:bg-zinc-800 text-slate-800 dark:text-white font-extrabold text-xs sm:text-sm shadow-sm transition active:scale-95"
+                >
+                  Explore categories
+                </button>
+              </div>
+            </div>
+
+            {/* Right Column (5 cols) - Hero Image with Scalloped Sunburst Badge */}
+            <div className="lg:col-span-5 relative flex items-center justify-center">
+              <div className="relative w-full max-w-md">
+                <img
+                  src="/home_hero_basket.jpg"
+                  alt="Ceylon Foods Fresh Harvest Basket"
+                  className="w-full h-auto object-cover rounded-3xl shadow-xl border border-white/60 dark:border-zinc-800"
+                />
+                {/* Scalloped Sunburst Badge */}
+                <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 px-3.5 py-2 rounded-2xl bg-[#0C6237] text-white shadow-xl flex items-center gap-2 border-2 border-white dark:border-zinc-900 animate-pulse">
+                  <Sparkles className="w-4 h-4 text-amber-300" />
+                  <div className="flex flex-col text-left">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-200">Fresh picks</span>
+                    <span className="text-xs font-black leading-none">this week</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* 4. AI RECIPES & MEAL COMBOS */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-orange-100 text-[#FF632B] flex items-center justify-center">
-                <ChefHat className="w-4 h-4" />
-              </div>
-              <div>
-                <h2 className="text-lg font-black tracking-tight">Cook Fresh Tonight with AI Recipes</h2>
-                <p className="text-xs text-slate-400">Add complete chef-curated ingredient kits to your cart with one click</p>
-              </div>
+        {/* 4. VALUE PROPOSITION STRIP (MATCHING ATTACHMENT 1) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className={`p-5 rounded-2xl border flex items-center gap-4 transition hover:shadow-md ${
+            isDarkMode ? 'bg-[#18181A] border-zinc-800' : 'bg-white border-slate-200/70 shadow-sm'
+          }`}>
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0C6237] dark:text-[#78F9B8] flex items-center justify-center shrink-0">
+              <Truck className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-black text-sm text-slate-900 dark:text-white">Same-day delivery</h3>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">Fast doorstep delivery across Colombo & suburbs within hours.</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Meal 1: Creamy Chicken & Pasta Dinner */}
-            <div className={`p-4 rounded-3xl border flex items-center gap-4 transition hover:shadow-md ${
-              isDarkMode ? 'bg-[#18181A] border-zinc-800' : 'bg-white border-slate-200/80'
-            }`}>
-              <img
-                src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&auto=format&fit=crop&q=80"
-                alt="Chicken Curry"
-                className="w-24 h-24 rounded-2xl object-cover shrink-0 shadow-sm"
-              />
-              <div className="flex-1 space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-extrabold text-sm">Ceylon Black Pepper Village Chicken Curry</h4>
-                  <span className="text-[11px] font-bold text-slate-400">⏱ 30 mins</span>
-                </div>
-                <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                  Includes Bairaha Chicken Fillets (1kg), Araliya Keeri Samba (5kg), and Pure Ceylon Spices.
-                </p>
-                <div className="flex items-center justify-between pt-1">
-                  <span className="text-xs font-black text-slate-900 dark:text-white">Rs. 3,820</span>
-                  <button
-                    onClick={() => {
-                      const pChik = products.find(p => p.title.includes('Chicken'));
-                      const pPast = products.find(p => p.title.includes('Penne'));
-                      const pChse = products.find(p => p.title.includes('Cheddar'));
-                      if (pChik) requireAuthAndAddToCart(pChik, 1);
-                      if (pPast) requireAuthAndAddToCart(pPast, 1);
-                      if (pChse) requireAuthAndAddToCart(pChse, 1);
-                      if (currentUser) setIsCartOpen(true);
-                    }}
-                    className="px-3 py-1.5 bg-[#044F41] hover:bg-emerald-950 text-[#78F9B8] text-xs font-bold rounded-xl transition"
-                  >
-                    + Add Ingredients
-                  </button>
-                </div>
-              </div>
+          <div className={`p-5 rounded-2xl border flex items-center gap-4 transition hover:shadow-md ${
+            isDarkMode ? 'bg-[#18181A] border-zinc-800' : 'bg-white border-slate-200/70 shadow-sm'
+          }`}>
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0C6237] dark:text-[#78F9B8] flex items-center justify-center shrink-0">
+              <Leaf className="w-6 h-6" />
             </div>
+            <div>
+              <h3 className="font-black text-sm text-slate-900 dark:text-white">Freshness you can trust</h3>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">Direct from certified local growers with AI quality grading.</p>
+            </div>
+          </div>
 
-            {/* Meal 2: Fresh Mediterranean Salad */}
-            <div className={`p-4 rounded-3xl border flex items-center gap-4 transition hover:shadow-md ${
-              isDarkMode ? 'bg-[#18181A] border-zinc-800' : 'bg-white border-slate-200/80'
-            }`}>
-              <img
-                src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&auto=format&fit=crop&q=80"
-                alt="Salad"
-                className="w-24 h-24 rounded-2xl object-cover shrink-0 shadow-sm"
-              />
-              <div className="flex-1 space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-extrabold text-sm">Traditional Parippu (Dhal) & Roast Paan Combo</h4>
-                  <span className="text-[11px] font-bold text-slate-400">⏱ 20 mins</span>
+          <div className={`p-5 rounded-2xl border flex items-center gap-4 transition hover:shadow-md ${
+            isDarkMode ? 'bg-[#18181A] border-zinc-800' : 'bg-white border-slate-200/70 shadow-sm'
+          }`}>
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0C6237] dark:text-[#78F9B8] flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-black text-sm text-slate-900 dark:text-white">Secure payments</h3>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">Pay safely via Card, Koko, Mintpay, or Cash on Delivery.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 5. SHOP BY CATEGORY (MATCHING ATTACHMENT 1) */}
+        <section id="categories-section" className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              Shop by category
+            </h2>
+            <button
+              onClick={() => setSelectedCategory('All')}
+              className="text-xs sm:text-sm font-extrabold text-[#0C6237] dark:text-[#78F9B8] hover:underline flex items-center gap-1"
+            >
+              <span>View all</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+            {CATEGORY_CARDS.map(cat => (
+              <div
+                key={cat.id}
+                onClick={() => {
+                  setSelectedCategory(cat.filterKey);
+                  const el = document.getElementById('popular-section');
+                  el?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className={`group p-3 rounded-2xl border cursor-pointer transition transform hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between ${
+                  isDarkMode
+                    ? 'bg-[#18181A] border-zinc-800 hover:border-emerald-800'
+                    : 'bg-white border-slate-200/80 hover:border-emerald-200 shadow-sm'
+                }`}
+              >
+                <div className="h-28 rounded-xl overflow-hidden mb-2.5 bg-slate-100 dark:bg-zinc-800 flex items-center justify-center">
+                  <img
+                    src={cat.image}
+                    alt={cat.title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                  Includes Mysore Red Dhal (1kg), Crispy Roast Paan (4 pcs), and Virgin Coconut Oil (500ml).
-                </p>
-                <div className="flex items-center justify-between pt-1">
-                  <span className="text-xs font-black text-slate-900 dark:text-white">Rs. 1,550</span>
-                  <button
-                    onClick={() => {
-                      const pAvo = products.find(p => p.title.includes('Avocado'));
-                      const pTom = products.find(p => p.title.includes('Tomato'));
-                      const pOil = products.find(p => p.title.includes('Coconut'));
-                      if (pAvo) requireAuthAndAddToCart(pAvo, 1);
-                      if (pTom) requireAuthAndAddToCart(pTom, 1);
-                      if (pOil) requireAuthAndAddToCart(pOil, 1);
-                      if (currentUser) setIsCartOpen(true);
-                    }}
-                    className="px-3 py-1.5 bg-[#044F41] hover:bg-emerald-950 text-[#78F9B8] text-xs font-bold rounded-xl transition"
-                  >
-                    + Add Ingredients
-                  </button>
+                <div>
+                  <h4 className="font-black text-sm text-slate-900 dark:text-white group-hover:text-[#0C6237] dark:group-hover:text-[#78F9B8] transition">
+                    {cat.title}
+                  </h4>
+                  <p className="text-[11px] text-slate-400 font-medium">
+                    {cat.subtitle}
+                  </p>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </section>
 
-        {/* 5. SUPERMARKET AISLE NAVIGATION (Positioned directly below AI Recipes) */}
-        <section className={`p-3.5 rounded-2xl border text-xs select-none shadow-sm transition ${
-          isDarkMode ? 'bg-[#18181A] border-zinc-800' : 'bg-white border-slate-200/90'
-        }`}>
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-            {/* Department Aisles */}
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full md:w-auto">
-              <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 mr-1 hidden sm:inline">
-                Aisle:
+        {/* 6. POPULAR THIS WEEK (MATCHING ATTACHMENT 1) */}
+        <section id="popular-section" className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div className="space-y-1">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-[#0C6237] dark:bg-emerald-950/80 dark:text-[#78F9B8]">
+                Best sellers
               </span>
-              {categories.map(cat => (
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                Popular this week
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">
+                Our most-loved groceries, picked fresh today from local island producers.
+              </p>
+            </div>
+
+            {/* Category filter pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+              {['All', 'Fruits', 'Vegetables', 'Dairy & Eggs', 'Bakery', 'Meat & Seafood', 'Pantry'].map(cat => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3.5 py-1.5 rounded-full font-bold transition shrink-0 ${
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition whitespace-nowrap ${
                     selectedCategory === cat
-                      ? 'bg-[#044F41] text-[#78F9B8] shadow-sm'
-                      : isDarkMode
-                      ? 'text-zinc-400 hover:text-white hover:bg-zinc-800'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      ? 'bg-[#0C6237] text-white shadow-sm'
+                      : 'bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700'
                   }`}
                 >
                   {cat}
                 </button>
               ))}
             </div>
-
-            {/* Quality & Sorting Toolbar */}
-            <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end shrink-0">
-              <button
-                onClick={() => setOrganicFilter(!organicFilter)}
-                className={`px-3 py-1.5 rounded-full font-semibold border flex items-center gap-1.5 transition ${
-                  organicFilter
-                    ? 'bg-emerald-100 text-[#044F41] border-emerald-300 font-extrabold shadow-sm'
-                    : 'border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800'
-                }`}
-              >
-                <span>🌿 Organic</span>
-              </button>
-
-              <button
-                onClick={() => setHighFreshnessFilter(!highFreshnessFilter)}
-                className={`px-3 py-1.5 rounded-full font-semibold border flex items-center gap-1.5 transition ${
-                  highFreshnessFilter
-                    ? 'bg-emerald-100 text-[#044F41] border-emerald-300 font-extrabold shadow-sm'
-                    : 'border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800'
-                }`}
-              >
-                <span>✨ &gt;95% Fresh</span>
-              </button>
-
-              {/* Sort By Dropdown */}
-              <div className="flex items-center gap-1.5 pl-2 border-l border-slate-200 dark:border-zinc-800">
-                <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
-                  className="bg-transparent text-xs font-bold text-slate-700 dark:text-zinc-300 focus:outline-none cursor-pointer"
-                >
-                  <option value="featured" className="dark:bg-zinc-900">Featured</option>
-                  <option value="freshness" className="dark:bg-zinc-900">AI Freshness</option>
-                  <option value="priceLow" className="dark:bg-zinc-900">Price: Low to High</option>
-                  <option value="priceHigh" className="dark:bg-zinc-900">Price: High to Low</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 6. PRODUCT CATALOG GRID */}
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-black tracking-tight">
-                {selectedCategory === 'All' ? 'All Supermarket Aisles' : `${selectedCategory} Aisle`}
-              </h2>
-              <p className="text-xs text-slate-400">
-                Showing {filteredProducts.length} items in stock for 30-min delivery
-              </p>
-            </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-5">
+          {/* Clean Attachment 1 Product Cards Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
             {filteredProducts.map(product => {
               const inCartItem = cart.find(i => i.product.id === product.id);
               return (
@@ -826,56 +827,80 @@ export default function ClientWebSupermarket() {
                     setSelectedProduct(product);
                     setModalSelectedWeight('1kg');
                   }}
-                  className={`rounded-3xl p-4 border cursor-pointer transition transform hover:-translate-y-1 flex flex-col justify-between ${
+                  className={`group rounded-2xl p-3.5 sm:p-4 border cursor-pointer transition transform hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between ${
                     isDarkMode
-                      ? 'bg-[#18181A] border-zinc-800 hover:border-zinc-700 hover:shadow-xl'
-                      : 'bg-white border-slate-200/70 hover:shadow-xl hover:border-slate-300'
+                      ? 'bg-[#18181A] border-zinc-800 hover:border-zinc-700'
+                      : 'bg-white border-slate-200/80 hover:border-slate-300 shadow-sm'
                   }`}
                 >
                   <div className="relative">
-                    <img
-                      src={product.imageUrl}
-                      alt={product.title}
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800';
-                      }}
-                      className="w-full h-44 object-cover rounded-2xl"
-                    />
-                    <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-emerald-950/80 backdrop-blur text-[#78F9B8] border border-[#78F9B8]/40 shadow">
-                      ✨ {product.aiFreshnessScore}% Fresh
-                    </span>
-                    {product.isOrganic && (
-                      <span className="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-full text-[10px] font-black bg-[#FF632B] text-white shadow">
-                        Organic
+                    <div className="w-full h-44 sm:h-48 rounded-xl overflow-hidden bg-slate-50 dark:bg-zinc-900 flex items-center justify-center">
+                      <img
+                        src={product.imageUrl}
+                        alt={product.title}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800';
+                        }}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+
+                    {/* Badges on product image */}
+                    <div className="absolute top-2 left-2 flex flex-col gap-1">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-950/80 backdrop-blur text-[#78F9B8] border border-[#78F9B8]/30 shadow">
+                        ✨ {product.aiFreshnessScore}% Fresh
                       </span>
-                    )}
+                      {product.isOrganic && (
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-[#0C6237] text-white shadow">
+                          Organic
+                        </span>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/80 dark:bg-black/60 backdrop-blur text-slate-400 hover:text-red-500 flex items-center justify-center transition shadow-sm"
+                      title="Add to Wishlist"
+                    >
+                      <Heart className="w-3.5 h-3.5" />
+                    </button>
                   </div>
 
                   <div className="mt-3 space-y-1.5">
-                    <div className="flex items-center justify-between text-xs text-slate-400">
-                      <span>{product.brand}</span>
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 uppercase font-black tracking-wider">
+                      <span>{product.category}</span>
                       <span className="flex items-center gap-0.5 font-bold text-amber-500">
                         <Star className="w-3 h-3 fill-amber-500" />
                         <span>{product.rating}</span>
                       </span>
                     </div>
 
-                    <h4 className="text-sm font-extrabold text-slate-800 dark:text-white truncate">
+                    <h4 className="text-sm font-extrabold text-slate-900 dark:text-white truncate" title={product.title}>
                       {product.title}
                     </h4>
+
+                    {/* Weight selector chip */}
+                    <div className="flex items-center gap-1 pt-0.5" onClick={(e) => e.stopPropagation()}>
+                      <span className="text-[10px] font-bold text-slate-400">Unit:</span>
+                      <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-zinc-800 text-[10px] font-black text-slate-700 dark:text-zinc-300">
+                        {product.unitWeight || (product.unit === 'kg' ? '1kg' : product.unit)}
+                      </span>
+                    </div>
 
                     <div className="flex items-center justify-between pt-2">
                       <div>
                         <span className="text-base font-black text-slate-900 dark:text-white">
                           Rs. {Math.round(product.price).toLocaleString()}
                         </span>
-                        <span className="text-[11px] text-slate-400 ml-0.5">/{product.unit}</span>
+                        <span className="text-[10px] text-slate-400 ml-0.5">/{product.unit}</span>
                       </div>
 
                       {inCartItem ? (
                         <div
                           onClick={(e) => e.stopPropagation()}
-                          className="flex items-center gap-2 bg-[#044F41] text-white px-2 py-1 rounded-xl"
+                          className="flex items-center gap-2 bg-[#0C6237] text-white px-2.5 py-1 rounded-xl shadow"
                         >
                           <button
                             onClick={() => updateCartQuantity(product.id, inCartItem.selectedWeight, -1)}
@@ -899,7 +924,7 @@ export default function ClientWebSupermarket() {
                             e.stopPropagation();
                             requireAuthAndAddToCart(product, 1, '1kg');
                           }}
-                          className="w-9 h-9 rounded-full bg-[#044F41] hover:bg-[#033B31] text-[#78F9B8] flex items-center justify-center shadow-md transition active:scale-90"
+                          className="w-9 h-9 rounded-full bg-[#0C6237] hover:bg-[#084928] text-white flex items-center justify-center shadow-md transition active:scale-90"
                           title="Add to cart"
                         >
                           <Plus className="w-4 h-4" />
@@ -910,6 +935,130 @@ export default function ClientWebSupermarket() {
                 </div>
               );
             })}
+          </div>
+        </section>
+
+        {/* 7. LOCAL FARMER & ISLAND PROMISE BANNER (MATCHING ATTACHMENT 1) */}
+        <div className="relative rounded-3xl overflow-hidden p-8 sm:p-10 text-white shadow-xl min-h-[200px] flex flex-col justify-between">
+          <img
+            src="/farmer_tea_banner.jpg"
+            alt="Sri Lankan Farmer Tea Estate"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0C6237]/95 via-[#0C6237]/85 to-transparent"></div>
+
+          <div className="relative z-10 max-w-xl space-y-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/70 text-[#78F9B8] text-[11px] font-black uppercase tracking-wider border border-[#78F9B8]/40">
+              <Leaf className="w-3.5 h-3.5" /> OUR PROMISE
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-black leading-tight">
+              A little more local. <br />
+              <span className="text-[#78F9B8]">A lot more fresh.</span>
+            </h3>
+            <p className="text-xs sm:text-sm text-emerald-100 font-medium leading-relaxed">
+              Supporting Sri Lankan farmers and bringing you the best of our island — direct from Nuwara Eliya tea hills, Dambulla vegetable growers, and local coastal farms.
+            </p>
+          </div>
+
+          <div className="relative z-10 pt-4">
+            <button
+              onClick={() => {
+                setOnboardingStep(0);
+                setOnboardingView('SPLASH');
+                setIsOnboardingOpen(true);
+              }}
+              className="px-5 py-2.5 rounded-full bg-white text-[#0C6237] hover:bg-emerald-50 font-black text-xs shadow-lg transition active:scale-95 flex items-center gap-2"
+            >
+              <span>Learn about our local growers</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {/* 8. COOK FRESH TONIGHT WITH AI RECIPES */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-orange-100 text-[#FF632B] flex items-center justify-center">
+                <ChefHat className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="text-lg font-black tracking-tight">Cook Fresh Tonight with AI Recipes</h2>
+                <p className="text-xs text-slate-400">Add complete chef-curated ingredient kits to your cart with one click</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Meal 1 */}
+            <div className={`p-4 rounded-3xl border flex items-center gap-4 transition hover:shadow-md ${
+              isDarkMode ? 'bg-[#18181A] border-zinc-800' : 'bg-white border-slate-200/80'
+            }`}>
+              <img
+                src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&auto=format&fit=crop&q=80"
+                alt="Chicken Curry"
+                className="w-24 h-24 rounded-2xl object-cover shrink-0 shadow-sm"
+              />
+              <div className="flex-1 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-extrabold text-sm">Ceylon Black Pepper Village Chicken Curry</h4>
+                  <span className="text-[11px] font-bold text-slate-400">⏱ 30 mins</span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-zinc-400">
+                  Includes Bairaha Chicken Fillets (1kg), Araliya Keeri Samba (5kg), and Pure Ceylon Spices.
+                </p>
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-xs font-black text-slate-900 dark:text-white">Rs. 3,820</span>
+                  <button
+                    onClick={() => {
+                      const pChik = products.find(p => p.title.includes('Chicken'));
+                      const pPast = products.find(p => p.title.includes('Penne') || p.title.includes('Rice') || p.title.includes('Samba'));
+                      if (pChik) requireAuthAndAddToCart(pChik, 1);
+                      if (pPast) requireAuthAndAddToCart(pPast, 1);
+                      if (currentUser) setIsCartOpen(true);
+                    }}
+                    className="px-3 py-1.5 bg-[#0C6237] hover:bg-emerald-950 text-[#78F9B8] text-xs font-bold rounded-xl transition"
+                  >
+                    + Add Ingredients
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Meal 2 */}
+            <div className={`p-4 rounded-3xl border flex items-center gap-4 transition hover:shadow-md ${
+              isDarkMode ? 'bg-[#18181A] border-zinc-800' : 'bg-white border-slate-200/80'
+            }`}>
+              <img
+                src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&auto=format&fit=crop&q=80"
+                alt="Salad"
+                className="w-24 h-24 rounded-2xl object-cover shrink-0 shadow-sm"
+              />
+              <div className="flex-1 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-extrabold text-sm">Traditional Parippu (Dhal) & Roast Paan Combo</h4>
+                  <span className="text-[11px] font-bold text-slate-400">⏱ 20 mins</span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-zinc-400">
+                  Includes Mysore Red Dhal (1kg), Crispy Roast Paan (4 pcs), and Virgin Coconut Oil (500ml).
+                </p>
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-xs font-black text-slate-900 dark:text-white">Rs. 1,550</span>
+                  <button
+                    onClick={() => {
+                      const pAvo = products.find(p => p.title.includes('Avocado') || p.title.includes('Dhal'));
+                      const pTom = products.find(p => p.title.includes('Tomato') || p.title.includes('Paan'));
+                      if (pAvo) requireAuthAndAddToCart(pAvo, 1);
+                      if (pTom) requireAuthAndAddToCart(pTom, 1);
+                      if (currentUser) setIsCartOpen(true);
+                    }}
+                    className="px-3 py-1.5 bg-[#0C6237] hover:bg-emerald-950 text-[#78F9B8] text-xs font-bold rounded-xl transition"
+                  >
+                    + Add Ingredients
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
@@ -1111,96 +1260,56 @@ export default function ClientWebSupermarket() {
             /* =========================================================================
                FIGMA FRAME (Node 1-13587): EXACT GRONUR / FRESHCART SPLASH SCREEN
             ========================================================================= */
-            <div className={`relative max-w-sm w-full rounded-[44px] overflow-hidden shadow-2xl border flex flex-col justify-between h-[690px] animate-scaleUp transition-all duration-300 ${
-              isDarkMode
-                ? 'bg-[#090C0B] border-emerald-900/40 text-white'
-                : 'bg-gradient-to-b from-[#EBF9EE] via-[#F6FCF8] to-white border-emerald-100 text-slate-800'
+            <div className={`relative max-w-sm w-full rounded-[40px] overflow-hidden shadow-2xl border flex flex-col justify-between h-[690px] animate-scaleUp transition-all duration-300 ${
+              isDarkMode ? 'bg-[#090C0B] border-emerald-900/40 text-white' : 'bg-[#FFFDF9] border-emerald-100 text-slate-800'
             }`}>
               {/* Skip / Close Top Button */}
               <button
                 onClick={handleFinishOnboarding}
-                className="absolute top-5 right-5 z-30 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 text-white flex items-center justify-center backdrop-blur-sm transition"
-                title="Skip to Store"
+                className="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-sm transition"
+                title="Close to Store"
               >
                 <X className="w-4 h-4" />
               </button>
 
-              {/* Decorative Floating Leaves (Matching Figma kit) */}
-              <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-                <span className="absolute top-24 left-6 text-2xl rotate-12 opacity-80 animate-bounce" style={{ animationDuration: '3s' }}>🍃</span>
-                <span className="absolute top-36 right-8 text-xl -rotate-45 opacity-70 animate-bounce" style={{ animationDuration: '4s' }}>🌿</span>
-                <span className="absolute top-64 left-8 text-lg rotate-45 opacity-60 animate-pulse">🌱</span>
-                <span className="absolute top-72 right-10 text-2xl -rotate-12 opacity-80 animate-bounce" style={{ animationDuration: '3.5s' }}>🍃</span>
-              </div>
-
-              {/* Top Branding Section */}
-              <div className="pt-8 px-6 text-center z-10 space-y-1">
+              {/* Exact Attachment 3 Artwork with Sinhala script "ආයුබෝවන්.!" */}
+              <div className="relative flex-1 overflow-hidden bg-[#FFFDF9]">
                 <img
-                  src="/ceylon_foods_logo.png"
-                  alt="Ceylon Foods Logo"
-                  className="h-14 w-auto mx-auto object-contain filter drop-shadow-md"
+                  src="/ceylon_splash_artwork_sinhala.jpg"
+                  alt="Ceylon Foods — ආයුබෝවන්.!"
+                  className="w-full h-full object-cover object-top"
                 />
-                <p className="text-xs font-extrabold tracking-wide text-[#0C6237] dark:text-[#78F9B8]">
-                  Sri Lanka Online Supermarket
-                </p>
               </div>
 
-              {/* Center Hero: Authentic Ceylon Foods Cultural Emblem */}
-              <div className="relative flex items-center justify-center px-6 my-auto z-10">
-                <div className="absolute w-60 h-60 rounded-full bg-[#FF6515]/20 dark:bg-[#78F9B8]/15 blur-3xl pointer-events-none animate-pulse"></div>
+              {/* Bottom Elevated Action Bar */}
+              <div className="p-5 pt-3 text-center space-y-2.5 z-20 bg-gradient-to-t from-white via-white/95 to-transparent dark:from-[#090C0B] dark:via-[#090C0B]/95">
+                <button
+                  onClick={handleFinishOnboarding}
+                  className="w-full py-3.5 rounded-full bg-[#0C6237] hover:bg-[#084928] text-white font-extrabold text-sm shadow-xl shadow-emerald-950/20 flex items-center justify-center gap-2 transition active:scale-95"
+                >
+                  <span>Shop Island Groceries</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
 
-                <div className="relative group hover:scale-105 transition-transform duration-500">
-                  <img
-                    src="/ceylon_foods_logo.png"
-                    alt="Ceylon Foods Sri Lanka"
-                    className="w-52 h-52 object-contain filter drop-shadow-2xl"
-                  />
-                  {/* Floating AI Freshness badge */}
-                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-3.5 py-1 rounded-full bg-[#0C6237] text-[#78F9B8] font-black text-[11px] shadow-lg flex items-center gap-1.5 border border-[#78F9B8]/40">
-                    <Sparkles className="w-3.5 h-3.5 text-[#78F9B8]" />
-                    <span>100% Fresh • Direct from Local Growers</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Elevated Card Section matching Figma */}
-              <div className={`p-8 rounded-t-[40px] shadow-2xl z-20 space-y-4 text-center transition ${
-                isDarkMode
-                  ? 'bg-[#141816] border-t border-emerald-900/60'
-                  : 'bg-white border-t border-slate-100 shadow-[0_-20px_40px_rgba(0,0,0,0.06)]'
-              }`}>
-                <div className="space-y-2">
-                  <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-                    Ayubowan! සාදරයෙන් පිළිගනිමු <br />
-                    <span className="text-[#0C6237] dark:text-[#78F9B8]">Sri Lanka Online Supermarket</span>
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-zinc-400 font-medium leading-relaxed max-w-xs mx-auto">
-                    Island-fresh vegetables, Keeri Samba rice, Ceylon spices & daily groceries delivered to your door in 45 minutes.
-                  </p>
-                </div>
-
-                <div className="space-y-2.5 pt-1">
-                  {/* Primary "Get Started →" CTA button */}
+                <div className="flex items-center justify-center gap-3 text-xs">
+                  <button
+                    onClick={() => {
+                      handleFinishOnboarding();
+                      setIsAuthModalOpen(true);
+                    }}
+                    className="font-bold text-slate-500 hover:text-[#0C6237] dark:text-zinc-400 dark:hover:text-white transition"
+                  >
+                    Already have an account? <span className="underline text-[#0C6237] dark:text-[#78F9B8]">Sign In</span>
+                  </button>
+                  <span className="text-slate-300 dark:text-zinc-700">•</span>
                   <button
                     onClick={() => {
                       setOnboardingView('SLIDES');
                       setOnboardingStep(0);
                     }}
-                    className={`w-full py-4 rounded-full font-black text-sm shadow-xl flex items-center justify-center gap-2 transition active:scale-95 ${
-                      isDarkMode
-                        ? 'bg-[#FF632B] hover:bg-[#e0521d] text-white shadow-orange-500/25'
-                        : 'bg-[#044F41] hover:bg-emerald-950 text-[#78F9B8] shadow-emerald-900/20'
-                    }`}
+                    className="font-bold text-[#FF6515] hover:underline"
                   >
-                    <span>Get Started</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    onClick={handleFinishOnboarding}
-                    className="text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300 transition"
-                  >
-                    Direct to Supermarket Store →
+                    Feature Tour →
                   </button>
                 </div>
               </div>
