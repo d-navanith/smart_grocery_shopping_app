@@ -90,7 +90,12 @@ const DELIVERY_TIME_SLOTS = [
 ];
 
 export default function ClientWebSupermarket() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    if (params?.get('theme') === 'dark') return true;
+    if (params?.get('theme') === 'light') return false;
+    return typeof window !== 'undefined' && localStorage.getItem('ceylonfoods_theme') === 'dark';
+  });
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -675,11 +680,11 @@ export default function ClientWebSupermarket() {
 
             {/* Right Column (5 cols) - Hero Image with Scalloped Sunburst Badge */}
             <div className="lg:col-span-5 relative flex items-center justify-center">
-              <div className="relative w-full max-w-md">
+              <div className="relative w-full max-w-xl">
                 <img
-                  src="/home_hero_basket.jpg"
+                  src="/home_hero_basket.png"
                   alt="Ceylon Foods Fresh Harvest Basket"
-                  className="w-full h-auto object-cover rounded-3xl shadow-xl border border-white/60 dark:border-zinc-800"
+                  className="w-full h-auto object-contain filter drop-shadow-2xl transition-transform duration-500 hover:scale-105"
                 />
                 {/* Scalloped Sunburst Badge */}
                 <div className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 px-3.5 py-2 rounded-2xl bg-[#0C6237] text-white shadow-xl flex items-center gap-2 border-2 border-white dark:border-zinc-900 animate-pulse">
