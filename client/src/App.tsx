@@ -578,27 +578,66 @@ export default function ClientWebSupermarket() {
           </div>
         </div>
 
-        {/* Free Delivery Threshold Bar */}
-        <div className="max-w-7xl mx-auto mt-2 pt-2 border-t border-slate-100 dark:border-zinc-800/80 flex items-center justify-between text-[11px]">
-          <div className="flex items-center gap-2 text-slate-500 dark:text-zinc-400 font-semibold">
-            <span>Free Express Delivery on orders over Rs. 5,000:</span>
-            <div className="w-32 h-1.5 bg-slate-200 dark:bg-zinc-800 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-[#0C6237] to-[#78F9B8] transition-all duration-300"
-                style={{ width: `${Math.min(100, (subtotal / 5000) * 100)}%` }}
-              ></div>
-            </div>
-            {subtotal >= 5000 ? (
-              <span className="font-extrabold text-[#0C6237] dark:text-[#78F9B8]">🎉 Free Delivery Unlocked!</span>
-            ) : (
-              <span className="font-bold text-slate-700 dark:text-zinc-300">
-                Add Rs. {Math.max(0, 5000 - Math.round(subtotal)).toLocaleString()} more
-              </span>
-            )}
-          </div>
+        {/* Cultural Sri Lankan Trust & Free Delivery Ribbon */}
+        <div className="w-full mt-2.5 pt-2 border-t border-slate-100 dark:border-zinc-800/80">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 text-xs">
+            {/* Left: Flag Badge + Sri Lankan Authentic Identity */}
+            <div className="flex items-center gap-2.5 shrink-0">
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-amber-50 to-orange-50/70 dark:from-amber-950/40 dark:to-orange-950/30 border border-amber-300/80 dark:border-amber-700/60 shadow-xs hover:border-amber-400 transition cursor-default">
+                <img
+                  src="/sri_lanka_flag.svg"
+                  alt="Flag of Sri Lanka"
+                  className="shrink-0 rounded-xs shadow-xs object-cover border border-amber-400/50"
+                  style={{ width: '24px', height: '15px' }}
+                />
+                <span className="text-[11px] font-black tracking-tight text-amber-950 dark:text-amber-100 whitespace-nowrap">
+                  100% ශ්‍රී ලාංකික
+                </span>
+                <span className="text-[10px] text-amber-800 dark:text-amber-300 font-bold hidden sm:inline whitespace-nowrap">
+                  • Authentic Sri Lankan Supermarket
+                </span>
+              </div>
 
-          <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
-            <span>🇱🇰 Sri Lanka Wide Fresh Delivery</span>
+              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-[11px] font-extrabold text-[#0C6237] dark:text-[#78F9B8] whitespace-nowrap">
+                <Leaf className="w-3.5 h-3.5 text-[#0C6237] dark:text-[#78F9B8]" />
+                <span>Dambulla & Nuwara Eliya Fresh</span>
+              </div>
+            </div>
+
+            {/* Center: Ceylon Quality Seal (Large screens) */}
+            <div className="hidden lg:flex items-center gap-2 text-[11px] font-bold text-slate-600 dark:text-zinc-300 whitespace-nowrap">
+              <span className="flex items-center gap-1.5 text-amber-700 dark:text-amber-300">
+                <Award className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                <span>Lion Certified Quality</span>
+              </span>
+              <span className="text-slate-300 dark:text-zinc-700">•</span>
+              <span className="text-slate-500 dark:text-zinc-400">
+                LankaQR & Cash on Delivery
+              </span>
+            </div>
+
+            {/* Right: Rupee Free Express Meter */}
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-50 dark:bg-zinc-800/80 border border-slate-200/80 dark:border-zinc-700/80 shadow-xs text-[11px] shrink-0 ml-auto sm:ml-0">
+              <Truck className="w-3.5 h-3.5 text-[#0C6237] dark:text-[#78F9B8] shrink-0" />
+              <span className="font-bold text-slate-700 dark:text-zinc-200 hidden sm:inline whitespace-nowrap">
+                Free Express over Rs. 5,000:
+              </span>
+              <div className="w-20 sm:w-24 h-2 bg-slate-200 dark:bg-zinc-700 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-[#0C6237] via-[#0284C7] to-[#78F9B8] transition-all duration-300"
+                  style={{ width: `${Math.min(100, (subtotal / 5000) * 100)}%` }}
+                />
+              </div>
+              {subtotal >= 5000 ? (
+                <span className="font-black text-[#0C6237] dark:text-[#78F9B8] flex items-center gap-1 whitespace-nowrap">
+                  <CheckCircle className="w-3 h-3 text-emerald-600" /> Free Unlocked!
+                </span>
+              ) : (
+                <span className="font-extrabold text-[#0C6237] dark:text-emerald-300 whitespace-nowrap">
+                  +Rs. {Math.max(0, 5000 - Math.round(subtotal)).toLocaleString()}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </header>
