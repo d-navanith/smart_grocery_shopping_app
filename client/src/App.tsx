@@ -136,12 +136,99 @@ export default function ClientWebSupermarket() {
   });
 
   // Cart & Drawers
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('cart') === 'true') {
+      return [
+        {
+          product: {
+            id: 'sample-1',
+            sku: 'STA-KEERI-01',
+            title: 'Araliya Keeri Samba Rice (5kg)',
+            description: 'Premium aged aromatic Keeri Samba rice',
+            category: 'Staples & Grains',
+            brand: 'Araliya',
+            price: 1450,
+            originalPrice: 1600,
+            unit: '5kg Bag',
+            unitWeight: '5kg',
+            imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80',
+            stock: 45,
+            store: 'Colombo Central Hub',
+            status: 'Active' as const,
+            aiFreshnessScore: 98,
+            isOrganic: true,
+            isFarmSourced: true,
+            rating: 4.9,
+            reviewsCount: 142,
+            availableWeights: ['5kg', '10kg']
+          },
+          quantity: 2,
+          selectedWeight: '5kg',
+          effectivePrice: 1450
+        },
+        {
+          product: {
+            id: 'sample-2',
+            sku: 'DAI-HIGH-01',
+            title: 'Highland Pasteurized Fresh Milk (1L)',
+            description: '100% Pure Sri Lankan highland dairy milk',
+            category: 'Dairy & Eggs',
+            brand: 'Highland',
+            price: 520,
+            originalPrice: 550,
+            unit: '1L Bottle',
+            unitWeight: '1L',
+            imageUrl: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=600&q=80',
+            stock: 30,
+            store: 'Colombo Central Hub',
+            status: 'Active' as const,
+            aiFreshnessScore: 99,
+            isOrganic: false,
+            isFarmSourced: true,
+            rating: 4.8,
+            reviewsCount: 88,
+            availableWeights: ['1L', '2L']
+          },
+          quantity: 3,
+          selectedWeight: '1L',
+          effectivePrice: 520
+        }
+      ];
+    }
+    return [];
+  });
+  const [isCartOpen, setIsCartOpen] = useState(() => {
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('cart') === 'true') {
+      return true;
+    }
+    return false;
+  });
   const [selectedSlot, setSelectedSlot] = useState(DELIVERY_TIME_SLOTS[0]);
   const [substitutionPolicy, setSubstitutionPolicy] = useState<'CALL_ME' | 'REPLACE_BEST' | 'REFUND'>('REPLACE_BEST');
   const [paymentMethod, setPaymentMethod] = useState<'CARD_ONLINE' | 'CASH_ON_DELIVERY' | 'CARD_ON_DELIVERY'>('CARD_ONLINE');
   const [deliveryNote, setDeliveryNote] = useState('');
+
+  // Customer Features matching Admin: Promo Codes & Delivery Zones
+  const [promoCodeInput, setPromoCodeInput] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; title: string; discount: number; freeDelivery?: boolean } | null>(() => {
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('cart') === 'true') {
+      return { code: 'FRESH10', title: '10% Off Grocery Special (Admin Sync)', discount: 446 };
+    }
+    return null;
+  });
+  const [promoError, setPromoError] = useState('');
+  const [selectedZone, setSelectedZone] = useState<{ name: string; coverage: string; fee: number }>({
+    name: 'Colombo Central',
+    coverage: 'Colombo 01–07',
+    fee: 300
+  });
+
+  const CEYLON_DELIVERY_ZONES = [
+    { name: 'Colombo Central', coverage: 'Colombo 01–07', fee: 300 },
+    { name: 'Colombo South', coverage: 'Colombo 08–15, Dehiwala', fee: 300 },
+    { name: 'Greater Colombo', coverage: 'Nugegoda, Rajagiriya, Battaramulla', fee: 350 },
+    { name: 'Outer Suburbs', coverage: 'Maharagama, Pannipitiya, Kottawa', fee: 450 }
+  ];
 
   // Modals & Tracking
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -229,6 +316,42 @@ export default function ClientWebSupermarket() {
         })
         .filter(Boolean) as CartItem[]
     );
+  };
+
+  // Promo Code Validation Handler
+  const handleApplyPromo = () => {
+    setPromoError('');
+    const code = promoCodeInput.trim().toUpperCase();
+    if (!code) return;
+
+    if (code === 'FRESH10') {
+      if (subtotal < 3000) {
+        setPromoError('FRESH10 requires a minimum order of Rs. 3,000');
+        return;
+      }
+      const disc = Math.min(500, Math.round(subtotal * 0.10));
+      setAppliedPromo({ code: 'FRESH10', title: '10% Off Farm Fresh (Max Rs. 500)', discount: disc });
+      setPromoCodeInput('');
+    } else if (code === 'FREESHIP') {
+      if (subtotal < 3000) {
+        setPromoError('FREESHIP requires a minimum basket of Rs. 3,000');
+        return;
+      }
+      setAppliedPromo({ code: 'FREESHIP', title: 'Free Express Delivery Waived', discount: selectedZone.fee, freeDelivery: true });
+      setPromoCodeInput('');
+    } else if (code === 'AYUBOWAN') {
+      setAppliedPromo({ code: 'AYUBOWAN', title: 'Rs. 500 Welcome Discount', discount: Math.min(500, subtotal) });
+      setPromoCodeInput('');
+    } else if (code === 'NOV500') {
+      if (subtotal < 5000) {
+        setPromoError('NOV500 requires a minimum basket of Rs. 5,000');
+        return;
+      }
+      setAppliedPromo({ code: 'NOV500', title: 'Rs. 500 Essentials Discount', discount: 500 });
+      setPromoCodeInput('');
+    } else {
+      setPromoError('Invalid promotion code. Try FRESH10, FREESHIP, or AYUBOWAN');
+    }
   };
 
   const removeFromCart = (productId: string, weight?: string) => {
@@ -349,13 +472,14 @@ export default function ClientWebSupermarket() {
     }
   };
 
-  // Calculations
+  // Calculations (Integrated with Admin Settings & Promotions)
   const subtotal = cart.reduce((sum, item) => sum + item.effectivePrice * item.quantity, 0);
-  const vatAmount = subtotal * 0.05;
-  const isFreeDeliveryQualified = subtotal >= 5000;
-  const deliveryFee = isFreeDeliveryQualified ? 0.0 : selectedSlot.fee;
-  const bundleDiscount = cart.length >= 3 ? 5.00 : 0.0;
-  const totalAmount = Math.max(0, subtotal + vatAmount + deliveryFee - bundleDiscount);
+  const vatAmount = 0; // Prices include tax as per Admin Settings
+  const isFreeDeliveryQualified = subtotal >= 5000 || appliedPromo?.freeDelivery === true;
+  const effectiveDeliveryFee = isFreeDeliveryQualified ? 0 : selectedZone.fee;
+  const promoDiscountAmount = appliedPromo ? appliedPromo.discount : 0;
+  const bundleDiscount = cart.length >= 3 ? 150.00 : 0.0;
+  const totalAmount = Math.max(0, subtotal + effectiveDeliveryFee - bundleDiscount - promoDiscountAmount);
 
   // Category items matching Attachment 1 navigation ribbon
   const CATEGORY_RIBBON_ITEMS = [
@@ -1765,6 +1889,88 @@ export default function ClientWebSupermarket() {
                   )}
                 </div>
 
+                {/* Delivery Zone Selector (from Admin Settings) */}
+                {cart.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
+                      Select Delivery Zone
+                    </h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {CEYLON_DELIVERY_ZONES.map(zone => (
+                        <button
+                          key={zone.name}
+                          type="button"
+                          onClick={() => setSelectedZone(zone)}
+                          className={`p-2.5 rounded-xl border text-left text-xs transition ${
+                            selectedZone.name === zone.name
+                              ? 'border-[#0C6237] bg-emerald-50/50 dark:bg-emerald-950/20 font-bold'
+                              : 'border-slate-200 dark:border-zinc-800'
+                          }`}
+                        >
+                          <div className="flex justify-between items-center">
+                            <span className="font-extrabold text-[11px] text-slate-800 dark:text-white">{zone.name}</span>
+                            <span className="text-[10px] text-[#0C6237] dark:text-[#78F9B8] font-black">
+                              {isFreeDeliveryQualified ? 'FREE' : `Rs. ${zone.fee}`}
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-slate-400 mt-0.5">{zone.coverage}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Promo Code Input (from Admin Promotions) */}
+                {cart.length > 0 && (
+                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+                        Have a promo code?
+                      </span>
+                      <span className="text-[10px] font-bold text-[#0C6237] dark:text-[#78F9B8]">
+                        Try FRESH10 or FREESHIP
+                      </span>
+                    </div>
+
+                    {appliedPromo ? (
+                      <div className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 text-xs font-bold text-[#0C6237] dark:text-[#78F9B8]">
+                        <div className="flex items-center gap-1.5">
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>{appliedPromo.code}: {appliedPromo.title}</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setAppliedPromo(null)}
+                          className="text-xs font-bold text-red-500 hover:underline"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          placeholder="Enter coupon (e.g. FRESH10)"
+                          value={promoCodeInput}
+                          onChange={(e) => setPromoCodeInput(e.target.value)}
+                          className="flex-1 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-700 text-xs font-mono font-bold uppercase focus:border-[#0C6237] focus:outline-none dark:bg-zinc-900"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleApplyPromo}
+                          className="px-4 py-1.5 rounded-xl bg-[#0C6237] text-white text-xs font-extrabold hover:bg-[#094d2b] transition active:scale-95"
+                        >
+                          Apply
+                        </button>
+                      </div>
+                    )}
+
+                    {promoError && (
+                      <p className="text-[11px] font-bold text-red-500">{promoError}</p>
+                    )}
+                  </div>
+                )}
+
                 {/* Delivery Time Slot Picker */}
                 {cart.length > 0 && (
                   <div className="space-y-2">
@@ -1892,17 +2098,19 @@ export default function ClientWebSupermarket() {
                       <span className="text-slate-800 dark:text-white font-bold">Rs. {Math.round(subtotal).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-slate-400">
-                      <span>Estimated VAT (5%)</span>
-                      <span className="text-slate-800 dark:text-white font-bold">Rs. {Math.round(vatAmount).toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between text-slate-400">
-                      <span>Delivery ({selectedSlot.label})</span>
+                      <span>Delivery ({selectedZone.name})</span>
                       <span className="text-slate-800 dark:text-white font-bold">
-                        {deliveryFee === 0 ? 'FREE' : `Rs. ${deliveryFee}`}
+                        {effectiveDeliveryFee === 0 ? <strong className="text-emerald-600">FREE</strong> : `Rs. ${effectiveDeliveryFee}`}
                       </span>
                     </div>
+                    {appliedPromo && (
+                      <div className="flex justify-between text-emerald-600 dark:text-[#78F9B8] font-bold">
+                        <span>Promo ({appliedPromo.code})</span>
+                        <span>-Rs. {appliedPromo.discount.toLocaleString()}</span>
+                      </div>
+                    )}
                     {bundleDiscount > 0 && (
-                      <div className="flex justify-between text-[#78F9B8] font-bold">
+                      <div className="flex justify-between text-emerald-600 dark:text-[#78F9B8] font-bold">
                         <span>Multi-Item Supermarket Savings</span>
                         <span>-Rs. {bundleDiscount}</span>
                       </div>
@@ -1936,7 +2144,7 @@ export default function ClientWebSupermarket() {
                           })),
                           subtotal,
                           vatAmount,
-                          deliveryFee,
+                          deliveryFee: effectiveDeliveryFee,
                           discountAmount: bundleDiscount,
                           totalAmount,
                           deliveryType: selectedSlot.id === 'slot-now' ? 'EXPRESS' : 'STANDARD',

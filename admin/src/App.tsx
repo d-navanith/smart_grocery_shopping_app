@@ -38,7 +38,23 @@ import {
   Sparkles,
   BarChart3,
   CreditCard,
-  Building
+  Building,
+  Navigation,
+  UserPlus,
+  Ticket,
+  FileText,
+  RefreshCw,
+  UserCheck,
+  Lock,
+  MapPin,
+  Phone,
+  ShoppingBasket,
+  ExternalLink,
+  Star,
+  FileDown,
+  Sliders,
+  HelpCircle,
+  Send
 } from 'lucide-react';
 
 interface Product {
@@ -134,7 +150,7 @@ export default function AdminApp() {
   >(() => {
     const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const tab = params?.get('tab');
-    if (tab && ['dashboard', 'orders', 'products', 'categories', 'inventory', 'customers', 'promotions', 'deliveries'].includes(tab)) {
+    if (tab && ['dashboard', 'orders', 'products', 'categories', 'inventory', 'customers', 'promotions', 'deliveries', 'reviews', 'reports', 'staff', 'settings'].includes(tab)) {
       return tab as any;
     }
     return 'dashboard';
@@ -158,6 +174,296 @@ export default function AdminApp() {
   const [isAddPromoModalOpen, setIsAddPromoModalOpen] = useState(false);
   const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
   const [isAdjustStockModalOpen, setIsAdjustStockModalOpen] = useState(false);
+
+  // ==================== NEW COMPREHENSIVE SCREEN STATES ====================
+  // Deliveries states (Image 1)
+  const [deliveriesTab, setDeliveriesTab] = useState<'TODAY' | 'UNASSIGNED' | 'OUT_FOR_DELIVERY' | 'DELIVERED'>('TODAY');
+  const [deliveryRiderFilter, setDeliveryRiderFilter] = useState('ALL');
+  const [deliveryZoneFilter, setDeliveryZoneFilter] = useState('ALL');
+  const [deliveryStatusFilter, setDeliveryStatusFilter] = useState('ALL');
+  const [deliverySearch, setDeliverySearch] = useState('');
+  const [isAssignDeliveryModalOpen, setIsAssignDeliveryModalOpen] = useState(false);
+  const [selectedDeliveryOrder, setSelectedDeliveryOrder] = useState<any>(null);
+  const [deliveryRiderSelect, setDeliveryRiderSelect] = useState('Kasun Madushanka');
+
+  // Deliveries mock register
+  const [deliveriesList, setDeliveriesList] = useState([
+    {
+      id: 'del-1',
+      orderNumber: '#CF-10482',
+      customerName: 'Kavindi Perera',
+      customerPhone: '077 234 5678',
+      address: '42/3 Park Rd, Colombo 05',
+      timeWindow: '12:00–15:00',
+      assignedRider: 'Unassigned',
+      payment: 'Paid online',
+      status: 'Unassigned' as const
+    },
+    {
+      id: 'del-2',
+      orderNumber: '#CF-10481',
+      customerName: 'Nuwan Fernando',
+      customerPhone: '071 845 2361',
+      address: '18 Chapel Rd, Nugegoda',
+      timeWindow: '12:00–15:00',
+      assignedRider: 'Unassigned',
+      payment: 'COD • LKR 5,840',
+      status: 'Unassigned' as const
+    },
+    {
+      id: 'del-3',
+      orderNumber: '#CF-10480',
+      customerName: 'Dilini Silva',
+      customerPhone: '076 782 3145',
+      address: '67 Buthgamuwa Rd, Rajagiriya',
+      timeWindow: '09:00–12:00',
+      assignedRider: 'Kasun Madushanka',
+      payment: 'Paid online',
+      status: 'On the road' as const
+    },
+    {
+      id: 'del-4',
+      orderNumber: '#CF-10479',
+      customerName: 'Amal Jayasinghe',
+      customerPhone: '077 521 9340',
+      address: '12 Hill St, Dehiwala',
+      timeWindow: '09:00–12:00',
+      assignedRider: 'Dinesh Kumara',
+      payment: 'Paid online',
+      status: 'Delivered' as const
+    },
+    {
+      id: 'del-5',
+      orderNumber: '#CF-10474',
+      customerName: 'Anjali Peiris',
+      customerPhone: '077 382 9416',
+      address: '8 Pagoda Rd, Nugegoda',
+      timeWindow: '09:00–12:00',
+      assignedRider: 'Dinesh Kumara',
+      payment: 'Paid online',
+      status: 'On the road' as const
+    }
+  ]);
+
+  // Promotions states (Image 2)
+  const [promotionsTab, setPromotionsTab] = useState<'ALL' | 'ACTIVE' | 'SCHEDULED' | 'EXPIRED'>('ALL');
+  const [promotionsSearch, setPromotionsSearch] = useState('');
+  const [promotionsTypeFilter, setPromotionsTypeFilter] = useState('ALL');
+  const [isCreatePromoModalOpen, setIsCreatePromoModalOpen] = useState(false);
+  const [preventCouponStacking, setPreventCouponStacking] = useState(true);
+  const [excludeDeliveryFees, setExcludeDeliveryFees] = useState(true);
+  const [newPromoTitle, setNewPromoTitle] = useState('');
+  const [newPromoCode, setNewPromoCode] = useState('');
+  const [newPromoOffer, setNewPromoOffer] = useState('');
+  const [newPromoMin, setNewPromoMin] = useState('LKR 3,000');
+
+  // Promotions mock register
+  const [promotionsRegister, setPromotionsRegister] = useState([
+    {
+      id: 'promo-1',
+      name: 'Fresh start',
+      code: 'FRESH10',
+      offer: '10% • max LKR 500',
+      dates: '01–31 Oct 2026',
+      usage: '82 / 250',
+      minBasket: 'LKR 3,000',
+      status: 'Active' as const
+    },
+    {
+      id: 'promo-2',
+      name: 'Ceylon tea special',
+      code: 'Automatic • Beverages',
+      offer: '10% off black tea',
+      dates: '15–31 Oct 2026',
+      usage: '64 / Unlimited',
+      minBasket: 'None',
+      status: 'Active' as const
+    },
+    {
+      id: 'promo-3',
+      name: 'Free delivery',
+      code: 'FREESHIP',
+      offer: 'Delivery fee waived',
+      dates: '20–31 Oct 2026',
+      usage: '40 / 100',
+      minBasket: 'LKR 5,000',
+      status: 'Active' as const
+    },
+    {
+      id: 'promo-4',
+      name: 'November essentials',
+      code: 'NOV500',
+      offer: 'LKR 500 off',
+      dates: '01–07 Nov 2026',
+      usage: '0 / 200',
+      minBasket: 'LKR 5,000',
+      status: 'Scheduled' as const
+    },
+    {
+      id: 'promo-5',
+      name: 'September welcome',
+      code: 'HELLO15',
+      offer: '15% • max LKR 750',
+      dates: '01–30 Sep 2026',
+      usage: '148 / 200',
+      minBasket: 'LKR 3,500',
+      status: 'Expired' as const
+    }
+  ]);
+
+  // Reports states (Image 3)
+  const [reportsSubTab, setReportsSubTab] = useState<'SALES' | 'PRODUCTS' | 'CUSTOMERS' | 'INVENTORY' | 'DELIVERY'>('SALES');
+  const [reportsTrendRange, setReportsTrendRange] = useState<'DAILY' | 'WEEKLY' | 'MONTHLY'>('DAILY');
+  const [reportsCategorySearch, setReportsCategorySearch] = useState('');
+  const [reportsCategorySort, setReportsCategorySort] = useState<'REVENUE' | 'UNITS'>('REVENUE');
+
+  // Staff states (Image 4)
+  const [staffTab, setStaffTab] = useState<'MEMBERS' | 'ROLES' | 'INVITATIONS' | 'ACTIVITY'>('MEMBERS');
+  const [staffSearch, setStaffSearch] = useState('');
+  const [staffRoleFilter, setStaffRoleFilter] = useState('ALL');
+  const [isInviteStaffModalOpen, setIsInviteStaffModalOpen] = useState(false);
+  const [inviteName, setInviteName] = useState('');
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState('Catalog Editor');
+
+  // Staff directory mock
+  const [staffDirectory, setStaffDirectory] = useState([
+    {
+      id: 'st-1',
+      name: 'Nimali Perera',
+      roleSubtitle: 'Store administrator',
+      email: 'nimali@ceylonfoods.lk',
+      role: 'Administrator',
+      lastActive: 'Now',
+      twoFactor: 'Enabled',
+      status: 'Active' as const
+    },
+    {
+      id: 'st-2',
+      name: 'Sahan De Silva',
+      roleSubtitle: 'Operations team',
+      email: 'sahan@ceylonfoods.lk',
+      role: 'Manager',
+      lastActive: 'Today • 09:35',
+      twoFactor: 'Enabled',
+      status: 'Active' as const
+    },
+    {
+      id: 'st-3',
+      name: 'Hiruni Fernando',
+      roleSubtitle: 'Catalog team',
+      email: 'hiruni@ceylonfoods.lk',
+      role: 'Catalog Editor',
+      lastActive: 'Today • 09:10',
+      twoFactor: 'Enabled',
+      status: 'Active' as const
+    },
+    {
+      id: 'st-4',
+      name: 'Kasun Madushanka',
+      roleSubtitle: 'Delivery team',
+      email: 'kasun@ceylonfoods.lk',
+      role: 'Delivery Agent',
+      lastActive: 'Today • 08:45',
+      twoFactor: 'Enabled',
+      status: 'Active' as const
+    },
+    {
+      id: 'st-5',
+      name: 'Malsha Bandara',
+      roleSubtitle: 'Invitation sent 25 Oct',
+      email: 'malsha@ceylonfoods.lk',
+      role: 'Catalog Editor',
+      lastActive: 'Not yet joined',
+      twoFactor: '—',
+      status: 'Invited' as const
+    }
+  ]);
+
+  // Settings states (Image 5)
+  const [settingsTab, setSettingsTab] = useState<'STORE' | 'NOTIFICATIONS' | 'SECURITY' | 'INTEGRATIONS'>('STORE');
+  const [storeName, setStoreName] = useState('Ceylon Foods');
+  const [supportEmail, setSupportEmail] = useState('hello@ceylonfoods.lk');
+  const [phone, setPhone] = useState('011 234 5678');
+  const [address, setAddress] = useState('125 High Level Road, Colombo 06');
+  const [domain, setDomain] = useState('www.ceylonfoods.lk');
+  const [currency, setCurrency] = useState('LKR • Sri Lankan Rupee');
+  const [country, setCountry] = useState('Sri Lanka');
+  const [timezone, setTimezone] = useState('Asia/Colombo (UTC +05:30)');
+  const [openingTime, setOpeningTime] = useState('08:00 AM');
+  const [closingTime, setClosingTime] = useState('08:00 PM');
+  const [isAcceptingOrders, setIsAcceptingOrders] = useState(true);
+  const [cardPaymentsEnabled, setCardPaymentsEnabled] = useState(true);
+  const [codEnabled, setCodEnabled] = useState(true);
+  const [bankTransferEnabled, setBankTransferEnabled] = useState(false);
+  const [collectVat, setCollectVat] = useState(false);
+  const [standardTaxRate, setStandardTaxRate] = useState('18');
+  const [vatRegNumber, setVatRegNumber] = useState('Not configured');
+  const [pricesIncludeTax, setPricesIncludeTax] = useState(true);
+  const [minOrderLkr, setMinOrderLkr] = useState('1,000.00');
+  const [freeDeliveryAboveLkr, setFreeDeliveryAboveLkr] = useState('5,000.00');
+  const [sameDayCutoff, setSameDayCutoff] = useState('02:00 PM');
+  const [deliveryWindowLength, setDeliveryWindowLength] = useState('3 hours');
+  const [settingsSavedToast, setSettingsSavedToast] = useState(false);
+
+  // Delivery zones mock
+  const [deliveryZones, setDeliveryZones] = useState([
+    { zone: 'Colombo Central', coverage: 'Colombo 01–07', fee: '300.00', eta: 'Same day', status: 'Enabled' },
+    { zone: 'Colombo South', coverage: 'Colombo 08–15, Dehiwala', fee: '300.00', eta: 'Same day', status: 'Enabled' },
+    { zone: 'Greater Colombo', coverage: 'Nugegoda, Rajagiriya, Battaramulla', fee: '350.00', eta: 'Same day', status: 'Enabled' },
+    { zone: 'Outer Suburbs', coverage: 'Maharagama, Pannipitiya, Kottawa', fee: '450.00', eta: 'Next day', status: 'Enabled' }
+  ]);
+
+  // Customer Reviews states
+  const [reviewsFilter, setReviewsFilter] = useState<'ALL' | '5_STAR' | '4_STAR' | '3_STAR' | 'NEEDS_REPLY'>('ALL');
+  const [reviewsSearch, setReviewsSearch] = useState('');
+  const [replyInputs, setReplyInputs] = useState<{ [key: string]: string }>({});
+  const [customerReviews, setCustomerReviews] = useState([
+    {
+      id: 'rev-1',
+      customer: 'Anura Wickramasinghe',
+      rating: 5,
+      date: '26 Oct 2026',
+      product: 'Dambulla Fresh Red Onions 1kg',
+      comment: 'Super fresh red onions! Crisp and packed in clean eco-mesh bag. Delivery arrived in 35 mins in Colombo 07.',
+      sentiment: 'Very Positive',
+      verified: true,
+      reply: 'Thank you Anura! We source our red onions fresh daily direct from Dambulla Economic Centre.'
+    },
+    {
+      id: 'rev-2',
+      customer: 'Kavindi Perera',
+      rating: 5,
+      date: '25 Oct 2026',
+      product: 'Ambewela Fresh Full Cream Milk 1L',
+      comment: 'Chilled delivery packaging was superb. The ice packs kept the milk completely fresh. Highly recommend Ceylon Foods!',
+      sentiment: 'Very Positive',
+      verified: true,
+      reply: ''
+    },
+    {
+      id: 'rev-3',
+      customer: 'Rohan Jayatilleke',
+      rating: 4,
+      date: '24 Oct 2026',
+      product: 'Nuwara Eliya Fresh Leeks 500g',
+      comment: 'Great quality vegetables. One bunch was slightly smaller than expected, but overall very fresh and clean.',
+      sentiment: 'Positive',
+      verified: true,
+      reply: 'Thanks Rohan, our harvest sorting team has noted your feedback for precision grading!'
+    },
+    {
+      id: 'rev-4',
+      customer: 'Sanduni De Silva',
+      rating: 5,
+      date: '23 Oct 2026',
+      product: 'Dilmah Ceylon Supreme BOPF 400g',
+      comment: 'Pure authentic Ceylon tea. Excellent taste and fresh aroma. Best supermarket prices in Colombo.',
+      sentiment: 'Very Positive',
+      verified: true,
+      reply: ''
+    }
+  ]);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   // New product form
@@ -596,6 +902,13 @@ export default function AdminApp() {
                activeMenu === 'products' ? 'Product List' :
                activeMenu === 'categories' ? 'Categories' :
                activeMenu === 'inventory' ? 'Inventory' :
+               activeMenu === 'deliveries' ? 'Deliveries' :
+               activeMenu === 'promotions' ? 'Promotions' :
+               activeMenu === 'reports' ? 'Reports & insights' :
+               activeMenu === 'staff' ? 'Staff & permissions' :
+               activeMenu === 'settings' ? 'Settings' :
+               activeMenu === 'reviews' ? 'Reviews & ratings' :
+               activeMenu === 'customers' ? 'Customer Accounts' :
                activeMenu}
             </h1>
             <p className="text-xs text-slate-400 font-medium">
@@ -1863,174 +2176,2193 @@ export default function AdminApp() {
           {/* =========================================================================
               VIEW 6: CUSTOMERS
           ========================================================================= */}
+                    {/* =========================================================================
+              VIEW 6: CUSTOMER ACCOUNTS (ACTIVE)
+          ========================================================================= */}
           {activeMenu === 'customers' && (
-            <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-4 animate-fadeIn">
-              <div className="flex items-center justify-between">
+            <div className="space-y-6 animate-fadeIn">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h3 className="font-black text-lg text-slate-900">Customer Accounts</h3>
-                  <p className="text-xs text-slate-400">Registered Sri Lankan retail & enterprise customers</p>
+                  <span className="text-[11px] font-black tracking-widest text-[#0C6237] uppercase">Customer Management</span>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">Customer Directory</h2>
+                  <p className="text-xs text-slate-500 font-medium">Registered Sri Lankan retail & enterprise shoppers.</p>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <button className="px-4 py-2 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-2 shadow-xs transition">
+                    <Download className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Export list</span>
+                  </button>
                 </div>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead>
-                    <tr className="border-b border-slate-100 text-slate-400 font-bold uppercase text-[10px]">
-                      <th className="py-2.5 px-3">Customer</th>
-                      <th className="py-2.5 px-3">Email & Phone</th>
-                      <th className="py-2.5 px-3">Delivery Address</th>
-                      <th className="py-2.5 px-3">Total Orders</th>
-                      <th className="py-2.5 px-3">Total Spent (LKR)</th>
-                      <th className="py-2.5 px-3">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50 font-medium">
-                    {[
-                      { name: 'Kavindi Perera', email: 'kavindi@example.com', phone: '077 234 5678', address: '33 York Street, Colombo 05', orders: 18, spent: '42,500' },
-                      { name: 'Nuwan Fernando', email: 'nuwan@example.com', phone: '071 845 2361', address: '12 Havelock Road, Nugegoda', orders: 12, spent: '28,900' },
-                      { name: 'Dilini Silva', email: 'dilini@example.com', phone: '076 782 3145', address: '45 Lake Road, Rajagiriya', orders: 24, spent: '76,200' },
-                      { name: 'Amal Jayasinghe', email: 'amal@example.com', phone: '077 521 9340', address: '88 Galle Road, Dehiwala', orders: 8, spent: '19,400' }
-                    ].map((c, idx) => (
-                      <tr key={idx} className="hover:bg-slate-50/80 transition">
-                        <td className="py-3 px-3 font-bold text-slate-900">{c.name}</td>
-                        <td className="py-3 px-3 text-slate-600">
-                          <p>{c.email}</p>
-                          <p className="text-[11px] text-slate-400 font-mono">{c.phone}</p>
-                        </td>
-                        <td className="py-3 px-3 text-slate-600">{c.address}</td>
-                        <td className="py-3 px-3 font-bold text-slate-900">{c.orders}</td>
-                        <td className="py-3 px-3 font-bold text-slate-900">LKR {c.spent}</td>
-                        <td className="py-3 px-3">
-                          <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black bg-[#E6F7EF] text-[#0C6237]">
-                            Active
-                          </span>
-                        </td>
+
+              {/* 4 Metric Cards */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Total customers</span>
+                    <div className="w-7 h-7 rounded-lg bg-emerald-50 text-[#0C6237] flex items-center justify-center">
+                      <Users className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">3,862</p>
+                  <p className="text-[11px] font-bold text-emerald-600">↑ 164 new this month</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Loyalty VIPs</span>
+                    <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                      <Sparkles className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">1,248</p>
+                  <p className="text-[11px] font-bold text-slate-500">Gold & Platinum members</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Avg. customer spend</span>
+                    <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
+                      <CreditCard className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">LKR 42,500</p>
+                  <p className="text-[11px] font-bold text-emerald-600">↑ 14.8% lifetime avg</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Repeat purchase rate</span>
+                    <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                      <RefreshCw className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">64.2%</p>
+                  <p className="text-[11px] font-bold text-purple-600">4.1 pp above benchmark</p>
+                </div>
+              </div>
+
+              {/* Customers Register */}
+              <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-black text-base text-slate-900">Shopper accounts</h3>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-black">3,862</span>
+                  </div>
+                  <span className="text-[11px] text-slate-400">Updated today, 09:42 AM</span>
+                </div>
+
+                {/* Filter bar */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                  <div className="relative flex-1 min-w-[240px]">
+                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="Search customer name, email or phone..."
+                      className="w-full pl-9 pr-10 py-2 rounded-xl border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-[#0C4E3B]"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-400">⌘ K</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <select className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white">
+                      <option>All tiers</option>
+                      <option>Platinum</option>
+                      <option>Gold</option>
+                      <option>Silver</option>
+                      <option>Bronze</option>
+                    </select>
+
+                    <button className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white flex items-center gap-1.5 hover:bg-slate-50">
+                      <Download className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Export</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-100 text-[10px] font-black tracking-wider text-slate-400 uppercase">
+                        <th className="py-3 px-3 w-8"><input type="checkbox" className="rounded" /></th>
+                        <th className="py-3 px-3">CUSTOMER</th>
+                        <th className="py-3 px-3">EMAIL & PHONE</th>
+                        <th className="py-3 px-3">DELIVERY AREA</th>
+                        <th className="py-3 px-3">TIER</th>
+                        <th className="py-3 px-3">TOTAL ORDERS</th>
+                        <th className="py-3 px-3">LIFETIME SPEND</th>
+                        <th className="py-3 px-3">STATUS</th>
+                        <th className="py-3 px-3 text-right">ACTIONS</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {[
+                        { name: 'Kavindi Perera', email: 'kavindi@example.com', phone: '077 234 5678', area: 'Colombo 05', tier: 'Platinum', orders: 28, spent: '124,500', status: 'Active' },
+                        { name: 'Nuwan Fernando', email: 'nuwan@example.com', phone: '071 845 2361', area: 'Nugegoda', tier: 'Gold', orders: 19, spent: '78,200', status: 'Active' },
+                        { name: 'Dilini Silva', email: 'dilini@example.com', phone: '076 782 3145', area: 'Rajagiriya', tier: 'Platinum', orders: 34, spent: '168,900', status: 'Active' },
+                        { name: 'Amal Jayasinghe', email: 'amal@example.com', phone: '077 521 9340', area: 'Dehiwala', tier: 'Silver', orders: 12, spent: '36,400', status: 'Active' },
+                        { name: 'Anjali Peiris', email: 'anjali@example.com', phone: '077 382 9416', area: 'Nugegoda', tier: 'Gold', orders: 22, spent: '89,750', status: 'Active' }
+                      ].map((c, idx) => (
+                        <tr key={idx} className="hover:bg-slate-50/80 transition">
+                          <td className="py-3.5 px-3"><input type="checkbox" className="rounded" /></td>
+                          <td className="py-3.5 px-3">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-8 h-8 rounded-full bg-emerald-50 text-[#0C6237] font-black text-xs flex items-center justify-center">
+                                {c.name.split(' ').map(n => n[0]).join('')}
+                              </div>
+                              <span className="font-extrabold text-slate-900">{c.name}</span>
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-3">
+                            <p className="font-medium text-slate-700">{c.email}</p>
+                            <p className="text-[10px] text-slate-400 font-mono">{c.phone}</p>
+                          </td>
+                          <td className="py-3.5 px-3 text-slate-600 font-medium">{c.area}</td>
+                          <td className="py-3.5 px-3">
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
+                              c.tier === 'Platinum' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                              c.tier === 'Gold' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                              'bg-slate-100 text-slate-700'
+                            }`}>
+                              {c.tier}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-3 font-extrabold text-slate-900">{c.orders}</td>
+                          <td className="py-3.5 px-3 font-extrabold text-slate-900">LKR {c.spent}</td>
+                          <td className="py-3.5 px-3">
+                            <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black bg-[#E6F7EF] text-[#0C6237]">
+                              {c.status}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-3 text-right">
+                            <button className="text-slate-400 hover:text-slate-700"><MoreHorizontal className="w-4 h-4 inline" /></button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-500">
+                  <span>Showing 1–5 of 3,862 results</span>
+                  <div className="flex items-center gap-2">
+                    <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold hover:bg-slate-50 disabled:opacity-50">Previous</button>
+                    <span className="px-2 font-bold text-slate-700">Page 1 of 773</span>
+                    <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold hover:bg-slate-50">Next</button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
           {/* =========================================================================
-              VIEW 7: PROMOTIONS & VOUCHERS
+              VIEW 7: PROMOTIONS & VOUCHERS (EXACT ATTACHMENT 2 MATCH)
           ========================================================================= */}
           {activeMenu === 'promotions' && (
-            <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-4 animate-fadeIn">
-              <div className="flex items-center justify-between">
+            <div className="space-y-6 animate-fadeIn">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h3 className="font-black text-lg text-slate-900">Promotions & Vouchers</h3>
-                  <p className="text-xs text-slate-400">Manage promo codes and active discounts</p>
+                  <span className="text-[11px] font-black tracking-widest text-[#0C6237] uppercase">Offers & Campaigns</span>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">Promotions</h2>
+                  <p className="text-xs text-slate-500 font-medium">Create thoughtful offers that bring more value to every basket.</p>
                 </div>
                 <button
-                  onClick={() => setIsAddPromoModalOpen(true)}
-                  className="px-4 py-2 rounded-xl bg-[#0C4E3B] text-white text-xs font-bold flex items-center gap-2"
+                  onClick={() => setIsCreatePromoModalOpen(true)}
+                  className="px-4 py-2.5 rounded-xl bg-[#0C4E3B] hover:bg-[#083b2d] text-white text-xs font-bold flex items-center gap-2 shadow-sm transition active:scale-95"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span>Create voucher</span>
+                  <span>Create promotion</span>
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                  { code: 'CEYLONFRESH', title: '15% Off Island Produce', type: '15% Off', min: 'Rs. 2,500', usage: '142 / 300', status: 'ACTIVE' },
-                  { code: 'COLOMBOEXPRESS', title: 'Free Colombo Express Delivery', type: 'Free Delivery', min: 'Rs. 5,000', usage: '89 / 500', status: 'ACTIVE' },
-                  { code: 'AVURUDU2026', title: 'Sinhala New Year Mega Feast', type: 'Rs. 1,000 Off', min: 'Rs. 10,000', usage: '210 / 250', status: 'ACTIVE' }
-                ].map((promo, idx) => (
-                  <div key={idx} className="p-5 rounded-2xl border border-slate-200/80 bg-slate-50/50 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-sm font-black px-2.5 py-1 rounded-lg bg-emerald-100 text-[#0C4E3B]">
-                        {promo.code}
-                      </span>
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-[#E6F7EF] text-[#0C6237]">
-                        {promo.status}
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-slate-900">{promo.title}</h4>
-                      <p className="text-xs text-slate-500 font-medium">Min Order: {promo.min}</p>
-                    </div>
-                    <div className="text-[11px] text-slate-400 pt-1 border-t border-slate-200 flex justify-between font-semibold">
-                      <span>Redemptions</span>
-                      <span className="font-bold text-slate-800">{promo.usage}</span>
-                    </div>
+              {/* 4 Metric Cards */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Active promotions</span>
+                    <Tag className="w-4 h-4 text-[#0C6237]" />
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">3</p>
+                  <p className="text-[11px] font-bold text-slate-500">2 more scheduled</p>
+                </div>
 
-          {/* =========================================================================
-              VIEW 8: DELIVERIES & FLEET RIDERS
-          ========================================================================= */}
-          {activeMenu === 'deliveries' && (
-            <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-4 animate-fadeIn">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-black text-lg text-slate-900">Fleet Deliveries & Riders</h3>
-                  <p className="text-xs text-slate-400">Live dispatch tracking across Greater Colombo zones</p>
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Redemptions</span>
+                    <Ticket className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">186</p>
+                  <p className="text-[11px] font-bold text-slate-500">01–26 October 2026</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Discounts given</span>
+                    <Sparkles className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">74,580</p>
+                  <p className="text-[11px] font-bold text-slate-500">LKR this month</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Attributed sales</span>
+                    <TrendingUp className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">624,500</p>
+                  <p className="text-[11px] font-bold text-slate-500">LKR from promoted orders</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                  { name: 'Sahan De Silva', vehicle: 'Hero Splendor (Bike)', plate: 'WP BAE-8842', zone: 'Colombo 03, 04, 05', status: 'DELIVERING', rating: 4.9, count: 428 },
-                  { name: 'Kanishka Bandara', vehicle: 'TVS King (Three-Wheeler)', plate: 'WP QD-2490', zone: 'Dehiwala & Mount Lavinia', status: 'AVAILABLE', rating: 4.8, count: 312 },
-                  { name: 'Gayan Weerasinghe', vehicle: 'Honda Dio (Scooter)', plate: 'WP BDF-1150', zone: 'Rajagiriya & Nugegoda', status: 'AVAILABLE', rating: 4.9, count: 516 }
-                ].map((rider, idx) => (
-                  <div key={idx} className="p-4 rounded-2xl border border-slate-200/80 bg-white shadow-sm space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-full bg-emerald-50 text-[#0C4E3B] font-black text-xs flex items-center justify-center">
-                          {rider.name.charAt(0)}
-                        </div>
-                        <div>
-                          <p className="font-bold text-xs text-slate-900">{rider.name}</p>
-                          <p className="text-[10px] text-slate-400">{rider.vehicle}</p>
-                        </div>
+              {/* Tabs */}
+              <div className="flex items-center gap-6 border-b border-slate-200/80 text-xs font-extrabold text-slate-500">
+                <button
+                  onClick={() => setPromotionsTab('ALL')}
+                  className={`pb-3 transition relative ${promotionsTab === 'ALL' ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                >
+                  All promotions (6)
+                </button>
+                <button
+                  onClick={() => setPromotionsTab('ACTIVE')}
+                  className={`pb-3 transition relative ${promotionsTab === 'ACTIVE' ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                >
+                  Active (3)
+                </button>
+                <button
+                  onClick={() => setPromotionsTab('SCHEDULED')}
+                  className={`pb-3 transition relative ${promotionsTab === 'SCHEDULED' ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                >
+                  Scheduled (2)
+                </button>
+                <button
+                  onClick={() => setPromotionsTab('EXPIRED')}
+                  className={`pb-3 transition relative ${promotionsTab === 'EXPIRED' ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                >
+                  Expired (1)
+                </button>
+              </div>
+
+              {/* Promotion Register Card */}
+              <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-black text-base text-slate-900">Promotion register</h3>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-black">6</span>
+                  </div>
+                  <span className="text-[11px] text-slate-400">Updated today, 09:42 AM</span>
+                </div>
+
+                {/* Filter bar */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                  <div className="relative flex-1 min-w-[240px]">
+                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="Search campaign or code..."
+                      value={promotionsSearch}
+                      onChange={(e) => setPromotionsSearch(e.target.value)}
+                      className="w-full pl-9 pr-10 py-2 rounded-xl border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-[#0C4E3B]"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-400">⌘ K</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={promotionsTypeFilter}
+                      onChange={(e) => setPromotionsTypeFilter(e.target.value)}
+                      className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white"
+                    >
+                      <option value="ALL">All types</option>
+                      <option value="PERCENTAGE">Percentage off</option>
+                      <option value="FIXED">Fixed discount</option>
+                      <option value="FREE_DELIVERY">Free delivery</option>
+                    </select>
+
+                    <select className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white">
+                      <option>All statuses</option>
+                      <option>Active</option>
+                      <option>Scheduled</option>
+                      <option>Expired</option>
+                    </select>
+
+                    <button className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white flex items-center gap-1.5 hover:bg-slate-50">
+                      <Download className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Export</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-100 text-[10px] font-black tracking-wider text-slate-400 uppercase">
+                        <th className="py-3 px-3 w-8"><input type="checkbox" className="rounded" /></th>
+                        <th className="py-3 px-3">PROMOTION</th>
+                        <th className="py-3 px-3">OFFER</th>
+                        <th className="py-3 px-3">PROMOTION DATES</th>
+                        <th className="py-3 px-3">USAGE</th>
+                        <th className="py-3 px-3">MINIMUM BASKET</th>
+                        <th className="py-3 px-3">STATUS</th>
+                        <th className="py-3 px-3 text-right">ACTIONS</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {promotionsRegister.map((promo) => (
+                        <tr key={promo.id} className="hover:bg-slate-50/80 transition">
+                          <td className="py-3.5 px-3"><input type="checkbox" className="rounded" /></td>
+                          <td className="py-3.5 px-3">
+                            <p className="font-extrabold text-slate-900">{promo.name}</p>
+                            <p className="text-[11px] font-mono text-slate-400">Code: {promo.code}</p>
+                          </td>
+                          <td className="py-3.5 px-3 font-bold text-slate-700">{promo.offer}</td>
+                          <td className="py-3.5 px-3 font-medium text-slate-500">{promo.dates}</td>
+                          <td className="py-3.5 px-3 font-extrabold text-slate-900">{promo.usage}</td>
+                          <td className="py-3.5 px-3 font-bold text-slate-700">{promo.minBasket}</td>
+                          <td className="py-3.5 px-3">
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
+                              promo.status === 'Active' ? 'bg-[#E6F7EF] text-[#0C6237]' :
+                              promo.status === 'Scheduled' ? 'bg-[#FEF3EC] text-[#D96528]' :
+                              'bg-slate-100 text-slate-500'
+                            }`}>
+                              {promo.status}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-3 text-right">
+                            <button className="text-slate-400 hover:text-slate-700"><MoreHorizontal className="w-4 h-4 inline" /></button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-500">
+                  <span>Showing 1–5 of 6 results</span>
+                  <div className="flex items-center gap-2">
+                    <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold hover:bg-slate-50 disabled:opacity-50">Previous</button>
+                    <span className="px-2 font-bold text-slate-700">Page 1 of 2</span>
+                    <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold hover:bg-slate-50">Next</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Section: 2 Cards Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Promotion rules */}
+                <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                  <div>
+                    <h3 className="font-black text-base text-slate-900">Promotion rules</h3>
+                    <p className="text-xs text-slate-500 font-medium">Consistent offers, fewer surprises.</p>
+                  </div>
+
+                  <div className="space-y-4 pt-2">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-extrabold text-xs text-slate-900">Prevent coupon stacking</p>
+                        <p className="text-[11px] text-slate-400">Allow one coupon per order.</p>
                       </div>
-                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-black ${
-                        rider.status === 'AVAILABLE' ? 'bg-[#E6F7EF] text-[#0C6237]' : 'bg-sky-50 text-sky-700'
-                      }`}>
-                        {rider.status}
-                      </span>
+                      <button
+                        onClick={() => setPreventCouponStacking(!preventCouponStacking)}
+                        className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out ${
+                          preventCouponStacking ? 'bg-[#0C4E3B]' : 'bg-slate-300'
+                        }`}
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                            preventCouponStacking ? 'translate-x-5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
                     </div>
 
-                    <div className="text-[11px] text-slate-500 space-y-1 font-medium bg-slate-50 p-2.5 rounded-xl">
-                      <p>Plate: <strong className="text-slate-800">{rider.plate}</strong></p>
-                      <p>Zone: <strong className="text-slate-800">{rider.zone}</strong></p>
-                      <p>Completed Trips: <strong className="text-slate-800">{rider.count}</strong> (★ {rider.rating})</p>
+                    <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100">
+                      <div>
+                        <p className="font-extrabold text-xs text-slate-900">Exclude delivery fees from discounts</p>
+                        <p className="text-[11px] text-slate-400">Product discounts apply to the basket subtotal.</p>
+                      </div>
+                      <button
+                        onClick={() => setExcludeDeliveryFees(!excludeDeliveryFees)}
+                        className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out ${
+                          excludeDeliveryFees ? 'bg-[#0C4E3B]' : 'bg-slate-300'
+                        }`}
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                            excludeDeliveryFees ? 'translate-x-5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                {/* Next scheduled campaign */}
+                <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-black text-base text-slate-900">Next scheduled campaign</h3>
+                    <button className="text-xs font-bold text-[#0C4E3B] hover:underline flex items-center gap-1">
+                      <span>View campaign</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/60 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-black text-sm text-slate-900">Weekend harvest</span>
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#FEF3EC] text-[#D96528]">Scheduled</span>
+                    </div>
+                    <p className="text-xs text-slate-600 font-medium">15% off fresh vegetables • 31 Oct – 01 Nov 2026</p>
+                    <p className="text-[11px] text-slate-400 font-medium">Starts Saturday at 12:00 AM • Sri Lanka time</p>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
           {/* =========================================================================
-              VIEW 9: REVIEWS, REPORTS, STAFF, SETTINGS
+              VIEW 8: DELIVERIES (EXACT ATTACHMENT 1 MATCH)
           ========================================================================= */}
-          {['reviews', 'reports', 'staff', 'settings'].includes(activeMenu) && (
-            <div className="p-12 rounded-2xl bg-white border border-slate-200/80 shadow-sm text-center space-y-3 animate-fadeIn">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#0C4E3B] flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-6 h-6" />
+          {activeMenu === 'deliveries' && (
+            <div className="space-y-6 animate-fadeIn">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span className="text-[11px] font-black tracking-widest text-[#0C6237] uppercase">Last-Mile Operations</span>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">Deliveries</h2>
+                  <p className="text-xs text-slate-500 font-medium">Plan the day's routes and get fresh groceries to every doorstep.</p>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <button className="px-4 py-2.5 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-2 shadow-xs transition">
+                    <Download className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Export manifest</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedDeliveryOrder(deliveriesList.find(d => d.status === 'Unassigned') || deliveriesList[0]);
+                      setIsAssignDeliveryModalOpen(true);
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-[#0C4E3B] hover:bg-[#083b2d] text-white text-xs font-bold flex items-center gap-2 shadow-sm transition active:scale-95"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Assign delivery</span>
+                  </button>
+                </div>
               </div>
-              <h3 className="font-black text-xl text-slate-900 capitalize">{activeMenu.replace('_', ' ')} Workspace</h3>
-              <p className="text-xs text-slate-400 max-w-md mx-auto">
-                All parameters configured and fully synced with the Ceylon Foods central database.
-              </p>
+
+              {/* 4 Metric Cards */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Today's deliveries</span>
+                    <div className="w-7 h-7 rounded-lg bg-emerald-50 text-[#0C6237] flex items-center justify-center">
+                      <Truck className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">86</p>
+                  <p className="text-[11px] font-bold text-slate-500">26 October 2026</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Awaiting assignment</span>
+                    <div className="w-7 h-7 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
+                      <UserPlus className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">8</p>
+                  <p className="text-[11px] font-bold text-orange-600">Ready to be allocated</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">On the road</span>
+                    <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
+                      <Navigation className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">24</p>
+                  <p className="text-[11px] font-bold text-slate-500">Across 6 active riders</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Delivered today</span>
+                    <div className="w-7 h-7 rounded-lg bg-emerald-50 text-[#0C6237] flex items-center justify-center">
+                      <Package className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">54</p>
+                  <p className="text-[11px] font-bold text-emerald-600">97.1% on-time delivery</p>
+                </div>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex items-center gap-6 border-b border-slate-200/80 text-xs font-extrabold text-slate-500">
+                <button
+                  onClick={() => setDeliveriesTab('TODAY')}
+                  className={`pb-3 transition relative ${deliveriesTab === 'TODAY' ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                >
+                  Today (86)
+                </button>
+                <button
+                  onClick={() => setDeliveriesTab('UNASSIGNED')}
+                  className={`pb-3 transition relative ${deliveriesTab === 'UNASSIGNED' ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                >
+                  Unassigned (8)
+                </button>
+                <button
+                  onClick={() => setDeliveriesTab('OUT_FOR_DELIVERY')}
+                  className={`pb-3 transition relative ${deliveriesTab === 'OUT_FOR_DELIVERY' ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                >
+                  Out for delivery (24)
+                </button>
+                <button
+                  onClick={() => setDeliveriesTab('DELIVERED')}
+                  className={`pb-3 transition relative ${deliveriesTab === 'DELIVERED' ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                >
+                  Delivered (54)
+                </button>
+              </div>
+
+              {/* Delivery Schedule Table */}
+              <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-black text-base text-slate-900">Delivery schedule</h3>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-black">86</span>
+                  </div>
+                  <span className="text-[11px] text-slate-400">Updated today, 09:42 AM</span>
+                </div>
+
+                {/* Filter bar */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                  <div className="relative flex-1 min-w-[240px]">
+                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="Search order, customer or rider..."
+                      value={deliverySearch}
+                      onChange={(e) => setDeliverySearch(e.target.value)}
+                      className="w-full pl-9 pr-10 py-2 rounded-xl border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-[#0C4E3B]"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-400">⌘ K</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={deliveryRiderFilter}
+                      onChange={(e) => setDeliveryRiderFilter(e.target.value)}
+                      className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white"
+                    >
+                      <option value="ALL">All riders</option>
+                      <option value="Kasun Madushanka">Kasun Madushanka</option>
+                      <option value="Dinesh Kumara">Dinesh Kumara</option>
+                      <option value="Pradeep Silva">Pradeep Silva</option>
+                    </select>
+
+                    <select
+                      value={deliveryZoneFilter}
+                      onChange={(e) => setDeliveryZoneFilter(e.target.value)}
+                      className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white"
+                    >
+                      <option value="ALL">Delivery zone</option>
+                      <option value="Colombo 05">Colombo 05</option>
+                      <option value="Nugegoda">Nugegoda</option>
+                      <option value="Rajagiriya">Rajagiriya</option>
+                      <option value="Dehiwala">Dehiwala</option>
+                    </select>
+
+                    <select
+                      value={deliveryStatusFilter}
+                      onChange={(e) => setDeliveryStatusFilter(e.target.value)}
+                      className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white"
+                    >
+                      <option value="ALL">All statuses</option>
+                      <option value="Unassigned">Unassigned</option>
+                      <option value="On the road">On the road</option>
+                      <option value="Delivered">Delivered</option>
+                    </select>
+
+                    <button className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white flex items-center gap-1.5 hover:bg-slate-50">
+                      <Download className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Export</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-100 text-[10px] font-black tracking-wider text-slate-400 uppercase">
+                        <th className="py-3 px-3 w-8"><input type="checkbox" className="rounded" /></th>
+                        <th className="py-3 px-3">ORDER / CUSTOMER</th>
+                        <th className="py-3 px-3">DELIVERY ADDRESS</th>
+                        <th className="py-3 px-3">TIME WINDOW</th>
+                        <th className="py-3 px-3">ASSIGNED RIDER</th>
+                        <th className="py-3 px-3">PAYMENT</th>
+                        <th className="py-3 px-3">STATUS</th>
+                        <th className="py-3 px-3 text-right">ACTIONS</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {deliveriesList
+                        .filter(d => {
+                          if (deliveriesTab === 'UNASSIGNED') return d.status === 'Unassigned';
+                          if (deliveriesTab === 'OUT_FOR_DELIVERY') return d.status === 'On the road';
+                          if (deliveriesTab === 'DELIVERED') return d.status === 'Delivered';
+                          return true;
+                        })
+                        .map((del) => (
+                        <tr key={del.id} className="hover:bg-slate-50/80 transition">
+                          <td className="py-3.5 px-3"><input type="checkbox" className="rounded" /></td>
+                          <td className="py-3.5 px-3">
+                            <p className="font-extrabold text-slate-900">{del.orderNumber} • {del.customerName}</p>
+                            <p className="text-[11px] font-mono text-slate-400">{del.customerPhone}</p>
+                          </td>
+                          <td className="py-3.5 px-3 text-slate-600 font-medium">{del.address}</td>
+                          <td className="py-3.5 px-3 font-bold text-slate-700">{del.timeWindow}</td>
+                          <td className="py-3.5 px-3">
+                            {del.assignedRider === 'Unassigned' ? (
+                              <button
+                                onClick={() => {
+                                  setSelectedDeliveryOrder(del);
+                                  setIsAssignDeliveryModalOpen(true);
+                                }}
+                                className="text-orange-600 font-bold hover:underline"
+                              >
+                                Unassigned
+                              </button>
+                            ) : (
+                              <span className="font-extrabold text-slate-900">{del.assignedRider}</span>
+                            )}
+                          </td>
+                          <td className="py-3.5 px-3 font-bold text-slate-700">{del.payment}</td>
+                          <td className="py-3.5 px-3">
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
+                              del.status === 'Delivered' ? 'bg-[#E6F7EF] text-[#0C6237]' :
+                              del.status === 'On the road' ? 'bg-[#E6F7EF] text-[#0C6237]' :
+                              'bg-[#FEF3EC] text-[#D96528]'
+                            }`}>
+                              {del.status}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-3 text-right">
+                            <button className="text-slate-400 hover:text-slate-700"><MoreHorizontal className="w-4 h-4 inline" /></button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-500">
+                  <span>Showing 1–5 of 86 results</span>
+                  <div className="flex items-center gap-2">
+                    <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold hover:bg-slate-50 disabled:opacity-50">Previous</button>
+                    <span className="px-2 font-bold text-slate-700">Page 1 of 18</span>
+                    <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold hover:bg-slate-50">Next</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Section: Rider availability */}
+              <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-black text-base text-slate-900">Rider availability</h3>
+                    <p className="text-xs text-slate-400 font-medium">6 riders on duty today • 3 shown</p>
+                  </div>
+                  <button className="text-xs font-bold text-[#0C4E3B] hover:underline flex items-center gap-1">
+                    <span>Manage delivery team</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/60 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 text-[#0C4E3B] font-black text-xs flex items-center justify-center shrink-0">
+                      KM
+                    </div>
+                    <div>
+                      <p className="font-extrabold text-xs text-slate-900">Kasun Madushanka</p>
+                      <p className="text-[10px] text-slate-400">Colombo & Rajagiriya</p>
+                      <p className="text-[11px] font-black text-emerald-700 mt-0.5">5 active deliveries</p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/60 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 text-[#0C4E3B] font-black text-xs flex items-center justify-center shrink-0">
+                      DK
+                    </div>
+                    <div>
+                      <p className="font-extrabold text-xs text-slate-900">Dinesh Kumara</p>
+                      <p className="text-[10px] text-slate-400">Dehiwala & Nugegoda</p>
+                      <p className="text-[11px] font-black text-emerald-700 mt-0.5">4 active deliveries</p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/60 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 text-[#0C4E3B] font-black text-xs flex items-center justify-center shrink-0">
+                      PS
+                    </div>
+                    <div>
+                      <p className="font-extrabold text-xs text-slate-900">Pradeep Silva</p>
+                      <p className="text-[10px] text-slate-400">Colombo 03–07</p>
+                      <p className="text-[11px] font-black text-emerald-700 mt-0.5">Available • 2 scheduled</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
-          {/* FOOTER ACROSS ALL ADMIN PAGES MATCHING MOCKUP */}
-          <footer className="pt-6 pb-2 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
+          {/* =========================================================================
+              VIEW 9: REPORTS & INSIGHTS (EXACT ATTACHMENT 3 MATCH)
+          ========================================================================= */}
+          {activeMenu === 'reports' && (
+            <div className="space-y-6 animate-fadeIn">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span className="text-[11px] font-black tracking-widest text-[#0C6237] uppercase">Business Intelligence</span>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">Reports & insights</h2>
+                  <p className="text-xs text-slate-500 font-medium">Make confident decisions with a clear view of store performance.</p>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <button className="px-4 py-2.5 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-2 shadow-xs transition">
+                    <Download className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Export CSV</span>
+                  </button>
+                  <button className="px-4 py-2.5 rounded-xl bg-[#0C4E3B] hover:bg-[#083b2d] text-white text-xs font-bold flex items-center gap-2 shadow-sm transition active:scale-95">
+                    <FileDown className="w-3.5 h-3.5" />
+                    <span>Export PDF</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Sub-tabs */}
+              <div className="flex items-center gap-6 border-b border-slate-200/80 text-xs font-extrabold text-slate-500">
+                {['Sales overview', 'Products', 'Customers', 'Inventory', 'Delivery performance'].map((tab, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setReportsSubTab(tab.toUpperCase() as any)}
+                    className={`pb-3 transition relative ${idx === 0 ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+
+              {/* 4 Metric Cards */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Net sales</span>
+                    <CreditCard className="w-4 h-4 text-[#0C6237]" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">8,462,850</p>
+                  <p className="text-[11px] font-bold text-emerald-600">LKR • ↑ 12.8% vs September</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Orders</span>
+                    <ShoppingBag className="w-4 h-4 text-[#0C6237]" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">1,284</p>
+                  <p className="text-[11px] font-bold text-emerald-600">↑ 8.2% vs September</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Average order value</span>
+                    <ShoppingBasket className="w-4 h-4 text-[#0C6237]" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">6,591.00</p>
+                  <p className="text-[11px] font-bold text-emerald-600">LKR • ↑ 4.3% vs September</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Returning customers</span>
+                    <RefreshCw className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">64.2%</p>
+                  <p className="text-[11px] font-bold text-emerald-600">↑ 4.1 percentage points</p>
+                </div>
+              </div>
+
+              {/* Middle Section: Sales Trend & Category Share */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Sales trend (8 cols) */}
+                <div className="lg:col-span-8 p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-black text-base text-slate-900">Sales trend</h3>
+                      <p className="text-xs text-slate-400 font-medium">Daily revenue • LKR • 01–26 October 2026</p>
+                    </div>
+                    <select className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 bg-white">
+                      <option>Daily</option>
+                      <option>Weekly</option>
+                      <option>Monthly</option>
+                    </select>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-50 text-[#0C6237] text-xs font-black">
+                    <span className="px-1.5 py-0.5 rounded bg-white text-[10px]">October 2026</span>
+                    <span>Average daily sales: LKR 325,494</span>
+                  </div>
+
+                  {/* Spline Chart */}
+                  <div className="h-64 w-full pt-4">
+                    <svg viewBox="0 0 700 240" className="w-full h-full overflow-visible">
+                      <defs>
+                        <linearGradient id="reportsSpline" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#0C6237" stopOpacity="0.25" />
+                          <stop offset="100%" stopColor="#0C6237" stopOpacity="0.0" />
+                        </linearGradient>
+                      </defs>
+                      <line x1="40" y1="40" x2="680" y2="40" stroke="#F1F5F9" strokeWidth="1" />
+                      <line x1="40" y1="90" x2="680" y2="90" stroke="#F1F5F9" strokeWidth="1" />
+                      <line x1="40" y1="140" x2="680" y2="140" stroke="#F1F5F9" strokeWidth="1" />
+                      <line x1="40" y1="190" x2="680" y2="190" stroke="#F1F5F9" strokeWidth="1" />
+
+                      <text x="10" y="45" fill="#94A3B8" fontSize="10" fontWeight="600">500k</text>
+                      <text x="10" y="95" fill="#94A3B8" fontSize="10" fontWeight="600">375k</text>
+                      <text x="10" y="145" fill="#94A3B8" fontSize="10" fontWeight="600">250k</text>
+                      <text x="10" y="195" fill="#94A3B8" fontSize="10" fontWeight="600">125k</text>
+                      <text x="25" y="235" fill="#94A3B8" fontSize="10" fontWeight="600">0</text>
+
+                      <path
+                        d="M 50 200 C 100 170, 120 205, 170 170 C 220 135, 250 175, 300 145 C 350 115, 370 150, 420 120 C 470 90, 520 115, 570 80 C 620 60, 650 90, 680 75 L 680 230 L 50 230 Z"
+                        fill="url(#reportsSpline)"
+                      />
+                      <path
+                        d="M 50 200 C 100 170, 120 205, 170 170 C 220 135, 250 175, 300 145 C 350 115, 370 150, 420 120 C 470 90, 520 115, 570 80 C 620 60, 650 90, 680 75"
+                        fill="none"
+                        stroke="#0C6237"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                      />
+
+                      <text x="50" y="235" fill="#94A3B8" fontSize="10" fontWeight="600">01 Oct</text>
+                      <text x="160" y="235" fill="#94A3B8" fontSize="10" fontWeight="600">05 Oct</text>
+                      <text x="290" y="235" fill="#94A3B8" fontSize="10" fontWeight="600">10 Oct</text>
+                      <text x="410" y="235" fill="#94A3B8" fontSize="10" fontWeight="600">15 Oct</text>
+                      <text x="540" y="235" fill="#94A3B8" fontSize="10" fontWeight="600">20 Oct</text>
+                      <text x="650" y="235" fill="#94A3B8" fontSize="10" fontWeight="600">26 Oct</text>
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Sales by category (4 cols) */}
+                <div className="lg:col-span-4 p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between space-y-4">
+                  <div>
+                    <h3 className="font-black text-base text-slate-900">Sales by category</h3>
+                    <p className="text-xs text-slate-400 font-medium">Share of total revenue</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-xs font-extrabold mb-1">
+                        <span className="text-slate-800">Fruits & Vegetables</span>
+                        <span className="text-slate-900">26.4%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                        <div className="h-full bg-[#0C6237] rounded-full" style={{ width: '26.4%' }} />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between text-xs font-extrabold mb-1">
+                        <span className="text-slate-800">Rice & Grains</span>
+                        <span className="text-slate-900">21.1%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                        <div className="h-full bg-[#0C6237] rounded-full" style={{ width: '21.1%' }} />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between text-xs font-extrabold mb-1">
+                        <span className="text-slate-800">Dairy & Eggs</span>
+                        <span className="text-slate-900">15.0%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                        <div className="h-full bg-[#0C6237] rounded-full" style={{ width: '15.0%' }} />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between text-xs font-extrabold mb-1">
+                        <span className="text-slate-800">Meat & Seafood</span>
+                        <span className="text-slate-900">12.0%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                        <div className="h-full bg-[#0C6237] rounded-full" style={{ width: '12.0%' }} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-[11px] text-slate-400 font-medium pt-2 border-t border-slate-100">
+                    Other categories contribute 25.5% of sales.
+                  </p>
+                </div>
+              </div>
+
+              {/* Category performance table */}
+              <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-black text-base text-slate-900">Category performance</h3>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-black">8</span>
+                  </div>
+                  <span className="text-[11px] text-slate-400">Updated today, 09:42 AM</span>
+                </div>
+
+                {/* Filter bar */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                  <div className="relative flex-1 min-w-[240px]">
+                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="Search categories..."
+                      value={reportsCategorySearch}
+                      onChange={(e) => setReportsCategorySearch(e.target.value)}
+                      className="w-full pl-9 pr-10 py-2 rounded-xl border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-[#0C4E3B]"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-400">⌘ K</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <select className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white">
+                      <option>All categories</option>
+                      <option>Fruits & Vegetables</option>
+                      <option>Rice & Grains</option>
+                      <option>Dairy & Eggs</option>
+                    </select>
+
+                    <select
+                      value={reportsCategorySort}
+                      onChange={(e) => setReportsCategorySort(e.target.value as any)}
+                      className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white"
+                    >
+                      <option value="REVENUE">Sort: Revenue</option>
+                      <option value="UNITS">Sort: Units sold</option>
+                    </select>
+
+                    <button className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white flex items-center gap-1.5 hover:bg-slate-50">
+                      <Download className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Export</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-100 text-[10px] font-black tracking-wider text-slate-400 uppercase">
+                        <th className="py-3 px-3 w-8"><input type="checkbox" className="rounded" /></th>
+                        <th className="py-3 px-3">CATEGORY</th>
+                        <th className="py-3 px-3">UNITS SOLD</th>
+                        <th className="py-3 px-3">NET SALES (LKR)</th>
+                        <th className="py-3 px-3">REVENUE SHARE</th>
+                        <th className="py-3 px-3">VS LAST MONTH</th>
+                        <th className="py-3 px-3 text-right">ACTIONS</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {[
+                        { name: 'Fruits & Vegetables', units: '6,840', sales: '2,234,200.00', share: '26.4%', trend: '↑ 16.2%', positive: true },
+                        { name: 'Rice & Grains', units: '2,612', sales: '1,785,600.00', share: '21.1%', trend: '↑ 11.8%', positive: true },
+                        { name: 'Dairy & Eggs', units: '2,184', sales: '1,269,450.00', share: '15.0%', trend: '↑ 9.4%', positive: true },
+                        { name: 'Meat & Seafood', units: '985', sales: '1,015,200.00', share: '12.0%', trend: '↑ 14.1%', positive: true },
+                        { name: 'Household', units: '486', sales: '253,800.00', share: '3.0%', trend: '↓ 2.1%', positive: false }
+                      ].map((cat, idx) => (
+                        <tr key={idx} className="hover:bg-slate-50/80 transition">
+                          <td className="py-3.5 px-3"><input type="checkbox" className="rounded" /></td>
+                          <td className="py-3.5 px-3 font-extrabold text-slate-900">{cat.name}</td>
+                          <td className="py-3.5 px-3 font-extrabold text-slate-700">{cat.units}</td>
+                          <td className="py-3.5 px-3 font-extrabold text-slate-900">{cat.sales}</td>
+                          <td className="py-3.5 px-3 font-bold text-slate-700">{cat.share}</td>
+                          <td className={`py-3.5 px-3 font-extrabold ${cat.positive ? 'text-[#0C6237]' : 'text-red-600'}`}>
+                            {cat.trend}
+                          </td>
+                          <td className="py-3.5 px-3 text-right">
+                            <button className="text-slate-400 hover:text-slate-700"><MoreHorizontal className="w-4 h-4 inline" /></button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-500">
+                  <span>Showing 1–5 of 8 results</span>
+                  <div className="flex items-center gap-2">
+                    <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold hover:bg-slate-50 disabled:opacity-50">Previous</button>
+                    <span className="px-2 font-bold text-slate-700">Page 1 of 2</span>
+                    <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold hover:bg-slate-50">Next</button>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100 text-[11px] text-slate-400 flex flex-col sm:flex-row justify-between gap-2">
+                  <span>Net sales exclude cancelled orders, refunds and delivery fees. Figures reflect the selected reporting period.</span>
+                  <span>Last refreshed: 26 Oct 2026, 09:42 AM</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* =========================================================================
+              VIEW 10: STAFF & PERMISSIONS (EXACT ATTACHMENT 4 MATCH)
+          ========================================================================= */}
+          {activeMenu === 'staff' && (
+            <div className="space-y-6 animate-fadeIn">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span className="text-[11px] font-black tracking-widest text-[#0C6237] uppercase">Team Management</span>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">Staff & permissions</h2>
+                  <p className="text-xs text-slate-500 font-medium">Give your team the right access to keep the store running smoothly.</p>
+                </div>
+                <button
+                  onClick={() => setIsInviteStaffModalOpen(true)}
+                  className="px-4 py-2.5 rounded-xl bg-[#0C4E3B] hover:bg-[#083b2d] text-white text-xs font-bold flex items-center gap-2 shadow-sm transition active:scale-95"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Invite staff</span>
+                </button>
+              </div>
+
+              {/* 4 Metric Cards */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Team members</span>
+                    <Users className="w-4 h-4 text-[#0C6237]" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">12</p>
+                  <p className="text-[11px] font-bold text-slate-500">Including administrators</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Active members</span>
+                    <UserCheck className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">10</p>
+                  <p className="text-[11px] font-bold text-slate-500">2 invitations pending</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Permission roles</span>
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">4</p>
+                  <p className="text-[11px] font-bold text-slate-500">Role-based access</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Two-factor enabled</span>
+                    <Lock className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">8 / 10</p>
+                  <p className="text-[11px] font-bold text-slate-500">Recommend for every active user</p>
+                </div>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex items-center gap-6 border-b border-slate-200/80 text-xs font-extrabold text-slate-500">
+                <button
+                  onClick={() => setStaffTab('MEMBERS')}
+                  className={`pb-3 transition relative ${staffTab === 'MEMBERS' ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                >
+                  Team members (12)
+                </button>
+                <button
+                  onClick={() => setStaffTab('ROLES')}
+                  className={`pb-3 transition relative ${staffTab === 'ROLES' ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                >
+                  Roles & permissions
+                </button>
+                <button
+                  onClick={() => setStaffTab('INVITATIONS')}
+                  className={`pb-3 transition relative ${staffTab === 'INVITATIONS' ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                >
+                  Pending invitations (2)
+                </button>
+                <button
+                  onClick={() => setStaffTab('ACTIVITY')}
+                  className={`pb-3 transition relative ${staffTab === 'ACTIVITY' ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                >
+                  Activity log
+                </button>
+              </div>
+
+              {/* Team directory table */}
+              <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-black text-base text-slate-900">Team directory</h3>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-black">12</span>
+                  </div>
+                  <span className="text-[11px] text-slate-400">Updated today, 09:42 AM</span>
+                </div>
+
+                {/* Filter bar */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                  <div className="relative flex-1 min-w-[240px]">
+                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="Search staff name or email..."
+                      value={staffSearch}
+                      onChange={(e) => setStaffSearch(e.target.value)}
+                      className="w-full pl-9 pr-10 py-2 rounded-xl border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-[#0C4E3B]"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-400">⌘ K</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={staffRoleFilter}
+                      onChange={(e) => setStaffRoleFilter(e.target.value)}
+                      className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white"
+                    >
+                      <option value="ALL">All roles</option>
+                      <option value="Administrator">Administrator</option>
+                      <option value="Manager">Manager</option>
+                      <option value="Catalog Editor">Catalog Editor</option>
+                      <option value="Delivery Agent">Delivery Agent</option>
+                    </select>
+
+                    <select className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white">
+                      <option>All statuses</option>
+                      <option>Active</option>
+                      <option>Invited</option>
+                    </select>
+
+                    <button className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white flex items-center gap-1.5 hover:bg-slate-50">
+                      <Download className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Export</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-100 text-[10px] font-black tracking-wider text-slate-400 uppercase">
+                        <th className="py-3 px-3 w-8"><input type="checkbox" className="rounded" /></th>
+                        <th className="py-3 px-3">TEAM MEMBER</th>
+                        <th className="py-3 px-3">EMAIL</th>
+                        <th className="py-3 px-3">ROLE</th>
+                        <th className="py-3 px-3">LAST ACTIVE</th>
+                        <th className="py-3 px-3">2FA</th>
+                        <th className="py-3 px-3">STATUS</th>
+                        <th className="py-3 px-3 text-right">ACTIONS</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {staffDirectory.map((st) => (
+                        <tr key={st.id} className="hover:bg-slate-50/80 transition">
+                          <td className="py-3.5 px-3"><input type="checkbox" className="rounded" /></td>
+                          <td className="py-3.5 px-3">
+                            <p className="font-extrabold text-slate-900">{st.name}</p>
+                            <p className="text-[11px] text-slate-400">{st.roleSubtitle}</p>
+                          </td>
+                          <td className="py-3.5 px-3 text-slate-600 font-medium">{st.email}</td>
+                          <td className="py-3.5 px-3 font-extrabold text-slate-800">{st.role}</td>
+                          <td className="py-3.5 px-3 font-bold text-slate-600">{st.lastActive}</td>
+                          <td className="py-3.5 px-3 font-bold text-slate-700">{st.twoFactor}</td>
+                          <td className="py-3.5 px-3">
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
+                              st.status === 'Active' ? 'bg-[#E6F7EF] text-[#0C6237]' : 'bg-[#FEF3EC] text-[#D96528]'
+                            }`}>
+                              {st.status}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-3 text-right">
+                            <button className="text-slate-400 hover:text-slate-700"><MoreHorizontal className="w-4 h-4 inline" /></button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-500">
+                  <span>Showing 1–5 of 12 results</span>
+                  <div className="flex items-center gap-2">
+                    <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold hover:bg-slate-50 disabled:opacity-50">Previous</button>
+                    <span className="px-2 font-bold text-slate-700">Page 1 of 3</span>
+                    <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold hover:bg-slate-50">Next</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Section: Role permissions matrix */}
+              <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-black text-base text-slate-900">Role permissions</h3>
+                    <p className="text-xs text-slate-400 font-medium">A concise overview of your access policy.</p>
+                  </div>
+                  <button className="text-xs font-bold text-[#0C4E3B] hover:underline flex items-center gap-1">
+                    <span>Edit permissions</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-100 text-[10px] font-black tracking-wider text-slate-400 uppercase">
+                        <th className="py-3 px-3">CAPABILITY</th>
+                        <th className="py-3 px-3 text-center">ADMINISTRATOR</th>
+                        <th className="py-3 px-3 text-center">MANAGER</th>
+                        <th className="py-3 px-3 text-center">CATALOG EDITOR</th>
+                        <th className="py-3 px-3 text-center">DELIVERY AGENT</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-medium">
+                      {[
+                        { cap: 'View dashboard & reports', admin: true, manager: true, editor: false, agent: false },
+                        { cap: 'Manage products & inventory', admin: true, manager: true, editor: true, agent: false },
+                        { cap: 'Manage orders & customers', admin: true, manager: true, editor: false, agent: false },
+                        { cap: 'Update assigned deliveries', admin: true, manager: true, editor: false, agent: true },
+                        { cap: 'Manage staff & store settings', admin: true, manager: false, editor: false, agent: false }
+                      ].map((row, idx) => (
+                        <tr key={idx} className="hover:bg-slate-50/80 transition">
+                          <td className="py-3 px-3 font-extrabold text-slate-900">{row.cap}</td>
+                          <td className="py-3 px-3 text-center">
+                            {row.admin ? <CheckCircle2 className="w-4 h-4 text-emerald-600 inline" /> : <span className="text-slate-300">—</span>}
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            {row.manager ? <CheckCircle2 className="w-4 h-4 text-emerald-600 inline" /> : <span className="text-slate-300">—</span>}
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            {row.editor ? <CheckCircle2 className="w-4 h-4 text-emerald-600 inline" /> : <span className="text-slate-300">—</span>}
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            {row.agent ? <CheckCircle2 className="w-4 h-4 text-emerald-600 inline" /> : <span className="text-slate-300">—</span>}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* =========================================================================
+              VIEW 11: SETTINGS (EXACT ATTACHMENT 5 MATCH)
+          ========================================================================= */}
+          {activeMenu === 'settings' && (
+            <div className="space-y-6 animate-fadeIn pb-12">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span className="text-[11px] font-black tracking-widest text-[#0C6237] uppercase">Store Configuration</span>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">Settings</h2>
+                  <p className="text-xs text-slate-500 font-medium">Manage your store identity, checkout and fulfillment preferences.</p>
+                </div>
+                <button
+                  onClick={() => {
+                    setSettingsSavedToast(true);
+                    setTimeout(() => setSettingsSavedToast(false), 3000);
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-[#0C4E3B] hover:bg-[#083b2d] text-white text-xs font-bold flex items-center gap-2 shadow-sm transition active:scale-95"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                  <span>Save changes</span>
+                </button>
+              </div>
+
+              {/* Sub-tabs */}
+              <div className="flex items-center gap-6 border-b border-slate-200/80 text-xs font-extrabold text-slate-500">
+                {['Store settings', 'Notifications', 'Security', 'Integrations'].map((tab, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSettingsTab(tab.toUpperCase().split(' ')[0] as any)}
+                    className={`pb-3 transition relative ${idx === 0 ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'}`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+
+              {/* Grid 2 Columns for Top 4 Cards */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Card 1: Store Information */}
+                <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                  <div>
+                    <h3 className="font-black text-base text-slate-900">Store information</h3>
+                    <p className="text-xs text-slate-400 font-medium">The details shown on receipts and customer communications.</p>
+                  </div>
+
+                  <div className="space-y-3 pt-1">
+                    <div>
+                      <label className="text-[11px] font-black text-slate-700 block mb-1">Store name</label>
+                      <input
+                        type="text"
+                        value={storeName}
+                        onChange={(e) => setStoreName(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[11px] font-black text-slate-700 block mb-1">Support email</label>
+                        <input
+                          type="email"
+                          value={supportEmail}
+                          onChange={(e) => setSupportEmail(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-black text-slate-700 block mb-1">Phone number</label>
+                        <input
+                          type="text"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-black text-slate-700 block mb-1">Store address</label>
+                      <input
+                        type="text"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-black text-slate-700 block mb-1">Storefront domain</label>
+                      <input
+                        type="text"
+                        value={domain}
+                        onChange={(e) => setDomain(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card 2: Regional Preferences */}
+                <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                  <div>
+                    <h3 className="font-black text-base text-slate-900">Regional preferences</h3>
+                    <p className="text-xs text-slate-400 font-medium">Local defaults for your customers and operations.</p>
+                  </div>
+
+                  <div className="space-y-3 pt-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[11px] font-black text-slate-700 block mb-1">Currency</label>
+                        <select
+                          value={currency}
+                          onChange={(e) => setCurrency(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold bg-white"
+                        >
+                          <option>LKR • Sri Lankan Rupee</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-black text-slate-700 block mb-1">Country</label>
+                        <select
+                          value={country}
+                          onChange={(e) => setCountry(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold bg-white"
+                        >
+                          <option>Sri Lanka</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[11px] font-black text-slate-700 block mb-1">Time zone</label>
+                      <select
+                        value={timezone}
+                        onChange={(e) => setTimezone(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold bg-white"
+                      >
+                        <option>Asia/Colombo (UTC +05:30)</option>
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[11px] font-black text-slate-700 block mb-1">Opening time</label>
+                        <select
+                          value={openingTime}
+                          onChange={(e) => setOpeningTime(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold bg-white"
+                        >
+                          <option>08:00 AM</option>
+                          <option>07:00 AM</option>
+                          <option>09:00 AM</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-black text-slate-700 block mb-1">Closing time</label>
+                        <select
+                          value={closingTime}
+                          onChange={(e) => setClosingTime(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold bg-white"
+                        >
+                          <option>08:00 PM</option>
+                          <option>09:00 PM</option>
+                          <option>10:00 PM</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100">
+                      <div>
+                        <p className="font-extrabold text-xs text-slate-900">Store accepting orders</p>
+                        <p className="text-[11px] text-slate-400">Turn off to temporarily pause checkout.</p>
+                      </div>
+                      <button
+                        onClick={() => setIsAcceptingOrders(!isAcceptingOrders)}
+                        className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out ${
+                          isAcceptingOrders ? 'bg-[#0C4E3B]' : 'bg-slate-300'
+                        }`}
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                            isAcceptingOrders ? 'translate-x-5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card 3: Payment Settings */}
+                <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-black text-base text-slate-900">Payment settings</h3>
+                      <p className="text-xs text-slate-400 font-medium">Choose how customers pay at checkout.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200/60">
+                    <span className="font-extrabold text-xs text-slate-900">PayHere payment gateway</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#E6F7EF] text-[#0C6237]">Connected</span>
+                  </div>
+
+                  <div className="space-y-4 pt-1">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-extrabold text-xs text-slate-900">Credit & debit cards</p>
+                        <p className="text-[11px] text-slate-400">Visa, Mastercard and local cards via PayHere.</p>
+                      </div>
+                      <button
+                        onClick={() => setCardPaymentsEnabled(!cardPaymentsEnabled)}
+                        className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out ${
+                          cardPaymentsEnabled ? 'bg-[#0C4E3B]' : 'bg-slate-300'
+                        }`}
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                            cardPaymentsEnabled ? 'translate-x-5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100">
+                      <div>
+                        <p className="font-extrabold text-xs text-slate-900">Cash on delivery</p>
+                        <p className="text-[11px] text-slate-400">Collect payment when the order arrives.</p>
+                      </div>
+                      <button
+                        onClick={() => setCodEnabled(!codEnabled)}
+                        className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out ${
+                          codEnabled ? 'bg-[#0C4E3B]' : 'bg-slate-300'
+                        }`}
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                            codEnabled ? 'translate-x-5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100">
+                      <div>
+                        <p className="font-extrabold text-xs text-slate-900">Bank transfer</p>
+                        <p className="text-[11px] text-slate-400">Requires manual payment verification.</p>
+                      </div>
+                      <button
+                        onClick={() => setBankTransferEnabled(!bankTransferEnabled)}
+                        className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out ${
+                          bankTransferEnabled ? 'bg-[#0C4E3B]' : 'bg-slate-300'
+                        }`}
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                            bankTransferEnabled ? 'translate-x-5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    <p className="text-[11px] text-slate-400 font-mono pt-2">
+                      Merchant ID: 12***754 • Live environment
+                    </p>
+                  </div>
+                </div>
+
+                {/* Card 4: Tax Settings */}
+                <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                  <div>
+                    <h3 className="font-black text-base text-slate-900">Tax settings</h3>
+                    <p className="text-xs text-slate-400 font-medium">Configure tax collection for your store.</p>
+                  </div>
+
+                  <div className="space-y-4 pt-1">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-extrabold text-xs text-slate-900">Collect VAT</p>
+                        <p className="text-[11px] text-slate-400">Currently off - Store is not VAT registered.</p>
+                      </div>
+                      <button
+                        onClick={() => setCollectVat(!collectVat)}
+                        className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out ${
+                          collectVat ? 'bg-[#0C4E3B]' : 'bg-slate-300'
+                        }`}
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                            collectVat ? 'translate-x-5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-100">
+                      <div>
+                        <label className="text-[11px] font-black text-slate-700 block mb-1">Standard tax rate (%)</label>
+                        <input
+                          type="text"
+                          value={standardTaxRate}
+                          onChange={(e) => setStandardTaxRate(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-black text-slate-700 block mb-1">VAT registration number</label>
+                        <input
+                          type="text"
+                          value={vatRegNumber}
+                          onChange={(e) => setVatRegNumber(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100">
+                      <div>
+                        <p className="font-extrabold text-xs text-slate-900">Prices include tax</p>
+                        <p className="text-[11px] text-slate-400">Display the final price on product listings.</p>
+                      </div>
+                      <button
+                        onClick={() => setPricesIncludeTax(!pricesIncludeTax)}
+                        className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors duration-200 ease-in-out ${
+                          pricesIncludeTax ? 'bg-[#0C4E3B]' : 'bg-slate-300'
+                        }`}
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
+                            pricesIncludeTax ? 'translate-x-5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    <p className="text-[11px] text-slate-400 font-medium pt-2">
+                      No VAT is currently added to customer orders.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 5: Delivery Settings (Thresholds) */}
+              <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                <div>
+                  <h3 className="font-black text-base text-slate-900">Delivery settings</h3>
+                  <p className="text-xs text-slate-400 font-medium">Set order thresholds and available delivery windows.</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
+                  <div>
+                    <label className="text-[11px] font-black text-slate-700 block mb-1">Minimum order (LKR)</label>
+                    <input
+                      type="text"
+                      value={minOrderLkr}
+                      onChange={(e) => setMinOrderLkr(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-black text-slate-700 block mb-1">Free delivery above (LKR)</label>
+                    <input
+                      type="text"
+                      value={freeDeliveryAboveLkr}
+                      onChange={(e) => setFreeDeliveryAboveLkr(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-black text-slate-700 block mb-1">Same-day order cutoff</label>
+                    <select
+                      value={sameDayCutoff}
+                      onChange={(e) => setSameDayCutoff(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold bg-white"
+                    >
+                      <option>02:00 PM</option>
+                      <option>03:00 PM</option>
+                      <option>04:00 PM</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-black text-slate-700 block mb-1">Delivery window length</label>
+                    <select
+                      value={deliveryWindowLength}
+                      onChange={(e) => setDeliveryWindowLength(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold bg-white"
+                    >
+                      <option>3 hours</option>
+                      <option>2 hours</option>
+                      <option>4 hours</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 6: Delivery Zones Table */}
+              <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-black text-base text-slate-900">Delivery zones</h3>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-black">4</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] text-slate-400">Updated today, 09:42 AM</span>
+                    <button className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white flex items-center gap-1.5 hover:bg-slate-50">
+                      <Download className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Export</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-100 text-[10px] font-black tracking-wider text-slate-400 uppercase">
+                        <th className="py-3 px-3 w-8"><input type="checkbox" className="rounded" /></th>
+                        <th className="py-3 px-3">ZONE</th>
+                        <th className="py-3 px-3">COVERAGE</th>
+                        <th className="py-3 px-3">DELIVERY FEE (LKR)</th>
+                        <th className="py-3 px-3">ESTIMATED DELIVERY</th>
+                        <th className="py-3 px-3">STATUS</th>
+                        <th className="py-3 px-3 text-right">ACTIONS</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {deliveryZones.map((z, idx) => (
+                        <tr key={idx} className="hover:bg-slate-50/80 transition">
+                          <td className="py-3.5 px-3"><input type="checkbox" className="rounded" /></td>
+                          <td className="py-3.5 px-3 font-extrabold text-slate-900">{z.zone}</td>
+                          <td className="py-3.5 px-3 text-slate-600 font-medium">{z.coverage}</td>
+                          <td className="py-3.5 px-3 font-extrabold text-slate-900">{z.fee}</td>
+                          <td className="py-3.5 px-3 font-bold text-slate-700">{z.eta}</td>
+                          <td className="py-3.5 px-3">
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#E6F7EF] text-[#0C6237]">
+                              {z.status}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-3 text-right">
+                            <button className="text-slate-400 hover:text-slate-700"><MoreHorizontal className="w-4 h-4 inline" /></button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-500">
+                  <span>Showing 1–4 of 4 results</span>
+                  <div className="flex items-center gap-2">
+                    <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold hover:bg-slate-50 disabled:opacity-50">Previous</button>
+                    <span className="px-2 font-bold text-slate-700">Page 1 of 1</span>
+                    <button className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-bold hover:bg-slate-50 disabled:opacity-50">Next</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Sticky Bar */}
+              <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-md flex items-center justify-between gap-4">
+                <span className="text-xs text-slate-500">
+                  Last saved 24 Oct 2026 at 04:20 PM by <strong className="text-slate-800">Nimali Perera</strong>
+                </span>
+                <div className="flex items-center gap-2.5">
+                  <button className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50">
+                    Discard changes
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSettingsSavedToast(true);
+                      setTimeout(() => setSettingsSavedToast(false), 3000);
+                    }}
+                    className="px-5 py-2 rounded-xl bg-[#0C4E3B] hover:bg-[#083b2d] text-white text-xs font-bold shadow-sm transition active:scale-95"
+                  >
+                    Save changes
+                  </button>
+                </div>
+              </div>
+
+              {settingsSavedToast && (
+                <div className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl bg-[#0C4E3B] text-white shadow-xl flex items-center gap-2 animate-bounce">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+                  <span className="text-xs font-bold">Settings saved successfully!</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* =========================================================================
+              VIEW 12: CUSTOMER REVIEWS (ACTIVE)
+          ========================================================================= */}
+          {activeMenu === 'reviews' && (
+            <div className="space-y-6 animate-fadeIn">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span className="text-[11px] font-black tracking-widest text-[#0C6237] uppercase">Shopper Feedback</span>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">Reviews & ratings</h2>
+                  <p className="text-xs text-slate-500 font-medium">Verified customer feedback and product sentiment analysis.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button className="px-4 py-2 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-2 shadow-xs transition">
+                    <Download className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Export reviews</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* 4 Metric Cards */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Average rating</span>
+                    <Star className="w-4 h-4 text-amber-500 fill-amber-400" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">4.9 / 5.0</p>
+                  <p className="text-[11px] font-bold text-emerald-600">Based on 842 ratings</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">5-Star reviews</span>
+                    <CheckCircle className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">88.4%</p>
+                  <p className="text-[11px] font-bold text-slate-500">744 glowing reviews</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Positive sentiment</span>
+                    <Sparkles className="w-4 h-4 text-[#0C6237]" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">96.8%</p>
+                  <p className="text-[11px] font-bold text-emerald-600">AI sentiment score</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-400">
+                    <span className="text-xs font-bold">Needs response</span>
+                    <MessageSquare className="w-4 h-4 text-orange-500" />
+                  </div>
+                  <p className="text-2xl font-black text-slate-900 tracking-tight">2</p>
+                  <p className="text-[11px] font-bold text-orange-600">Pending reply</p>
+                </div>
+              </div>
+
+              {/* Reviews Register */}
+              <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-black text-base text-slate-900">Verified shopper feedback</h3>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-black">4 shown</span>
+                  </div>
+                  <span className="text-[11px] text-slate-400">Updated today, 09:42 AM</span>
+                </div>
+
+                <div className="space-y-4">
+                  {customerReviews.map((rev) => (
+                    <div key={rev.id} className="p-4 rounded-2xl border border-slate-200/80 bg-slate-50/50 space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="font-extrabold text-xs text-slate-900">{rev.customer}</span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            Verified Buyer
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div className="flex text-amber-400">
+                            {[...Array(rev.rating)].map((_, i) => (
+                              <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+                            ))}
+                          </div>
+                          <span className="text-[11px] text-slate-400">• {rev.date}</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="text-[11px] font-extrabold text-[#0C6237] block mb-0.5">{rev.product}</span>
+                        <p className="text-xs text-slate-700 leading-relaxed font-medium">{rev.comment}</p>
+                      </div>
+
+                      {rev.reply && (
+                        <div className="p-3 rounded-xl bg-white border border-slate-200/60 text-xs">
+                          <p className="text-[11px] font-black text-slate-900 flex items-center gap-1.5 mb-0.5">
+                            <span className="w-2 h-2 rounded-full bg-[#0C6237]"></span>
+                            <span>Ceylon Foods Response:</span>
+                          </p>
+                          <p className="text-slate-600 font-medium">{rev.reply}</p>
+                        </div>
+                      )}
+
+                      {!rev.reply && (
+                        <div className="flex items-center gap-2 pt-1">
+                          <input
+                            type="text"
+                            placeholder="Type official store response..."
+                            value={replyInputs[rev.id] || ''}
+                            onChange={(e) => setReplyInputs({ ...replyInputs, [rev.id]: e.target.value })}
+                            className="flex-1 px-3 py-1.5 rounded-xl border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-[#0C4E3B]"
+                          />
+                          <button
+                            onClick={() => {
+                              if (replyInputs[rev.id]) {
+                                setCustomerReviews(customerReviews.map(r => r.id === rev.id ? { ...r, reply: replyInputs[rev.id] } : r));
+                                setReplyInputs({ ...replyInputs, [rev.id]: '' });
+                              }
+                            }}
+                            className="px-3.5 py-1.5 rounded-xl bg-[#0C4E3B] text-white text-xs font-bold flex items-center gap-1 hover:bg-[#083b2d]"
+                          >
+                            <Send className="w-3 h-3" />
+                            <span>Reply</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+<footer className="pt-6 pb-2 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
             <span>© 2026 Ceylon Foods • Operations workspace</span>
             <span>All times in Sri Lanka Standard Time • LKR</span>
           </footer>
         </main>
       </div>
 
-      {/* MODAL: ADD PRODUCT */}
+            {/* MODAL: ASSIGN DELIVERY */}
+      {isAssignDeliveryModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b">
+              <div>
+                <h3 className="font-black text-base text-slate-900">Assign Delivery Order</h3>
+                <p className="text-xs text-slate-400">Allocate order to on-duty delivery rider</p>
+              </div>
+              <button onClick={() => setIsAssignDeliveryModalOpen(false)}>
+                <X className="w-5 h-5 text-slate-400 hover:text-slate-600" />
+              </button>
+            </div>
+
+            {selectedDeliveryOrder && (
+              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs space-y-1.5">
+                <div className="flex justify-between font-black text-slate-900">
+                  <span>{selectedDeliveryOrder.orderNumber}</span>
+                  <span className="text-[#0C6237]">{selectedDeliveryOrder.payment}</span>
+                </div>
+                <p className="text-slate-700 font-bold">{selectedDeliveryOrder.customerName} ({selectedDeliveryOrder.customerPhone})</p>
+                <p className="text-slate-500">{selectedDeliveryOrder.address}</p>
+                <p className="text-[11px] font-bold text-slate-600">Window: {selectedDeliveryOrder.timeWindow}</p>
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <label className="text-xs font-black text-slate-700 block">Select Active Fleet Rider</label>
+              <select
+                value={deliveryRiderSelect}
+                onChange={(e) => setDeliveryRiderSelect(e.target.value)}
+                className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 bg-white"
+              >
+                <option value="Kasun Madushanka">Kasun Madushanka (Colombo & Rajagiriya - 5 active)</option>
+                <option value="Dinesh Kumara">Dinesh Kumara (Dehiwala & Nugegoda - 4 active)</option>
+                <option value="Pradeep Silva">Pradeep Silva (Colombo 03-07 - Available)</option>
+              </select>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t">
+              <button
+                type="button"
+                onClick={() => setIsAssignDeliveryModalOpen(false)}
+                className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (selectedDeliveryOrder) {
+                    setDeliveriesList(deliveriesList.map(d =>
+                      d.id === selectedDeliveryOrder.id
+                        ? { ...d, assignedRider: deliveryRiderSelect, status: 'On the road' }
+                        : d
+                    ));
+                  }
+                  setIsAssignDeliveryModalOpen(false);
+                }}
+                className="px-4 py-2 rounded-xl bg-[#0C4E3B] text-white text-xs font-bold hover:bg-[#083b2d]"
+              >
+                Confirm Allocation
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: CREATE PROMOTION */}
+      {isCreatePromoModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b">
+              <div>
+                <h3 className="font-black text-base text-slate-900">Create New Promotion</h3>
+                <p className="text-xs text-slate-400">Launch a discount voucher or campaign</p>
+              </div>
+              <button onClick={() => setIsCreatePromoModalOpen(false)}>
+                <X className="w-5 h-5 text-slate-400 hover:text-slate-600" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (newPromoTitle && newPromoCode) {
+                  setPromotionsRegister([
+                    {
+                      id: `promo-${Date.now()}`,
+                      name: newPromoTitle,
+                      code: newPromoCode.toUpperCase(),
+                      offer: newPromoOffer || '10% off order',
+                      dates: '26 Oct – 30 Nov 2026',
+                      usage: '0 / 250',
+                      minBasket: newPromoMin || 'LKR 3,000',
+                      status: 'Active'
+                    },
+                    ...promotionsRegister
+                  ]);
+                  setNewPromoTitle('');
+                  setNewPromoCode('');
+                  setNewPromoOffer('');
+                  setIsCreatePromoModalOpen(false);
+                }
+              }}
+              className="space-y-3"
+            >
+              <div>
+                <label className="text-[11px] font-black text-slate-700 block mb-1">Campaign Title</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Dambulla Harvest Special"
+                  value={newPromoTitle}
+                  onChange={(e) => setNewPromoTitle(e.target.value)}
+                  required
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] font-black text-slate-700 block mb-1">Promo Code</label>
+                <input
+                  type="text"
+                  placeholder="e.g. DAMBULLA15"
+                  value={newPromoCode}
+                  onChange={(e) => setNewPromoCode(e.target.value)}
+                  required
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-mono font-bold uppercase focus:border-[#0C4E3B] focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[11px] font-black text-slate-700 block mb-1">Discount Offer</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 15% • max LKR 750"
+                    value={newPromoOffer}
+                    onChange={(e) => setNewPromoOffer(e.target.value)}
+                    required
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-black text-slate-700 block mb-1">Minimum Basket</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. LKR 3,500"
+                    value={newPromoMin}
+                    onChange={(e) => setNewPromoMin(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t">
+                <button
+                  type="button"
+                  onClick={() => setIsCreatePromoModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-[#0C4E3B] text-white text-xs font-bold hover:bg-[#083b2d]"
+                >
+                  Publish Promotion
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: INVITE STAFF */}
+      {isInviteStaffModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b">
+              <div>
+                <h3 className="font-black text-base text-slate-900">Invite Team Member</h3>
+                <p className="text-xs text-slate-400">Grant role-based store access to staff</p>
+              </div>
+              <button onClick={() => setIsInviteStaffModalOpen(false)}>
+                <X className="w-5 h-5 text-slate-400 hover:text-slate-600" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (inviteName && inviteEmail) {
+                  setStaffDirectory([
+                    ...staffDirectory,
+                    {
+                      id: `st-${Date.now()}`,
+                      name: inviteName,
+                      roleSubtitle: 'Store team member',
+                      email: inviteEmail,
+                      role: inviteRole,
+                      lastActive: 'Invitation sent',
+                      twoFactor: '—',
+                      status: 'Invited'
+                    }
+                  ]);
+                  setInviteName('');
+                  setInviteEmail('');
+                  setIsInviteStaffModalOpen(false);
+                }
+              }}
+              className="space-y-3"
+            >
+              <div>
+                <label className="text-[11px] font-black text-slate-700 block mb-1">Full Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Charith Asalanka"
+                  value={inviteName}
+                  onChange={(e) => setInviteName(e.target.value)}
+                  required
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] font-black text-slate-700 block mb-1">Email Address</label>
+                <input
+                  type="email"
+                  placeholder="e.g. charith@ceylonfoods.lk"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  required
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-800 font-bold focus:border-[#0C4E3B] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] font-black text-slate-700 block mb-1">Role & Permissions</label>
+                <select
+                  value={inviteRole}
+                  onChange={(e) => setInviteRole(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 bg-white"
+                >
+                  <option value="Administrator">Administrator (Full Access)</option>
+                  <option value="Manager">Manager (Operations & Orders)</option>
+                  <option value="Catalog Editor">Catalog Editor (Products & Pricing)</option>
+                  <option value="Delivery Agent">Delivery Agent (Fleet Dispatch)</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t">
+                <button
+                  type="button"
+                  onClick={() => setIsInviteStaffModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-[#0C4E3B] text-white text-xs font-bold hover:bg-[#083b2d]"
+                >
+                  Send Invitation
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+{/* MODAL: ADD PRODUCT */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
