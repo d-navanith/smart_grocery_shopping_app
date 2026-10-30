@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Product, CartItem, CustomerUser, DeliveryZone, ClientOrder } from './types';
 import { INITIAL_PRODUCTS } from './initialProducts';
-import { HeaderNav } from './components/HeaderNav';
+import { AppPage, HeaderNav } from './components/HeaderNav';
 import { ShopView } from './components/ShopView';
 import { CartView } from './components/CartView';
 import { HomeView } from './components/HomeView';
 import { AiRecipeView } from './components/AiRecipeView';
 import { DeliveriesView } from './components/DeliveriesView';
+import { WishlistView } from './components/WishlistView';
+import { CheckoutView } from './components/CheckoutView';
+import { OrderCompletedView } from './components/OrderCompletedView';
+import { TrackOrderView } from './components/TrackOrderView';
+import { AccountView } from './components/AccountView';
 import { Footer } from './components/Footer';
 import { Modals } from './components/Modals';
 import { Language, TranslationDictionary, TRANSLATIONS } from './translations';
@@ -48,16 +53,24 @@ export default function ClientWebSupermarket() {
     return typeof window !== 'undefined' && localStorage.getItem('ceylonfoods_theme') === 'dark';
   });
 
-  const [currentPage, setCurrentPage] = useState<'HOME' | 'SHOP' | 'CART' | 'RECIPES' | 'DELIVERIES'>(() => {
+  const [currentPage, setCurrentPage] = useState<AppPage>(() => {
     if (typeof window !== 'undefined') {
       const p = new URLSearchParams(window.location.search).get('page');
       if (p === 'cart') return 'CART';
       if (p === 'recipes') return 'RECIPES';
       if (p === 'home') return 'HOME';
       if (p === 'deliveries' || p === 'orders') return 'DELIVERIES';
+      if (p === 'wishlist') return 'WISHLIST';
+      if (p === 'checkout') return 'CHECKOUT';
+      if (p === 'completed') return 'ORDER_COMPLETED';
+      if (p === 'track' || p === 'track-order') return 'TRACK_ORDER';
+      if (p === 'account') return 'ACCOUNT';
     }
     return 'SHOP';
   });
+
+  const [lastCompletedOrder, setLastCompletedOrder] = useState<ClientOrder | null>(null);
+  const [initialTrackNumber, setInitialTrackNumber] = useState<string>('');
 
   const [customerOrders, setCustomerOrders] = useState<ClientOrder[]>(() => {
     const saved = typeof window !== 'undefined' ? localStorage.getItem('ceylonfoods_client_orders') : null;
@@ -482,9 +495,10 @@ export default function ClientWebSupermarket() {
 
     setCustomerOrders(prev => [newPlacedOrder, ...prev]);
     setActiveOrder(newPlacedOrder);
+    setLastCompletedOrder(newPlacedOrder);
 
     setCart([]);
-    setIsTrackingModalOpen(true);
+    setCurrentPage('ORDER_COMPLETED');
   };
 
   const handleReorder = (order: ClientOrder) => {
@@ -497,6 +511,28 @@ export default function ClientWebSupermarket() {
       }
     });
     setCurrentPage('CART');
+  };
+
+  const handleMoveAllWishlistToCart = () => {
+    wishlist.forEach(id => {
+      const prod = products.find(p => p.id === id);
+      if (prod) {
+        handleAddToCart(prod, 1, '1kg');
+      }
+    });
+    setWishlist([]);
+    setCurrentPage('CART');
+  };
+
+  const handleClearWishlist = () => {
+    setWishlist([]);
+  };
+
+  const handleUpdateUser = (updated: Partial<CustomerUser>) => {
+    if (!currentUser) return;
+    const merged = { ...currentUser, ...updated };
+    setCurrentUser(merged);
+    localStorage.setItem('ceylonfoods_customer_user', JSON.stringify(merged));
   };
 
   return (
@@ -566,7 +602,90 @@ export default function ClientWebSupermarket() {
             isFreeDeliveryQualified={isFreeDeliveryQualified}
             currentUser={currentUser}
             onOpenCheckoutModal={handleCheckoutWithCod}
+            onNavigateCheckout={() => setCurrentPage('CHECKOUT')}
             onNavigateShop={() => setCurrentPage('SHOP')}
+            onNavigateHome={() => setCurrentPage('HOME')}
+            isDarkMode={isDarkMode}
+            t={t}
+          />
+        )}
+
+        {currentPage === 'CHECKOUT' && (
+          <CheckoutView
+            cart={cart}
+            subtotal={subtotal}
+            totalAmount={totalAmount}
+            selectedZone={selectedZone}
+            setSelectedZone={setSelectedZone}
+            deliveryZones={CEYLON_DELIVERY_ZONES}
+            effectiveDeliveryFee={effectiveDeliveryFee}
+            appliedPromo={appliedPromo}
+            onApplyPromo={handleApplyPromo}
+            onRemovePromo={() => setAppliedPromo(null)}
+            promoError={promoError}
+            currentUser={currentUser}
+            onSubmitOrder={handleCheckoutWithCod}
+            onNavigateCart={() => setCurrentPage('CART')}
+            onNavigateShop={() => setCurrentPage('SHOP')}
+            onNavigateHome={() => setCurrentPage('HOME')}
+            isDarkMode={isDarkMode}
+            t={t}
+          />
+        )}
+
+        {currentPage === 'ORDER_COMPLETED' && (
+          <OrderCompletedView
+            order={lastCompletedOrder || customerOrders[0]}
+            onNavigateTrackOrder={(orderNumber) => {
+              setInitialTrackNumber(orderNumber);
+              setCurrentPage('TRACK_ORDER');
+            }}
+            onNavigateDeliveries={() => setCurrentPage('DELIVERIES')}
+            onNavigateShop={() => setCurrentPage('SHOP')}
+            onOpenInvoiceModal={(ord) => {
+              setActiveOrder(ord);
+              setIsTrackingModalOpen(true);
+            }}
+            isDarkMode={isDarkMode}
+            t={t}
+          />
+        )}
+
+        {currentPage === 'WISHLIST' && (
+          <WishlistView
+            wishlistIds={wishlist}
+            products={products}
+            onToggleWishlist={handleToggleWishlist}
+            onAddToCart={handleAddToCart}
+            onMoveAllToCart={handleMoveAllWishlistToCart}
+            onClearWishlist={handleClearWishlist}
+            onNavigateShop={() => setCurrentPage('SHOP')}
+            onNavigateHome={() => setCurrentPage('HOME')}
+            isDarkMode={isDarkMode}
+            t={t}
+          />
+        )}
+
+        {currentPage === 'TRACK_ORDER' && (
+          <TrackOrderView
+            orders={customerOrders}
+            initialOrderNumber={initialTrackNumber}
+            onNavigateShop={() => setCurrentPage('SHOP')}
+            onNavigateHome={() => setCurrentPage('HOME')}
+            isDarkMode={isDarkMode}
+            t={t}
+          />
+        )}
+
+        {currentPage === 'ACCOUNT' && (
+          <AccountView
+            currentUser={currentUser}
+            onUpdateUser={handleUpdateUser}
+            onNavigateDeliveries={() => setCurrentPage('DELIVERIES')}
+            onLogout={() => {
+              setCurrentUser(null);
+              localStorage.removeItem('ceylonfoods_customer_user');
+            }}
             onNavigateHome={() => setCurrentPage('HOME')}
             isDarkMode={isDarkMode}
             t={t}

@@ -274,6 +274,115 @@ export interface TranslationDictionary {
   footerCourierItem4: string;
   footerCourierItem5: string;
   footerOrderDispatch: string;
+
+  // Wishlist
+  wishlistTitle: string;
+  wishlistSubtitle: string;
+  wishlistEmptyTitle: string;
+  wishlistEmptyDesc: string;
+  wishlistStartShopping: string;
+  wishlistMoveAllToCart: string;
+  wishlistClearAll: string;
+  wishlistInStock: string;
+  wishlistOutOfStock: string;
+  wishlistRemoveItem: string;
+  wishlistAddToCart: string;
+  wishlistRelatedTitle: string;
+  wishlistRelatedSubtitle: string;
+
+  // Checkout Page
+  checkoutPageTitle: string;
+  checkoutPageSubtitle: string;
+  checkoutBreadcrumb: string;
+  checkoutStepCart: string;
+  checkoutStepDetails: string;
+  checkoutStepPayment: string;
+  checkoutStepCompleted: string;
+  checkoutBillingTitle: string;
+  checkoutFullName: string;
+  checkoutPhone: string;
+  checkoutPhoneHint: string;
+  checkoutAddress: string;
+  checkoutAddressPlaceholder: string;
+  checkoutDeliveryZone: string;
+  checkoutBuildingDetails: string;
+  checkoutBuildingDetailsPlaceholder: string;
+  checkoutDeliveryTimeTitle: string;
+  checkoutSlotExpress: string;
+  checkoutSlotEvening: string;
+  checkoutSlotTomorrow: string;
+  checkoutNotesTitle: string;
+  checkoutNotesPlaceholder: string;
+  checkoutPaymentTitle: string;
+  checkoutCodTitle: string;
+  checkoutCodDesc: string;
+  checkoutCodCashChangeTitle: string;
+  checkoutCodCashChangeHint: string;
+  checkoutCodChangeLabel: string;
+  checkoutCardOnDeliveryTitle: string;
+  checkoutCardOnDeliveryDesc: string;
+  checkoutOrderSummaryTitle: string;
+  checkoutReviewItemsTitle: string;
+  checkoutPlaceOrderBtn: string;
+  checkoutPlacingOrderBtn: string;
+  checkoutGuaranteeTitle: string;
+  checkoutGuaranteeDesc: string;
+
+  // Order Completed
+  orderCompletedTitle: string;
+  orderCompletedSubtitle: string;
+  orderCompletedThankYou: string;
+  orderCompletedRefNumber: string;
+  orderCompletedCopyOrderNumber: string;
+  orderCompletedCopied: string;
+  orderCompletedNextStepsTitle: string;
+  orderCompletedStep1: string;
+  orderCompletedStep2: string;
+  orderCompletedStep3: string;
+  orderCompletedCodReminderTitle: string;
+  orderCompletedCodReminderDesc: string;
+  orderCompletedTrackOrderBtn: string;
+  orderCompletedDeliveriesBtn: string;
+  orderCompletedContinueShopBtn: string;
+  orderCompletedInvoiceBtn: string;
+
+  // Track Order Page
+  trackOrderTitle: string;
+  trackOrderSubtitle: string;
+  trackOrderBreadcrumb: string;
+  trackOrderSearchPlaceholder: string;
+  trackOrderBtn: string;
+  trackOrderEnterValidNumber: string;
+  trackOrderNotFound: string;
+  trackOrderNotFoundDesc: string;
+  trackOrderRecentOrders: string;
+  trackOrderQuickTrack: string;
+  trackOrderLiveEtaTitle: string;
+  trackOrderRouteBucharest: string;
+
+  // Account Page
+  accountTitle: string;
+  accountBreadcrumb: string;
+  accountTabPersonalInfo: string;
+  accountTabMyOrders: string;
+  accountTabAddresses: string;
+  accountTabPaymentMethod: string;
+  accountTabPassword: string;
+  accountTabLogout: string;
+  accountFirstName: string;
+  accountLastName: string;
+  accountEmail: string;
+  accountPhone: string;
+  accountGender: string;
+  accountGenderMale: string;
+  accountGenderFemale: string;
+  accountGenderOther: string;
+  accountAddressBookTitle: string;
+  accountPrimaryAddress: string;
+  accountUpdateChangesBtn: string;
+  accountChangesSaved: string;
+  accountCodPreferenceTitle: string;
+  accountCodPreferenceDesc: string;
 }
 
 export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
@@ -550,7 +659,116 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     footerCourierItem3: 'Romania Nationwide Sameday / Fan Courier',
     footerCourierItem4: 'Cash on Delivery (No Advance Payment)',
     footerCourierItem5: '100% Freshness & Quality Guaranteed',
-    footerOrderDispatch: 'Order Dispatch & Hotline: +40 721 345 678 (Daily 08:00 - 21:00)'
+    footerOrderDispatch: 'Order Dispatch & Hotline: +40 721 345 678 (Daily 08:00 - 21:00)',
+
+    // Wishlist
+    wishlistTitle: 'My Wishlist',
+    wishlistSubtitle: 'Saved authentic Ceylon staples, fresh veggies, and aromatic spices.',
+    wishlistEmptyTitle: 'Your Wishlist is Currently Empty',
+    wishlistEmptyDesc: 'Explore our authentic Sri Lankan grocery catalog in Bucharest and save your favorite items here.',
+    wishlistStartShopping: 'Start Shopping Ceylon Groceries',
+    wishlistMoveAllToCart: 'Move All to Cart',
+    wishlistClearAll: 'Clear Wishlist',
+    wishlistInStock: 'In Stock at Bucharest Hub',
+    wishlistOutOfStock: 'Currently Out of Stock',
+    wishlistRemoveItem: 'Remove from Wishlist',
+    wishlistAddToCart: 'Add to Cart',
+    wishlistRelatedTitle: 'Explore Related Ceylon Groceries',
+    wishlistRelatedSubtitle: 'Recommended for You',
+
+    // Checkout Page
+    checkoutPageTitle: 'Secure Checkout',
+    checkoutPageSubtitle: 'Cash on Delivery (Plata la Livrare) across Bucharest & Nationwide Romania',
+    checkoutBreadcrumb: 'Checkout',
+    checkoutStepCart: 'Cart',
+    checkoutStepDetails: 'Delivery Details',
+    checkoutStepPayment: 'Cash on Delivery',
+    checkoutStepCompleted: 'Order Completed',
+    checkoutBillingTitle: 'Delivery & Contact Information',
+    checkoutFullName: 'Full Name',
+    checkoutPhone: 'Phone Number (Romanian Mobile)',
+    checkoutPhoneHint: 'Courier will call this number upon arrival at your building.',
+    checkoutAddress: 'Street Name & Number in Romania',
+    checkoutAddressPlaceholder: 'e.g. Strada Mihai Eminescu nr. 42',
+    checkoutDeliveryZone: 'Delivery Zone / Sector',
+    checkoutBuildingDetails: 'Building, Staircase, Floor, Apartment, Intercom',
+    checkoutBuildingDetailsPlaceholder: 'e.g. Bl. 12, Sc. A, Et. 3, Ap. 14, Interfon 14',
+    checkoutDeliveryTimeTitle: 'Preferred Delivery Time Slot',
+    checkoutSlotExpress: 'Express Delivery (Glovo/Bolt)',
+    checkoutSlotEvening: 'Evening Delivery (18:00 - 20:00)',
+    checkoutSlotTomorrow: 'Next Morning (09:00 - 12:00)',
+    checkoutNotesTitle: 'Courier Delivery Notes (Optional)',
+    checkoutNotesPlaceholder: 'e.g. Leave with security / Ring intercom 14 / Prepare change',
+    checkoutPaymentTitle: 'Select Payment Method',
+    checkoutCodTitle: 'Cash on Delivery (Plata la Livrare)',
+    checkoutCodDesc: 'Pay in cash (Romanian Lei) directly to the delivery rider at your doorstep. No prepayment needed.',
+    checkoutCodCashChangeTitle: 'Cash Change Requirement (Optional)',
+    checkoutCodCashChangeHint: 'Specify the cash banknote you plan to hand the courier so the driver brings exact change.',
+    checkoutCodChangeLabel: 'Change to receive',
+    checkoutCardOnDeliveryTitle: 'Card on Delivery (POS Mobil Curier)',
+    checkoutCardOnDeliveryDesc: 'Pay with your contactless card on the courier\'s mobile POS terminal.',
+    checkoutOrderSummaryTitle: 'Order Summary',
+    checkoutReviewItemsTitle: 'Items in Your Order',
+    checkoutPlaceOrderBtn: 'Place Order with Cash on Delivery',
+    checkoutPlacingOrderBtn: 'Placing Your Order...',
+    checkoutGuaranteeTitle: '100% Authentic Ceylon Guarantee',
+    checkoutGuaranteeDesc: 'All products imported from Sri Lanka, packed fresh at our Bucharest hub and dispatched via Glovo/Bolt Express.',
+
+    // Order Completed
+    orderCompletedTitle: 'Order Placed Successfully!',
+    orderCompletedSubtitle: 'Your order has been registered and is being prepared for dispatch at our Bucharest supermarket.',
+    orderCompletedThankYou: 'Ayubowan & Multumim!',
+    orderCompletedRefNumber: 'Order Number',
+    orderCompletedCopyOrderNumber: 'Copy Order Number',
+    orderCompletedCopied: 'Copied!',
+    orderCompletedNextStepsTitle: 'Immediate Next Fulfillment Steps',
+    orderCompletedStep1: 'Our store team is picking your Ceylon rice, veggies, and spices from our Bucharest shelves.',
+    orderCompletedStep2: 'Supermarket admin calls courier dispatch (Glovo / Bolt Express) to pick up your parcel.',
+    orderCompletedStep3: 'When the courier arrives at our hub, admin records rider mobile to unlock your direct calling capability.',
+    orderCompletedCodReminderTitle: 'Cash on Delivery Reminder',
+    orderCompletedCodReminderDesc: 'Please prepare the exact cash amount in Romanian Lei (lei) to hand to the delivery courier upon arrival at your door.',
+    orderCompletedTrackOrderBtn: 'Track Your Order Live',
+    orderCompletedDeliveriesBtn: 'View in My Deliveries',
+    orderCompletedContinueShopBtn: 'Continue Shopping',
+    orderCompletedInvoiceBtn: 'View Official Invoice',
+
+    // Track Order Page
+    trackOrderTitle: 'Track Your Order',
+    trackOrderSubtitle: 'Enter your Order Number or phone number to see real-time fulfillment and rider dispatch status.',
+    trackOrderBreadcrumb: 'Track Your Order',
+    trackOrderSearchPlaceholder: 'Enter Order Number (e.g. CF-8921) or phone (+40...)',
+    trackOrderBtn: 'Track Order',
+    trackOrderEnterValidNumber: 'Please enter a valid order number or phone number.',
+    trackOrderNotFound: 'Order Not Found',
+    trackOrderNotFoundDesc: 'No active delivery was found with this reference. Please check your order number or contact our Bucharest hotline.',
+    trackOrderRecentOrders: 'Recent Orders',
+    trackOrderQuickTrack: 'Quick Track',
+    trackOrderLiveEtaTitle: 'Estimated Delivery Window',
+    trackOrderRouteBucharest: 'Bucharest Store Hub → Customer Doorstep',
+
+    // Account Page
+    accountTitle: 'My Account',
+    accountBreadcrumb: 'My Account',
+    accountTabPersonalInfo: 'Personal Information',
+    accountTabMyOrders: 'My Orders',
+    accountTabAddresses: 'Manage Address',
+    accountTabPaymentMethod: 'Payment Method',
+    accountTabPassword: 'Password Manager',
+    accountTabLogout: 'Log Out',
+    accountFirstName: 'First Name',
+    accountLastName: 'Last Name',
+    accountEmail: 'Email Address',
+    accountPhone: 'Phone Number',
+    accountGender: 'Gender',
+    accountGenderMale: 'Male',
+    accountGenderFemale: 'Female',
+    accountGenderOther: 'Other / Prefer not to say',
+    accountAddressBookTitle: 'Saved Delivery Addresses in Romania',
+    accountPrimaryAddress: 'Primary Delivery Address',
+    accountUpdateChangesBtn: 'Update Changes',
+    accountChangesSaved: 'Changes updated successfully!',
+    accountCodPreferenceTitle: 'Payment Preferences',
+    accountCodPreferenceDesc: 'Cash on Delivery (Plata la Livrare) is set as your default payment option for all orders in Romania.'
   },
 
   si: {
@@ -826,7 +1044,116 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     footerCourierItem3: 'රුමේනියාව පුරා Sameday / Fan Courier',
     footerCourierItem4: 'භාණ්ඩ ලැබුණු පසු මුදල් ගෙවීම (COD)',
     footerCourierItem5: '100% නැවුම්බව සහ සුරක්ෂිතතාවය',
-    footerOrderDispatch: 'ඇණවුම් මධ්‍යස්ථානය: +40 721 345 678 (දිනපතා පෙ.ව 08:00 - ප.ව 21:00)'
+    footerOrderDispatch: 'ඇණවුම් මධ්‍යස්ථානය: +40 721 345 678 (දිනපතා පෙ.ව 08:00 - ප.ව 21:00)',
+
+    // Wishlist
+    wishlistTitle: 'මගේ කැමැත්ත ලැයිස්තුව',
+    wishlistSubtitle: 'ඔබ තෝරාගත් අව්‍යාජ ලංකා සහල්, එළවළු සහ තුනපහ වර්ග.',
+    wishlistEmptyTitle: 'ඔබගේ කැමැත්ත ලැයිස්තුව හිස්ව පවතී',
+    wishlistEmptyDesc: 'බුකාරෙස්ට් සුපිරි වෙළඳසැලේ ඇති ලංකා ආහාර ද්‍රව්‍ය පිරික්සා මෙහි සුරකින්න.',
+    wishlistStartShopping: 'සාප්පු සවාරි ආරම්භ කරන්න',
+    wishlistMoveAllToCart: 'සියල්ල කරත්තයට එක්කරන්න',
+    wishlistClearAll: 'ලැයිස්තුව හිස් කරන්න',
+    wishlistInStock: 'බුකාරෙස්ට් ගබඩාවේ තොග ඇත',
+    wishlistOutOfStock: 'දැනට තොග අවසන්',
+    wishlistRemoveItem: 'ඉවත් කරන්න',
+    wishlistAddToCart: 'කරත්තයට එක්කරන්න',
+    wishlistRelatedTitle: 'වෙනත් ජනප්‍රිය ලංකා ආහාර ද්‍රව්‍ය',
+    wishlistRelatedSubtitle: 'ඔබට නිර්දේශිතයි',
+
+    // Checkout Page
+    checkoutPageTitle: 'සුරක්ෂිත ඇණවුම් කිරීම',
+    checkoutPageSubtitle: 'රුමේනියාව පුරා ගෙදරටම ලැබුණු පසු මුදල් ගෙවීම (Cash on Delivery)',
+    checkoutBreadcrumb: 'ඇණවුම් පිටුව',
+    checkoutStepCart: 'කරත්තය',
+    checkoutStepDetails: 'ලිපිනය සහ විස්තර',
+    checkoutStepPayment: 'මුදල් ගෙවීම (COD)',
+    checkoutStepCompleted: 'ඇණවුම සම්පූර්ණයි',
+    checkoutBillingTitle: 'බෙදාහැරීම් සහ සම්බන්ධතා තොරතුරු',
+    checkoutFullName: 'සම්පූර්ණ නම',
+    checkoutPhone: 'දුරකථන අංකය (රුමේනියානු ජංගම)',
+    checkoutPhoneHint: 'ධාවකයා ඔබගේ නිවසට පැමිණි විට මෙම අංකයට අමතනු ඇත.',
+    checkoutAddress: 'වීදියේ නම සහ අංකය',
+    checkoutAddressPlaceholder: 'උදා: Strada Mihai Eminescu nr. 42',
+    checkoutDeliveryZone: 'බෙදාහැරීමේ කලාපය / Sector',
+    checkoutBuildingDetails: 'ගොඩනැගිල්ල, පඩිපෙළ, මහල, නිවාස අංකය, ඉන්ටර්ෆෝන්',
+    checkoutBuildingDetailsPlaceholder: 'උදා: Bl. 12, Sc. A, Et. 3, Ap. 14, Interfon 14',
+    checkoutDeliveryTimeTitle: 'කැමති බෙදාහැරීමේ වේලාව',
+    checkoutSlotExpress: 'අධිවේගී බෙදාහැරීම (Glovo/Bolt)',
+    checkoutSlotEvening: 'සවස බෙදාහැරීම (18:00 - 20:00)',
+    checkoutSlotTomorrow: 'හෙට උදෑසන (09:00 - 12:00)',
+    checkoutNotesTitle: 'ධාවකයා සඳහා උපදෙස් (විකල්ප)',
+    checkoutNotesPlaceholder: 'උදා: ඉන්ටර්ෆෝන් 14 අමතන්න / මාරු කාසි රැගෙන එන්න',
+    checkoutPaymentTitle: 'ගෙවීම් ක්‍රමය තෝරන්න',
+    checkoutCodTitle: 'ගෙදරට ලැබුණු පසු මුදල් ගෙවීම (Cash on Delivery)',
+    checkoutCodDesc: 'නිවසටම පැමිණි පසු ධාවකයාට ලෙයි (Lei) වලින් මුදල් ගෙවන්න. කිසිදු පෙර ගෙවීමක් අවශ්‍ය නොවේ.',
+    checkoutCodCashChangeTitle: 'ඉතිරි මුදල් අවශ්‍යතාවය (විකල්ප)',
+    checkoutCodCashChangeHint: 'ඔබ ධාවකයාට දෙන මුදල් නෝට්ටුවේ වටිනාකම ඇතුළත් කළ විට ඔහු නිවැරදි ඉතිරි මුදල රැගෙන එයි.',
+    checkoutCodChangeLabel: 'ලැබිය යුතු ඉතිරි මුදල',
+    checkoutCardOnDeliveryTitle: 'කාඩ්පතෙන් ගෙවීම (POS Mobil)',
+    checkoutCardOnDeliveryDesc: 'ධාවකයා සතු ජංගම POS යන්ත්‍රය හරහා කාඩ්පතෙන් ගෙවන්න.',
+    checkoutOrderSummaryTitle: 'ඇණවුම් සාරාංශය',
+    checkoutReviewItemsTitle: 'ඇණවුමේ ඇති භාණ්ඩ',
+    checkoutPlaceOrderBtn: 'ඇණවුම තහවුරු කරන්න (COD)',
+    checkoutPlacingOrderBtn: 'ඇණවුම සකසමින් පවතී...',
+    checkoutGuaranteeTitle: '100% අව්‍යාජ ශ්‍රී ලාංකික නිෂ්පාදන සහතිකය',
+    checkoutGuaranteeDesc: 'ශ්‍රී ලංකාවෙන් ආනයනය කර බුකාරෙස්ට් ගබඩාවෙන් Glovo/Bolt හරහා ආරක්ෂිතව එවනු ලැබේ.',
+
+    // Order Completed
+    orderCompletedTitle: 'ඇණවුම සාර්ථකව සම්පූර්ණ විය!',
+    orderCompletedSubtitle: 'ඔබගේ ඇණවුම ලියාපදිංචි වී ඇති අතර බුකාරෙස්ට් සුපිරි වෙළඳසැලේදී පැකට් කරමින් පවතී.',
+    orderCompletedThankYou: 'ආයුබෝවන් සහ ස්තූතියි!',
+    orderCompletedRefNumber: 'ඇණවුම් අංකය',
+    orderCompletedCopyOrderNumber: 'අංකය පිටපත් කරන්න',
+    orderCompletedCopied: 'පිටපත් විය!',
+    orderCompletedNextStepsTitle: 'මීළඟ පියවර',
+    orderCompletedStep1: 'අපගේ වෙළඳසැල් සේවකයින් ඔබේ සහල්, එළවළු සහ තුනපහ එකතු කරමින් සිටී.',
+    orderCompletedStep2: 'සුපිරි වෙළඳසැල් පරිපාලක කුරියර් ධාවකයින් (Glovo/Bolt) අමතයි.',
+    orderCompletedStep3: 'ධාවකයා පැමිණි පසු ඔහුගේ දුරකථන අංකය සටහන් කර ඔබට ඇමතුම් ලබා ගැනීමේ හැකියාව විවෘත වේ.',
+    orderCompletedCodReminderTitle: 'මුදල් ගෙවීමේ මතක් කිරීම',
+    orderCompletedCodReminderDesc: 'ධාවකයා පැමිණි විට ගෙවීමට නියමිත නිවැරදි මුදල (Lei) ලෑස්ති කර තබා ගන්න.',
+    orderCompletedTrackOrderBtn: 'ඇණවුමේ සජීවී තත්ත්වය බලන්න',
+    orderCompletedDeliveriesBtn: 'මගේ ඇණවුම් පිටුවට යන්න',
+    orderCompletedContinueShopBtn: 'තවදුරටත් සාප්පු යන්න',
+    orderCompletedInvoiceBtn: 'නිල බිල්පත බලන්න',
+
+    // Track Order Page
+    trackOrderTitle: 'ඇණවුම සජීවීව පරීක්ෂා කරන්න',
+    trackOrderSubtitle: 'ඔබේ ඇණවුම් අංකය හෝ දුරකථන අංකය ඇතුළත් කර භාණ්ඩ ලැබීමේ තත්ත්වය පරීක්ෂා කරන්න.',
+    trackOrderBreadcrumb: 'ඇණවුම සොයන්න',
+    trackOrderSearchPlaceholder: 'ඇණවුම් අංකය (උදා: CF-8921) හෝ දුරකථනය (+40...)',
+    trackOrderBtn: 'සොයන්න',
+    trackOrderEnterValidNumber: 'වලංගු ඇණවුම් අංකයක් ඇතුළත් කරන්න.',
+    trackOrderNotFound: 'ඇණවුම සොයාගත නොහැකි විය',
+    trackOrderNotFoundDesc: 'මෙම අංකයට අදාළ ඇණවුමක් හමු නොවීය. කරුණාකර අංකය නැවත පරීක්ෂා කරන්න.',
+    trackOrderRecentOrders: 'මෑත ඇණවුම්',
+    trackOrderQuickTrack: 'ක්ෂණිකව බලන්න',
+    trackOrderLiveEtaTitle: 'බලාපොරොත්තු වන වේලාව',
+    trackOrderRouteBucharest: 'බුකාරෙස්ට් වෙළඳසැල → ඔබගේ නිවස',
+
+    // Account Page
+    accountTitle: 'මගේ ගිණුම',
+    accountBreadcrumb: 'මගේ ගිණුම',
+    accountTabPersonalInfo: 'පුද්ගලික තොරතුරු',
+    accountTabMyOrders: 'මගේ ඇණවුම්',
+    accountTabAddresses: 'ලිපිනයන් කළමනාකරණය',
+    accountTabPaymentMethod: 'ගෙවීම් ක්‍රම',
+    accountTabPassword: 'මුරපද කළමනාකරණය',
+    accountTabLogout: 'ඉවත් වන්න',
+    accountFirstName: 'මුල් නම',
+    accountLastName: 'වාසගම',
+    accountEmail: 'විද්‍යුත් තැපෑල',
+    accountPhone: 'දුරකථන අංකය',
+    accountGender: 'ස්ත්‍රී/පුරුෂ භාවය',
+    accountGenderMale: 'පුරුෂ',
+    accountGenderFemale: 'ස්ත්‍රී',
+    accountGenderOther: 'වෙනත්',
+    accountAddressBookTitle: 'රුමේනියාවේ ඔබගේ සුරකින ලද ලිපිනයන්',
+    accountPrimaryAddress: 'ප්‍රධාන බෙදාහැරීම් ලිපිනය',
+    accountUpdateChangesBtn: 'වෙනස්කම් සුරකින්න',
+    accountChangesSaved: 'වෙනස්කම් සාර්ථකව සුරකින ලදී!',
+    accountCodPreferenceTitle: 'ගෙවීම් මනාපයන්',
+    accountCodPreferenceDesc: 'රුමේනියාවේ සියලුම ඇණවුම් සඳහා Cash on Delivery ප්‍රධාන ගෙවීම් ක්‍රමය ලෙස සකසා ඇත.'
   },
 
   ro: {
@@ -1102,7 +1429,116 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     footerCourierItem3: 'Livrare Națională Sameday / Fan Courier',
     footerCourierItem4: 'Plata Cash la Livrare (Ramburs)',
     footerCourierItem5: 'Garanție Prospețime 100%',
-    footerOrderDispatch: 'Dispecerat Comenzi: +40 721 345 678 (Zilnic 08:00 - 21:00)'
+    footerOrderDispatch: 'Dispecerat Comenzi: +40 721 345 678 (Zilnic 08:00 - 21:00)',
+
+    // Wishlist
+    wishlistTitle: 'Produse Favorite',
+    wishlistSubtitle: 'Alimente autentice din Sri Lanka salvate: orez tradițional, legume proaspete și condimente aromate.',
+    wishlistEmptyTitle: 'Lista de Favorite este Goală',
+    wishlistEmptyDesc: 'Descoperă catalogul nostru cu produse din Sri Lanka din București și salvează articolele favorite aici.',
+    wishlistStartShopping: 'Începe Cumpărăturile',
+    wishlistMoveAllToCart: 'Adaugă Tot în Coș',
+    wishlistClearAll: 'Golește Favorite',
+    wishlistInStock: 'În Stoc la Depozitul din București',
+    wishlistOutOfStock: 'Stoc Momentan Epuizat',
+    wishlistRemoveItem: 'Șterge din Favorite',
+    wishlistAddToCart: 'Adaugă în Coș',
+    wishlistRelatedTitle: 'Explorează Produse Asemănătoare din Ceylon',
+    wishlistRelatedSubtitle: 'Recomandat pentru Tine',
+
+    // Checkout Page
+    checkoutPageTitle: 'Finalizare Comandă Securizată',
+    checkoutPageSubtitle: 'Plata la Livrare (Cash on Delivery) în București și în toată România',
+    checkoutBreadcrumb: 'Finalizare Comandă',
+    checkoutStepCart: 'Coș Cumpărături',
+    checkoutStepDetails: 'Detalii Livrare',
+    checkoutStepPayment: 'Plata la Livrare',
+    checkoutStepCompleted: 'Comandă Finalizată',
+    checkoutBillingTitle: 'Informații de Contact & Adresă Livrare',
+    checkoutFullName: 'Nume & Prenume',
+    checkoutPhone: 'Număr de Telefon (Mobil România)',
+    checkoutPhoneHint: 'Curierul va apela acest număr la sosirea la adresa indicată.',
+    checkoutAddress: 'Numele Străzii și Numărul',
+    checkoutAddressPlaceholder: 'ex: Strada Mihai Eminescu nr. 42',
+    checkoutDeliveryZone: 'Zonă Livrare / Sector București',
+    checkoutBuildingDetails: 'Bloc, Scară, Etaj, Apartament, Interfon',
+    checkoutBuildingDetailsPlaceholder: 'ex: Bl. 12, Sc. A, Et. 3, Ap. 14, Interfon 14',
+    checkoutDeliveryTimeTitle: 'Interval Preferat de Livrare',
+    checkoutSlotExpress: 'Livrare Express (Glovo/Bolt)',
+    checkoutSlotEvening: 'Livrare de Seară (18:00 - 20:00)',
+    checkoutSlotTomorrow: 'Mâine Dimineață (09:00 - 12:00)',
+    checkoutNotesTitle: 'Instrucțiuni pentru Curier (Opțional)',
+    checkoutNotesPlaceholder: 'ex: Lăsați la portar / Sunați la interfon 14 / Pregătiți rest',
+    checkoutPaymentTitle: 'Alege Modalitatea de Plată',
+    checkoutCodTitle: 'Plata Cash la Livrare (Ramburs)',
+    checkoutCodDesc: 'Plătești în numerar (lei) direct curierului când îți aduce coletul la ușă. Fără plată în avans.',
+    checkoutCodCashChangeTitle: 'Calcul Rest Bancnotă (Opțional)',
+    checkoutCodCashChangeHint: 'Indică suma cu care vei plăti pentru ca șoferul să aducă restul exact pregătit.',
+    checkoutCodChangeLabel: 'Rest de primit',
+    checkoutCardOnDeliveryTitle: 'Plata cu Cardul la Livrare (POS Mobil Curier)',
+    checkoutCardOnDeliveryDesc: 'Plătești contactless cu cardul la POS-ul mobil adus de curier.',
+    checkoutOrderSummaryTitle: 'Sumar Comandă',
+    checkoutReviewItemsTitle: 'Produse Comandate',
+    checkoutPlaceOrderBtn: 'Plasează Comanda cu Plata la Livrare',
+    checkoutPlacingOrderBtn: 'Se plasează comanda...',
+    checkoutGuaranteeTitle: 'Garanție 100% Produse Autentice din Ceylon',
+    checkoutGuaranteeDesc: 'Toate produsele sunt importate direct din Sri Lanka, ambalate la hub-ul din București și expediate prin Glovo/Bolt.',
+
+    // Order Completed
+    orderCompletedTitle: 'Comandă Plasată cu Succes!',
+    orderCompletedSubtitle: 'Comanda ta a fost înregistrată și se pregătește pentru expediere la supermarketul nostru din București.',
+    orderCompletedThankYou: 'Ayubowan & Mulțumim!',
+    orderCompletedRefNumber: 'Număr Comandă',
+    orderCompletedCopyOrderNumber: 'Copiază Numărul Comenzii',
+    orderCompletedCopied: 'Copiat!',
+    orderCompletedNextStepsTitle: 'Pașii Imediați de Livrare',
+    orderCompletedStep1: 'Echipa noastră împachetează orezul Keeri Samba, legumele proaspete și condimentele din depozit.',
+    orderCompletedStep2: 'Dispeceratul magazinului apelează curierul partener (Glovo / Bolt Express) pentru ridicare.',
+    orderCompletedStep3: 'Când curierul ajunge la magazin, adminul introduce numărul său de telefon pentru a debloca apelul direct.',
+    orderCompletedCodReminderTitle: 'Reamintire Plată la Livrare (Cash)',
+    orderCompletedCodReminderDesc: 'Vă rugăm să pregătiți suma exactă în lei pentru curier la sosirea acestuia la ușa dumneavoastră.',
+    orderCompletedTrackOrderBtn: 'Urmărește Comanda în Timp Real',
+    orderCompletedDeliveriesBtn: 'Vezi în Comenzile Mele',
+    orderCompletedContinueShopBtn: 'Continuă Cumpărăturile',
+    orderCompletedInvoiceBtn: 'Vezi Factura Fiscală',
+
+    // Track Order Page
+    trackOrderTitle: 'Urmărește Comanda',
+    trackOrderSubtitle: 'Introdu numărul comenzii sau numărul de telefon pentru a vedea stadiul livrării și curierul alocat.',
+    trackOrderBreadcrumb: 'Urmărește Comanda',
+    trackOrderSearchPlaceholder: 'Introdu Număr Comandă (ex: CF-8921) sau telefon (+40...)',
+    trackOrderBtn: 'Caută Comandă',
+    trackOrderEnterValidNumber: 'Vă rugăm să introduceți un număr valid de comandă sau telefon.',
+    trackOrderNotFound: 'Comanda Nu a Fost Găsită',
+    trackOrderNotFoundDesc: 'Nu am găsit nicio livrare activă cu aceste date. Verificați numărul sau sunați la hotline-ul nostru din București.',
+    trackOrderRecentOrders: 'Comenzi Recente',
+    trackOrderQuickTrack: 'Urmărire Rapidă',
+    trackOrderLiveEtaTitle: 'Interval Estimat de Sosire',
+    trackOrderRouteBucharest: 'Hub Magazin București → Adresa Ta',
+
+    // Account Page
+    accountTitle: 'Contul Meu',
+    accountBreadcrumb: 'Contul Meu',
+    accountTabPersonalInfo: 'Informații Personale',
+    accountTabMyOrders: 'Comenzile Mele',
+    accountTabAddresses: 'Adrese de Livrare',
+    accountTabPaymentMethod: 'Metode de Plată',
+    accountTabPassword: 'Securitate & Parolă',
+    accountTabLogout: 'Deconectare',
+    accountFirstName: 'Prenume',
+    accountLastName: 'Nume',
+    accountEmail: 'Adresă Email',
+    accountPhone: 'Număr Telefon',
+    accountGender: 'Gen',
+    accountGenderMale: 'Masculin',
+    accountGenderFemale: 'Feminin',
+    accountGenderOther: 'Altul / Nu doresc să menționez',
+    accountAddressBookTitle: 'Adrese Salvate în România',
+    accountPrimaryAddress: 'Adresă Principală de Livrare',
+    accountUpdateChangesBtn: 'Salvează Modificările',
+    accountChangesSaved: 'Modificările au fost salvate cu succes!',
+    accountCodPreferenceTitle: 'Preferințe de Plată',
+    accountCodPreferenceDesc: 'Plata la Livrare (Cash on Delivery) este setată ca metodă implicită pentru toate comenzile din România.'
   }
 };
 

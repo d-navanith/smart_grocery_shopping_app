@@ -11,8 +11,10 @@ import {
 } from 'lucide-react';
 import { TranslationDictionary } from '../translations';
 
+import { AppPage } from './HeaderNav';
+
 interface FooterProps {
-  onNavigatePage: (page: 'HOME' | 'SHOP' | 'CART' | 'RECIPES' | 'DELIVERIES') => void;
+  onNavigatePage: (page: AppPage) => void;
   onSelectCategory: (cat: string) => void;
   t: TranslationDictionary;
 }
@@ -168,13 +170,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigatePage('CART')} className="hover:text-white transition">
-                  {t.tabCart}
+                <button onClick={() => onNavigatePage('WISHLIST')} className="hover:text-white transition text-rose-300">
+                  ❤️ {t.wishlistTitle}
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigatePage('RECIPES')} className="hover:text-white transition">
-                  {t.tabRecipes}
+                <button onClick={() => onNavigatePage('TRACK_ORDER')} className="hover:text-white transition text-emerald-300">
+                  🚚 {t.trackOrderTitle}
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigatePage('ACCOUNT')} className="hover:text-white transition">
+                  👤 {t.accountTitle}
                 </button>
               </li>
               <li>

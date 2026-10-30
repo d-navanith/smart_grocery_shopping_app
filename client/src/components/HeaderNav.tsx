@@ -23,9 +23,21 @@ import {
 import { CustomerUser, CartItem } from '../types';
 import { Language, TranslationDictionary, LANGUAGE_OPTIONS } from '../translations';
 
+export type AppPage =
+  | 'HOME'
+  | 'SHOP'
+  | 'CART'
+  | 'CHECKOUT'
+  | 'ORDER_COMPLETED'
+  | 'WISHLIST'
+  | 'TRACK_ORDER'
+  | 'DELIVERIES'
+  | 'RECIPES'
+  | 'ACCOUNT';
+
 interface HeaderNavProps {
-  currentPage: 'HOME' | 'SHOP' | 'CART' | 'RECIPES' | 'DELIVERIES';
-  setCurrentPage: (page: 'HOME' | 'SHOP' | 'CART' | 'RECIPES' | 'DELIVERIES') => void;
+  currentPage: AppPage;
+  setCurrentPage: (page: AppPage) => void;
   selectedCategory: string;
   setSelectedCategory: (cat: string) => void;
   searchQuery: string;
@@ -68,7 +80,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   t,
   ongoingDeliveriesCount = 0
 }) => {
-  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(() => typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('menu') === 'open');
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -261,11 +273,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           {/* Header Action Icons: Wishlist, Cart with Lei display */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <button
-              onClick={() => {
-                if (currentPage !== 'SHOP') setCurrentPage('SHOP');
-              }}
+              onClick={() => setCurrentPage('WISHLIST')}
               className="relative p-2 rounded-full hover:bg-emerald-800/80 text-white transition flex items-center justify-center"
-              title={t.wishlistTooltip}
+              title={t.wishlistTitle}
             >
               <Heart className="w-5 h-5" />
               {wishlistCount > 0 && (
@@ -301,9 +311,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             {currentUser ? (
               <div className="flex items-center gap-2 bg-emerald-900/60 border border-emerald-700/60 pl-2 pr-1.5 py-1 rounded-full text-xs">
                 <div
-                  onClick={() => setCurrentPage('DELIVERIES')}
+                  onClick={() => setCurrentPage('ACCOUNT')}
                   className="flex items-center gap-2 cursor-pointer hover:opacity-90"
-                  title="Vezi Livrările și Istoricul Meu"
+                  title={t.accountTitle}
                 >
                   <div className="w-7 h-7 rounded-full bg-[#E5A91A] text-amber-950 font-black flex items-center justify-center text-xs">
                     {currentUser.name.charAt(0).toUpperCase()}
@@ -344,49 +354,145 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
       <div className={`border-b transition ${isDarkMode ? 'bg-[#121614] border-zinc-800' : 'bg-white border-slate-200 shadow-xs'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-2 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6">
-            {/* Golden Yellow Category Button */}
-            <div className="relative">
-              <button
-                onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
-                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-[#E5A91A] to-amber-500 hover:from-amber-500 hover:to-amber-600 text-amber-950 font-black text-xs shadow-md shadow-amber-900/10 transition active:scale-95"
-              >
-                <span className="text-sm">🗂️</span>
-                <span>{t.browseCategories}</span>
-                <ChevronDown className="w-3.5 h-3.5" />
-              </button>
+              {/* Golden Yellow Category Button with Modern Figma Mega Menu */}
+              <div className="relative">
+                <button
+                  onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
+                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-[#E5A91A] to-amber-500 hover:from-amber-500 hover:to-amber-600 text-amber-950 font-black text-xs shadow-md shadow-amber-900/10 transition active:scale-95"
+                >
+                  <span className="text-sm">🗂️</span>
+                  <span>{t.browseCategories}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isCategoryMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
 
-              {isCategoryMenuOpen && (
-                <div className="absolute top-full left-0 mt-2 w-64 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl py-2 z-50 animate-fadeIn">
-                  {[
-                    { key: 'All Categories', label: t.allCategories, icon: '🛒' },
-                    { key: 'Staples & Grains', label: t.catRice, icon: '🌾' },
-                    { key: 'Fruits & Veg', label: t.catVeg, icon: '🍆' },
-                    { key: 'Pantry', label: t.catSpices, icon: '🌶️' },
-                    { key: 'Dairy & Eggs', label: t.catDairy, icon: '🥛' },
-                    { key: 'Bakery', label: t.catBakery, icon: '🥖' },
-                    { key: 'Beverages', label: t.catTea, icon: '☕' },
-                    { key: 'Snacks', label: t.catSnacks, icon: '🍪' }
-                  ].map((c) => (
-                    <div
-                      key={c.key}
-                      onClick={() => {
-                        const val = c.key === 'All Categories' ? 'All' : c.key;
-                        setSelectedCategory(val);
-                        setCurrentPage('SHOP');
-                        setIsCategoryMenuOpen(false);
-                      }}
-                      className="px-4 py-2 text-xs font-bold text-slate-700 dark:text-zinc-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-[#0A6847] dark:hover:text-[#78F9B8] cursor-pointer transition flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <span className="text-sm">{c.icon}</span>
-                        <span>{c.label}</span>
+                {isCategoryMenuOpen && (
+                  <div className="absolute top-full left-0 mt-3 w-[840px] max-w-[95vw] rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl p-6 z-50 animate-fadeIn text-slate-800 dark:text-zinc-100">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                      
+                      {/* Column 1: Rice, Grains & Dhal */}
+                      <div className="space-y-3">
+                        <div
+                          onClick={() => {
+                            setSelectedCategory('Staples & Grains');
+                            setCurrentPage('SHOP');
+                            setIsCategoryMenuOpen(false);
+                          }}
+                          className="font-black text-xs uppercase tracking-wider text-[#0A6847] dark:text-[#78F9B8] pb-1 border-b border-slate-100 dark:border-zinc-800 cursor-pointer flex items-center justify-between hover:underline"
+                        >
+                          <span>🌾 {t.catRice}</span>
+                          <span className="text-[10px]">→</span>
+                        </div>
+                        <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
+                          {['Araliya Keeri Samba (5kg)', 'White Raw Kakulu Rice', 'Traditional Red Raw Rice', 'Mysore Red Split Dhal (1kg)', 'Pol Roti & String Hopper Flour'].map(item => (
+                            <li
+                              key={item}
+                              onClick={() => {
+                                setSelectedCategory('Staples & Grains');
+                                setCurrentPage('SHOP');
+                                setIsCategoryMenuOpen(false);
+                              }}
+                              className="hover:text-[#0A6847] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
+                            >
+                              <span className="text-[10px] text-[#E5A91A]">•</span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                      <span className="text-[10px] text-slate-400">→</span>
+
+                      {/* Column 2: Ceylon Fresh Vegetables */}
+                      <div className="space-y-3">
+                        <div
+                          onClick={() => {
+                            setSelectedCategory('Fruits & Veg');
+                            setCurrentPage('SHOP');
+                            setIsCategoryMenuOpen(false);
+                          }}
+                          className="font-black text-xs uppercase tracking-wider text-[#0A6847] dark:text-[#78F9B8] pb-1 border-b border-slate-100 dark:border-zinc-800 cursor-pointer flex items-center justify-between hover:underline"
+                        >
+                          <span>🍆 {t.catVeg}</span>
+                          <span className="text-[10px]">→</span>
+                        </div>
+                        <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
+                          {['Sri Lankan Purple Brinjal (Wambatu)', 'Fresh Lady\'s Finger (Bandakka)', 'Bitter Gourd (Karavila)', 'Snake Gourd (Pathola)', 'Fresh Green Hot Chillies'].map(item => (
+                            <li
+                              key={item}
+                              onClick={() => {
+                                setSelectedCategory('Fruits & Veg');
+                                setCurrentPage('SHOP');
+                                setIsCategoryMenuOpen(false);
+                              }}
+                              className="hover:text-[#0A6847] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
+                            >
+                              <span className="text-[10px] text-[#E5A91A]">•</span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Column 3: Spices, Coconut & Tea */}
+                      <div className="space-y-3">
+                        <div
+                          onClick={() => {
+                            setSelectedCategory('Pantry');
+                            setCurrentPage('SHOP');
+                            setIsCategoryMenuOpen(false);
+                          }}
+                          className="font-black text-xs uppercase tracking-wider text-[#0A6847] dark:text-[#78F9B8] pb-1 border-b border-slate-100 dark:border-zinc-800 cursor-pointer flex items-center justify-between hover:underline"
+                        >
+                          <span>🌶️ {t.catSpices}</span>
+                          <span className="text-[10px]">→</span>
+                        </div>
+                        <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
+                          {['Roasted Ceylon Curry Powder', 'Jaffna Hot Curry Powder', 'Pure Ceylon Cinnamon Quills', 'Dilmah Single Origin BOPF Tea', 'Rich Coconut Milk & Cream'].map(item => (
+                            <li
+                              key={item}
+                              onClick={() => {
+                                setSelectedCategory('Pantry');
+                                setCurrentPage('SHOP');
+                                setIsCategoryMenuOpen(false);
+                              }}
+                              className="hover:text-[#0A6847] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
+                            >
+                              <span className="text-[10px] text-[#E5A91A]">•</span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Column 4: Promotional Banner Card (Matching Figma Reference) */}
+                      <div className="rounded-2xl bg-gradient-to-br from-[#E5A91A] via-amber-400 to-amber-500 p-5 text-amber-950 flex flex-col justify-between shadow-lg relative overflow-hidden">
+                        <div className="space-y-1 relative z-10">
+                          <span className="px-2 py-0.5 rounded-full bg-amber-900/20 text-amber-950 text-[10px] font-black uppercase tracking-wider">
+                            Special Offer
+                          </span>
+                          <h4 className="font-black text-base leading-tight mt-1">
+                            20% Off on Fresh Ceylon Veggies
+                          </h4>
+                          <p className="text-[11px] font-medium opacity-90">
+                            Cash on Delivery in Bucharest & Ilfov.
+                          </p>
+                        </div>
+
+                        <div className="mt-4 pt-2 relative z-10">
+                          <button
+                            onClick={() => {
+                              setSelectedCategory('Fruits & Veg');
+                              setCurrentPage('SHOP');
+                              setIsCategoryMenuOpen(false);
+                            }}
+                            className="w-full py-2.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black shadow transition active:scale-95"
+                          >
+                            Shop Vegetables Now →
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                  </div>
+                )}
+              </div>
 
             {/* Navigation Links with Premium Icons */}
             <nav className="hidden lg:flex items-center gap-2 xl:gap-3 text-xs font-black text-slate-700 dark:text-zinc-300">
@@ -460,6 +566,37 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               >
                 <span className="text-sm">🌶️</span>
                 <span>{t.tabSpices}</span>
+              </button>
+
+              {/* Wishlist Link with Heart Badge */}
+              <button
+                onClick={() => setCurrentPage('WISHLIST')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                  currentPage === 'WISHLIST'
+                    ? 'bg-rose-500/10 text-rose-700 dark:text-rose-300 ring-1 ring-rose-500/30 shadow-xs'
+                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-rose-600'
+                }`}
+              >
+                <span className="text-sm">❤️</span>
+                <span>{t.wishlistTitle}</span>
+                {wishlistCount > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[9px] font-black">
+                    {wishlistCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Track Order Direct Link */}
+              <button
+                onClick={() => setCurrentPage('TRACK_ORDER')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                  currentPage === 'TRACK_ORDER'
+                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
+                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
+                }`}
+              >
+                <span className="text-sm">🚚</span>
+                <span>{t.trackOrderTitle}</span>
               </button>
 
               <button

@@ -36,6 +36,7 @@ interface CartViewProps {
   isFreeDeliveryQualified: boolean;
   currentUser: CustomerUser | null;
   onOpenCheckoutModal: (orderPayload: { address: string; phone: string; note: string; paymentMethod: string }) => void;
+  onNavigateCheckout?: () => void;
   onNavigateShop: () => void;
   onNavigateHome: () => void;
   isDarkMode: boolean;
@@ -60,6 +61,7 @@ export const CartView: React.FC<CartViewProps> = ({
   isFreeDeliveryQualified,
   currentUser,
   onOpenCheckoutModal,
+  onNavigateCheckout,
   onNavigateShop,
   onNavigateHome,
   isDarkMode,
@@ -83,6 +85,10 @@ export const CartView: React.FC<CartViewProps> = ({
   };
 
   const handleProceedCheckout = () => {
+    if (onNavigateCheckout) {
+      onNavigateCheckout();
+      return;
+    }
     if (!streetAddress.trim() || !customerPhone.trim()) {
       setFormError('Vă rugăm să introduceți adresa completă din România și numărul de telefon.');
       return;
@@ -471,13 +477,17 @@ export const CartView: React.FC<CartViewProps> = ({
                 </div>
               </div>
 
-              {/* Submit COD Order Button */}
+              {/* Submit COD Order Button / Proceed to Dedicated Checkout */}
               <button
                 onClick={handleProceedCheckout}
                 className="w-full py-4 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-98"
               >
-                <Lock className="w-4 h-4" />
-                <span>{t.placeOrderBtn} ({totalAmount.toFixed(2)} lei)</span>
+                <Lock className="w-4 h-4 text-[#FFB800]" />
+                <span>
+                  {onNavigateCheckout
+                    ? `${t.checkoutPageTitle} (${totalAmount.toFixed(2)} lei) →`
+                    : `${t.placeOrderBtn} (${totalAmount.toFixed(2)} lei)`}
+                </span>
               </button>
 
               <div className="pt-2 text-center space-y-1">
