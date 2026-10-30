@@ -24,8 +24,8 @@ import { CustomerUser, CartItem } from '../types';
 import { Language, TranslationDictionary, LANGUAGE_OPTIONS } from '../translations';
 
 interface HeaderNavProps {
-  currentPage: 'HOME' | 'SHOP' | 'CART' | 'RECIPES';
-  setCurrentPage: (page: 'HOME' | 'SHOP' | 'CART' | 'RECIPES') => void;
+  currentPage: 'HOME' | 'SHOP' | 'CART' | 'RECIPES' | 'DELIVERIES';
+  setCurrentPage: (page: 'HOME' | 'SHOP' | 'CART' | 'RECIPES' | 'DELIVERIES') => void;
   selectedCategory: string;
   setSelectedCategory: (cat: string) => void;
   searchQuery: string;
@@ -43,6 +43,7 @@ interface HeaderNavProps {
   currentLanguage: Language;
   onLanguageChange: (lang: Language) => void;
   t: TranslationDictionary;
+  ongoingDeliveriesCount?: number;
 }
 
 export const HeaderNav: React.FC<HeaderNavProps> = ({
@@ -64,7 +65,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   subtotal,
   currentLanguage,
   onLanguageChange,
-  t
+  t,
+  ongoingDeliveriesCount = 0
 }) => {
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
@@ -298,12 +300,18 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             {/* User Account / Profile */}
             {currentUser ? (
               <div className="flex items-center gap-2 bg-emerald-900/60 border border-emerald-700/60 pl-2 pr-1.5 py-1 rounded-full text-xs">
-                <div className="w-7 h-7 rounded-full bg-[#E5A91A] text-amber-950 font-black flex items-center justify-center text-xs">
-                  {currentUser.name.charAt(0).toUpperCase()}
+                <div
+                  onClick={() => setCurrentPage('DELIVERIES')}
+                  className="flex items-center gap-2 cursor-pointer hover:opacity-90"
+                  title="Vezi Livrările și Istoricul Meu"
+                >
+                  <div className="w-7 h-7 rounded-full bg-[#E5A91A] text-amber-950 font-black flex items-center justify-center text-xs">
+                    {currentUser.name.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="font-bold max-w-[90px] truncate hidden lg:inline text-white">
+                    {currentUser.name.split(' ')[0]}
+                  </span>
                 </div>
-                <span className="font-bold max-w-[90px] truncate hidden lg:inline text-white">
-                  {currentUser.name.split(' ')[0]}
-                </span>
                 <button
                   onClick={onLogout}
                   title="Deconectare"
@@ -447,6 +455,20 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 <Sparkles className="w-3.5 h-3.5 text-[#0A6847] dark:text-[#78F9B8]" />
                 <span>{t.tabRecipes}</span>
               </button>
+              <button
+                onClick={() => setCurrentPage('DELIVERIES')}
+                className={`flex items-center gap-1.5 transition hover:text-[#0A6847] dark:hover:text-[#78F9B8] ${
+                  currentPage === 'DELIVERIES' ? 'text-[#0A6847] dark:text-[#78F9B8] border-b-2 border-[#0A6847] pb-1 font-black' : ''
+                }`}
+              >
+                <Truck className="w-3.5 h-3.5 text-[#0A6847] dark:text-[#78F9B8]" />
+                <span>{t.tabDeliveries}</span>
+                {ongoingDeliveriesCount > 0 && (
+                  <span className="px-2 py-0.5 rounded-full bg-[#E5A91A] text-amber-950 text-[10px] font-black animate-pulse shadow-xs">
+                    🛵 {ongoingDeliveriesCount}
+                  </span>
+                )}
+              </button>
             </nav>
           </div>
 
@@ -481,6 +503,17 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
               {t.tabRecipes}
+            </button>
+            <button
+              onClick={() => { setCurrentPage('DELIVERIES'); setMobileMenuOpen(false); }}
+              className="w-full py-2 px-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0A6847] dark:text-[#78F9B8] font-black text-left flex items-center justify-between"
+            >
+              <span>🛵 {t.tabDeliveries}</span>
+              {ongoingDeliveriesCount > 0 && (
+                <span className="px-2 py-0.5 rounded-full bg-[#E5A91A] text-amber-950 text-[10px] font-black">
+                  {ongoingDeliveriesCount} Active
+                </span>
+              )}
             </button>
           </div>
         )}

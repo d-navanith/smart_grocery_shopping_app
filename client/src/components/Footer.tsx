@@ -12,7 +12,7 @@ import {
 import { TranslationDictionary } from '../translations';
 
 interface FooterProps {
-  onNavigatePage: (page: 'HOME' | 'SHOP' | 'CART' | 'RECIPES') => void;
+  onNavigatePage: (page: 'HOME' | 'SHOP' | 'CART' | 'RECIPES' | 'DELIVERIES') => void;
   onSelectCategory: (cat: string) => void;
   t: TranslationDictionary;
 }
@@ -175,6 +175,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
               <li>
                 <button onClick={() => onNavigatePage('RECIPES')} className="hover:text-white transition">
                   {t.tabRecipes}
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigatePage('DELIVERIES')} className="hover:text-white transition font-bold text-[#FFB800]">
+                  🛵 {t.tabDeliveries}
                 </button>
               </li>
             </ul>

@@ -15,7 +15,9 @@ import {
   Banknote,
   CheckCircle,
   Clock,
-  MapPin
+  MapPin,
+  Lock,
+  ShieldCheck
 } from 'lucide-react';
 import { Product, CartItem, CustomerUser } from '../types';
 import { TranslationDictionary } from '../translations';
@@ -37,6 +39,7 @@ interface ModalsProps {
   isTrackingOpen: boolean;
   onCloseTracking: () => void;
   activeOrder: any;
+  onNavigateDeliveries?: () => void;
   // Cart Drawer
   isCartDrawerOpen: boolean;
   onCloseCartDrawer: () => void;
@@ -62,6 +65,7 @@ export const Modals: React.FC<ModalsProps> = ({
   isTrackingOpen,
   onCloseTracking,
   activeOrder,
+  onNavigateDeliveries,
   isCartDrawerOpen,
   onCloseCartDrawer,
   cart,
@@ -487,23 +491,44 @@ export const Modals: React.FC<ModalsProps> = ({
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-zinc-800">
-                  <div className="space-y-0.5">
-                    <p className="text-[11px] font-bold text-slate-700 dark:text-zinc-300">
-                      Rider: {activeOrder.riderName || 'Rider Assigned'}
-                    </p>
-                    <p className="text-[10px] text-slate-400">
-                      {t.deliveryEta}: <strong>~25 - 35 mins</strong>
-                    </p>
+                <div className="flex flex-col gap-2 pt-2 border-t border-slate-200 dark:border-zinc-800">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <p className="text-[11px] font-bold text-slate-700 dark:text-zinc-300 flex items-center gap-1.5">
+                        <span>Rider: {activeOrder.riderName || 'În curs de alocare la magazin'}</span>
+                        {activeOrder.riderVerifiedByAdmin && (
+                          <span className="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 text-[9px] font-black">
+                            ✓ VERIFICAT
+                          </span>
+                        )}
+                      </p>
+                      <p className="text-[10px] text-slate-400">
+                        {t.deliveryEta}: <strong>~{activeOrder.deliveryMinutes || 25} mins</strong>
+                      </p>
+                    </div>
+
+                    {/* DIRECT CALL CHECK: ONLY ACTIVE WHEN RIDER HAS ARRIVED AT STORE & ADMIN VERIFIED PHONE NUMBER */}
+                    {activeOrder.riderVerifiedByAdmin && activeOrder.riderPhone ? (
+                      <a
+                        href={`tel:${activeOrder.riderPhone}`}
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-[11px] font-black shadow transition active:scale-95"
+                      >
+                        <Phone className="w-3.5 h-3.5 animate-bounce" />
+                        <span>Sună Curierul: {activeOrder.riderPhone}</span>
+                      </a>
+                    ) : (
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400 text-[10px] font-black border border-slate-300 dark:border-zinc-700 cursor-not-allowed">
+                        <Lock className="w-3 h-3 text-slate-400" />
+                        <span>Apel Direct Blocat (Așteaptă Sosirea Curierului)</span>
+                      </div>
+                    )}
                   </div>
 
-                  <a
-                    href={`tel:${activeOrder.courierPhone || '+40219988'}`}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0A6847] text-white text-[11px] font-black shadow-xs hover:bg-[#085237]"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>Call Rider</span>
-                  </a>
+                  {!activeOrder.riderVerifiedByAdmin && (
+                    <p className="text-[10px] text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 p-2 rounded-xl border border-amber-200 dark:border-amber-900 leading-snug">
+                      ℹ️ Curierul este în drum spre magazinul din Strada Academiei 14. Numărul direct de mobil va fi activat pentru apelare imediat ce curierul ajunge și îl prezintă administratorului.
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -538,7 +563,18 @@ export const Modals: React.FC<ModalsProps> = ({
               </div>
             </div>
 
-            <div className="p-4 border-t border-slate-100 dark:border-zinc-800 flex justify-end">
+            <div className="p-4 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between">
+              {onNavigateDeliveries && (
+                <button
+                  onClick={() => {
+                    onCloseTracking();
+                    onNavigateDeliveries();
+                  }}
+                  className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8] hover:underline flex items-center gap-1"
+                >
+                  <span>Vezi în Comenzile & Livrările Mele →</span>
+                </button>
+              )}
               <button
                 onClick={onCloseTracking}
                 className="px-6 py-2.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black shadow transition active:scale-95"

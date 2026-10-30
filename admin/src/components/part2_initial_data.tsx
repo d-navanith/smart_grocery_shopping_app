@@ -213,6 +213,8 @@ export const INITIAL_ORDERS: Order[] = [
     pickupMinutes: 10,
     deliveryMinutes: 30,
     assignedRider: undefined,
+    riderPhone: '',
+    riderVerifiedByAdmin: false,
     notes: 'Sunați la interfon 14. Am pregătit suma exactă în numerar (95 lei).'
   },
   {
@@ -263,6 +265,8 @@ export const INITIAL_ORDERS: Order[] = [
     pickupMinutes: 5,
     deliveryMinutes: 20,
     assignedRider: 'Mihai Radu (Sameday #81)',
+    riderPhone: '+40 745 612 883',
+    riderVerifiedByAdmin: true,
     notes: 'Plată cash pregătită.'
   },
   {

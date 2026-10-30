@@ -105,6 +105,8 @@ export interface Order {
   paymentMethod: string;
   paymentStatus: 'PAID' | 'PENDING' | 'FAILED';
   assignedRider?: string;
+  riderPhone?: string;
+  riderVerifiedByAdmin?: boolean;
   notes?: string;
   courierCompany?: string;
   courierPhone?: string;

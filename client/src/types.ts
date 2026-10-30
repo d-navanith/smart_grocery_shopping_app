@@ -64,6 +64,42 @@ export interface PromoCode {
   freeDelivery?: boolean;
 }
 
+export interface ClientOrderItem {
+  productId?: string;
+  productTitle: string;
+  quantity: number;
+  price: number;
+  unit?: string;
+  imageUrl?: string;
+}
+
+export interface ClientOrder {
+  id: string;
+  orderNumber: string;
+  placedAt: string;
+  status: 'PENDING' | 'PROCESSING' | 'ON_THE_WAY' | 'DELIVERED' | 'CANCELLED';
+  items: (ClientOrderItem | string)[];
+  subtotal: number;
+  deliveryFee: number;
+  discountAmount?: number;
+  totalAmount: number;
+  paymentMethod: string;
+  paymentStatus: 'PAID' | 'PENDING' | 'FAILED';
+  customerName: string;
+  customerPhone: string;
+  address: string;
+  deliveryZone?: string;
+  courierCompany?: string;
+  courierPhone?: string;
+  riderName?: string;
+  riderPhone?: string; // DIRECT MOBILE NUMBER GIVEN BY RIDER TO ADMIN UPON ARRIVAL
+  riderVerifiedByAdmin?: boolean; // True ONLY when store admin enters and verifies rider mobile!
+  pickupMinutes?: number;
+  deliveryMinutes?: number;
+  estimatedDeliveryMinutes?: number;
+  notes?: string;
+}
+
 export interface OrderTrackingInfo {
   orderNumber: string;
   status: 'PLACED' | 'PROCESSING' | 'DISPATCHED_TO_COURIER' | 'ON_THE_WAY' | 'DELIVERED';
@@ -75,6 +111,9 @@ export interface OrderTrackingInfo {
   address: string;
   courierCompany?: string;
   courierPhone?: string;
+  riderName?: string;
+  riderPhone?: string;
+  riderVerifiedByAdmin?: boolean;
   pickupMinutes?: number;
   deliveryMinutes?: number;
 }

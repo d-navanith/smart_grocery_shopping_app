@@ -68,16 +68,19 @@ export function createMutations(state: ReturnType<typeof import('./part3_state_a
     courierCompany: string;
     courierPhone: string;
     riderName: string;
+    riderPhone?: string;
     pickupMinutes: number;
     deliveryMinutes: number;
   }) => {
-    const { orderId, courierCompany, courierPhone, riderName, pickupMinutes, deliveryMinutes } = dispatchData;
+    const { orderId, courierCompany, courierPhone, riderName, riderPhone, pickupMinutes, deliveryMinutes } = dispatchData;
     setOrders(prev => prev.map(o => {
       if (o.id === orderId) {
         return {
           ...o,
           status: 'ON_THE_WAY',
           assignedRider: riderName || `${courierCompany} Courier`,
+          riderPhone: riderPhone || o.riderPhone,
+          riderVerifiedByAdmin: Boolean(riderPhone),
           courierCompany,
           courierPhone,
           pickupMinutes,

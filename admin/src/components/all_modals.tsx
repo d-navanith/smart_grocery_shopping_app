@@ -1353,6 +1353,7 @@ export const CourierDispatchModal: React.FC<{
     courierCompany: string;
     courierPhone: string;
     riderName: string;
+    riderPhone?: string;
     pickupMinutes: number;
     deliveryMinutes: number;
   }) => void;
@@ -1360,14 +1361,15 @@ export const CourierDispatchModal: React.FC<{
   if (!order) return null;
 
   const [selectedCompany, setSelectedCompany] = useState<{ name: string; phone: string; eta: string; logo: string }>({
-    name: 'Glovo Express Bucharest',
-    phone: '+40 21 9988',
+    name: order.courierCompany || 'Glovo Express Bucharest',
+    phone: order.courierPhone || '+40 21 9988',
     eta: '10 min',
     logo: '🛵'
   });
   const [pickupMinutes, setPickupMinutes] = useState(10);
   const [deliveryMinutes, setDeliveryMinutes] = useState(30);
-  const [riderName, setRiderName] = useState('Glovo Rider Bucharest');
+  const [riderName, setRiderName] = useState(order.assignedRider || 'Alexandru Radu');
+  const [riderPhone, setRiderPhone] = useState(order.riderPhone || '+40 731 992 481');
   const [copied, setCopied] = useState(false);
   const [showScript, setShowScript] = useState(false);
 
@@ -1442,6 +1444,7 @@ Vă mulțumim!`;
       courierCompany: selectedCompany.name,
       courierPhone: selectedCompany.phone,
       riderName: riderName || `${selectedCompany.name} Rider`,
+      riderPhone: riderPhone.trim(),
       pickupMinutes,
       deliveryMinutes
     });
@@ -1590,6 +1593,43 @@ Vă mulțumim!`;
             </div>
           </div>
 
+          {/* CRITICAL: Rider Arrival at Store & Mobile Handover Input */}
+          <div className="p-3.5 rounded-2xl bg-amber-50/90 border-2 border-amber-300 text-xs space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-black text-amber-950 text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                <span>🛵 Pasul 2: Curierul a Sosit la Magazin • Număr Mobil</span>
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-950 font-black text-[9px]">
+                Necesar pentru Apel Direct Client
+              </span>
+            </div>
+            <p className="text-[10px] text-amber-900 leading-tight">
+              Curierul trebuie să își declare numărul personal de mobil la preluarea pachetului din Strada Academiei 14. Odată salvat aici, butonul de apel direct se activează automat pe ecranul clientului!
+            </p>
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <div>
+                <label className="block text-[10px] font-bold text-slate-700 mb-0.5">Nume Curier:</label>
+                <input
+                  type="text"
+                  value={riderName}
+                  onChange={(e) => setRiderName(e.target.value)}
+                  placeholder="ex: Alexandru Radu"
+                  className="w-full px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white font-bold text-xs text-slate-800 focus:outline-none focus:border-[#0B3B2C]"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-700 mb-0.5">Număr Mobil Direct Curier:</label>
+                <input
+                  type="tel"
+                  value={riderPhone}
+                  onChange={(e) => setRiderPhone(e.target.value)}
+                  placeholder="+40 7XX XXX XXX"
+                  className="w-full px-2.5 py-1.5 rounded-xl border border-amber-400 bg-white font-black text-xs text-slate-900 focus:outline-none focus:border-[#0B3B2C]"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Cash Tendered & Keypad Section */}
           <div className="bg-[#F5F6F8] p-4 rounded-3xl border border-slate-200 space-y-3">
             <div className="flex items-center justify-between">
@@ -1714,7 +1754,7 @@ Vă mulțumim!`;
               onClick={handleConfirm}
               className="flex-1 py-3.5 px-6 rounded-2xl bg-[#F8B838] hover:bg-[#eab02e] text-slate-950 font-black text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-98"
             >
-              <span>Pay Now & Dispatch Courier ({order.totalAmount.toFixed(2)} lei)</span>
+              <span>Confirmă Curierul & Transmite Mobilul Clientului ({order.totalAmount.toFixed(2)} lei)</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

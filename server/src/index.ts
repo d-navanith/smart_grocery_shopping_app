@@ -78,10 +78,128 @@ let orders: Order[] = [
     dispatchCallStatus: 'NOT_CALLED',
     pickupMinutes: 10,
     deliveryMinutes: 30,
-    rider: INITIAL_RIDER,
+    rider: undefined,
+    riderPhone: '',
+    riderVerifiedByAdmin: false,
     estimatedDeliveryMinutes: 25,
     placedAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
     updatedAt: new Date().toISOString()
+  },
+  {
+    id: 'ord-102',
+    orderNumber: 'CF-8919',
+    customerId: 'cust-1',
+    customerName: 'Mihai Enache',
+    customerPhone: '+40 722 456 789',
+    items: [
+      {
+        productId: 'prod-tea',
+        productTitle: 'Dilmah Pure Ceylon Single Origin BOPF Tea (400g)',
+        productImageUrl: '/prod_tea.jpg',
+        price: 22.50,
+        unit: 'pack',
+        quantity: 2
+      },
+      {
+        productId: 'prod-biscuits',
+        productTitle: 'Munchee Super Cream Crackers & Maliban Biscuits',
+        productImageUrl: '/prod_biscuits.jpg',
+        price: 12.00,
+        unit: 'pack',
+        quantity: 2
+      }
+    ],
+    subtotal: 69.00,
+    vatAmount: 0,
+    deliveryFee: 15.00,
+    discountAmount: 0,
+    totalAmount: 84.00,
+    paymentMethod: 'CASH_ON_DELIVERY',
+    paymentStatus: 'PENDING',
+    deliveryType: 'EXPRESS',
+    deliveryAddress: {
+      id: 'addr-1',
+      label: 'Home',
+      street: 'Strada Mihai Eminescu nr. 42',
+      buildingDetails: 'Bloc 12, Scara A, Ap. 14',
+      city: 'București Sector 1',
+      coordinates: { lat: 44.4475, lng: 26.0991 }
+    },
+    deliveryNote: 'Plată ramburs la ușă.',
+    status: 'ON_THE_WAY',
+    courierCompany: 'Bolt Delivery Riders',
+    courierPhone: '+40 31 229 5555',
+    dispatchCallStatus: 'CALLED_DISPATCHED',
+    pickupMinutes: 5,
+    deliveryMinutes: 20,
+    riderPhone: '+40 731 992 481',
+    riderVerifiedByAdmin: true,
+    rider: {
+      id: 'rider-bolt-1',
+      name: 'Alexandru Radu',
+      company: 'Bolt Delivery Riders',
+      phone: '+40 731 992 481',
+      avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
+      vehicleType: 'Scooter 125cc',
+      rating: 4.95,
+      currentLocation: { lat: 44.4410, lng: 26.0950 }
+    },
+    estimatedDeliveryMinutes: 20,
+    placedAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 'ord-104',
+    orderNumber: 'CF-8918',
+    customerId: 'cust-1',
+    customerName: 'Mihai Enache',
+    customerPhone: '+40 722 456 789',
+    items: [
+      {
+        productId: 'prod-white-rice',
+        productTitle: 'Araliya Keeri Samba & White Raw Rice (5kg)',
+        productImageUrl: '/prod_white_rice.jpg',
+        price: 38.50,
+        unit: '5kg Bag',
+        quantity: 2
+      },
+      {
+        productId: 'prod-brinjal',
+        productTitle: 'Sri Lankan Purple Brinjal / Eggplant (1kg)',
+        productImageUrl: '/prod_brinjal.jpg',
+        price: 14.50,
+        unit: 'kg',
+        quantity: 2
+      }
+    ],
+    subtotal: 106.00,
+    vatAmount: 0,
+    deliveryFee: 15.00,
+    discountAmount: 0,
+    totalAmount: 121.00,
+    paymentMethod: 'CASH_ON_DELIVERY',
+    paymentStatus: 'PAID',
+    deliveryType: 'EXPRESS',
+    deliveryAddress: {
+      id: 'addr-1',
+      label: 'Home',
+      street: 'Strada Mihai Eminescu nr. 42',
+      buildingDetails: 'Bloc 12, Scara A, Ap. 14',
+      city: 'București Sector 1',
+      coordinates: { lat: 44.4475, lng: 26.0991 }
+    },
+    deliveryNote: 'Livrat cu succes ieri.',
+    status: 'DELIVERED',
+    courierCompany: 'Glovo Express Bucharest',
+    courierPhone: '+40 21 9988',
+    dispatchCallStatus: 'CALLED_DISPATCHED',
+    pickupMinutes: 10,
+    deliveryMinutes: 30,
+    riderPhone: '+40 732 441 902',
+    riderVerifiedByAdmin: true,
+    estimatedDeliveryMinutes: 0,
+    placedAt: '2026-10-29T16:20:00.000Z',
+    updatedAt: '2026-10-29T17:05:00.000Z'
   }
 ];
 
@@ -347,28 +465,34 @@ app.post('/api/orders', (req: Request, res: Response) => {
 
 // CRUCIAL: Admin Call / Dispatch Delivery Company endpoint
 app.post('/api/orders/:id/dispatch-courier', (req: Request, res: Response) => {
-  const order = orders.find(o => o.id === req.params.id);
+  const order = orders.find(o => o.id === req.params.id || o.orderNumber === req.params.id || o.orderNumber === `#${req.params.id}`);
   if (!order) {
     return res.status(404).json({ success: false, message: 'Order not found' });
   }
 
   const {
     courierCompany = 'Glovo Express Bucharest',
-    riderPhone = '+40 21 9988',
+    courierPhone = '+40 21 9988',
+    riderPhone = '',
     pickupMinutes = 10,
     deliveryMinutes = 30,
-    riderName = 'Andrei Popescu (Glovo Rider)',
+    riderName = 'Alexandru Radu (Glovo Rider)',
     courierNote = ''
   } = req.body;
 
   order.status = 'ON_THE_WAY';
   order.courierCompany = courierCompany;
-  order.courierPhone = riderPhone;
+  order.courierPhone = courierPhone;
   order.dispatchCallStatus = 'CALLED_DISPATCHED';
   order.pickupMinutes = Number(pickupMinutes);
   order.deliveryMinutes = Number(deliveryMinutes);
   order.estimatedDeliveryMinutes = Number(deliveryMinutes);
   order.updatedAt = new Date().toISOString();
+
+  const isVerified = Boolean(riderPhone && riderPhone.trim().length > 5);
+  (order as any).riderPhone = riderPhone;
+  (order as any).riderVerifiedByAdmin = isVerified;
+  (order as any).riderName = riderName;
 
   if (order.rider) {
     order.rider.name = riderName;
@@ -378,7 +502,9 @@ app.post('/api/orders/:id/dispatch-courier', (req: Request, res: Response) => {
 
   res.json({
     success: true,
-    message: `Courier dispatched! Call registered to ${courierCompany}. Rider arriving in ${pickupMinutes} mins. Delivery ETA ${deliveryMinutes} mins.`,
+    message: isVerified
+      ? `Rider mobile verified! Shared with customer for direct calling. ETA ${deliveryMinutes} mins.`
+      : `Courier called! Waiting for rider to arrive at store and provide direct mobile.`,
     data: order
   });
 });

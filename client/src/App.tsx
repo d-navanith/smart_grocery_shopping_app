@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Product, CartItem, CustomerUser, DeliveryZone } from './types';
+import { Product, CartItem, CustomerUser, DeliveryZone, ClientOrder } from './types';
 import { INITIAL_PRODUCTS } from './initialProducts';
 import { HeaderNav } from './components/HeaderNav';
 import { ShopView } from './components/ShopView';
 import { CartView } from './components/CartView';
 import { HomeView } from './components/HomeView';
 import { AiRecipeView } from './components/AiRecipeView';
+import { DeliveriesView } from './components/DeliveriesView';
 import { Footer } from './components/Footer';
 import { Modals } from './components/Modals';
 import { Language, TranslationDictionary, TRANSLATIONS } from './translations';
@@ -47,15 +48,107 @@ export default function ClientWebSupermarket() {
     return typeof window !== 'undefined' && localStorage.getItem('ceylonfoods_theme') === 'dark';
   });
 
-  const [currentPage, setCurrentPage] = useState<'HOME' | 'SHOP' | 'CART' | 'RECIPES'>(() => {
+  const [currentPage, setCurrentPage] = useState<'HOME' | 'SHOP' | 'CART' | 'RECIPES' | 'DELIVERIES'>(() => {
     if (typeof window !== 'undefined') {
       const p = new URLSearchParams(window.location.search).get('page');
       if (p === 'cart') return 'CART';
       if (p === 'recipes') return 'RECIPES';
       if (p === 'home') return 'HOME';
+      if (p === 'deliveries' || p === 'orders') return 'DELIVERIES';
     }
     return 'SHOP';
   });
+
+  const [customerOrders, setCustomerOrders] = useState<ClientOrder[]>(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('ceylonfoods_client_orders') : null;
+    if (saved) {
+      try { return JSON.parse(saved); } catch {}
+    }
+    return [
+      {
+        id: 'ord-101',
+        orderNumber: 'CF-8921',
+        placedAt: 'Astăzi • 10:15',
+        status: 'PROCESSING',
+        items: [
+          { productTitle: 'Araliya Keeri Samba & White Raw Rice (5kg)', quantity: 1, price: 38.50 },
+          { productTitle: 'Sri Lankan Purple Brinjal / Eggplant (1kg)', quantity: 2, price: 14.50 },
+          { productTitle: 'Mysore Red Split Lentils / Dhal (1kg)', quantity: 1, price: 12.50 }
+        ],
+        subtotal: 80.00,
+        deliveryFee: 15.00,
+        totalAmount: 95.00,
+        paymentMethod: 'CASH_ON_DELIVERY',
+        paymentStatus: 'PENDING',
+        customerName: 'Mihai Enache',
+        customerPhone: '+40 722 456 789',
+        address: 'Strada Mihai Eminescu nr. 42, Bl. 12, Sc. A, Ap. 14, București Sector 1',
+        deliveryZone: 'București Sector 1',
+        courierCompany: 'Glovo Express Bucharest',
+        courierPhone: '+40 21 9988',
+        riderName: 'Andrei Popescu (Glovo Rider)',
+        riderPhone: '', // Not verified yet! Client CANNOT call rider!
+        riderVerifiedByAdmin: false,
+        pickupMinutes: 10,
+        deliveryMinutes: 30,
+        notes: 'Sunați la interfon 14. Am pregătit 95 lei numerar (Cash on Delivery).'
+      },
+      {
+        id: 'ord-102',
+        orderNumber: 'CF-8919',
+        placedAt: 'Astăzi • 08:30',
+        status: 'ON_THE_WAY',
+        items: [
+          { productTitle: 'Dilmah Pure Ceylon Single Origin BOPF Tea (400g)', quantity: 2, price: 22.50 },
+          { productTitle: 'Woodfired Traditional Roast Paan (1 Loaf)', quantity: 2, price: 7.50 },
+          { productTitle: 'Munchee Super Cream Crackers (500g)', quantity: 2, price: 12.00 }
+        ],
+        subtotal: 84.00,
+        deliveryFee: 15.00,
+        totalAmount: 99.00,
+        paymentMethod: 'CASH_ON_DELIVERY',
+        paymentStatus: 'PENDING',
+        customerName: 'Mihai Enache',
+        customerPhone: '+40 722 456 789',
+        address: 'Strada Mihai Eminescu nr. 42, București Sector 1',
+        deliveryZone: 'București Sector 1',
+        courierCompany: 'Bolt Delivery Riders',
+        courierPhone: '+40 31 229 5555',
+        riderName: 'Alexandru Radu (Bolt Rider)',
+        riderPhone: '+40 731 992 481', // VERIFIED BY ADMIN! Client CAN call!
+        riderVerifiedByAdmin: true,
+        pickupMinutes: 5,
+        deliveryMinutes: 20
+      },
+      {
+        id: 'ord-104',
+        orderNumber: 'CF-8918',
+        placedAt: 'Ieri • 16:20',
+        status: 'DELIVERED',
+        items: [
+          { productTitle: 'Araliya Keeri Samba & White Raw Rice (5kg)', quantity: 2, price: 38.50 },
+          { productTitle: 'Sri Lankan Purple Brinjal / Eggplant (1kg)', quantity: 2, price: 14.50 }
+        ],
+        subtotal: 106.00,
+        deliveryFee: 15.00,
+        totalAmount: 121.00,
+        paymentMethod: 'CASH_ON_DELIVERY',
+        paymentStatus: 'PAID',
+        customerName: 'Mihai Enache',
+        customerPhone: '+40 722 456 789',
+        address: 'Strada Liviu Rebreanu nr. 15, București Sector 3',
+        courierCompany: 'Glovo Express Bucharest',
+        riderName: 'Ion Ionescu',
+        riderPhone: '+40 732 441 902',
+        riderVerifiedByAdmin: true
+      }
+    ];
+  });
+
+  // Save client orders to localStorage whenever changed
+  useEffect(() => {
+    localStorage.setItem('ceylonfoods_client_orders', JSON.stringify(customerOrders));
+  }, [customerOrders]);
 
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -356,8 +449,54 @@ export default function ClientWebSupermarket() {
       });
     }
 
+    const newPlacedOrder: ClientOrder = {
+      id: `ord-${Date.now()}`,
+      orderNumber: 'CF-' + Math.floor(1000 + Math.random() * 9000),
+      placedAt: 'Astăzi • ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      status: 'PROCESSING',
+      items: cart.map(c => ({
+        productId: c.product.id,
+        productTitle: c.product.title,
+        quantity: c.quantity,
+        price: c.effectivePrice,
+        unit: c.selectedWeight || c.product.unit
+      })),
+      subtotal,
+      deliveryFee: effectiveDeliveryFee,
+      totalAmount,
+      paymentMethod: payload.paymentMethod || 'CASH_ON_DELIVERY',
+      paymentStatus: 'PENDING',
+      customerName: currentUser.name,
+      customerPhone: payload.phone,
+      address: payload.address,
+      deliveryZone: selectedZone.name,
+      courierCompany: 'Glovo Express Bucharest',
+      courierPhone: '+40 21 9988',
+      riderName: 'Curier În Curs de Alocare',
+      riderPhone: '', // LOCKED UNTIL ADMIN VERIFIES
+      riderVerifiedByAdmin: false,
+      pickupMinutes: 10,
+      deliveryMinutes: 30,
+      notes: payload.note
+    };
+
+    setCustomerOrders(prev => [newPlacedOrder, ...prev]);
+    setActiveOrder(newPlacedOrder);
+
     setCart([]);
     setIsTrackingModalOpen(true);
+  };
+
+  const handleReorder = (order: ClientOrder) => {
+    order.items.forEach(it => {
+      const title = typeof it === 'string' ? it : it.productTitle;
+      const foundProduct = products.find(p => p.title.toLowerCase().includes(title.toLowerCase()) || title.toLowerCase().includes(p.title.toLowerCase()));
+      if (foundProduct) {
+        const qty = typeof it === 'string' ? 1 : it.quantity;
+        handleAddToCart(foundProduct, qty, '1kg');
+      }
+    });
+    setCurrentPage('CART');
   };
 
   return (
@@ -385,6 +524,7 @@ export default function ClientWebSupermarket() {
         currentLanguage={currentLanguage}
         onLanguageChange={handleLanguageChange}
         t={t}
+        ongoingDeliveriesCount={customerOrders.filter(o => o.status === 'PROCESSING' || o.status === 'ON_THE_WAY' || o.status === 'PENDING').length}
       />
 
       <main className="flex-1 flex flex-col">
@@ -454,6 +594,16 @@ export default function ClientWebSupermarket() {
             isDarkMode={isDarkMode}
           />
         )}
+
+        {currentPage === 'DELIVERIES' && (
+          <DeliveriesView
+            orders={customerOrders}
+            onReorder={handleReorder}
+            onNavigateShop={() => setCurrentPage('SHOP')}
+            isDarkMode={isDarkMode}
+            t={t}
+          />
+        )}
       </main>
 
       <Footer
@@ -478,6 +628,7 @@ export default function ClientWebSupermarket() {
         isTrackingOpen={isTrackingModalOpen}
         onCloseTracking={() => setIsTrackingModalOpen(false)}
         activeOrder={activeOrder}
+        onNavigateDeliveries={() => setCurrentPage('DELIVERIES')}
         isCartDrawerOpen={isCartDrawerOpen}
         onCloseCartDrawer={() => setIsCartDrawerOpen(false)}
         cart={cart}

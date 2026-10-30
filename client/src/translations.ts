@@ -27,6 +27,15 @@ export interface TranslationDictionary {
   tabSpices: string;
   tabCart: string;
   tabRecipes: string;
+  tabDeliveries: string;
+  ongoingDeliveriesTitle: string;
+  deliveryHistoryTitle: string;
+  riderDirectCallLocked: string;
+  riderDirectCallUnlocked: string;
+  verifiedRiderBadge: string;
+  adminVerificationNotice: string;
+  callRiderButton: string;
+  callRiderLockedButton: string;
 
   // Categories
   catAll: string;
@@ -220,6 +229,15 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     tabSpices: 'Ceylon Spices',
     tabCart: 'Shopping Cart',
     tabRecipes: 'AI Chef Recipes',
+    tabDeliveries: 'My Deliveries',
+    ongoingDeliveriesTitle: 'Ongoing Deliveries',
+    deliveryHistoryTitle: 'Delivery History',
+    riderDirectCallLocked: 'Direct call locked — waiting for store admin to verify delivery rider mobile upon store arrival.',
+    riderDirectCallUnlocked: 'Store admin has verified rider mobile number. You may now call the rider directly.',
+    verifiedRiderBadge: 'Admin Verified Rider',
+    adminVerificationNotice: 'Supermarket admin is contacting courier fleet (Glovo/Bolt/Sameday). Direct rider call activates when rider arrives at supermarket & shares phone number.',
+    callRiderButton: 'Call Delivery Rider',
+    callRiderLockedButton: 'Call Rider (Awaiting Admin Verification)',
 
     // Categories
     catAll: 'All Products',
@@ -412,6 +430,15 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     tabSpices: 'ලංකා තුනපහ',
     tabCart: 'සාප්පු සවාරි කරත්තය',
     tabRecipes: 'AI කෝකි වට්ටෝරු',
+    tabDeliveries: 'මගේ ඇණවුම්',
+    ongoingDeliveriesTitle: 'ක්‍රියාකාරී බෙදාහැරීම්',
+    deliveryHistoryTitle: 'අතීත බෙදාහැරීම් වාර්තාව',
+    riderDirectCallLocked: 'ධාවකයාට ඇමතුම් ලබාගැනීම අගුළු දමා ඇත — වෙළඳසැල් පරිපාලක විසින් ධාවකයාගේ දුරකථන අංකය තහවුරු කරන තුරු රැඳී සිටින්න.',
+    riderDirectCallUnlocked: 'වෙළඳසැල් පරිපාලක විසින් ධාවකයාගේ දුරකථන අංකය තහවුරු කර ඇත. ඔබට දැන් සෘජුවම ඇමතිය හැක.',
+    verifiedRiderBadge: 'තහවුරු කළ ධාවකයා',
+    adminVerificationNotice: 'සුපිරි වෙළඳසැල් පරිපාලක විසින් ධාවක සමාගම අමතමින් සිටී. ධාවකයා පැමිණ අංකය ලබාදුන් පසු ඇමතුම් සක්‍රිය වේ.',
+    callRiderButton: 'ධාවකයා අමතන්න',
+    callRiderLockedButton: 'ඇමතුම් අගුළු දමා ඇත (පරිපාලක තහවුරු කිරීම අපේක්ෂාවෙන්)',
 
     // Categories
     catAll: 'සියලුම නිෂ්පාදන',
@@ -604,6 +631,15 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     tabSpices: 'Condimente Ceylon',
     tabCart: 'Coș de Cumpărături',
     tabRecipes: 'Rețete AI Chef',
+    tabDeliveries: 'Comenzile Mele',
+    ongoingDeliveriesTitle: 'Livrări în Curs',
+    deliveryHistoryTitle: 'Istoric Livrări',
+    riderDirectCallLocked: 'Apel direct blocat — se așteaptă sosirea curierului la magazin și confirmarea numărului de mobil de către administrator.',
+    riderDirectCallUnlocked: 'Administratorul a verificat numărul de mobil al curierului. Puteți apela curierul direct.',
+    verifiedRiderBadge: 'Curier Verificat de Magazin',
+    adminVerificationNotice: 'Administratorul magazinului apelează compania de curierat (Glovo/Bolt/Sameday). Apelul direct se activează după sosirea curierului la depozit.',
+    callRiderButton: 'Apelează Curierul',
+    callRiderLockedButton: 'Apel Blocat (Așteptare Verificare Admin)',
 
     // Categories
     catAll: 'Toate Produsele',
