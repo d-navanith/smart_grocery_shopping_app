@@ -10,7 +10,8 @@ import {
   Phone,
   Check,
   UserCheck,
-  MapPin
+  MapPin,
+  Trash2
 } from 'lucide-react';
 import { DeliveryScheduleItem, FleetRider } from './part1_imports_types';
 
@@ -25,6 +26,7 @@ interface DeliveriesViewProps {
   onMarkStatus: (delId: string, status: DeliveryScheduleItem['status']) => void;
   onToggleRiderDuty: (riderId: string) => void;
   onOpenAddRiderModal: () => void;
+  onDeleteRider?: (riderId: string) => void;
 }
 
 export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
@@ -37,7 +39,8 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
   onOpenAssignModal,
   onMarkStatus,
   onToggleRiderDuty,
-  onOpenAddRiderModal
+  onOpenAddRiderModal,
+  onDeleteRider
 }) => {
   const [localSearch, setLocalSearch] = useState('');
 
@@ -304,17 +307,32 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                   <p className="text-[11px] text-slate-500 font-medium">{rider.vehicle}</p>
                   <p className="text-[11px] text-slate-400 font-mono mt-0.5">{rider.phone} • {rider.zone}</p>
                 </div>
-                <button
-                  onClick={() => onToggleRiderDuty(rider.id)}
-                  className={`px-2 py-0.5 rounded text-[10px] font-black transition active:scale-95 ${
-                    rider.status === 'Available' || rider.status === 'On Delivery'
-                      ? 'bg-[#E6F7EF] text-[#0C6237] hover:bg-emerald-100'
-                      : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-                  }`}
-                  title="Click to toggle shift status"
-                >
-                  {rider.status === 'Available' || rider.status === 'On Delivery' ? '● On duty' : '○ On break'}
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => onToggleRiderDuty(rider.id)}
+                    className={`px-2 py-0.5 rounded text-[10px] font-black transition active:scale-95 ${
+                      rider.status === 'Available' || rider.status === 'On Delivery'
+                        ? 'bg-[#E6F7EF] text-[#0C6237] hover:bg-emerald-100'
+                        : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                    }`}
+                    title="Click to toggle shift status"
+                  >
+                    {rider.status === 'Available' || rider.status === 'On Delivery' ? '● On duty' : '○ On break'}
+                  </button>
+                  {onDeleteRider && (
+                    <button
+                      onClick={() => {
+                        if (window.confirm(`Remove rider ${rider.name} from fleet?`)) {
+                          onDeleteRider(rider.id);
+                        }
+                      }}
+                      className="p-1 rounded text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
+                      title="Remove rider"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100">

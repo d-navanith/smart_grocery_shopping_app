@@ -170,6 +170,7 @@ export default function AdminApp() {
           activeMenu={state.activeMenu}
           searchTerm={state.searchTerm}
           setSearchTerm={state.setSearchTerm}
+          isBackendConnected={state.isBackendConnected}
         />
 
         <main className="p-8 max-w-7xl mx-auto w-full flex-1">
@@ -255,6 +256,7 @@ export default function AdminApp() {
               onMarkStatus={mut.markDeliveryStatus}
               onToggleRiderDuty={mut.toggleRiderDuty}
               onOpenAddRiderModal={() => state.setIsAddRiderModalOpen(true)}
+              onDeleteRider={mut.deleteRider}
             />
           )}
 
@@ -358,6 +360,7 @@ export default function AdminApp() {
               onOpenCustomerDrawer={(c) => state.setSelectedCustomerForDrawer(c)}
               onUpdateTier={mut.updateCustomerTier}
               onToggleStatus={mut.toggleCustomerStatus}
+              onDeleteCustomer={mut.deleteCustomer}
             />
           )}
         </main>

@@ -228,6 +228,7 @@ interface CustomersViewProps {
   onOpenCustomerDrawer: (c: CustomerAccount) => void;
   onUpdateTier: (id: string, tier: CustomerAccount['loyaltyTier']) => void;
   onToggleStatus: (id: string) => void;
+  onDeleteCustomer?: (id: string) => void;
 }
 
 export const CustomersView: React.FC<CustomersViewProps> = ({
@@ -236,7 +237,8 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
   setCustomerTierFilter,
   onOpenCustomerDrawer,
   onUpdateTier,
-  onToggleStatus
+  onToggleStatus,
+  onDeleteCustomer
 }) => {
   const [localSearch, setLocalSearch] = useState('');
 
@@ -385,12 +387,27 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
                     </button>
                   </td>
                   <td className="py-3 px-3 text-right">
-                    <button
-                      onClick={() => onOpenCustomerDrawer(c)}
-                      className="px-3 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition"
-                    >
-                      View Details
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        onClick={() => onOpenCustomerDrawer(c)}
+                        className="px-3 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition"
+                      >
+                        View Details
+                      </button>
+                      {onDeleteCustomer && (
+                        <button
+                          onClick={() => {
+                            if (window.confirm(`Delete customer account for ${c.name}?`)) {
+                              onDeleteCustomer(c.id);
+                            }
+                          }}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
+                          title="Delete customer record"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

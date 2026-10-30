@@ -81,6 +81,9 @@ export interface Order {
   status: 'PLACED' | 'PROCESSING' | 'DISPATCHED_TO_COURIER' | 'ON_THE_WAY' | 'DELIVERED' | 'CANCELLED';
   courierCompany?: string; // Glovo, Bolt, Sameday, Fan Courier
   courierPhone?: string;
+  assignedRider?: string;
+  riderPhone?: string;
+  riderVerifiedByAdmin?: boolean;
   dispatchCallStatus?: 'NOT_CALLED' | 'CALLED_DISPATCHED' | 'RIDER_ASSIGNED';
   pickupMinutes?: number;
   deliveryMinutes?: number;
@@ -671,4 +674,93 @@ export const INITIAL_CUSTOMERS: CustomerAccount[] = [
     joinedDate: '10 Oct 2026',
     city: 'București Sector 3'
   }
+];
+
+export interface CategoryItem {
+  id: string;
+  name: string;
+  slug: string;
+  count: number;
+  order: string;
+  visibility: 'Visible' | 'Hidden';
+  updated: string;
+  image: string;
+}
+
+export const INITIAL_CATEGORIES: CategoryItem[] = [
+  { id: 'cat-1', name: 'Staples & Grains (Orez & Dhal)', slug: 'staples-grains', count: 45, order: '01', visibility: 'Visible', updated: '28 Oct 2026', image: '/prod_white_rice.jpg' },
+  { id: 'cat-2', name: 'Fruits & Vegetables (Wambatu & Okra)', slug: 'fruits-vegetables', count: 52, order: '02', visibility: 'Visible', updated: '28 Oct 2026', image: '/prod_brinjal.jpg' },
+  { id: 'cat-3', name: 'Pantry & Spices (Condimente Ceylon)', slug: 'pantry-spices', count: 38, order: '03', visibility: 'Visible', updated: '27 Oct 2026', image: '/prod_spices.jpg' },
+  { id: 'cat-4', name: 'Beverages (Ceai Dilmah & EGB)', slug: 'beverages', count: 32, order: '04', visibility: 'Visible', updated: '27 Oct 2026', image: '/prod_tea.jpg' },
+  { id: 'cat-5', name: 'Bakery (Roast Paan)', slug: 'bakery', count: 24, order: '05', visibility: 'Visible', updated: '26 Oct 2026', image: '/prod_roast_paan.jpg' },
+  { id: 'cat-6', name: 'Snacks (Biscuiți Munchee)', slug: 'snacks-delicacies', count: 48, order: '06', visibility: 'Visible', updated: '26 Oct 2026', image: '/prod_biscuits.jpg' }
+];
+
+export interface StaffMember {
+  id: string;
+  name: string;
+  roleSubtitle: string;
+  email: string;
+  role: 'Administrator' | 'Manager' | 'Inventory Specialist' | 'Delivery Agent' | 'Cashier';
+  lastActive: string;
+  twoFactor: 'Enabled' | 'Disabled';
+  status: 'Active' | 'Suspended';
+}
+
+export const INITIAL_STAFF: StaffMember[] = [
+  { id: 'stf-1', name: 'Alina Ionescu', roleSubtitle: 'Director Magazin București', email: 'alina.ionescu@ceylonfoods.ro', role: 'Administrator', lastActive: 'Activ acum', twoFactor: 'Enabled', status: 'Active' },
+  { id: 'stf-2', name: 'Chaminda Silva', roleSubtitle: 'Responsabil Import Sri Lanka', email: 'chaminda@ceylonfoods.ro', role: 'Manager', lastActive: 'Acum 15 min', twoFactor: 'Enabled', status: 'Active' },
+  { id: 'stf-3', name: 'Cristian Popa', roleSubtitle: 'Dispecer Curieri & Livrări', email: 'cristian.dispatch@ceylonfoods.ro', role: 'Delivery Agent', lastActive: 'Acum 2 min', twoFactor: 'Disabled', status: 'Active' }
+];
+
+export interface DeliveryZone {
+  id: string;
+  zone: string;
+  coverage: string;
+  fee: string;
+  eta: string;
+  status: 'Enabled' | 'Disabled';
+}
+
+export const INITIAL_ZONES: DeliveryZone[] = [
+  { id: 'zone-1', zone: 'Sector 1 (Nord, Băneasa, Pipera)', coverage: 'Sector 1 București', fee: '15.00 lei', eta: '25-35 min', status: 'Enabled' },
+  { id: 'zone-2', zone: 'Sector 2 (Colentina, Tei)', coverage: 'Sector 2 București', fee: '15.00 lei', eta: '25-35 min', status: 'Enabled' },
+  { id: 'zone-3', zone: 'Sector 3 (Centru Vechi, Titan)', coverage: 'Sector 3 București', fee: '15.00 lei', eta: '20-30 min', status: 'Enabled' },
+  { id: 'zone-4', zone: 'Sector 4, 5, 6 (Berceni, Militari)', coverage: 'Sectoarele 4-6 București', fee: '15.00 lei', eta: '30-40 min', status: 'Enabled' },
+  { id: 'zone-5', zone: 'Județul Ilfov (Otopeni, Voluntari)', coverage: 'Comune Limitrofe', fee: '25.00 lei', eta: '45-60 min', status: 'Enabled' },
+  { id: 'zone-6', zone: 'Livrare Națională Sameday/Fan Courier', coverage: 'Toată România (Cluj, Timișoara, etc.)', fee: '30.00 lei', eta: '24-48 ore', status: 'Enabled' }
+];
+
+export interface CustomerReview {
+  id: string;
+  customer: string;
+  rating: number;
+  date: string;
+  product: string;
+  comment: string;
+  sentiment: 'Positive' | 'Neutral' | 'Negative';
+  verified: boolean;
+  reply?: string;
+  isPublished: boolean;
+}
+
+export const INITIAL_REVIEWS: CustomerReview[] = [
+  { id: 'rev-1', customer: 'Mihai Enache', rating: 5, date: '28 Oct 2026', product: 'Araliya Keeri Samba Rice (5kg)', comment: 'Cel mai bun orez pentru curry în România! Livrarea prin Glovo a sosit în 30 de minute și am plătit cash curierului.', sentiment: 'Positive', verified: true, reply: 'Mulțumim frumos, poftă bună!', isPublished: true },
+  { id: 'rev-2', customer: 'Sandun Jayasuriya', rating: 5, date: '27 Oct 2026', product: 'Sri Lankan Purple Brinjal (1kg)', comment: 'Vinetele sunt proaspete ca în Sri Lanka, perfecte pentru wambatu moju. Recomand cu încredere!', sentiment: 'Positive', verified: true, reply: 'Vă mulțumim pentru loialitate!', isPublished: true }
+];
+
+export interface StockAdjustment {
+  id: string;
+  time: string;
+  product: string;
+  type: 'IN' | 'OUT' | 'WASTE' | 'AUDIT';
+  change: string;
+  reason: string;
+  ref: string;
+  updatedBy: string;
+}
+
+export const INITIAL_ADJUSTMENTS: StockAdjustment[] = [
+  { id: 'adj-1', time: '28 Oct 2026, 09:30', product: 'Araliya Keeri Samba Rice (5kg)', type: 'IN', change: '+50', reason: 'Import Direct Sri Lanka (Burlap Sacks)', ref: 'RIC-WHITE-001', updatedBy: 'Alina Ionescu' },
+  { id: 'adj-2', time: '28 Oct 2026, 09:30', product: 'Sri Lankan Purple Brinjal / Eggplant', type: 'IN', change: '+40', reason: 'Transport Aerian Proaspăt', ref: 'VEG-BRIN-004', updatedBy: 'Alina Ionescu' }
 ];

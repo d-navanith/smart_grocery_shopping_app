@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ShoppingBag,
   TrendingUp,
@@ -18,9 +18,13 @@ import {
   Eye,
   Plus,
   Bell,
-  ArrowRight
+  ArrowRight,
+  Activity,
+  Database,
+  RefreshCw
 } from 'lucide-react';
 import { Order, Product } from './part1_imports_types';
+import { adminApi } from '../api/adminApi';
 
 interface DashboardViewProps {
   orders: Order[];
@@ -44,6 +48,28 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [orderListSearch, setOrderListSearch] = useState('');
   const [paymentSearch, setPaymentSearch] = useState('');
   const [showChart, setShowChart] = useState(false);
+  const [crudLogs, setCrudLogs] = useState<any[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
+
+  const fetchLogs = async () => {
+    setLoadingLogs(true);
+    try {
+      const res = await adminApi.auditLogs.list();
+      if (res && res.data) {
+        setCrudLogs(res.data);
+      }
+    } catch (e) {
+      console.warn('Could not fetch CRUD logs', e);
+    } finally {
+      setLoadingLogs(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLogs();
+    const interval = setInterval(fetchLogs, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const pendingOrders = orders.filter(o => o.status === 'PENDING').length;
   const processingOrders = orders.filter(o => o.status === 'PROCESSING').length;
@@ -377,6 +403,83 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               ))}
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* 2.5 LIVE RESTFUL CRUD AUDIT LOG STREAM */}
+      <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-[#0B3B2C] text-[#F8B838] flex items-center justify-center shadow-xs">
+              <Database className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-black text-sm text-slate-900 tracking-tight">Live RESTful CRUD Audit Stream</h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  REST API Active
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 font-medium">Real-time telemetry of all Create, Read, Update, Delete transactions</p>
+            </div>
+          </div>
+          <button
+            onClick={fetchLogs}
+            disabled={loadingLogs}
+            className="px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center gap-1.5 transition active:scale-95 disabled:opacity-50 self-start sm:self-auto"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loadingLogs ? 'animate-spin text-[#0B3B2C]' : ''}`} />
+            <span>Refresh Stream</span>
+          </button>
+        </div>
+
+        <div className="overflow-x-auto">
+          {crudLogs.length === 0 ? (
+            <div className="py-6 text-center text-xs text-slate-400 font-medium">
+              Awaiting CRUD transactions... Any product edit, order dispatch, status change or deletion will appear here live.
+            </div>
+          ) : (
+            <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+              {crudLogs.slice(0, 10).map((log) => {
+                const methodBadgeColor =
+                  log.method === 'POST' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                  log.method === 'PUT' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                  log.method === 'PATCH' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                  log.method === 'DELETE' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                  'bg-slate-50 text-slate-700 border-slate-200';
+
+                return (
+                  <div
+                    key={log.id}
+                    className="p-2.5 rounded-2xl bg-slate-50/80 hover:bg-slate-100/80 border border-slate-200/60 flex items-center justify-between text-xs transition"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-black border uppercase tracking-wider shrink-0 ${methodBadgeColor}`}>
+                        {log.method}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="font-extrabold text-slate-800 truncate">
+                          {log.summary}
+                        </p>
+                        <p className="text-[10px] text-slate-400 font-mono truncate">
+                          Resource: <span className="font-bold text-slate-600">{log.resource}</span> {log.resourceId ? `• ID: ${log.resourceId}` : ''}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0 text-right">
+                      <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                        {log.status} OK
+                      </span>
+                      <span className="text-[10px] font-medium text-slate-400 font-mono">
+                        {log.timestamp ? new Date(log.timestamp).toLocaleTimeString() : 'Now'}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 

@@ -26,6 +26,7 @@ import {
   INITIAL_ADJUSTMENTS,
   INITIAL_PERMISSIONS
 } from './part2_initial_data';
+import { adminApi } from '../api/adminApi';
 
 export function useAdminCockpitState() {
   // Auth state
@@ -158,6 +159,100 @@ export function useAdminCockpitState() {
     localStorage.setItem('ceylonfoods_admin_permissions', JSON.stringify(permissionsMatrix));
   }, [permissionsMatrix]);
 
+  // REST API connection telemetry
+  const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
+  const [lastSyncTime, setLastSyncTime] = useState<string>('');
+
+  // Synchronize with backend REST API on mount
+  useEffect(() => {
+    let mounted = true;
+
+    async function syncFromBackend() {
+      try {
+        const [
+          prodRes,
+          ordRes,
+          catRes,
+          custRes,
+          riderRes,
+          promoRes,
+          staffRes,
+          zonesRes,
+          revRes,
+          invRes
+        ] = await Promise.allSettled([
+          adminApi.products.list(),
+          adminApi.orders.list(),
+          adminApi.categories.list(),
+          adminApi.customers.list(),
+          adminApi.riders.list(),
+          adminApi.promotions.list(),
+          adminApi.staff.list(),
+          adminApi.deliveryZones.list(),
+          adminApi.reviews.list(),
+          adminApi.inventory.list()
+        ]);
+
+        if (!mounted) return;
+
+        let anySuccess = false;
+
+        if (prodRes.status === 'fulfilled' && prodRes.value?.data?.length) {
+          setProducts(prodRes.value.data);
+          anySuccess = true;
+        }
+        if (ordRes.status === 'fulfilled' && ordRes.value?.data?.length) {
+          setOrders(ordRes.value.data);
+          anySuccess = true;
+        }
+        if (catRes.status === 'fulfilled' && catRes.value?.data?.length) {
+          setCategories(catRes.value.data);
+          anySuccess = true;
+        }
+        if (custRes.status === 'fulfilled' && custRes.value?.data?.length) {
+          setCustomers(custRes.value.data);
+          anySuccess = true;
+        }
+        if (riderRes.status === 'fulfilled' && riderRes.value?.data?.length) {
+          setRiders(riderRes.value.data);
+          anySuccess = true;
+        }
+        if (promoRes.status === 'fulfilled' && promoRes.value?.data?.length) {
+          setPromotionsRegister(promoRes.value.data);
+          anySuccess = true;
+        }
+        if (staffRes.status === 'fulfilled' && staffRes.value?.data?.length) {
+          setStaffDirectory(staffRes.value.data);
+          anySuccess = true;
+        }
+        if (zonesRes.status === 'fulfilled' && zonesRes.value?.data?.length) {
+          setDeliveryZones(zonesRes.value.data);
+          anySuccess = true;
+        }
+        if (revRes.status === 'fulfilled' && revRes.value?.data?.length) {
+          setCustomerReviews(revRes.value.data);
+          anySuccess = true;
+        }
+        if (invRes.status === 'fulfilled' && invRes.value?.adjustments?.length) {
+          setStockAdjustments(invRes.value.adjustments);
+          anySuccess = true;
+        }
+
+        if (anySuccess) {
+          setIsBackendConnected(true);
+          setLastSyncTime(new Date().toLocaleTimeString());
+        }
+      } catch (err) {
+        console.warn('Backend sync failed, using offline cache', err);
+      }
+    }
+
+    syncFromBackend();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   // Settings states
   const [storeName, setStoreName] = useState(() => localStorage.getItem('cf_storeName') || 'Ceylon Foods Supermarket');
   const [supportEmail, setSupportEmail] = useState(() => localStorage.getItem('cf_supportEmail') || 'hello@ceylonfoods.lk');
@@ -283,6 +378,7 @@ export function useAdminCockpitState() {
     isInviteStaffModalOpen, setIsInviteStaffModalOpen,
     editingDeliveryZone, setEditingDeliveryZone, isAddDeliveryZoneModalOpen, setIsAddDeliveryZoneModalOpen,
     selectedCustomerForDrawer, setSelectedCustomerForDrawer,
-    reviewReplyInputs, setReviewReplyInputs
+    reviewReplyInputs, setReviewReplyInputs,
+    isBackendConnected, lastSyncTime
   };
 }

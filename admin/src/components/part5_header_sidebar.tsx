@@ -136,13 +136,15 @@ interface HeaderProps {
   searchTerm: string;
   setSearchTerm: (s: string) => void;
   unreadCount?: number;
+  isBackendConnected?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   activeMenu,
   searchTerm,
   setSearchTerm,
-  unreadCount = 3
+  unreadCount = 3,
+  isBackendConnected = true
 }) => {
   const getHeaderTitle = () => {
     switch (activeMenu) {
@@ -174,6 +176,14 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       <div className="flex items-center gap-4">
+        {/* Live Backend Telemetry Pill */}
+        <div className={`hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-2xl border text-xs font-black shadow-2xs ${
+          isBackendConnected ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-amber-50 border-amber-200 text-amber-800'
+        }`}>
+          <span className={`w-2 h-2 rounded-full ${isBackendConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+          <span>{isBackendConnected ? 'REST API Live' : 'Offline Cache'}</span>
+        </div>
+
         {/* Universal Search Input */}
         <div className="relative w-64 lg:w-72">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
