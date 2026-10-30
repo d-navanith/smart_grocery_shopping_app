@@ -75,7 +75,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Navigation Links */}
-        <nav className="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-140px)]">
+        <nav className="p-3 space-y-1.5 overflow-y-auto max-h-[calc(100vh-160px)]">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeMenu === item.id;
@@ -83,20 +83,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => setActiveMenu(item.id)}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition duration-150 ${
+                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-2xl text-xs font-extrabold transition duration-150 ${
                   isActive
-                    ? 'bg-[#0C4E3B] text-white shadow-sm'
+                    ? 'bg-[#F8B838] text-slate-900 shadow-sm'
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-slate-900 stroke-[2.5]' : 'text-slate-400'}`} />
                   <span>{item.label}</span>
                 </div>
                 {item.badge && (
                   <span
                     className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
-                      isActive ? 'bg-white/20 text-white' : (item.badgeColor || 'bg-slate-100 text-slate-700')
+                      isActive ? 'bg-black/10 text-slate-900' : (item.badgeColor || 'bg-slate-100 text-slate-700')
                     }`}
                   >
                     {item.badge}
@@ -108,17 +108,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
       </div>
 
-      {/* Footer / Logout */}
-      <div className="p-4 border-t border-slate-100">
+      {/* Profile & Logout matching Bitepoint */}
+      <div className="p-4 border-t border-slate-100 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-full bg-[#0C4E3B] text-white font-black text-xs flex items-center justify-center shadow-xs">
+            NP
+          </div>
+          <div className="text-left">
+            <p className="text-xs font-black text-slate-900 leading-tight">Nimali Perera</p>
+            <p className="text-[10px] text-slate-400 font-semibold">Administrator</p>
+          </div>
+        </div>
         <button
           onClick={onLogout}
-          className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition"
+          title="Sign out"
+          className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
         >
-          <div className="flex items-center gap-2">
-            <LogOut className="w-4 h-4" />
-            <span>Sign out</span>
-          </div>
-          <span className="text-[10px] text-slate-400 font-mono">v2.4.0</span>
+          <LogOut className="w-4 h-4" />
         </button>
       </div>
     </aside>
@@ -140,8 +146,8 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const getHeaderTitle = () => {
     switch (activeMenu) {
-      case 'dashboard': return 'Operations Dashboard';
-      case 'orders': return 'Order Management';
+      case 'dashboard': return 'Nice! We have a lot of orders 😄';
+      case 'orders': return 'Orders & Fulfillment';
       case 'products': return 'Products Catalog';
       case 'categories': return 'Catalog Organisation';
       case 'inventory': return 'Stock Control & Warehouse';
@@ -157,13 +163,13 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
+    <header className="h-18 bg-white border-b border-slate-100 px-8 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
       <div>
-        <h2 className="text-base font-black text-slate-900 tracking-tight">
+        <h2 className="text-lg font-black text-slate-900 tracking-tight">
           {getHeaderTitle()}
         </h2>
         <p className="text-[11px] text-slate-400 font-medium">
-          Ceylon Foods / Operations Portal • Live System
+          Ceylon Foods Operations Cockpit • Live System
         </p>
       </div>
 
@@ -173,46 +179,35 @@ export const Header: React.FC<HeaderProps> = ({
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Search items, orders, customers..."
+            placeholder="Search a Order, item..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-10 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0C4E3B]"
+            className="w-full bg-[#F5F6F8] border border-transparent rounded-2xl pl-10 pr-10 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#F8B838] transition"
           />
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400 bg-white border border-slate-200 px-1.5 py-0.5 rounded">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400 bg-white border border-slate-200 px-1.5 py-0.5 rounded-md">
             ⌘ K
           </span>
         </div>
 
         {/* Language Indicator */}
-        <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-black text-slate-700 shadow-2xs">
-          <Globe className="w-3.5 h-3.5 text-[#0C6237]" />
+        <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-2xl border border-slate-200 bg-white text-xs font-black text-slate-700 shadow-2xs">
+          <Globe className="w-3.5 h-3.5 text-[#0C4E3B]" />
           <span>🇬🇧 EN • 🇱🇰 SI • 🇷🇴 RO</span>
         </div>
 
         {/* Date Filter Pill */}
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 shadow-2xs">
-          <CalendarIcon className="w-3.5 h-3.5 text-[#0C6237]" />
-          <span>October 2026</span>
+        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-2xl border border-slate-200 bg-white text-xs font-extrabold text-slate-700 shadow-2xs">
+          <CalendarIcon className="w-3.5 h-3.5 text-[#F8B838]" />
+          <span>Wednesday, 30 Oct 2026</span>
         </div>
 
         {/* Notification Bell */}
-        <button className="relative p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition">
+        <button className="relative p-2.5 rounded-2xl text-slate-500 hover:bg-slate-100 transition">
           <Bell className="w-4 h-4" />
           {unreadCount > 0 && (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500"></span>
+            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500"></span>
           )}
         </button>
-
-        {/* User Pill */}
-        <div className="flex items-center gap-2.5 pl-3 border-l border-slate-200">
-          <div className="w-8 h-8 rounded-full bg-[#E5EFE7] text-[#0C4E3B] font-black text-xs flex items-center justify-center">
-            NP
-          </div>
-          <div className="hidden sm:block text-left">
-            <p className="text-xs font-extrabold text-slate-900 leading-none">Nimali Perera</p>
-            <p className="text-[10px] text-slate-400 font-medium mt-0.5">Super Administrator</p>
-          </div>
-        </div>
       </div>
     </header>
   );

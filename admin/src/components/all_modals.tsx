@@ -14,7 +14,8 @@ import {
   ShieldCheck,
   MapPin,
   Clock,
-  ArrowRight
+  ArrowRight,
+  PhoneCall
 } from 'lucide-react';
 import {
   Order,
@@ -1343,7 +1344,7 @@ export const CustomerProfileDrawer: React.FC<{
 };
 
 /* =========================================================================
-   COURIER DISPATCH MODAL: CALL DELIVERY COMPANY FOR CASH ON DELIVERY PARCEL
+   COURIER DISPATCH & PAYMENT MODAL: BITEPOINT 2-COLUMN TICKET & KEYPAD
 ========================================================================= */
 export const CourierDispatchModal: React.FC<{
   order: Order | null;
@@ -1358,24 +1359,66 @@ export const CourierDispatchModal: React.FC<{
 }> = ({ order, onClose, onConfirmDispatch }) => {
   if (!order) return null;
 
-  const [selectedCompany, setSelectedCompany] = useState<{ name: string; phone: string; eta: string }>({
+  const [selectedCompany, setSelectedCompany] = useState<{ name: string; phone: string; eta: string; logo: string }>({
     name: 'Glovo Express Bucharest',
     phone: '+40 21 9988',
-    eta: '10 min'
+    eta: '10 min',
+    logo: '🛵'
   });
   const [pickupMinutes, setPickupMinutes] = useState(10);
   const [deliveryMinutes, setDeliveryMinutes] = useState(30);
   const [riderName, setRiderName] = useState('Glovo Rider Bucharest');
   const [copied, setCopied] = useState(false);
+  const [showScript, setShowScript] = useState(false);
+
+  // Keypad & Cash Tendered calculation (Bitepoint POS style)
+  const [tenderedInput, setTenderedInput] = useState<string>(order.totalAmount.toFixed(2));
+  const tenderedAmount = parseFloat(tenderedInput) || 0;
+  const changeDue = Math.max(0, tenderedAmount - order.totalAmount);
 
   const DELIVERY_COMPANIES = [
-    { name: 'Glovo Express Bucharest', phone: '+40 21 9988', eta: '10 min', color: 'bg-amber-100 text-amber-900 border-amber-300' },
-    { name: 'Bolt Delivery Riders', phone: '+40 31 229 5555', eta: '12 min', color: 'bg-emerald-100 text-emerald-900 border-emerald-300' },
-    { name: 'Tazz by eMAG Courier', phone: '+40 372 829 929', eta: '15 min', color: 'bg-red-100 text-red-900 border-red-300' },
-    { name: 'Sameday 2H Bucharest', phone: '+40 21 637 0660', eta: '15 min', color: 'bg-blue-100 text-blue-900 border-blue-300' },
-    { name: 'Fan Courier Express', phone: '+40 21 9336', eta: '20 min', color: 'bg-purple-100 text-purple-900 border-purple-300' },
-    { name: 'Ceylon Foods In-House Rider', phone: '+40 720 334 119', eta: '8 min', color: 'bg-teal-100 text-teal-900 border-teal-300' }
+    { name: 'Glovo Express Bucharest', phone: '+40 21 9988', eta: '10 min', logo: '🛵' },
+    { name: 'Bolt Delivery Riders', phone: '+40 31 229 5555', eta: '12 min', logo: '⚡' },
+    { name: 'Tazz by eMAG Courier', phone: '+40 372 829 929', eta: '15 min', logo: '🔴' },
+    { name: 'Sameday 2H Bucharest', phone: '+40 21 637 0660', eta: '15 min', logo: '📦' },
+    { name: 'Fan Courier Express', phone: '+40 21 9336', eta: '20 min', logo: '🚚' },
+    { name: 'Ceylon Foods Fleet', phone: '+40 720 334 119', eta: '8 min', logo: '🇱🇰' }
   ];
+
+  // Keypad handlers
+  const handleKeypadPress = (val: string) => {
+    if (val === 'CLEAR') {
+      setTenderedInput('0');
+    } else if (val === 'BACKSPACE') {
+      if (tenderedInput.length <= 1) {
+        setTenderedInput('0');
+      } else {
+        setTenderedInput(tenderedInput.slice(0, -1));
+      }
+    } else if (val === '.') {
+      if (!tenderedInput.includes('.')) {
+        setTenderedInput(tenderedInput + '.');
+      }
+    } else {
+      if (tenderedInput === '0' || tenderedInput === '') {
+        setTenderedInput(val);
+      } else {
+        // limit 2 decimal places
+        const parts = tenderedInput.split('.');
+        if (parts.length > 1 && parts[1].length >= 2) return;
+        setTenderedInput(tenderedInput + val);
+      }
+    }
+  };
+
+  const handleAddPreset = (addon: number) => {
+    const current = parseFloat(tenderedInput) || 0;
+    setTenderedInput((current + addon).toFixed(2));
+  };
+
+  const handleExact = () => {
+    setTenderedInput(order.totalAmount.toFixed(2));
+  };
 
   // Exact Call / Message Script required by User
   const dispatchScriptRo = `Bună ziua! Avem un colet de la Ceylon Foods Supermarket (Strada Academiei 14, București).
@@ -1406,170 +1449,276 @@ Vă mulțumim!`;
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fadeIn">
-      <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-5 max-h-[92vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-[#0A6847] flex items-center justify-center">
-              <Truck className="w-5 h-5" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs animate-fadeIn">
+      <div className="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row max-h-[92vh]">
+        
+        {/* ================= LEFT COLUMN: BITEPOINT RECEIPT TICKET ================= */}
+        <div className="w-full md:w-5/12 bg-[#F8F9FA] p-5 sm:p-6 border-b md:border-b-0 md:border-r border-slate-200 flex flex-col justify-between overflow-y-auto">
+          <div>
+            {/* Top Receipt Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-dashed border-slate-300">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 rounded-lg bg-[#0B3B2C] text-[#F8B838] font-black text-xs tracking-wider uppercase">
+                  TA #{order.orderNumber.replace(/[^0-9]/g, '').slice(-2) || 'A4'}
+                </span>
+                <span className="text-xs font-black text-slate-800 tracking-tight">
+                  {order.orderNumber}
+                </span>
+              </div>
+              <span className="text-[11px] font-bold text-slate-400">
+                {order.placedAt || '12:30 PM'}
+              </span>
             </div>
+
+            {/* Customer Details Pill */}
+            <div className="mt-4 p-3 rounded-2xl bg-white border border-slate-200 text-xs shadow-xs space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-black text-slate-900">{order.customerName}</span>
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                  {order.paymentMethod === 'COD' ? '💵 Cash on Delivery' : '💳 Online Card'}
+                </span>
+              </div>
+              <p className="font-mono text-[11px] font-bold text-slate-500">📞 {order.customerPhone}</p>
+              <p className="text-[11px] font-medium text-slate-600 line-clamp-2">📍 {order.customerAddress}</p>
+            </div>
+
+            {/* Itemized Receipt Table */}
+            <div className="mt-4">
+              <div className="flex justify-between text-[11px] font-black uppercase tracking-wider text-slate-400 pb-2 border-b border-slate-200">
+                <span>Items ({order.items.length})</span>
+                <span>Qty • Subtotal</span>
+              </div>
+              <div className="divide-y divide-slate-100 max-h-56 overflow-y-auto py-1">
+                {order.items.map((it, idx) => (
+                  <div key={idx} className="py-2.5 flex items-center justify-between text-xs">
+                    <div className="pr-2">
+                      <p className="font-bold text-slate-800 leading-tight">{it.productTitle}</p>
+                      <span className="text-[10px] font-semibold text-slate-400">{it.price.toFixed(2)} lei each</span>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-bold text-[10px] mr-2">
+                        x{it.quantity}
+                      </span>
+                      <span className="font-black text-slate-900">{(it.price * it.quantity).toFixed(2)} lei</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Receipt Totals & Jagged Tear Edge */}
+          <div className="mt-4 pt-3 border-t-2 border-dashed border-slate-300">
+            <div className="space-y-1.5 text-xs">
+              <div className="flex justify-between text-slate-500 font-medium">
+                <span>Subtotal</span>
+                <span>{(order.totalAmount > 15 ? order.totalAmount - 15 : order.totalAmount).toFixed(2)} lei</span>
+              </div>
+              <div className="flex justify-between text-slate-500 font-medium">
+                <span>Delivery Express Fee</span>
+                <span className="font-bold text-emerald-700">{order.totalAmount > 15 ? '15.00 lei' : '0.00 lei'}</span>
+              </div>
+              <div className="flex justify-between items-baseline pt-2 border-t border-slate-200">
+                <span className="font-black text-slate-900 text-sm">Total Amount</span>
+                <span className="font-black text-2xl text-slate-900 tracking-tight">
+                  {order.totalAmount.toFixed(2)} <span className="text-sm font-bold text-slate-500">lei</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Jagged / Sawtooth Receipt Tear Effect */}
+            <div className="mt-5 relative">
+              <div className="h-2 w-full bg-[radial-gradient(circle,_transparent_3px,_#F8F9FA_3px)] bg-[length:12px_12px] -mb-1 opacity-80" />
+              <div className="py-2 text-center text-[10px] font-mono text-slate-400 tracking-widest uppercase">
+                * * * CEYLON FOODS BUCHAREST * * *
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ================= RIGHT COLUMN: PAYMENT KEYPAD & DISPATCH ================= */}
+        <div className="w-full md:w-7/12 p-5 sm:p-6 flex flex-col justify-between overflow-y-auto space-y-4">
+          
+          {/* Header & Close */}
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div>
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#0A6847]">
-                Dispecerat Curieri România • Cash on Delivery
+              <span className="text-[10px] font-black tracking-wider uppercase text-slate-400">
+                Bitepoint POS • Romanian Delivery Network
               </span>
               <h3 className="font-black text-lg text-slate-900 leading-tight">
-                Apelează Compania de Livrare (Order {order.orderNumber})
+                Payment & Courier Dispatch
               </h3>
             </div>
-          </div>
-          <button onClick={onClose} className="p-1 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Parcel & Cash on Delivery Summary Card */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs">
-          <div>
-            <p className="text-[10px] font-black text-amber-800 uppercase tracking-wider">Client & Telefon</p>
-            <p className="font-extrabold text-slate-900 text-sm mt-0.5">{order.customerName}</p>
-            <p className="font-mono font-bold text-amber-900">{order.customerPhone}</p>
-          </div>
-          <div>
-            <p className="text-[10px] font-black text-amber-800 uppercase tracking-wider">Adresă de Livrare</p>
-            <p className="font-bold text-slate-900 mt-0.5 line-clamp-2">{order.customerAddress}</p>
-          </div>
-          <div className="p-2.5 rounded-xl bg-white border border-amber-300 text-center flex flex-col justify-center">
-            <p className="text-[10px] font-black text-amber-900 uppercase">Valoare de Încasat (Cash)</p>
-            <p className="text-xl font-black text-[#0A6847] mt-0.5">{order.totalAmount.toFixed(2)} lei</p>
-            <span className="text-[9px] font-bold text-slate-400">Ramburs la Ușă</span>
-          </div>
-        </div>
-
-        {/* 1. Select Delivery Company */}
-        <div className="space-y-2">
-          <label className="text-xs font-black uppercase tracking-wider text-slate-700 block">
-            1. Selectează Compania de Curierat (Glovo / Bolt / Sameday / Fan Courier):
-          </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-            {DELIVERY_COMPANIES.map(comp => (
-              <button
-                key={comp.name}
-                type="button"
-                onClick={() => {
-                  setSelectedCompany(comp);
-                  setRiderName(`${comp.name} Rider`);
-                }}
-                className={`p-3 rounded-2xl border text-left transition ${
-                  selectedCompany.name === comp.name
-                    ? 'border-[#0A6847] bg-emerald-50 ring-2 ring-[#0A6847] font-bold'
-                    : 'border-slate-200 hover:bg-slate-50'
-                }`}
-              >
-                <p className="font-black text-slate-900 leading-tight">{comp.name}</p>
-                <p className="text-[10px] text-slate-500 font-mono mt-1">📞 {comp.phone}</p>
-                <span className="inline-block mt-1 text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">
-                  ETA: {comp.eta}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 2. Pickup & Delivery Timing (Come and get this item within X minutes) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs">
-          <div>
-            <label className="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">
-              ⏱ Ridicare de la Magazin (Come & Get Item within):
-            </label>
-            <div className="flex items-center gap-2">
-              {[8, 10, 15, 20].map(mins => (
-                <button
-                  key={mins}
-                  type="button"
-                  onClick={() => setPickupMinutes(mins)}
-                  className={`px-3 py-1.5 rounded-xl font-bold border transition ${
-                    pickupMinutes === mins
-                      ? 'bg-[#0A6847] text-white border-[#0A6847]'
-                      : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
-                  }`}
-                >
-                  {mins} min
-                </button>
-              ))}
-            </div>
-            <p className="text-[10px] text-slate-400 mt-1">Curierul vine la depozit: Strada Academiei 14, București</p>
-          </div>
-
-          <div>
-            <label className="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">
-              🚀 Livrare la Adresă (Deliver to Address within):
-            </label>
-            <div className="flex items-center gap-2">
-              {[20, 30, 45, 60].map(mins => (
-                <button
-                  key={mins}
-                  type="button"
-                  onClick={() => setDeliveryMinutes(mins)}
-                  className={`px-3 py-1.5 rounded-xl font-bold border transition ${
-                    deliveryMinutes === mins
-                      ? 'bg-[#0A6847] text-white border-[#0A6847]'
-                      : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
-                  }`}
-                >
-                  {mins} min
-                </button>
-              ))}
-            </div>
-            <p className="text-[10px] text-slate-400 mt-1">Timp comunicat clientului pe urmărire live</p>
-          </div>
-        </div>
-
-        {/* 3. Pre-filled Call & Dispatch Script */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-black uppercase tracking-wider text-slate-700">
-              Text Dispecerat Telefonic / Mesaj SMS Curier:
-            </label>
             <button
-              type="button"
-              onClick={handleCopyScript}
-              className="text-[11px] font-bold text-[#0A6847] hover:underline flex items-center gap-1"
-            >
-              {copied ? '✓ Copiat în Clipboard!' : '📋 Copiază Textul'}
-            </button>
-          </div>
-          <div className="p-3.5 rounded-2xl bg-slate-900 text-emerald-300 font-mono text-[11px] leading-relaxed whitespace-pre-line border border-slate-800">
-            {dispatchScriptRo}
-          </div>
-        </div>
-
-        {/* Action Buttons: Call & Confirm Dispatch */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-100">
-          <a
-            href={`tel:${selectedCompany.phone}`}
-            className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow-md flex items-center justify-center gap-2 transition"
-          >
-            <span>📞 Apelează {selectedCompany.name} ({selectedCompany.phone})</span>
-          </a>
-
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-            <button
-              type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-2xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50"
+              className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
             >
-              Anulează
+              <X className="w-5 h-5" />
             </button>
+          </div>
+
+          {/* Courier Network Selection Chips */}
+          <div>
+            <label className="text-[11px] font-black uppercase tracking-wider text-slate-600 block mb-1.5">
+              Select Courier Partner (Bucharest Fleet):
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {DELIVERY_COMPANIES.map(comp => (
+                <button
+                  key={comp.name}
+                  type="button"
+                  onClick={() => {
+                    setSelectedCompany(comp);
+                    setRiderName(`${comp.name} Rider`);
+                  }}
+                  className={`p-2.5 rounded-2xl border text-left transition flex flex-col justify-between ${
+                    selectedCompany.name === comp.name
+                      ? 'border-[#0B3B2C] bg-[#E9F3EE] ring-2 ring-[#0B3B2C] font-bold'
+                      : 'border-slate-200 bg-white hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-base">{comp.logo}</span>
+                    <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-white text-slate-700 border border-slate-200">
+                      {comp.eta}
+                    </span>
+                  </div>
+                  <p className="font-black text-slate-900 text-xs mt-1.5 leading-snug truncate">{comp.name.split(' ')[0]}</p>
+                  <span className="text-[10px] text-slate-500 font-mono">{comp.phone}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Cash Tendered & Keypad Section */}
+          <div className="bg-[#F5F6F8] p-4 rounded-3xl border border-slate-200 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                  Cash Received / Sumă Încasată
+                </span>
+                <div className="text-2xl font-black text-slate-900 tracking-tight mt-0.5">
+                  {tenderedInput || '0'} <span className="text-sm font-bold text-slate-500">lei</span>
+                </div>
+              </div>
+
+              {changeDue > 0 && (
+                <div className="text-right bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-xl">
+                  <span className="text-[9px] font-black uppercase tracking-wider text-emerald-800">
+                    Rest de Dat (Change)
+                  </span>
+                  <p className="text-sm font-black text-emerald-900">
+                    {changeDue.toFixed(2)} lei
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Quick Increment Preset Chips */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+              <button
+                type="button"
+                onClick={handleExact}
+                className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:border-slate-400 font-black text-xs text-slate-800 transition shrink-0"
+              >
+                Exact ({order.totalAmount.toFixed(0)} lei)
+              </button>
+              {[10, 20, 50, 100].map(add => (
+                <button
+                  key={add}
+                  type="button"
+                  onClick={() => handleAddPreset(add)}
+                  className="px-2.5 py-1.5 rounded-xl bg-white border border-slate-200 hover:border-slate-400 font-bold text-xs text-slate-700 transition shrink-0"
+                >
+                  +{add} lei
+                </button>
+              ))}
+            </div>
+
+            {/* Numeric Keypad Grid (Bitepoint POS style) */}
+            <div className="grid grid-cols-3 gap-1.5">
+              {['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '⌫'].map(k => (
+                <button
+                  key={k}
+                  type="button"
+                  onClick={() => {
+                    if (k === '⌫') handleKeypadPress('BACKSPACE');
+                    else handleKeypadPress(k);
+                  }}
+                  className="py-2.5 rounded-xl bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-200 font-black text-base text-slate-900 shadow-2xs transition active:scale-95"
+                >
+                  {k}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Timing & Dispatch Script Options */}
+          <div className="flex items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-1.5">
+              <span className="font-bold text-slate-600 text-[11px]">⏱ Ridicare:</span>
+              {[8, 10, 15].map(m => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setPickupMinutes(m)}
+                  className={`px-2 py-1 rounded-lg font-bold text-[11px] border transition ${
+                    pickupMinutes === m
+                      ? 'bg-[#0B3B2C] text-white border-[#0B3B2C]'
+                      : 'bg-white border-slate-200 text-slate-700'
+                  }`}
+                >
+                  {m}m
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowScript(!showScript)}
+              className="font-bold text-[#0B3B2C] hover:underline flex items-center gap-1 text-[11px]"
+            >
+              <span>{showScript ? 'Ascunde Text Dispecerat' : 'Vezi Script Apel Curier ▾'}</span>
+            </button>
+          </div>
+
+          {/* Expandable Script Box */}
+          {showScript && (
+            <div className="p-3 rounded-2xl bg-slate-900 text-emerald-300 font-mono text-[10px] leading-relaxed border border-slate-800 space-y-2">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-1">
+                <span className="font-bold text-slate-400">Script Apel / SMS Curier:</span>
+                <button
+                  type="button"
+                  onClick={handleCopyScript}
+                  className="text-amber-400 hover:underline font-bold"
+                >
+                  {copied ? '✓ Copiat!' : '📋 Copiază'}
+                </button>
+              </div>
+              <p className="whitespace-pre-line">{dispatchScriptRo}</p>
+            </div>
+          )}
+
+          {/* Bottom Actions: Call Button & Solid Warm Yellow Bitepoint Action Button */}
+          <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+            <a
+              href={`tel:${selectedCompany.phone}`}
+              className="p-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center transition"
+              title={`Apelează ${selectedCompany.name}`}
+            >
+              <PhoneCall className="w-5 h-5" />
+            </a>
+
             <button
               type="button"
               onClick={handleConfirm}
-              className="px-6 py-3 rounded-2xl bg-[#0A6847] hover:bg-[#085237] text-white font-black text-xs shadow-lg flex items-center gap-2 transition active:scale-95"
+              className="flex-1 py-3.5 px-6 rounded-2xl bg-[#F8B838] hover:bg-[#eab02e] text-slate-950 font-black text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-98"
             >
-              <span>Confirmă Preluarea & Trimite Curierul</span>
+              <span>Pay Now & Dispatch Courier ({order.totalAmount.toFixed(2)} lei)</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
+
         </div>
       </div>
     </div>

@@ -178,8 +178,10 @@ export default function AdminApp() {
               orders={state.orders}
               products={state.products}
               onOpenOrder={(o) => state.setSelectedOrderForDetail(o)}
+              onOpenDispatchModal={(o) => state.setDispatchingOrder(o)}
               onNavigateTab={(tab) => state.setActiveMenu(tab)}
               onExportCsv={mut.exportOrdersCsv}
+              onOpenCreateOrder={() => state.setActiveMenu('orders')}
             />
           )}
 

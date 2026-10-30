@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ShoppingBag,
   TrendingUp,
@@ -16,7 +16,9 @@ import {
   ChevronDown,
   Printer,
   Eye,
-  Plus
+  Plus,
+  Bell,
+  ArrowRight
 } from 'lucide-react';
 import { Order, Product } from './part1_imports_types';
 
@@ -24,340 +26,425 @@ interface DashboardViewProps {
   orders: Order[];
   products: Product[];
   onOpenOrder: (order: Order) => void;
+  onOpenDispatchModal?: (order: Order) => void;
   onNavigateTab: (tab: any) => void;
   onExportCsv: () => void;
+  onOpenCreateOrder?: () => void;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
   orders,
   products,
   onOpenOrder,
+  onOpenDispatchModal,
   onNavigateTab,
-  onExportCsv
+  onExportCsv,
+  onOpenCreateOrder
 }) => {
-  const totalSales = orders.reduce((sum, o) => sum + (o.paymentStatus === 'PAID' ? o.totalAmount : 0), 0);
+  const [orderListSearch, setOrderListSearch] = useState('');
+  const [paymentSearch, setPaymentSearch] = useState('');
+  const [showChart, setShowChart] = useState(false);
+
   const pendingOrders = orders.filter(o => o.status === 'PENDING').length;
   const processingOrders = orders.filter(o => o.status === 'PROCESSING').length;
   const dispatchedOrders = orders.filter(o => o.status === 'ON_THE_WAY').length;
   const deliveredOrders = orders.filter(o => o.status === 'DELIVERED').length;
+  const totalOrdersCount = orders.length;
   const lowStockCount = products.filter(p => p.stock < 30).length;
 
+  // Filtered order list for Column 1
+  const filteredOrderList = orders.filter(o => {
+    if (!orderListSearch) return true;
+    const q = orderListSearch.toLowerCase();
+    return o.customerName.toLowerCase().includes(q) || o.orderNumber.toLowerCase().includes(q);
+  });
+
+  // Filtered payment list for Column 2
+  const filteredPaymentList = orders.filter(o => {
+    if (!paymentSearch) return true;
+    const q = paymentSearch.toLowerCase();
+    return o.customerName.toLowerCase().includes(q) || o.orderNumber.toLowerCase().includes(q);
+  });
+
+  // Pre-configured table badges in Bitepoint theme
+  const getTableBadge = (idx: number) => {
+    const badges = [
+      { code: 'A4', color: 'bg-emerald-600 text-white' },
+      { code: 'B2', color: 'bg-teal-600 text-white' },
+      { code: 'TA', color: 'bg-amber-500 text-white' },
+      { code: 'A9', color: 'bg-emerald-700 text-white' },
+      { code: 'C2', color: 'bg-cyan-700 text-white' },
+      { code: 'A2', color: 'bg-teal-700 text-white' },
+      { code: 'B4', color: 'bg-amber-600 text-white' },
+      { code: 'B7', color: 'bg-sky-700 text-white' }
+    ];
+    return badges[idx % badges.length];
+  };
+
+  const popularDishes = [
+    { rank: '01', name: 'Araliya Keeri Samba (5kg)', orders: '23', image: '/prod_white_rice.jpg' },
+    { rank: '02', name: 'Sri Lankan Wambatu & Moju Combo', orders: '16', image: '/prod_brinjal.jpg' },
+    { rank: '03', name: 'Mysore Parippu Dhal Curry & Roast Paan', orders: '13', image: '/prod_dhal.jpg' },
+    { rank: '04', name: 'Dilmah Ceylon Single Origin BOPF Tea', orders: '12', image: '/prod_tea.jpg' }
+  ];
+
+  const outOfStockItems = [
+    { name: 'Fresh Purple Brinjal / Eggplant', time: 'Available : 04:00 PM', stock: 'Restock inbound' },
+    { name: 'Rathu Kekulu Traditional Red Rice', time: 'Available : 03:30 PM', stock: '2 bags left' },
+    { name: 'Pure Ceylon Alba Cinnamon Quills', time: 'Available : 04:20 PM', stock: 'Depot transfer' },
+    { name: 'Munchee Super Cream Crackers', time: 'Available : Tomorrow', stock: 'Expected delivery' }
+  ];
+
   return (
-    <div className="space-y-6 animate-fadeIn">
-      {/* Top Header & Quick Action Buttons */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span className="text-[10px] font-black uppercase tracking-wider text-[#0C6237]">
-            LIVE SUPERMARKET TELEMETRY
-          </span>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-            Dashboard
-          </h2>
-          <p className="text-xs text-slate-500 font-medium">
-            Real-time performance across Sri Lankan island stores and delivery fleet.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <button
-            onClick={() => onNavigateTab('deliveries')}
-            className="px-3.5 py-2 rounded-xl bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 text-xs font-bold flex items-center gap-2 transition"
-          >
-            <Truck className="w-3.5 h-3.5" />
-            <span>Fleet Dispatch</span>
-          </button>
-          <button
-            onClick={() => onNavigateTab('inventory')}
-            className="px-3.5 py-2 rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 text-xs font-bold flex items-center gap-2 transition"
-          >
-            <Package className="w-3.5 h-3.5" />
-            <span>Restock Inventory ({lowStockCount})</span>
-          </button>
-          <button
-            onClick={onExportCsv}
-            className="px-4 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-xs flex items-center gap-2 transition active:scale-95"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Export CSV</span>
-          </button>
-        </div>
-      </div>
-
-      {/* 4 Metric Cards */}
+    <div className="space-y-6 animate-fadeIn select-none">
+      {/* 1. TOP BITEPOINT 4-CARD HERO ROW */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total Sales */}
-        <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold">Total Sales</span>
-            <div className="w-8 h-8 rounded-xl bg-[#E6F7EF] text-[#0C6237] flex items-center justify-center">
-              <TrendingUp className="w-4 h-4" />
+        {/* Card 1: Dark Forest Green Accent (Bitepoint "New Orders") */}
+        <div className="p-6 rounded-3xl bg-[#0B3B2C] text-white shadow-md flex flex-col justify-between space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-extrabold text-emerald-100">New Orders</span>
+            <div className="w-9 h-9 rounded-2xl bg-white/10 text-white flex items-center justify-center shadow-inner">
+              <Bell className="w-4 h-4" />
             </div>
           </div>
           <div>
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight">
-              LKR {(totalSales || 8462850).toLocaleString()}.00
+            <h3 className="text-3xl font-black tracking-tight text-white">
+              {pendingOrders + processingOrders || 16}
             </h3>
-            <p className="text-[11px] text-emerald-600 font-bold flex items-center gap-1 mt-1">
-              <ArrowUpRight className="w-3 h-3" />
-              <span>+14.2% vs last week</span>
+            <p className="text-[11px] text-emerald-300 font-bold mt-1">
+              * Updated every new order
             </p>
           </div>
         </div>
 
-        {/* Total Orders */}
-        <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold">Total Orders</span>
-            <div className="w-8 h-8 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
+        {/* Card 2: Total Orders */}
+        <div className="p-6 rounded-3xl bg-white border border-slate-100 shadow-xs flex flex-col justify-between space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-extrabold text-slate-800">Total Orders</span>
+            <div className="w-9 h-9 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center">
               <ShoppingBag className="w-4 h-4" />
             </div>
           </div>
           <div>
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight">
-              {orders.length || 1284}
+            <h3 className="text-3xl font-black text-slate-900 tracking-tight">
+              {totalOrdersCount || 86}
             </h3>
-            <p className="text-[11px] text-orange-600 font-bold flex items-center gap-1 mt-1">
-              <span>{pendingOrders} awaiting payment/action</span>
+            <p className="text-[11px] text-emerald-600 font-bold mt-1">
+              +2.5% than usual
             </p>
           </div>
         </div>
 
-        {/* Deliveries on Road */}
-        <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold">On the Road</span>
-            <div className="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
-              <Truck className="w-4 h-4" />
-            </div>
-          </div>
-          <div>
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight">
-              {dispatchedOrders || 24} couriers
-            </h3>
-            <p className="text-[11px] text-slate-500 font-medium mt-1">
-              97.1% on-time delivery rate
-            </p>
-          </div>
-        </div>
-
-        {/* Inventory Tracked */}
-        <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-2">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold">Catalog & Stock</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-[#0C6237] flex items-center justify-center">
-              <Package className="w-4 h-4" />
-            </div>
-          </div>
-          <div>
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight">
-              {products.length} Products
-            </h3>
-            <p className="text-[11px] text-slate-400 font-medium mt-1">
-              {lowStockCount > 0 ? `${lowStockCount} items need restock` : 'All inventory healthy'}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Visual Chart & Order Status Split Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Revenue Spline Trend */}
-        <div className="lg:col-span-2 p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+        {/* Card 3: Waiting List / Couriers in Transit */}
+        <div className="p-6 rounded-3xl bg-white border border-slate-100 shadow-xs flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-black text-base text-slate-900">Revenue Performance</h3>
-              <p className="text-xs text-slate-400 font-medium">Daily online supermarket turnover (LKR)</p>
+            <span className="text-sm font-extrabold text-slate-800">Waiting List</span>
+            <div className="w-9 h-9 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
+              <Clock className="w-4 h-4" />
             </div>
-            <span className="px-2.5 py-1 rounded-lg bg-[#E6F7EF] text-[#0C6237] text-xs font-extrabold">
-              Oct 2026
-            </span>
           </div>
-
-          {/* Styled Area Spline Chart SVG */}
-          <div className="h-56 w-full pt-4">
-            <svg viewBox="0 0 500 180" className="w-full h-full overflow-visible">
-              <defs>
-                <linearGradient id="dashGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#0C6237" stopOpacity="0.25" />
-                  <stop offset="100%" stopColor="#0C6237" stopOpacity="0.0" />
-                </linearGradient>
-              </defs>
-              {/* Grid Lines */}
-              <line x1="0" y1="30" x2="500" y2="30" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-              <line x1="0" y1="75" x2="500" y2="75" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-              <line x1="0" y1="120" x2="500" y2="120" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-              <line x1="0" y1="160" x2="500" y2="160" stroke="#e2e8f0" strokeWidth="1" />
-
-              {/* Area */}
-              <path
-                d="M 0,160 L 0,110 C 60,105 90,135 150,90 C 210,45 260,110 320,60 C 380,20 420,50 500,25 L 500,160 Z"
-                fill="url(#dashGrad)"
-              />
-              {/* Curve Stroke */}
-              <path
-                d="M 0,110 C 60,105 90,135 150,90 C 210,45 260,110 320,60 C 380,20 420,50 500,25"
-                fill="none"
-                stroke="#0C6237"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-
-              {/* Key Data Markers */}
-              <circle cx="150" cy="90" r="4" fill="#0C6237" stroke="#ffffff" strokeWidth="2" />
-              <circle cx="320" cy="60" r="4" fill="#0C6237" stroke="#ffffff" strokeWidth="2" />
-              <circle cx="500" cy="25" r="5" fill="#FF6515" stroke="#ffffff" strokeWidth="2" />
-            </svg>
-            <div className="flex justify-between text-[11px] font-bold text-slate-400 mt-2">
-              <span>Mon</span>
-              <span>Tue</span>
-              <span>Wed</span>
-              <span>Thu</span>
-              <span>Fri</span>
-              <span>Sat</span>
-              <span className="text-[#0C6237] font-black">Sun (Peak)</span>
-            </div>
+          <div>
+            <h3 className="text-3xl font-black text-slate-900 tracking-tight">
+              {dispatchedOrders + pendingOrders || 9}
+            </h3>
+            <p className="text-[11px] text-emerald-600 font-bold mt-1">
+              +3.2% than usual
+            </p>
           </div>
         </div>
 
-        {/* Order Fulfillment Health */}
-        <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4 flex flex-col justify-between">
-          <div>
-            <h3 className="font-black text-base text-slate-900">Order Health</h3>
-            <p className="text-xs text-slate-400 font-medium">Real-time breakdown of current orders</p>
+        {/* Card 4: Action Button (+ CREATE NEW ORDER in Bitepoint yellow) */}
+        <button
+          onClick={() => {
+            if (onOpenCreateOrder) onOpenCreateOrder();
+            else onNavigateTab('orders');
+          }}
+          className="p-6 rounded-3xl bg-[#F8B838] hover:bg-[#E5A91A] text-slate-900 shadow-md flex items-center justify-center gap-2 font-black text-sm tracking-wide transition active:scale-95 group"
+        >
+          <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-200" />
+          <span>+ CREATE NEW ORDER</span>
+        </button>
+      </div>
+
+      {/* 2. BITEPOINT 3-COLUMN WORKSPACE LAYOUT */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* Column 1: Order List (span 4) */}
+        <div className="lg:col-span-4 p-5 rounded-3xl bg-white border border-slate-100 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-black text-base text-slate-900">Order List</h3>
+            <span className="text-xs font-bold text-slate-400">({filteredOrderList.length})</span>
           </div>
 
-          <div className="space-y-3">
-            <div>
-              <div className="flex justify-between text-xs font-bold mb-1">
-                <span className="text-slate-600">Delivered Successfully</span>
-                <span className="text-[#0C6237]">{deliveredOrders}</span>
-              </div>
-              <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div className="h-full bg-[#0C6237] rounded-full" style={{ width: '75%' }}></div>
-              </div>
+          {/* Search a Order input */}
+          <div className="relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search a Order"
+              value={orderListSearch}
+              onChange={(e) => setOrderListSearch(e.target.value)}
+              className="w-full bg-[#F5F6F8] rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#F8B838]"
+            />
+          </div>
+
+          {/* Orders Stream */}
+          <div className="space-y-2.5 max-h-[520px] overflow-y-auto pr-1">
+            {filteredOrderList.map((order, idx) => {
+              const badge = getTableBadge(idx);
+              const itemCount = order.items?.length || 4;
+              return (
+                <div
+                  key={order.id}
+                  onClick={() => onOpenOrder(order)}
+                  className="p-3.5 rounded-2xl border border-slate-100 hover:border-slate-200 hover:bg-[#FAFBFB] cursor-pointer transition flex items-center justify-between group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-2xl ${badge.color} font-black text-xs flex items-center justify-center shrink-0 shadow-xs`}>
+                      {badge.code}
+                    </div>
+                    <div>
+                      <h4 className="font-extrabold text-xs text-slate-900 group-hover:text-[#0C4E3B] transition">
+                        {order.customerName}
+                      </h4>
+                      <p className="text-[11px] text-slate-400 font-medium">
+                        {itemCount} Items
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Status Pill */}
+                  <div>
+                    {order.status === 'DELIVERED' ? (
+                      <div className="text-right">
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 inline-flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3" /> Ready
+                        </span>
+                        <p className="text-[10px] text-slate-400 mt-0.5">• Ready to serve</p>
+                      </div>
+                    ) : order.status === 'ON_THE_WAY' ? (
+                      <div className="text-right">
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-sky-100 text-sky-800 inline-flex items-center gap-1">
+                          <Truck className="w-3 h-3" /> In Transit
+                        </span>
+                        <p className="text-[10px] text-slate-400 mt-0.5">• Courier dispatched</p>
+                      </div>
+                    ) : order.status === 'PROCESSING' ? (
+                      <div className="text-right">
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-100 text-amber-800 inline-flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> In Progress
+                        </span>
+                        <p className="text-[10px] text-slate-400 mt-0.5">• Packing in store</p>
+                      </div>
+                    ) : (
+                      <div className="text-right">
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-slate-100 text-slate-700">
+                          Pending
+                        </span>
+                        <p className="text-[10px] text-slate-400 mt-0.5">• Waiting confirmation</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Column 2: Payment & Courier Dispatch (span 4) */}
+        <div className="lg:col-span-4 p-5 rounded-3xl bg-white border border-slate-100 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-black text-base text-slate-900">Payment & Dispatch</h3>
+            <span className="text-xs font-bold text-slate-400">Cash / Cards</span>
+          </div>
+
+          {/* Search a Order input */}
+          <div className="relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search a Order"
+              value={paymentSearch}
+              onChange={(e) => setPaymentSearch(e.target.value)}
+              className="w-full bg-[#F5F6F8] rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#F8B838]"
+            />
+          </div>
+
+          {/* Payment Stream with Pay Now button */}
+          <div className="space-y-2.5 max-h-[520px] overflow-y-auto pr-1">
+            {filteredPaymentList.map((order, idx) => {
+              const badge = getTableBadge(idx + 3);
+              return (
+                <div
+                  key={order.id}
+                  className="p-3.5 rounded-2xl border border-slate-100 hover:border-slate-200 hover:bg-[#FAFBFB] transition flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-2xl ${badge.color} font-black text-xs flex items-center justify-center shrink-0 shadow-xs`}>
+                      {badge.code}
+                    </div>
+                    <div>
+                      <h4 className="font-extrabold text-xs text-slate-900">
+                        {order.customerName}
+                      </h4>
+                      <p className="text-[11px] text-slate-400 font-medium">
+                        Order #{order.orderNumber} • <strong className="text-slate-800">{order.totalAmount.toFixed(2)} lei</strong>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Pay Now Button */}
+                  <button
+                    onClick={() => {
+                      if (onOpenDispatchModal) onOpenDispatchModal(order);
+                      else onOpenOrder(order);
+                    }}
+                    className="px-3.5 py-1.5 rounded-xl bg-[#F8B838] hover:bg-[#E5A91A] text-slate-900 text-xs font-black shadow-xs flex items-center gap-1 transition active:scale-95 shrink-0"
+                  >
+                    <span>Pay Now</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Column 3: Popular Dishes & Out of Stock (span 4) */}
+        <div className="lg:col-span-4 space-y-5">
+          {/* Popular Dishes Widget */}
+          <div className="p-5 rounded-3xl bg-white border border-slate-100 shadow-xs space-y-3.5">
+            <div className="flex items-center justify-between">
+              <h3 className="font-black text-base text-slate-900">Popular Dishes</h3>
+              <button
+                onClick={() => onNavigateTab('products')}
+                className="text-xs font-bold text-slate-400 hover:text-slate-700 transition"
+              >
+                View All
+              </button>
             </div>
 
-            <div>
-              <div className="flex justify-between text-xs font-bold mb-1">
-                <span className="text-slate-600">Dispatched & On the Road</span>
-                <span className="text-sky-600">{dispatchedOrders}</span>
-              </div>
-              <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div className="h-full bg-sky-500 rounded-full" style={{ width: '45%' }}></div>
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between text-xs font-bold mb-1">
-                <span className="text-slate-600">Processing & Packing</span>
-                <span className="text-orange-600">{processingOrders}</span>
-              </div>
-              <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div className="h-full bg-orange-500 rounded-full" style={{ width: '30%' }}></div>
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between text-xs font-bold mb-1">
-                <span className="text-slate-600">Pending Confirmation</span>
-                <span className="text-amber-600">{pendingOrders}</span>
-              </div>
-              <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div className="h-full bg-amber-400 rounded-full" style={{ width: '18%' }}></div>
-              </div>
+            <div className="space-y-3">
+              {popularDishes.map((dish) => (
+                <div key={dish.rank} className="flex items-center justify-between gap-3 p-1.5 rounded-2xl hover:bg-slate-50 transition">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-black text-slate-300 w-5">
+                      {dish.rank}
+                    </span>
+                    <img
+                      src={dish.image}
+                      alt={dish.name}
+                      className="w-10 h-10 rounded-xl object-contain bg-slate-50 p-1 shrink-0"
+                    />
+                    <div>
+                      <h4 className="font-bold text-xs text-slate-900 line-clamp-1">
+                        {dish.name}
+                      </h4>
+                      <p className="text-[11px] text-slate-400">
+                        Orders : <strong className="text-slate-700 font-extrabold">{dish.orders}</strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          <button
-            onClick={() => onNavigateTab('orders')}
-            className="w-full py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-xs font-black text-slate-700 border border-slate-200 transition"
-          >
-            View Full Order Pipeline →
-          </button>
+          {/* Out of Stock Widget */}
+          <div className="p-5 rounded-3xl bg-white border border-slate-100 shadow-xs space-y-3.5">
+            <div className="flex items-center justify-between">
+              <h3 className="font-black text-base text-slate-900">Out of Stock</h3>
+              <button
+                onClick={() => onNavigateTab('inventory')}
+                className="text-xs font-bold text-slate-400 hover:text-slate-700 transition"
+              >
+                View All
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {outOfStockItems.map((item, idx) => (
+                <div key={idx} className="p-2 rounded-2xl border border-slate-100/80 bg-[#FAFBFB] space-y-0.5">
+                  <h4 className="font-extrabold text-xs text-slate-900">
+                    {item.name}
+                  </h4>
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-slate-400 font-medium">{item.time}</span>
+                    <span className="text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-md text-[10px]">
+                      {item.stock}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Interactive Recent Orders Table */}
-      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-black text-base text-slate-900">Recent Customer Orders</h3>
-            <p className="text-xs text-slate-400 font-medium">Click any order to view details, update status, or print invoice.</p>
-          </div>
-          <button
-            onClick={() => onNavigateTab('orders')}
-            className="text-xs font-black text-[#0C6237] hover:underline"
-          >
-            See all orders ({orders.length}) →
-          </button>
-        </div>
+      {/* 3. OPTIONAL EXPANDABLE REVENUE TELEMETRY SECTION */}
+      <div className="pt-2">
+        <button
+          onClick={() => setShowChart(!showChart)}
+          className="text-xs font-bold text-slate-400 hover:text-slate-700 flex items-center gap-1 transition"
+        >
+          <span>{showChart ? '▲ Hide Financial Telemetry & Chart' : '▼ View Financial Telemetry & Chart'}</span>
+        </button>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-slate-100 text-slate-400 font-bold uppercase text-[10px]">
-                <th className="py-2.5 px-3">Order ID</th>
-                <th className="py-2.5 px-3">Customer</th>
-                <th className="py-2.5 px-3">Delivery Area</th>
-                <th className="py-2.5 px-3">Total (LKR)</th>
-                <th className="py-2.5 px-3">Payment</th>
-                <th className="py-2.5 px-3">Status</th>
-                <th className="py-2.5 px-3 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50 font-medium">
-              {orders.slice(0, 5).map(o => (
-                <tr
-                  key={o.id}
-                  onClick={() => onOpenOrder(o)}
-                  className="hover:bg-slate-50/80 transition cursor-pointer group"
-                >
-                  <td className="py-3 px-3 font-mono font-bold text-slate-900 group-hover:text-[#0C6237]">
-                    {o.orderNumber}
-                  </td>
-                  <td className="py-3 px-3">
-                    <p className="font-bold text-slate-900">{o.customerName}</p>
-                    <p className="text-[11px] text-slate-400 font-mono">{o.customerPhone}</p>
-                  </td>
-                  <td className="py-3 px-3 text-slate-600">
-                    {o.customerAddress}
-                  </td>
-                  <td className="py-3 px-3 font-bold text-slate-900">
-                    {o.totalAmount.toLocaleString()}.00
-                  </td>
-                  <td className="py-3 px-3">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-black ${
-                      o.paymentStatus === 'PAID' ? 'bg-[#E6F7EF] text-[#0C6237]' : 'bg-amber-50 text-amber-700'
-                    }`}>
-                      {o.paymentStatus}
-                    </span>
-                  </td>
-                  <td className="py-3 px-3">
-                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
-                      o.status === 'DELIVERED' ? 'bg-[#E6F7EF] text-[#0C6237]' :
-                      o.status === 'ON_THE_WAY' ? 'bg-sky-50 text-sky-700' :
-                      o.status === 'PROCESSING' ? 'bg-orange-50 text-orange-700' :
-                      'bg-slate-100 text-slate-700'
-                    }`}>
-                      {o.status.replace('_', ' ')}
-                    </span>
-                  </td>
-                  <td className="py-3 px-3 text-right">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onOpenOrder(o);
-                      }}
-                      className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-[#0C4E3B] hover:text-white text-slate-600 text-xs font-bold transition"
-                    >
-                      Manage
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        {showChart && (
+          <div className="mt-4 p-6 rounded-3xl bg-white border border-slate-100 shadow-xs space-y-4 animate-fadeIn">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-black text-base text-slate-900">Revenue Performance</h3>
+                <p className="text-xs text-slate-400 font-medium">Daily online supermarket turnover (LKR)</p>
+              </div>
+              <button
+                onClick={onExportCsv}
+                className="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-1.5"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Export Report</span>
+              </button>
+            </div>
+
+            {/* Styled Area Spline Chart SVG */}
+            <div className="h-56 w-full pt-4">
+              <svg viewBox="0 0 500 180" className="w-full h-full overflow-visible">
+                <defs>
+                  <linearGradient id="dashGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#0B3B2C" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#0B3B2C" stopOpacity="0.0" />
+                  </linearGradient>
+                </defs>
+                <line x1="0" y1="30" x2="500" y2="30" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
+                <line x1="0" y1="75" x2="500" y2="75" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
+                <line x1="0" y1="120" x2="500" y2="120" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
+                <line x1="0" y1="160" x2="500" y2="160" stroke="#e2e8f0" strokeWidth="1" />
+                <path
+                  d="M 0,160 L 0,110 C 60,105 90,135 150,90 C 210,45 260,110 320,60 C 380,20 420,50 500,25 L 500,160 Z"
+                  fill="url(#dashGrad)"
+                />
+                <path
+                  d="M 0,110 C 60,105 90,135 150,90 C 210,45 260,110 320,60 C 380,20 420,50 500,25"
+                  fill="none"
+                  stroke="#0B3B2C"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                />
+                <circle cx="150" cy="90" r="4" fill="#0B3B2C" stroke="#ffffff" strokeWidth="2" />
+                <circle cx="320" cy="60" r="4" fill="#0B3B2C" stroke="#ffffff" strokeWidth="2" />
+                <circle cx="500" cy="25" r="5" fill="#F8B838" stroke="#ffffff" strokeWidth="2" />
+              </svg>
+              <div className="flex justify-between text-[11px] font-bold text-slate-400 mt-2">
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+                <span className="text-[#0B3B2C] font-black">Sun (Peak)</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

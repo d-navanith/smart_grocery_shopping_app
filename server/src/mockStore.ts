@@ -218,7 +218,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     originalPrice: 10.50,
     unit: 'kg',
     unitWeight: '1 kg',
-    imageUrl: 'https://images.unsplash.com/photo-1570586437263-ab629fccc818?w=800',
+    imageUrl: '/prod_pumpkin.jpg',
     stock: 70,
     store: 'Ceylon Foods Supermarket Bucharest',
     status: 'Active',

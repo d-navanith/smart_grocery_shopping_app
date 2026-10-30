@@ -215,7 +215,7 @@ export function useAdminCockpitState() {
     const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const disp = params?.get('dispatch');
     if (disp) {
-      const match = INITIAL_ORDERS.find(o => o.orderNumber.includes(disp) || o.id === disp);
+      const match = INITIAL_ORDERS.find(o => o.orderNumber.includes(disp) || o.id === disp) || INITIAL_ORDERS[0];
       if (match) return match;
     }
     return null;
