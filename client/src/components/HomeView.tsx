@@ -57,22 +57,22 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <span className="text-base">🇷🇴</span>
             <span className="text-base">🇱🇰</span>
             <span className="text-xs font-black text-amber-950 dark:text-amber-100">
-              100% Autentic Sri Lanka în România
+              {t.ribbonAuthentic}
             </span>
             <span className="text-[11px] text-amber-800 dark:text-amber-300 font-bold hidden sm:inline">
-              • Magazin cu Depozit Central în București
+              {t.ribbonCentralDepot}
             </span>
           </div>
 
           <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100/70 dark:bg-emerald-950/50 text-[#0A6847] dark:text-[#78F9B8] text-[11px] font-extrabold">
             <Leaf className="w-3.5 h-3.5" />
-            <span>Alimente Zilnice: Orez Alb, Orez Roșu, Wambatu & Condimente</span>
+            <span>{t.ribbonDailyGroceries}</span>
           </div>
         </div>
 
         <div className="flex items-center gap-2 text-[11px] font-bold text-amber-900 dark:text-amber-200">
           <Award className="w-4 h-4 text-amber-600" />
-          <span>Plata la Livrare (Cash on Delivery) cu Livrare Rapidă prin Curieri</span>
+          <span>{t.ribbonCodCourier}</span>
         </div>
       </div>
 
@@ -217,17 +217,17 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              Cele mai vândute alimente (Popular în România)
+              {t.popularTitle}
             </h2>
             <p className="text-xs text-slate-500 dark:text-zinc-400">
-              Orez alb Keeri Samba, orez roșu, wambatu, dhal, și condimente de Ceylon în stoc în București
+              {t.popularDesc}
             </p>
           </div>
           <button
             onClick={onNavigateShop}
             className="text-xs sm:text-sm font-extrabold text-[#0A6847] dark:text-[#78F9B8] hover:underline flex items-center gap-1"
           >
-            <span>Vezi toate produsele</span>
+            <span>{t.viewAllProducts}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -298,10 +298,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </div>
           <div>
             <h2 className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
-              Gătește Rețete Tradiționale din Sri Lanka în România
+              {t.recipeKitsTitle}
             </h2>
             <p className="text-xs text-slate-400">
-              Adaugă toate ingredientele necesare în coș cu un singur click
+              {t.recipeKitsDesc}
             </p>
           </div>
         </div>
@@ -317,11 +317,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
             />
             <div className="flex-1 space-y-1.5">
               <div className="flex items-center justify-between">
-                <h4 className="font-extrabold text-sm">Sri Lankan Wambatu Moju & Keeri Samba Combo</h4>
+                <h4 className="font-extrabold text-sm">{t.recipeKit1Title}</h4>
                 <span className="text-[11px] font-bold text-slate-400">⏱ 35 mins</span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                Include Vinete violet proaspete (1kg), Orez alb Keeri Samba (5kg), Ceapă roșie mică (500g) și Condimente.
+                {t.recipeKit1Desc}
               </p>
               <div className="flex items-center justify-between pt-1">
                 <span className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8]">63.50 lei</span>
@@ -334,7 +334,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   }}
                   className="px-3.5 py-1.5 bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-bold rounded-xl transition"
                 >
-                  + Adaugă Ingredientele
+                  {t.addIngredientsBtn}
                 </button>
               </div>
             </div>
@@ -350,11 +350,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
             />
             <div className="flex-1 space-y-1.5">
               <div className="flex items-center justify-between">
-                <h4 className="font-extrabold text-sm">Cremoasă Parippu Dhal Curry & Roast Paan Combo</h4>
+                <h4 className="font-extrabold text-sm">{t.recipeKit2Title}</h4>
                 <span className="text-[11px] font-bold text-slate-400">⏱ 20 mins</span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                Include Linte roșie Mysore Dhal (1kg), Lapte de cocos Maggi (400ml), Roast Paan proaspăt și Frunze de curry.
+                {t.recipeKit2Desc}
               </p>
               <div className="flex items-center justify-between pt-1">
                 <span className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8]">38.00 lei</span>
@@ -367,7 +367,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   }}
                   className="px-3.5 py-1.5 bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-bold rounded-xl transition"
                 >
-                  + Adaugă Ingredientele
+                  {t.addIngredientsBtn}
                 </button>
               </div>
             </div>

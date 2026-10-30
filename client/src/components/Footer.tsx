@@ -38,8 +38,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
               <Truck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-black text-sm text-slate-900 dark:text-white">Curieri Rapizi București</h4>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">Glovo, Bolt & Sameday în 30-45 min</p>
+              <h4 className="font-black text-sm text-slate-900 dark:text-white">{t.footerFeatureDelivery}</h4>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">{t.footerFeatureDeliveryDesc}</p>
             </div>
           </div>
 
@@ -48,8 +48,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
               <CreditCard className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-black text-sm text-slate-900 dark:text-white">Plata la Livrare (Cash)</h4>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">Ramburs numerar sau card la curier</p>
+              <h4 className="font-black text-sm text-slate-900 dark:text-white">{t.footerFeatureCod}</h4>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">{t.footerFeatureCodDesc}</p>
             </div>
           </div>
 
@@ -58,8 +58,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
               <PhoneCall className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-black text-sm text-slate-900 dark:text-white">Asistență Telefonică</h4>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">+40 721 345 678 (București)</p>
+              <h4 className="font-black text-sm text-slate-900 dark:text-white">{t.footerFeaturePhone}</h4>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">{t.footerFeaturePhoneDesc}</p>
             </div>
           </div>
 
@@ -68,8 +68,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-black text-sm text-slate-900 dark:text-white">100% Export Autentic</h4>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">Orez, condimente & ceai de Ceylon</p>
+              <h4 className="font-black text-sm text-slate-900 dark:text-white">{t.footerFeatureExport}</h4>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">{t.footerFeatureExportDesc}</p>
             </div>
           </div>
         </div>
@@ -80,10 +80,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-1 text-center md:text-left">
             <h3 className="text-xl sm:text-2xl font-black tracking-tight">
-              Abonează-te la Noutăți & Sosiri de Produse Proaspete
+              {t.newsletterTitle}
             </h3>
             <p className="text-xs text-emerald-200">
-              Află primul când sosesc transporturi noi de orez roșu, wambatu, frunze de curry și ceai de Ceylon în România.
+              {t.newsletterDesc}
             </p>
           </div>
 
@@ -93,7 +93,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
               <input
                 type="email"
                 required
-                placeholder="Introduceți adresa de email"
+                placeholder={t.newsletterPlaceholder}
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}
                 className="w-full bg-white text-slate-800 rounded-full pl-10 pr-4 py-3 text-xs font-semibold focus:outline-none placeholder-slate-400 shadow-inner"
@@ -103,7 +103,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
               type="submit"
               className="px-6 py-3 rounded-full bg-[#E5A91A] hover:bg-[#d69b12] text-amber-950 font-black text-xs shadow-md transition active:scale-95 shrink-0"
             >
-              {isSubscribed ? 'Abonat!' : 'Abonează-mă'}
+              {isSubscribed ? t.newsletterSubscribed : t.newsletterBtn}
             </button>
           </form>
         </div>
@@ -132,17 +132,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
             </div>
 
             <p className="text-xs text-emerald-200/80 leading-relaxed max-w-sm">
-              Principalul magazin online de produse alimentare tradiționale din Sri Lanka în România. Deservim comunitatea din Sri Lanka și toți pasionații de arome autentice exotice cu livrare rapidă prin curieri.
+              {t.footerAboutDesc}
             </p>
 
             <div className="space-y-1.5 text-xs text-emerald-100 font-semibold">
               <p className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-[#FFB800]" />
-                <span>Strada Academiei 14, Sector 1, București, România</span>
+                <span>{t.footerAddress}</span>
               </p>
               <p className="flex items-center gap-2">
                 <PhoneCall className="w-3.5 h-3.5 text-[#FFB800]" />
-                <span>Dispecerat Comenzi: +40 721 345 678 (Zilnic 08:00 - 21:00)</span>
+                <span>{t.footerOrderDispatch}</span>
               </p>
             </div>
 
@@ -210,24 +210,24 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
 
           <div className="space-y-3">
             <h4 className="text-sm font-black text-white uppercase tracking-wider">
-              Informații Curieri & Livrare
+              {t.footerCourierInfoTitle}
             </h4>
             <ul className="space-y-2 font-semibold text-emerald-200">
-              <li>București Sectoare 1-6 (25-35 min)</li>
-              <li>Județul Ilfov Express</li>
-              <li>Livrare Națională Sameday / Fan Courier</li>
-              <li>Plata Cash la Livrare (Ramburs)</li>
-              <li>Garanție Prospețime 100%</li>
+              <li>{t.footerCourierItem1}</li>
+              <li>{t.footerCourierItem2}</li>
+              <li>{t.footerCourierItem3}</li>
+              <li>{t.footerCourierItem4}</li>
+              <li>{t.footerCourierItem5}</li>
             </ul>
           </div>
         </div>
 
         <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-emerald-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-emerald-300">
-          <p>© 2026 Ceylon Foods Supermarket România SRL. Toate drepturile rezervate.</p>
+          <p>{t.footerRights}</p>
           <div className="flex items-center gap-3">
-            <span>Depozit Central: București Sector 1</span>
+            <span>{t.ribbonCentralDepot.replace('• ', '')}</span>
             <span>•</span>
-            <span className="text-amber-300 font-bold">Produse Autentice din Sri Lanka în România</span>
+            <span className="text-amber-300 font-bold">{t.ribbonAuthentic}</span>
           </div>
         </div>
       </div>

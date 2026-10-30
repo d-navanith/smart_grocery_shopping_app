@@ -138,6 +138,43 @@ export interface TranslationDictionary {
   featureDeliveryTitle: string;
   featureDeliveryDesc: string;
 
+  // Cultural Ribbon
+  ribbonAuthentic: string;
+  ribbonCentralDepot: string;
+  ribbonDailyGroceries: string;
+  ribbonCodCourier: string;
+
+  // Popular section
+  popularTitle: string;
+  popularDesc: string;
+  viewAllProducts: string;
+
+  // Recipe kits
+  recipeKitsTitle: string;
+  recipeKitsDesc: string;
+  recipeKit1Title: string;
+  recipeKit1Desc: string;
+  recipeKit2Title: string;
+  recipeKit2Desc: string;
+  addIngredientsBtn: string;
+
+  // Footer Features Strip
+  footerFeatureDelivery: string;
+  footerFeatureDeliveryDesc: string;
+  footerFeatureCod: string;
+  footerFeatureCodDesc: string;
+  footerFeaturePhone: string;
+  footerFeaturePhoneDesc: string;
+  footerFeatureExport: string;
+  footerFeatureExportDesc: string;
+
+  // Newsletter Strip
+  newsletterTitle: string;
+  newsletterDesc: string;
+  newsletterPlaceholder: string;
+  newsletterBtn: string;
+  newsletterSubscribed: string;
+
   // Footer
   footerAboutTitle: string;
   footerAboutDesc: string;
@@ -146,6 +183,13 @@ export interface TranslationDictionary {
   footerHours: string;
   footerPaymentTitle: string;
   footerRights: string;
+  footerCourierInfoTitle: string;
+  footerCourierItem1: string;
+  footerCourierItem2: string;
+  footerCourierItem3: string;
+  footerCourierItem4: string;
+  footerCourierItem5: string;
+  footerOrderDispatch: string;
 }
 
 export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
@@ -287,6 +331,43 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     featureDeliveryTitle: 'Express Courier Dispatch',
     featureDeliveryDesc: 'Glovo, Bolt & Sameday door delivery.',
 
+    // Cultural Ribbon
+    ribbonAuthentic: '100% Authentic Sri Lanka in Romania',
+    ribbonCentralDepot: '• Central Warehouse in Bucharest Sector 1',
+    ribbonDailyGroceries: 'Daily Essentials: White Rice, Red Rice, Fresh Wambatu & Spices',
+    ribbonCodCourier: 'Cash on Delivery with Rapid Courier Dispatch (Glovo / Bolt / Sameday)',
+
+    // Popular section
+    popularTitle: 'Top Selling Ceylon Groceries (Popular in Romania)',
+    popularDesc: 'Keeri Samba white rice, Rathu Kekulu red rice, fresh brinjal, dhal, and Ceylon spices in stock in Bucharest',
+    viewAllProducts: 'View All Products',
+
+    // Recipe kits
+    recipeKitsTitle: 'Cook Authentic Sri Lankan Recipes in Romania',
+    recipeKitsDesc: 'Add all fresh ingredients into your cart with a single click',
+    recipeKit1Title: 'Sri Lankan Wambatu Moju & Keeri Samba Combo',
+    recipeKit1Desc: 'Includes Fresh Purple Eggplants (1kg), Keeri Samba Rice (5kg), Small Red Onions (500g) & Spices.',
+    recipeKit2Title: 'Creamy Parippu Dhal Curry & Roast Paan Combo',
+    recipeKit2Desc: 'Includes Mysore Red Dhal (1kg), Maggi Coconut Milk Powder (400g), Fresh Ceylon Roast Paan & Curry Leaves.',
+    addIngredientsBtn: '+ Add Recipe Ingredients',
+
+    // Footer Features Strip
+    footerFeatureDelivery: 'Rapid Couriers in Bucharest',
+    footerFeatureDeliveryDesc: 'Glovo, Bolt & Sameday in 30-45 mins',
+    footerFeatureCod: 'Cash on Delivery (Cash / Card)',
+    footerFeatureCodDesc: 'Pay cash or card to courier at your door',
+    footerFeaturePhone: 'Phone & Hotline Support',
+    footerFeaturePhoneDesc: '+40 721 345 678 (Bucharest Hub)',
+    footerFeatureExport: '100% Authentic Ceylon Export',
+    footerFeatureExportDesc: 'Finest rice, spices & Ceylon tea',
+
+    // Newsletter Strip
+    newsletterTitle: 'Subscribe for Fresh Arrivals & Ceylon Stock Updates',
+    newsletterDesc: 'Be first to know when new shipments of Rathu Kekulu rice, fresh wambatu, curry leaves, and Dilmah tea land in Romania.',
+    newsletterPlaceholder: 'Enter your email address',
+    newsletterBtn: 'Subscribe',
+    newsletterSubscribed: 'Subscribed!',
+
     // Footer
     footerAboutTitle: 'Ceylon Foods Supermarket',
     footerAboutDesc: 'Romania’s dedicated grocery platform connecting the Sri Lankan community and Romanian food lovers with 100% authentic imported Ceylon essentials.',
@@ -294,7 +375,14 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     footerAddress: 'Strada Academiei 14, Sector 1, Bucharest, Romania',
     footerHours: 'Monday – Sunday: 08:00 – 21:00 EET',
     footerPaymentTitle: 'Safe & Convenient Payment',
-    footerRights: '© 2026 Ceylon Foods Supermarket Romania. All rights reserved.'
+    footerRights: '© 2026 Ceylon Foods Supermarket Romania. All rights reserved.',
+    footerCourierInfoTitle: 'Couriers & Delivery Information',
+    footerCourierItem1: 'Bucharest Sectors 1–6 (25–35 mins)',
+    footerCourierItem2: 'Ilfov County Express Delivery',
+    footerCourierItem3: 'Romania Nationwide Sameday / Fan Courier',
+    footerCourierItem4: 'Cash on Delivery (No Advance Payment)',
+    footerCourierItem5: '100% Freshness & Quality Guaranteed',
+    footerOrderDispatch: 'Order Dispatch & Hotline: +40 721 345 678 (Daily 08:00 - 21:00)'
   },
 
   si: {
@@ -435,6 +523,43 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     featureDeliveryTitle: 'ක්ෂණික ධාවක සේවාව',
     featureDeliveryDesc: 'Glovo, Bolt සහ Sameday මගින් නිවසටම.',
 
+    // Cultural Ribbon
+    ribbonAuthentic: '100% අව්‍යාජ ශ්‍රී ලාංකික ආහාර ද්‍රව්‍ය රුමේනියාවේදී',
+    ribbonCentralDepot: '• බුකාරෙස්ට් මධ්‍යම ගබඩාව (Sector 1)',
+    ribbonDailyGroceries: 'දෛනික අත්‍යවශ්‍ය දෑ: සුදු කැකුළු, රතු කැකුළු, නැවුම් වම්බටු සහ තුනපහ',
+    ribbonCodCourier: 'භාණ්ඩ ලැබුණු පසු මුදල් ගෙවීම (Cash on Delivery) සමඟ ක්ෂණික ධාවක සේවාව',
+
+    // Popular section
+    popularTitle: 'රුමේනියාවේ වැඩිම ඉල්ලුමක් ඇති ලංකා ආහාර',
+    popularDesc: 'කීරි සම්බා, රතු කැකුළු සහල්, නැවුම් වම්බටු, පරිප්පු සහ තුනපහ බුකාරෙස්ට් ගබඩාවේ තොග ඇත',
+    viewAllProducts: 'සියලුම නිෂ්පාදන බලන්න',
+
+    // Recipe kits
+    recipeKitsTitle: 'රුමේනියාවේදී දේශීය ලංකා ක්‍රමයට ආහාර පිසින්න',
+    recipeKitsDesc: 'අවශ්‍ය සියලුම අමුද්‍රව්‍ය එකවර කරත්තයට එක්කරන්න',
+    recipeKit1Title: 'ලංකා වම්බටු මෝජු සහ කීරි සම්බා එකතුව',
+    recipeKit1Desc: 'නැවුම් වම්බටු (1kg), කීරි සම්බා (5kg), රතු ලූනු (500g) සහ බැදපු තුනපහ ඇතුළත් වේ.',
+    recipeKit2Title: 'ක්‍රීමි පරිප්පු කරිය සහ රෝස් පාන් එකතුව',
+    recipeKit2Desc: 'මයිසූර් පරිප්පු (1kg), මැගී පොල්කිරි පිටි (400g), නැවුම් රෝස් පාන් සහ කරපිංචා ඇතුළත් වේ.',
+    addIngredientsBtn: '+ අමුද්‍රව්‍ය එක් කරන්න',
+
+    // Footer Features Strip
+    footerFeatureDelivery: 'බුකාරෙස්ට් ක්ෂණික කුරියර්',
+    footerFeatureDeliveryDesc: 'Glovo, Bolt සහ Sameday මගින් මිනිත්තු 30-45 න්',
+    footerFeatureCod: 'භාණ්ඩ ලැබුණු පසු මුදල් ගෙවීම',
+    footerFeatureCodDesc: 'නිවසටම පැමිණි පසු මුදල් හෝ කාඩ්පතෙන් ගෙවන්න',
+    footerFeaturePhone: 'දුරකථන සහ සහය සේවාව',
+    footerFeaturePhoneDesc: '+40 721 345 678 (බුකාරෙස්ට්)',
+    footerFeatureExport: '100% අපනයන තත්ත්වයේ ලංකා ආහාර',
+    footerFeatureExportDesc: 'සුවඳැති සහල්, තුනපහ සහ දිල්මා තේ',
+
+    // Newsletter Strip
+    newsletterTitle: 'නැවුම් ආහාර තොග පැමිණීම් පිළිබඳ තොරතුරු ලබාගන්න',
+    newsletterDesc: 'ලංකාවෙන් රතු සහල්, නැවුම් වම්බටු, කරපිංචා සහ තේ රුමේනියාවට පැමිණි විගස දැනුවත් වන්න.',
+    newsletterPlaceholder: 'ඔබගේ ඊමේල් ලිපිනය ඇතුළත් කරන්න',
+    newsletterBtn: 'ලියාපදිංචි වන්න',
+    newsletterSubscribed: 'ලියාපදිංචි විය!',
+
     // Footer
     footerAboutTitle: 'Ceylon Foods Supermarket',
     footerAboutDesc: 'රුමේනියාවේ වෙසෙන ශ්‍රී ලාංකික ප්‍රජාවට සහ රුමේනියානු පාරිභෝගිකයින්ට 100% අව්‍යාජ ලංකා ආහාර සපයන නිල වෙළඳ ජාලය.',
@@ -442,7 +567,14 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     footerAddress: 'Strada Academiei 14, Sector 1, Bucharest, Romania',
     footerHours: 'සඳුදා – ඉරිදා: පෙ.ව 08:00 – ප.ව 21:00 EET',
     footerPaymentTitle: 'ආරක්ෂිත සහ පහසු ගෙවීම්',
-    footerRights: '© 2026 Ceylon Foods Supermarket Romania. සියලුම හිමිකම් ඇවිරිණි.'
+    footerRights: '© 2026 Ceylon Foods Supermarket Romania. සියලුම හිමිකම් ඇවිරිණි.',
+    footerCourierInfoTitle: 'කුරියර් සහ බෙදාහැරීම් විස්තර',
+    footerCourierItem1: 'බුකාරෙස්ට් Sector 1-6 (විනාඩි 25-35)',
+    footerCourierItem2: 'ඉල්ෆොව් අධිවේගී බෙදාහැරීම',
+    footerCourierItem3: 'රුමේනියාව පුරා Sameday / Fan Courier',
+    footerCourierItem4: 'භාණ්ඩ ලැබුණු පසු මුදල් ගෙවීම (COD)',
+    footerCourierItem5: '100% නැවුම්බව සහ සුරක්ෂිතතාවය',
+    footerOrderDispatch: 'ඇණවුම් මධ්‍යස්ථානය: +40 721 345 678 (දිනපතා පෙ.ව 08:00 - ප.ව 21:00)'
   },
 
   ro: {
@@ -583,6 +715,43 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     featureDeliveryTitle: 'Curieri Rapizi București',
     featureDeliveryDesc: 'Glovo, Bolt și Sameday direct la ușă.',
 
+    // Cultural Ribbon
+    ribbonAuthentic: '100% Autentic Sri Lanka în România',
+    ribbonCentralDepot: '• Magazin cu Depozit Central în București',
+    ribbonDailyGroceries: 'Alimente Zilnice: Orez Alb, Orez Roșu, Wambatu & Condimente',
+    ribbonCodCourier: 'Plata la Livrare (Cash on Delivery) cu Livrare Rapidă prin Curieri',
+
+    // Popular section
+    popularTitle: 'Cele mai vândute alimente (Popular în România)',
+    popularDesc: 'Orez alb Keeri Samba, orez roșu, wambatu, dhal, și condimente de Ceylon în stoc în București',
+    viewAllProducts: 'Vezi toate produsele',
+
+    // Recipe kits
+    recipeKitsTitle: 'Gătește Rețete Tradiționale din Sri Lanka în România',
+    recipeKitsDesc: 'Adaugă toate ingredientele necesare în coș cu un singur click',
+    recipeKit1Title: 'Sri Lankan Wambatu Moju & Keeri Samba Combo',
+    recipeKit1Desc: 'Include Vinete violet proaspete (1kg), Orez alb Keeri Samba (5kg), Ceapă roșie mică (500g) și Condimente.',
+    recipeKit2Title: 'Cremoasă Parippu Dhal Curry & Roast Paan Combo',
+    recipeKit2Desc: 'Include Linte roșie Mysore Dhal (1kg), Lapte de cocos Maggi (400ml), Roast Paan proaspăt și Frunze de curry.',
+    addIngredientsBtn: '+ Adaugă Ingredientele',
+
+    // Footer Features Strip
+    footerFeatureDelivery: 'Curieri Rapizi București',
+    footerFeatureDeliveryDesc: 'Glovo, Bolt & Sameday în 30-45 min',
+    footerFeatureCod: 'Plata la Livrare (Cash)',
+    footerFeatureCodDesc: 'Ramburs numerar sau card la curier',
+    footerFeaturePhone: 'Asistență Telefonică',
+    footerFeaturePhoneDesc: '+40 721 345 678 (București)',
+    footerFeatureExport: '100% Export Autentic',
+    footerFeatureExportDesc: 'Orez, condimente & ceai de Ceylon',
+
+    // Newsletter Strip
+    newsletterTitle: 'Abonează-te la Noutăți & Sosiri de Produse Proaspete',
+    newsletterDesc: 'Află primul când sosesc transporturi noi de orez roșu, wambatu, frunze de curry și ceai de Ceylon în România.',
+    newsletterPlaceholder: 'Introduceți adresa de email',
+    newsletterBtn: 'Abonează-mă',
+    newsletterSubscribed: 'Abonat!',
+
     // Footer
     footerAboutTitle: 'Ceylon Foods Supermarket',
     footerAboutDesc: 'Platforma oficială din România dedicată comunității din Sri Lanka și pasionaților de bucătărie asiatică, oferind ingrediente 100% autentice importate direct.',
@@ -590,7 +759,14 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     footerAddress: 'Strada Academiei 14, Sector 1, București, România',
     footerHours: 'Luni – Duminică: 08:00 – 21:00 EET',
     footerPaymentTitle: 'Plată Sigură & Flexibilă',
-    footerRights: '© 2026 Ceylon Foods Supermarket România. Toate drepturile rezervate.'
+    footerRights: '© 2026 Ceylon Foods Supermarket România. Toate drepturile rezervate.',
+    footerCourierInfoTitle: 'Informații Curieri & Livrare',
+    footerCourierItem1: 'București Sectoare 1–6 (25–35 min)',
+    footerCourierItem2: 'Județul Ilfov Express',
+    footerCourierItem3: 'Livrare Națională Sameday / Fan Courier',
+    footerCourierItem4: 'Plata Cash la Livrare (Ramburs)',
+    footerCourierItem5: 'Garanție Prospețime 100%',
+    footerOrderDispatch: 'Dispecerat Comenzi: +40 721 345 678 (Zilnic 08:00 - 21:00)'
   }
 };
 
