@@ -258,7 +258,7 @@ export const Modals: React.FC<ModalsProps> = ({
                 <span className="w-8 h-8 rounded-xl bg-[#0A6847] text-white flex items-center justify-center font-bold">
                   <ShoppingBag className="w-4 h-4" />
                 </span>
-                <h3 className="font-extrabold text-base text-slate-900 dark:text-white">Cont Client România</h3>
+                <h3 className="font-extrabold text-base text-slate-900 dark:text-white">{t.authModalTitle}</h3>
               </div>
               <button
                 onClick={onCloseAuth}
@@ -282,7 +282,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   authTab === 'LOGIN' ? 'bg-[#0A6847] text-white shadow-sm' : 'text-slate-500'
                 }`}
               >
-                Autentificare
+                {t.tabSignIn}
               </button>
               <button
                 onClick={() => { setAuthTab('REGISTER'); setAuthError(''); }}
@@ -290,14 +290,14 @@ export const Modals: React.FC<ModalsProps> = ({
                   authTab === 'REGISTER' ? 'bg-[#0A6847] text-white shadow-sm' : 'text-slate-500'
                 }`}
               >
-                Înregistrare Cont
+                {t.tabRegister}
               </button>
             </div>
 
             {authTab === 'LOGIN' ? (
               <form onSubmit={handleLogin} className="space-y-3.5 text-xs font-semibold">
                 <div>
-                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Adresă de Email</label>
+                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">{t.emailLabel}</label>
                   <input
                     type="email"
                     required
@@ -307,7 +307,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Parolă</label>
+                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">{t.passwordLabel}</label>
                   <input
                     type="password"
                     required
@@ -321,13 +321,13 @@ export const Modals: React.FC<ModalsProps> = ({
                   disabled={authLoading}
                   className="w-full py-3.5 rounded-2xl bg-[#0A6847] hover:bg-[#085237] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 transition"
                 >
-                  {authLoading ? 'Se autentifică...' : <><LogIn className="w-4 h-4" /> Intră în Cont & Continuă</>}
+                  {authLoading ? t.signingInBtn : <><LogIn className="w-4 h-4" /> {t.signInBtn}</>}
                 </button>
               </form>
             ) : (
               <form onSubmit={handleRegister} className="space-y-3 text-xs font-semibold">
                 <div>
-                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Nume și Prenume</label>
+                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">{t.fullNameLabel}</label>
                   <input
                     type="text"
                     required
@@ -338,7 +338,7 @@ export const Modals: React.FC<ModalsProps> = ({
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Email</label>
+                    <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">{t.emailLabel}</label>
                     <input
                       type="email"
                       required
@@ -348,7 +348,7 @@ export const Modals: React.FC<ModalsProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Telefon (+40)</label>
+                    <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">{t.phoneLabel}</label>
                     <input
                       type="tel"
                       required
@@ -359,7 +359,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   </div>
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Adresă de Livrare în România</label>
+                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">{t.deliveryAddressRoLabel}</label>
                   <input
                     type="text"
                     required
@@ -369,7 +369,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Parolă</label>
+                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">{t.passwordLabel}</label>
                   <input
                     type="password"
                     required
@@ -383,7 +383,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   disabled={authLoading}
                   className="w-full py-3.5 rounded-2xl bg-[#0A6847] hover:bg-[#085237] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 transition"
                 >
-                  {authLoading ? 'Se creează contul...' : <><UserPlus className="w-4 h-4" /> Creează Cont & Comandă</>}
+                  {authLoading ? t.creatingAccountBtn : <><UserPlus className="w-4 h-4" /> {t.createAccountBtn}</>}
                 </button>
               </form>
             )}
@@ -572,7 +572,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   }}
                   className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8] hover:underline flex items-center gap-1"
                 >
-                  <span>Vezi în Comenzile & Livrările Mele →</span>
+                  <span>{t.tabDeliveries} →</span>
                 </button>
               )}
               <button
@@ -598,7 +598,7 @@ export const Modals: React.FC<ModalsProps> = ({
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800">
                   <div className="flex items-center gap-2">
                     <ShoppingBag className="w-5 h-5 text-[#0A6847]" />
-                    <h3 className="text-lg font-black">Coș de Cumpărături ({cart.length})</h3>
+                    <h3 className="text-lg font-black">{t.myCart} ({cart.length})</h3>
                   </div>
                   <button onClick={onCloseCartDrawer} className="p-1 rounded-full text-slate-400">
                     <X className="w-5 h-5" />
@@ -628,7 +628,7 @@ export const Modals: React.FC<ModalsProps> = ({
                       </div>
                     </div>
                   ))}
-                  {cart.length === 0 && <p className="text-center text-xs text-slate-400 py-10">Coșul este gol.</p>}
+                  {cart.length === 0 && <p className="text-center text-xs text-slate-400 py-10">{t.emptyCartTitle}</p>}
                 </div>
               </div>
 
@@ -645,7 +645,7 @@ export const Modals: React.FC<ModalsProps> = ({
                     }}
                     className="w-full py-3 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black shadow transition"
                   >
-                    Finalizează Comanda cu Plata la Livrare →
+                    {t.checkoutCartDrawerBtn}
                   </button>
                 </div>
               )}

@@ -37,6 +37,81 @@ export interface TranslationDictionary {
   callRiderButton: string;
   callRiderLockedButton: string;
 
+  // Deliveries View Detailed Keys
+  noOngoingDeliveriesTitle: string;
+  noOngoingDeliveriesDesc: string;
+  shopCeylonGroceriesBtn: string;
+  orderNumberPrefix: string;
+  orderPlacedAtPrefix: string;
+  todayLabel: string;
+  expressDeliveryTo: string;
+  paymentCodBadge: string;
+  paymentOnlineBadge: string;
+  statusOutForDeliveryBadge: string;
+  statusPackingBadge: string;
+  realtimeStageTrackerTitle: string;
+  step1OrderPlaced: string;
+  step1OrderPlacedSub: string;
+  step2Packing: string;
+  step2PackingSub: string;
+  step3DispatchCall: string;
+  step3DispatchCallSub: string;
+  step4RiderVerification: string;
+  step4RiderWaitingSub: string;
+  step4RiderConfirmedSub: string;
+  step5OnTheWay: string;
+  step5EtaPrefix: string;
+  stepNumberPrefix: string;
+  courierPartnerDirectContact: string;
+  courierDefaultCompany: string;
+  riderAllocatingBadge: string;
+  riderCallLockedWarningTitle: string;
+  riderCallLockedWarningDesc: string;
+  riderCallLockedBtnTooltip: string;
+  riderArrivingInMinutes: string;
+  riderVerifiedBadge: string;
+  riderDirectMobileLabel: string;
+  riderDirectMobileVerifiedHint: string;
+  riderCallDirectInstructions: string;
+  riderEstimatedDoorEta: string;
+  cashOnDeliveryExactAmountNotice: string;
+  cashOnDeliveryPaymentTag: string;
+  orderedFoodItemsHeader: string;
+  deliveryDestinationAddress: string;
+  deliveryNoteLabel: string;
+  noHistoryDeliveriesTitle: string;
+  noHistoryDeliveriesDesc: string;
+  deliveredAndCollectedBadge: string;
+  totalPaidCodLabel: string;
+  purchasedItemsSummary: string;
+  viewOfficialInvoiceBtn: string;
+  reorderAgainBtn: string;
+  invoiceModalStoreName: string;
+  invoiceModalStoreAddress: string;
+  invoiceModalDeliveryInvoice: string;
+  invoiceModalDate: string;
+  invoiceModalCustomer: string;
+  invoiceModalPhone: string;
+  invoiceModalPayment: string;
+  invoiceModalTotalPaid: string;
+  invoiceModalPrintBtn: string;
+  invoiceModalCloseBtn: string;
+
+  // Auth & Modals
+  authModalTitle: string;
+  authModalSubtitle: string;
+  tabSignIn: string;
+  tabRegister: string;
+  emailLabel: string;
+  passwordLabel: string;
+  signInBtn: string;
+  signingInBtn: string;
+  fullNameLabel: string;
+  deliveryAddressRoLabel: string;
+  createAccountBtn: string;
+  creatingAccountBtn: string;
+  checkoutCartDrawerBtn: string;
+
   // Categories
   catAll: string;
   catRice: string;
@@ -239,6 +314,81 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     callRiderButton: 'Call Delivery Rider',
     callRiderLockedButton: 'Call Rider (Awaiting Admin Verification)',
 
+    // Deliveries View Detailed Keys
+    noOngoingDeliveriesTitle: 'No ongoing deliveries right now',
+    noOngoingDeliveriesDesc: 'All your Ceylon Foods packages have been delivered! Place a new order with red rice, fresh brinjal, dhal & Sri Lankan spices.',
+    shopCeylonGroceriesBtn: 'Shop Ceylon Groceries Now →',
+    orderNumberPrefix: 'Order',
+    orderPlacedAtPrefix: 'Placed',
+    todayLabel: 'Today',
+    expressDeliveryTo: 'Express Delivery to',
+    paymentCodBadge: '💵 Cash on Delivery (Pay at Door)',
+    paymentOnlineBadge: '💳 Paid Online',
+    statusOutForDeliveryBadge: '🚀 Out for Delivery to You',
+    statusPackingBadge: '📦 Packing in Store',
+    realtimeStageTrackerTitle: 'Real-Time Delivery Stages (Supermarket ➔ Courier ➔ Your Door):',
+    step1OrderPlaced: 'Order Confirmed',
+    step1OrderPlacedSub: 'Registered in store',
+    step2Packing: 'Packing Parcel',
+    step2PackingSub: 'Ceylon items packed',
+    step3DispatchCall: 'Dispatch Call',
+    step3DispatchCallSub: 'Admin calling courier',
+    step4RiderVerification: 'Rider Verification',
+    step4RiderWaitingSub: 'Awaiting arrival at store',
+    step4RiderConfirmedSub: 'Mobile verified at store',
+    step5OnTheWay: 'On the Way to You',
+    step5EtaPrefix: 'ETA ~',
+    stepNumberPrefix: 'Step',
+    courierPartnerDirectContact: 'Romania Courier Fleet • Direct Contact',
+    courierDefaultCompany: 'Courier Partner (Glovo / Bolt / Sameday / Direct)',
+    riderAllocatingBadge: 'Allocating Rider at Store',
+    riderCallLockedWarningTitle: '🔒 Direct call to rider is temporarily locked',
+    riderCallLockedWarningDesc: 'The supermarket admin has contacted courier dispatch to collect your package. When the rider physically arrives at Strada Academiei 14, Bucharest and shares their direct mobile number with the admin, it will be validated in the system and this call button will unlock immediately!',
+    riderCallLockedBtnTooltip: 'Rider has not arrived at the store yet to provide direct mobile number.',
+    riderArrivingInMinutes: '⏱ Courier arriving at store in ~10 min',
+    riderVerifiedBadge: '✓ VERIFIED',
+    riderDirectMobileLabel: 'Direct Mobile Number:',
+    riderDirectMobileVerifiedHint: 'Phone provided to admin upon parcel pickup at supermarket',
+    riderCallDirectInstructions: 'You can call the rider directly for gate code, intercom, or delivery directions.',
+    riderEstimatedDoorEta: 'Estimated time to your door:',
+    cashOnDeliveryExactAmountNotice: 'Please prepare the exact cash amount in Romanian lei (Cash on Delivery) for the courier.',
+    cashOnDeliveryPaymentTag: 'Cash on Delivery',
+    orderedFoodItemsHeader: 'Ordered Food Items',
+    deliveryDestinationAddress: 'Delivery Address:',
+    deliveryNoteLabel: 'Note:',
+    noHistoryDeliveriesTitle: 'No past completed deliveries yet',
+    noHistoryDeliveriesDesc: 'Once the courier rider delivers items to your door, your past receipts and order history will appear here.',
+    deliveredAndCollectedBadge: '✓ DELIVERED & PAID',
+    totalPaidCodLabel: 'Total Paid (Cash on Delivery)',
+    purchasedItemsSummary: 'Purchased items:',
+    viewOfficialInvoiceBtn: 'View Official Receipt / Invoice',
+    reorderAgainBtn: 'Reorder Again',
+    invoiceModalStoreName: 'Ceylon Foods Supermarket Bucharest',
+    invoiceModalStoreAddress: 'Strada Academiei 14, Bucharest, Romania',
+    invoiceModalDeliveryInvoice: 'Delivery Invoice',
+    invoiceModalDate: 'Date:',
+    invoiceModalCustomer: 'Customer:',
+    invoiceModalPhone: 'Phone:',
+    invoiceModalPayment: 'Payment: Cash on Delivery (Collected at door)',
+    invoiceModalTotalPaid: 'Total Collected:',
+    invoiceModalPrintBtn: 'Print Invoice',
+    invoiceModalCloseBtn: 'Close',
+
+    // Auth & Modals
+    authModalTitle: 'Account & Orders',
+    authModalSubtitle: 'Sign in to track orders, save addresses & direct courier call',
+    tabSignIn: 'Sign In',
+    tabRegister: 'Create Account',
+    emailLabel: 'Email Address',
+    passwordLabel: 'Password',
+    signInBtn: 'Sign In & Continue',
+    signingInBtn: 'Authenticating...',
+    fullNameLabel: 'Full Name',
+    deliveryAddressRoLabel: 'Delivery Address in Romania',
+    createAccountBtn: 'Create Account & Order',
+    creatingAccountBtn: 'Creating Account...',
+    checkoutCartDrawerBtn: 'Proceed to Checkout (Cash on Delivery) →',
+
     // Categories
     catAll: 'All Products',
     catRice: 'White Rice, Red Rice & Dhal',
@@ -440,6 +590,81 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     callRiderButton: 'ධාවකයා අමතන්න',
     callRiderLockedButton: 'ඇමතුම් අගුළු දමා ඇත (පරිපාලක තහවුරු කිරීම අපේක්ෂාවෙන්)',
 
+    // Deliveries View Detailed Keys
+    noOngoingDeliveriesTitle: 'ක්‍රියාකාරී බෙදාහැරීම් නොමැත',
+    noOngoingDeliveriesDesc: 'ඔබගේ සියලුම Ceylon Foods ඇණවුම් සාර්ථකව බෙදාහැර ඇත! නැවුම් රතු කැකුළු සහල්, වම්බටු, පරිප්පු සහ කුළුබඩු සඳහා නව ඇණවුමක් කරන්න.',
+    shopCeylonGroceriesBtn: 'දැන්ම සිංහල ආහාර මිලදී ගන්න →',
+    orderNumberPrefix: 'ඇණවුම',
+    orderPlacedAtPrefix: 'ඇණවුම් කළ දිනය',
+    todayLabel: 'අද',
+    expressDeliveryTo: 'නියමිත ලිපිනයට බෙදාහැරීම:',
+    paymentCodBadge: '💵 භාණ්ඩ ලැබුණු පසු මුදල් ගෙවීම (COD)',
+    paymentOnlineBadge: '💳 මාර්ගගතව ගෙවන ලදී',
+    statusOutForDeliveryBadge: '🚀 ඔබගේ නිවසට ගෙන එමින් පවතී',
+    statusPackingBadge: '📦 වෙළඳසැලේ අසුරමින් පවතී',
+    realtimeStageTrackerTitle: 'සජීවී බෙදාහැරීමේ පියවර (සුපිරි වෙළඳසැල ➔ කුරියර් ➔ ඔබේ නිවසට):',
+    step1OrderPlaced: 'ඇණවුම තහවුරු විය',
+    step1OrderPlacedSub: 'වෙළඳසැලේ ලියාපදිංචි විය',
+    step2Packing: 'ඇසුරුම සූදානම් කිරීම',
+    step2PackingSub: 'භාණ්ඩ අසුරමින් පවතී',
+    step3DispatchCall: 'කුරියර් ඇමතුම',
+    step3DispatchCallSub: 'පරිපාලක කුරියර් අමතයි',
+    step4RiderVerification: 'රියදුරු තහවුරු කිරීම',
+    step4RiderWaitingSub: 'වෙළඳසැලට පැමිණෙන තෙක් රැඳී සිටී',
+    step4RiderConfirmedSub: 'දුරකථන අංකය තහවුරු කෙරිණි',
+    step5OnTheWay: 'ඔබ වෙත ගමන් කරමින්',
+    step5EtaPrefix: 'ලඟාවීමේ වේලාව ~',
+    stepNumberPrefix: 'පියවර',
+    courierPartnerDirectContact: 'රුමේනියානු කුරියර් සහකරු • සෘජු ඇමතුම',
+    courierDefaultCompany: 'කුරියර් සහකරු (Glovo / Bolt / Sameday)',
+    riderAllocatingBadge: 'වෙළඳසැලේ රියදුරු වෙන් කරමින්',
+    riderCallLockedWarningTitle: '🔒 රියදුරු සෘජු ඇමතුම තාවකාලිකව අගුළු දමා ඇත',
+    riderCallLockedWarningDesc: 'සුපිරි වෙළඳසැලේ පරිපාලක පැකේජය රැගෙන යාමට කුරියර් සේවාව අමතා ඇත. රියදුරු බුකාරෙස්ට් වෙළඳසැලට පැමිණ තම සෘජු ජංගම දුරකථන අංකය ලබා දුන් පසු, පරිපාලක එය තහවුරු කරනු ඇත. ඉන්පසු මෙම ඇමතුම් බොත්තම සක්‍රිය වේ!',
+    riderCallLockedBtnTooltip: 'රියදුරු තවමත් දුරකථන අංකය ලබා දීමට වෙළඳසැලට පැමිණ නැත.',
+    riderArrivingInMinutes: '⏱ රියදුරු විනාඩි 10 කින් වෙළඳසැලට පැමිණේ',
+    riderVerifiedBadge: '✓ තහවුරු කරන ලදී',
+    riderDirectMobileLabel: 'සෘජු ජංගම දුරකථන අංකය:',
+    riderDirectMobileVerifiedHint: 'භාණ්ඩ රැගෙන යාමේදී පරිපාලක විසින් තහවුරු කරන ලදී',
+    riderCallDirectInstructions: 'ගේට්ටු/ඉන්ටර්කොම් හෝ ලිපිනය පිළිබඳ උපදෙස් සඳහා රියදුරු අමතන්න.',
+    riderEstimatedDoorEta: 'ඔබගේ නිවසට ඇස්තමේන්තුගත කාලය:',
+    cashOnDeliveryExactAmountNotice: 'කරුණාකර කුරියර් රියදුරු සඳහා නියමිත මුදල (Cash on Delivery) ලෙයි වලින් සූදානම් කර තබන්න.',
+    cashOnDeliveryPaymentTag: 'භාණ්ඩ ලැබුණු පසු මුදල් ගෙවීම',
+    orderedFoodItemsHeader: 'ඇණවුම් කළ ආහාර ද්‍රව්‍ය',
+    deliveryDestinationAddress: 'බෙදාහැරීමේ ලිපිනය:',
+    deliveryNoteLabel: 'සටහන:',
+    noHistoryDeliveriesTitle: 'පෙර සම්පූර්ණ කළ ඇණවුම් නොමැත',
+    noHistoryDeliveriesDesc: 'කුරියර් රියදුරු භාණ්ඩ ඔබගේ නිවසට ගෙනවිත් දුන් පසු, සම්පූර්ණ ඉතිහාසය සහ බිල්පත් මෙහි දිස්වනු ඇත.',
+    deliveredAndCollectedBadge: '✓ භාණ්ඩ ලැබී මුදල් ගෙවන ලදී',
+    totalPaidCodLabel: 'මුළු ගෙවීම (Cash on Delivery)',
+    purchasedItemsSummary: 'මිලදී ගත් භාණ්ඩ:',
+    viewOfficialInvoiceBtn: 'නිල බිල්පත බලන්න',
+    reorderAgainBtn: 'නැවත ඇණවුම් කරන්න',
+    invoiceModalStoreName: 'Ceylon Foods Supermarket Bucharest',
+    invoiceModalStoreAddress: 'Strada Academiei 14, Bucharest, Romania',
+    invoiceModalDeliveryInvoice: 'නිල බෙදාහැරීමේ බිල්පත',
+    invoiceModalDate: 'දිනය:',
+    invoiceModalCustomer: 'පාරිභෝගිකයා:',
+    invoiceModalPhone: 'දුරකථනය:',
+    invoiceModalPayment: 'ගෙවීම: Cash on Delivery (නිවසට ලැබුණු පසු ගෙවන ලදී)',
+    invoiceModalTotalPaid: 'මුළු මුදල:',
+    invoiceModalPrintBtn: 'මුද්‍රණය කරන්න',
+    invoiceModalCloseBtn: 'වසන්න',
+
+    // Auth & Modals
+    authModalTitle: 'ගිණුම සහ ඇණවුම්',
+    authModalSubtitle: 'ඇණවුම් නිරීක්ෂණය සහ ලිපින සුරැකීම සඳහා ලොග් වන්න',
+    tabSignIn: 'ඇතුල් වන්න',
+    tabRegister: 'නව ගිණුමක්',
+    emailLabel: 'විද්‍යුත් තැපෑල',
+    passwordLabel: 'මුරපදය',
+    signInBtn: 'ඇතුල් වී ඉදිරියට යන්න',
+    signingInBtn: 'තහවුරු කරමින් පවතී...',
+    fullNameLabel: 'සම්පූර්ණ නම',
+    deliveryAddressRoLabel: 'රුමේනියාවේ බෙදාහැරීමේ ලිපිනය',
+    createAccountBtn: 'ගිණුම සාදා ඇණවුම් කරන්න',
+    creatingAccountBtn: 'ගිණුම නිර්මාණය කරමින්...',
+    checkoutCartDrawerBtn: 'මුදල් ගෙවීම සඳහා ඉදිරියට (COD) →',
+
     // Categories
     catAll: 'සියලුම නිෂ්පාදන',
     catRice: 'සුදු කැකුළු, රතු සහල් සහ පරිප්පු',
@@ -640,6 +865,81 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     adminVerificationNotice: 'Administratorul magazinului apelează compania de curierat (Glovo/Bolt/Sameday). Apelul direct se activează după sosirea curierului la depozit.',
     callRiderButton: 'Apelează Curierul',
     callRiderLockedButton: 'Apel Blocat (Așteptare Verificare Admin)',
+
+    // Deliveries View Detailed Keys
+    noOngoingDeliveriesTitle: 'Nu aveți comenzi în curs de livrare',
+    noOngoingDeliveriesDesc: 'Toate pachetele Ceylon Foods au fost livrate cu succes! Puteți plasa o nouă comandă cu orez roșu, wambatu proaspăt și condimente din Sri Lanka.',
+    shopCeylonGroceriesBtn: 'Cumpără Alimente Ceylon Acum →',
+    orderNumberPrefix: 'Comandă',
+    orderPlacedAtPrefix: 'Plasată',
+    todayLabel: 'Astăzi',
+    expressDeliveryTo: 'Livrare Rapidă în',
+    paymentCodBadge: '💵 Plata la Livrare (Cash on Delivery)',
+    paymentOnlineBadge: '💳 Plătit Online',
+    statusOutForDeliveryBadge: '🚀 În Livrare spre Tine',
+    statusPackingBadge: '📦 Se Împachetează',
+    realtimeStageTrackerTitle: 'Stadiu Livrare în Timp Real (Supermarket ➔ Curier ➔ Adresă):',
+    step1OrderPlaced: 'Comandă Plasată',
+    step1OrderPlacedSub: 'Înregistrată în magazin',
+    step2Packing: 'Pregătire Colet',
+    step2PackingSub: 'Produse Ceylon ambalate',
+    step3DispatchCall: 'Apel Dispecerat',
+    step3DispatchCallSub: 'Admin cheamă curierul',
+    step4RiderVerification: 'Verificare Curier',
+    step4RiderWaitingSub: 'Așteaptă sosirea la magazin',
+    step4RiderConfirmedSub: 'Mobil confirmat la magazin',
+    step5OnTheWay: 'Pe Drum spre Tine',
+    step5EtaPrefix: 'ETA ~',
+    stepNumberPrefix: 'Pasul',
+    courierPartnerDirectContact: 'Partener Curierat România • Contact Direct',
+    courierDefaultCompany: 'Companie de Livrare (Glovo / Bolt / Sameday)',
+    riderAllocatingBadge: 'În Curs de Alocare la Magazin',
+    riderCallLockedWarningTitle: '🔒 Apelul direct către curier este temporar blocat',
+    riderCallLockedWarningDesc: 'Administratorul magazinului a contactat dispeceratul curierilor pentru preluarea coletului. În momentul în care curierul ajunge fizic la depozitul din Strada Academiei 14, București, acesta își va prezenta numărul direct de mobil administratorului, care îl va valida în sistem. Imediat după verificare, butonul de apel direct se va activa automat aici!',
+    riderCallLockedBtnTooltip: 'Curierul nu a sosit încă la magazin pentru transmiterea numărului de mobil.',
+    riderArrivingInMinutes: '⏱ Curierul sosește la magazin în ~10 min',
+    riderVerifiedBadge: '✓ VERIFICAT',
+    riderDirectMobileLabel: 'Număr Direct Mobil:',
+    riderDirectMobileVerifiedHint: 'Număr furnizat administratorului la ridicarea pachetului din magazin',
+    riderCallDirectInstructions: 'Puteți suna curierul direct pentru instrucțiuni interfon / adresă.',
+    riderEstimatedDoorEta: 'Timp estimat până la ușă:',
+    cashOnDeliveryExactAmountNotice: 'Vă rugăm să pregătiți suma exactă în numerar (Cash on Delivery) pentru curier.',
+    cashOnDeliveryPaymentTag: 'Plată Ramburs',
+    orderedFoodItemsHeader: 'Articole Alimentare Comandate',
+    deliveryDestinationAddress: 'Adresă de Livrare:',
+    deliveryNoteLabel: 'Notă:',
+    noHistoryDeliveriesTitle: 'Nu aveți comenzi anterioare finalizate',
+    noHistoryDeliveriesDesc: 'După ce curierul livrează produsele la ușa dumneavoastră, istoricul detaliat va fi salvat aici.',
+    deliveredAndCollectedBadge: '✓ LIVRAT & ÎNCASAT',
+    totalPaidCodLabel: 'Total Plătit (Cash on Delivery)',
+    purchasedItemsSummary: 'Articole cumpărate:',
+    viewOfficialInvoiceBtn: 'Vezi Chitanță / Factură Oficială',
+    reorderAgainBtn: 'Comandă Din Nou',
+    invoiceModalStoreName: 'Ceylon Foods Supermarket Bucharest',
+    invoiceModalStoreAddress: 'Strada Academiei 14, București, România',
+    invoiceModalDeliveryInvoice: 'Factură Livrare',
+    invoiceModalDate: 'Data:',
+    invoiceModalCustomer: 'Client:',
+    invoiceModalPhone: 'Telefon:',
+    invoiceModalPayment: 'Plată: Cash on Delivery (Încasat la Ușă)',
+    invoiceModalTotalPaid: 'Total Încasat:',
+    invoiceModalPrintBtn: 'Printează Factura',
+    invoiceModalCloseBtn: 'Închide',
+
+    // Auth & Modals
+    authModalTitle: 'Contul Meu & Comenzi',
+    authModalSubtitle: 'Autentificați-vă pentru a urmări livrările și apela curierul direct',
+    tabSignIn: 'Autentificare',
+    tabRegister: 'Înregistrare Cont',
+    emailLabel: 'Adresă de Email',
+    passwordLabel: 'Parolă',
+    signInBtn: 'Intră în Cont & Continuă',
+    signingInBtn: 'Se autentifică...',
+    fullNameLabel: 'Nume și Prenume',
+    deliveryAddressRoLabel: 'Adresă de Livrare în România',
+    createAccountBtn: 'Creează Cont & Comandă',
+    creatingAccountBtn: 'Se creează contul...',
+    checkoutCartDrawerBtn: 'Finalizează Comanda cu Plata la Livrare →',
 
     // Categories
     catAll: 'Toate Produsele',

@@ -348,24 +348,24 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             <div className="relative">
               <button
                 onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
-                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#E5A91A] hover:bg-[#d69b12] text-amber-950 font-black text-xs shadow-sm transition active:scale-95"
+                className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-[#E5A91A] to-amber-500 hover:from-amber-500 hover:to-amber-600 text-amber-950 font-black text-xs shadow-md shadow-amber-900/10 transition active:scale-95"
               >
-                <span>☰</span>
+                <span className="text-sm">🗂️</span>
                 <span>{t.browseCategories}</span>
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
               {isCategoryMenuOpen && (
-                <div className="absolute top-full left-0 mt-2 w-64 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl py-2 z-50">
+                <div className="absolute top-full left-0 mt-2 w-64 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl py-2 z-50 animate-fadeIn">
                   {[
-                    { key: 'All Categories', label: t.allCategories },
-                    { key: 'Staples & Grains', label: t.catRice },
-                    { key: 'Fruits & Veg', label: t.catVeg },
-                    { key: 'Pantry', label: t.catSpices },
-                    { key: 'Dairy & Eggs', label: t.catDairy },
-                    { key: 'Bakery', label: t.catBakery },
-                    { key: 'Beverages', label: t.catTea },
-                    { key: 'Snacks', label: t.catSnacks }
+                    { key: 'All Categories', label: t.allCategories, icon: '🛒' },
+                    { key: 'Staples & Grains', label: t.catRice, icon: '🌾' },
+                    { key: 'Fruits & Veg', label: t.catVeg, icon: '🍆' },
+                    { key: 'Pantry', label: t.catSpices, icon: '🌶️' },
+                    { key: 'Dairy & Eggs', label: t.catDairy, icon: '🥛' },
+                    { key: 'Bakery', label: t.catBakery, icon: '🥖' },
+                    { key: 'Beverages', label: t.catTea, icon: '☕' },
+                    { key: 'Snacks', label: t.catSnacks, icon: '🍪' }
                   ].map((c) => (
                     <div
                       key={c.key}
@@ -377,7 +377,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                       }}
                       className="px-4 py-2 text-xs font-bold text-slate-700 dark:text-zinc-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-[#0A6847] dark:hover:text-[#78F9B8] cursor-pointer transition flex items-center justify-between"
                     >
-                      <span>{c.label}</span>
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-sm">{c.icon}</span>
+                        <span>{c.label}</span>
+                      </div>
                       <span className="text-[10px] text-slate-400">→</span>
                     </div>
                   ))}
@@ -385,95 +388,130 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               )}
             </div>
 
-            {/* Navigation Links */}
-            <nav className="hidden lg:flex items-center gap-6 text-xs font-extrabold text-slate-700 dark:text-zinc-300">
+            {/* Navigation Links with Premium Icons */}
+            <nav className="hidden lg:flex items-center gap-2 xl:gap-3 text-xs font-black text-slate-700 dark:text-zinc-300">
               <button
                 onClick={() => setCurrentPage('HOME')}
-                className={`transition hover:text-[#0A6847] dark:hover:text-[#78F9B8] ${
-                  currentPage === 'HOME' ? 'text-[#0A6847] dark:text-[#78F9B8] border-b-2 border-[#0A6847] pb-1' : ''
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                  currentPage === 'HOME'
+                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
+                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
                 }`}
               >
-                {t.tabHome}
+                <span className="text-sm">🏠</span>
+                <span>{t.tabHome}</span>
               </button>
+
               <button
                 onClick={() => {
                   setSelectedCategory('All');
                   setCurrentPage('SHOP');
                 }}
-                className={`transition hover:text-[#0A6847] dark:hover:text-[#78F9B8] ${
-                  currentPage === 'SHOP' ? 'text-[#0A6847] dark:text-[#78F9B8] border-b-2 border-[#0A6847] pb-1' : ''
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                  currentPage === 'SHOP' && selectedCategory === 'All'
+                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
+                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
                 }`}
               >
-                {t.tabShop}
+                <span className="text-sm">🏪</span>
+                <span>{t.tabShop}</span>
               </button>
+
               <button
                 onClick={() => {
                   setSelectedCategory('Staples & Grains');
                   setCurrentPage('SHOP');
                 }}
-                className="transition hover:text-[#0A6847] dark:hover:text-[#78F9B8]"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                  currentPage === 'SHOP' && selectedCategory === 'Staples & Grains'
+                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
+                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
+                }`}
               >
-                {t.tabRice}
+                <span className="text-sm">🌾</span>
+                <span>{t.tabRice}</span>
               </button>
+
               <button
                 onClick={() => {
                   setSelectedCategory('Fruits & Veg');
                   setCurrentPage('SHOP');
                 }}
-                className="transition hover:text-[#0A6847] dark:hover:text-[#78F9B8]"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                  currentPage === 'SHOP' && selectedCategory === 'Fruits & Veg'
+                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
+                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
+                }`}
               >
-                {t.tabVegetables}
+                <span className="text-sm">🍆</span>
+                <span>{t.tabVegetables}</span>
               </button>
+
               <button
                 onClick={() => {
                   setSelectedCategory('Pantry');
                   setCurrentPage('SHOP');
                 }}
-                className="transition hover:text-[#0A6847] dark:hover:text-[#78F9B8]"
-              >
-                {t.tabSpices}
-              </button>
-              <button
-                onClick={() => setCurrentPage('CART')}
-                className={`flex items-center gap-1.5 transition hover:text-[#0A6847] dark:hover:text-[#78F9B8] ${
-                  currentPage === 'CART' ? 'text-[#0A6847] dark:text-[#78F9B8] border-b-2 border-[#0A6847] pb-1' : ''
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                  currentPage === 'SHOP' && selectedCategory === 'Pantry'
+                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
+                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
                 }`}
               >
+                <span className="text-sm">🌶️</span>
+                <span>{t.tabSpices}</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentPage('CART')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                  currentPage === 'CART'
+                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
+                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
+                }`}
+              >
+                <span className="text-sm">🛒</span>
                 <span>{t.tabCart}</span>
                 {totalCartCount > 0 && (
-                  <span className="px-1.5 py-0.2 rounded-full bg-[#E5A91A] text-amber-950 text-[10px] font-black">
+                  <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-[#E5A91A] text-amber-950 text-[10px] font-black shadow-xs">
                     {totalCartCount}
                   </span>
                 )}
               </button>
+
               <button
                 onClick={() => setCurrentPage('RECIPES')}
-                className={`flex items-center gap-1 transition hover:text-[#0A6847] dark:hover:text-[#78F9B8] ${
-                  currentPage === 'RECIPES' ? 'text-[#0A6847] dark:text-[#78F9B8] border-b-2 border-[#0A6847] pb-1' : ''
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                  currentPage === 'RECIPES'
+                    ? 'bg-purple-500/10 text-purple-700 dark:text-purple-300 ring-1 ring-purple-500/30 shadow-xs'
+                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-purple-700'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#0A6847] dark:text-[#78F9B8]" />
+                <span className="text-sm">👨‍🍳</span>
                 <span>{t.tabRecipes}</span>
               </button>
+
               <button
                 onClick={() => setCurrentPage('DELIVERIES')}
-                className={`flex items-center gap-1.5 transition hover:text-[#0A6847] dark:hover:text-[#78F9B8] ${
-                  currentPage === 'DELIVERIES' ? 'text-[#0A6847] dark:text-[#78F9B8] border-b-2 border-[#0A6847] pb-1 font-black' : ''
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl transition font-black ${
+                  currentPage === 'DELIVERIES'
+                    ? 'bg-[#0A6847] text-white shadow-md shadow-emerald-950/20'
+                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
                 }`}
               >
-                <Truck className="w-3.5 h-3.5 text-[#0A6847] dark:text-[#78F9B8]" />
+                <span className="text-sm">🛵</span>
                 <span>{t.tabDeliveries}</span>
                 {ongoingDeliveriesCount > 0 && (
                   <span className="px-2 py-0.5 rounded-full bg-[#E5A91A] text-amber-950 text-[10px] font-black animate-pulse shadow-xs">
-                    🛵 {ongoingDeliveriesCount}
+                    {ongoingDeliveriesCount}
                   </span>
                 )}
               </button>
             </nav>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800/60">
-            <Truck className="w-3.5 h-3.5 text-[#0A6847] dark:text-[#78F9B8]" />
+          <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-3.5 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800/60 shadow-2xs">
+            <span className="text-sm">🚚</span>
             <span>{t.freeDeliveryBadge}</span>
           </div>
         </div>
@@ -482,33 +520,40 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           <div className="lg:hidden border-t border-slate-200 dark:border-zinc-800 px-4 py-3 space-y-2 bg-white dark:bg-zinc-900 text-xs font-bold">
             <button
               onClick={() => { setCurrentPage('HOME'); setMobileMenuOpen(false); }}
-              className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
+              className="flex items-center gap-2 w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
-              {t.tabHome}
+              <span>🏠</span>
+              <span>{t.tabHome}</span>
             </button>
             <button
               onClick={() => { setCurrentPage('SHOP'); setMobileMenuOpen(false); }}
-              className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
+              className="flex items-center gap-2 w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
-              {t.tabShop}
+              <span>🏪</span>
+              <span>{t.tabShop}</span>
             </button>
             <button
               onClick={() => { setCurrentPage('CART'); setMobileMenuOpen(false); }}
-              className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
+              className="flex items-center gap-2 w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
-              {t.tabCart} ({totalCartCount})
+              <span>🛒</span>
+              <span>{t.tabCart} ({totalCartCount})</span>
             </button>
             <button
               onClick={() => { setCurrentPage('RECIPES'); setMobileMenuOpen(false); }}
-              className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
+              className="flex items-center gap-2 w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
-              {t.tabRecipes}
+              <span>👨‍🍳</span>
+              <span>{t.tabRecipes}</span>
             </button>
             <button
               onClick={() => { setCurrentPage('DELIVERIES'); setMobileMenuOpen(false); }}
               className="w-full py-2 px-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0A6847] dark:text-[#78F9B8] font-black text-left flex items-center justify-between"
             >
-              <span>🛵 {t.tabDeliveries}</span>
+              <div className="flex items-center gap-2">
+                <span>🛵</span>
+                <span>{t.tabDeliveries}</span>
+              </div>
               {ongoingDeliveriesCount > 0 && (
                 <span className="px-2 py-0.5 rounded-full bg-[#E5A91A] text-amber-950 text-[10px] font-black">
                   {ongoingDeliveriesCount} Active

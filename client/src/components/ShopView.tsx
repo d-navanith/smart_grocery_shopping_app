@@ -247,7 +247,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-zinc-800">
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-                Interval Preț (Lei)
+                {t.filterPriceRange}
               </h4>
               <span className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8]">
                 5 lei — {maxPrice} lei
@@ -272,12 +272,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
           {/* 3. Review Rating Filter */}
           <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-zinc-800">
             <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-              Rating & Recenzii
+              {t.filterRating}
             </h4>
             <div className="space-y-1.5 text-xs">
               {[
-                { stars: 5, label: '5.0 Stele Excelente' },
-                { stars: 4, label: '4.0 Stele & Peste' }
+                { stars: 5, label: '5.0 ★★★★★' },
+                { stars: 4, label: '4.0 ★★★★☆' }
               ].map(r => (
                 <label
                   key={r.stars}

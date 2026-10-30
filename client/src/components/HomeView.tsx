@@ -38,12 +38,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
   t
 }) => {
   const CATEGORY_CARDS = [
-    { id: 'cat-rice', title: t.catRice, subtitle: 'Keeri Samba & Red Rice', image: '/prod_white_rice.jpg', filterKey: 'Staples & Grains' },
-    { id: 'cat-wambatu', title: t.catVeg, subtitle: 'Brinjal & Okra', image: '/prod_brinjal.jpg', filterKey: 'Fruits & Veg' },
-    { id: 'cat-spices', title: t.catSpices, subtitle: 'Curry Powder & Cinnamon', image: '/prod_spices.jpg', filterKey: 'Pantry' },
-    { id: 'cat-tea', title: t.catTea, subtitle: 'Dilmah Ceylon BOPF', image: '/prod_tea.jpg', filterKey: 'Beverages' },
-    { id: 'cat-bakery', title: t.catBakery, subtitle: 'Fresh Sri Lankan Roast Paan', image: '/prod_roast_paan.jpg', filterKey: 'Bakery' },
-    { id: 'cat-fruits', title: t.catSnacks, subtitle: 'Ceylon Papaya & Mango', image: '/prod_papaya.jpg', filterKey: 'Fruits & Veg' }
+    { id: 'cat-rice', icon: '🌾', title: t.catRice, subtitle: 'Keeri Samba & Red Rice', image: '/prod_white_rice.jpg', filterKey: 'Staples & Grains' },
+    { id: 'cat-wambatu', icon: '🍆', title: t.catVeg, subtitle: 'Brinjal & Okra', image: '/prod_brinjal.jpg', filterKey: 'Fruits & Veg' },
+    { id: 'cat-spices', icon: '🌶️', title: t.catSpices, subtitle: 'Curry Powder & Cinnamon', image: '/prod_spices.jpg', filterKey: 'Pantry' },
+    { id: 'cat-tea', icon: '☕', title: t.catTea, subtitle: 'Dilmah Ceylon BOPF', image: '/prod_tea.jpg', filterKey: 'Beverages' },
+    { id: 'cat-bakery', icon: '🥖', title: t.catBakery, subtitle: 'Fresh Sri Lankan Roast Paan', image: '/prod_roast_paan.jpg', filterKey: 'Bakery' },
+    { id: 'cat-fruits', icon: '🥭', title: t.catSnacks, subtitle: 'Ceylon Papaya & Mango', image: '/prod_papaya.jpg', filterKey: 'Fruits & Veg' }
   ];
 
   const popularProducts = products.slice(0, 8);
@@ -135,21 +135,21 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </div>
 
-      {/* 3. VALUE PROPOSITIONS STRIP */}
+      {/* 3. VALUE PROPOSITIONS STRIP WITH PREMIUM 3D BADGES */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { icon: <Truck className="w-6 h-6" />, title: t.featureDeliveryTitle, desc: t.featureDeliveryDesc },
-          { icon: <Leaf className="w-6 h-6" />, title: t.featureRiceTitle, desc: t.featureRiceDesc },
-          { icon: <ShieldCheck className="w-6 h-6" />, title: t.featureSpicesTitle, desc: t.featureSpicesDesc },
-          { icon: <Award className="w-6 h-6" />, title: t.featureVegTitle, desc: t.featureVegDesc }
+          { icon: '🛵', bg: 'from-emerald-500 to-[#0A6847]', title: t.featureDeliveryTitle, desc: t.featureDeliveryDesc },
+          { icon: '🌾', bg: 'from-amber-400 to-[#E5A91A]', title: t.featureRiceTitle, desc: t.featureRiceDesc },
+          { icon: '🌶️', bg: 'from-rose-500 to-amber-700', title: t.featureSpicesTitle, desc: t.featureSpicesDesc },
+          { icon: '🍆', bg: 'from-purple-500 to-[#0A6847]', title: t.featureVegTitle, desc: t.featureVegDesc }
         ].map((item, idx) => (
           <div
             key={idx}
-            className={`p-5 rounded-2xl border flex items-center gap-3.5 transition hover:shadow-md ${
+            className={`p-5 rounded-2xl border flex items-center gap-4 transition hover:shadow-lg ${
               isDarkMode ? 'bg-[#141816] border-zinc-800' : 'bg-white border-slate-200/80 shadow-xs'
             }`}
           >
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0A6847] dark:text-[#78F9B8] flex items-center justify-center shrink-0">
+            <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${item.bg} text-white flex items-center justify-center shrink-0 text-xl shadow-md shadow-emerald-950/10`}>
               {item.icon}
             </div>
             <div>
@@ -194,7 +194,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   : 'bg-white border-slate-200 hover:border-emerald-200 shadow-xs'
               }`}
             >
-              <div className="h-28 rounded-xl overflow-hidden mb-2.5 bg-slate-100 dark:bg-zinc-800 flex items-center justify-center p-1">
+              <div className="h-28 rounded-xl overflow-hidden mb-2.5 bg-slate-100 dark:bg-zinc-800 flex items-center justify-center p-1 relative">
+                <span className="absolute top-1.5 left-1.5 w-7 h-7 rounded-lg bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xs flex items-center justify-center text-sm shadow-xs border border-slate-200/60 dark:border-zinc-700/60">
+                  {cat.icon}
+                </span>
                 <img
                   src={cat.image}
                   alt={cat.title}

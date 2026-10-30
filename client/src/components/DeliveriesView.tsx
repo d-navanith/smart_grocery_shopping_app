@@ -17,7 +17,8 @@ import {
   FileText,
   ShoppingBag,
   ExternalLink,
-  ChevronDown
+  ChevronDown,
+  Sparkles
 } from 'lucide-react';
 import { ClientOrder, ClientOrderItem, Product } from '../types';
 import { TranslationDictionary } from '../translations';
@@ -39,6 +40,11 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'ONGOING' | 'HISTORY'>('ONGOING');
   const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState<ClientOrder | null>(null);
+
+  const formatPlacedAt = (placedAtStr: string) => {
+    if (!placedAtStr) return '';
+    return placedAtStr.replace(/^(Astăzi|Today|අද)/i, t.todayLabel);
+  };
 
   // Ongoing orders: PENDING, PROCESSING, ON_THE_WAY
   const ongoingOrders = orders.filter(
@@ -64,8 +70,11 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
             <span>{t.tabDeliveries}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0A6847] to-[#0B3B2C] text-[#F8B838] flex items-center justify-center shadow-lg shadow-emerald-950/20 text-lg">
+              🛵
+            </div>
             <span>{t.tabDeliveries}</span>
-            <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#E5A91A] text-amber-950 uppercase tracking-wider">
+            <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#E5A91A] text-amber-950 uppercase tracking-wider shadow-2xs">
               {ongoingOrders.length} {t.ongoingDeliveriesTitle}
             </span>
           </h1>
@@ -77,9 +86,9 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
         {/* Action button to shop */}
         <button
           onClick={onNavigateShop}
-          className="self-start md:self-auto flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#0A6847] hover:bg-[#085237] text-white font-black text-xs shadow-md transition active:scale-95"
+          className="self-start md:self-auto flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#0A6847] to-[#0B3B2C] hover:from-[#085237] hover:to-[#093024] text-white font-black text-xs shadow-md shadow-emerald-950/20 transition active:scale-95"
         >
-          <ShoppingBag className="w-4 h-4" />
+          <span className="text-base">🛒</span>
           <span>{t.startShoppingBtn}</span>
         </button>
       </div>
@@ -88,16 +97,16 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
       <div className="flex items-center gap-3 border-b border-slate-200 dark:border-zinc-800 pb-1">
         <button
           onClick={() => setActiveTab('ONGOING')}
-          className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-black text-xs sm:text-sm transition relative ${
+          className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl font-black text-xs sm:text-sm transition relative ${
             activeTab === 'ONGOING'
-              ? 'bg-[#0B3B2C] text-[#F8B838] shadow-md'
+              ? 'bg-[#0B3B2C] text-[#F8B838] shadow-lg shadow-emerald-950/20 ring-1 ring-emerald-500/30'
               : 'text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800'
           }`}
         >
-          <Truck className="w-4 h-4" />
+          <span className="text-base">🛵</span>
           <span>{t.ongoingDeliveriesTitle}</span>
           <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-            activeTab === 'ONGOING' ? 'bg-[#F8B838] text-slate-950' : 'bg-slate-200 dark:bg-zinc-700 text-slate-700 dark:text-zinc-300'
+            activeTab === 'ONGOING' ? 'bg-[#F8B838] text-slate-950 shadow-2xs' : 'bg-slate-200 dark:bg-zinc-700 text-slate-700 dark:text-zinc-300'
           }`}>
             {ongoingOrders.length}
           </span>
@@ -105,16 +114,16 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
 
         <button
           onClick={() => setActiveTab('HISTORY')}
-          className={`flex items-center gap-2 px-5 py-3 rounded-2xl font-black text-xs sm:text-sm transition relative ${
+          className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl font-black text-xs sm:text-sm transition relative ${
             activeTab === 'HISTORY'
-              ? 'bg-[#0B3B2C] text-[#F8B838] shadow-md'
+              ? 'bg-[#0B3B2C] text-[#F8B838] shadow-lg shadow-emerald-950/20 ring-1 ring-emerald-500/30'
               : 'text-slate-600 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-zinc-800'
           }`}
         >
-          <Calendar className="w-4 h-4" />
+          <span className="text-base">📜</span>
           <span>{t.deliveryHistoryTitle}</span>
           <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-            activeTab === 'HISTORY' ? 'bg-[#F8B838] text-slate-950' : 'bg-slate-200 dark:bg-zinc-700 text-slate-700 dark:text-zinc-300'
+            activeTab === 'HISTORY' ? 'bg-[#F8B838] text-slate-950 shadow-2xs' : 'bg-slate-200 dark:bg-zinc-700 text-slate-700 dark:text-zinc-300'
           }`}>
             {historyOrders.length}
           </span>
@@ -128,20 +137,20 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
         <div className="space-y-6">
           {ongoingOrders.length === 0 ? (
             <div className="p-12 text-center rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-[#0A6847] dark:text-[#78F9B8] mx-auto flex items-center justify-center">
-                <Truck className="w-8 h-8" />
+              <div className="w-16 h-16 rounded-3xl bg-emerald-100 dark:bg-emerald-950/60 text-[#0A6847] dark:text-[#78F9B8] mx-auto flex items-center justify-center text-3xl shadow-sm">
+                🛵
               </div>
               <h3 className="text-lg font-black text-slate-800 dark:text-white">
-                Nu aveți comenzi în curs de livrare
+                {t.noOngoingDeliveriesTitle}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-md mx-auto">
-                Toate pachetele Ceylon Foods au fost livrate cu succes! Puteți plasa o nouă comandă cu orez roșu, wambatu proaspăt și condimente din Sri Lanka.
+              <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-md mx-auto leading-relaxed">
+                {t.noOngoingDeliveriesDesc}
               </p>
               <button
                 onClick={onNavigateShop}
-                className="px-6 py-3 rounded-2xl bg-[#E5A91A] text-amber-950 font-black text-xs shadow-md transition hover:bg-[#d49912]"
+                className="px-6 py-3 rounded-2xl bg-[#E5A91A] hover:bg-[#d49912] text-amber-950 font-black text-xs shadow-md transition active:scale-95"
               >
-                Cumpără Alimente Ceylon Acum →
+                {t.shopCeylonGroceriesBtn}
               </button>
             </div>
           ) : (
@@ -161,26 +170,26 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                   {/* Order Top Bar */}
                   <div className="p-5 sm:p-6 bg-slate-50 dark:bg-zinc-800/60 border-b border-slate-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <span className="px-3 py-1 rounded-xl bg-[#0B3B2C] text-[#F8B838] font-black text-xs uppercase tracking-wider">
+                      <span className="px-3 py-1.5 rounded-xl bg-[#0B3B2C] text-[#F8B838] font-black text-xs uppercase tracking-wider shadow-2xs">
                         TA #{order.orderNumber.replace(/[^0-9]/g, '').slice(-2) || '21'}
                       </span>
                       <div>
                         <h3 className="font-black text-base text-slate-900 dark:text-white flex items-center gap-2">
-                          <span>Comandă #{order.orderNumber}</span>
-                          <span className="text-[11px] font-bold text-slate-400">• {order.placedAt}</span>
+                          <span>{t.orderNumberPrefix} #{order.orderNumber}</span>
+                          <span className="text-[11px] font-bold text-slate-400">• {formatPlacedAt(order.placedAt)}</span>
                         </h3>
                         <p className="text-xs text-slate-500 dark:text-zinc-400">
-                          Livrare Rapidă în <strong>{order.deliveryZone || 'București Sector 1'}</strong>
+                          {t.expressDeliveryTo} <strong>{order.deliveryZone || 'Bucharest Sector 1'}</strong>
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="px-3 py-1 rounded-xl bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300 font-black text-xs border border-amber-300">
-                        💵 {order.paymentMethod === 'CASH_ON_DELIVERY' || order.paymentMethod.includes('Cash') ? 'Plata la Livrare (Cash on Delivery)' : 'Plătit Online'}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="px-3 py-1.5 rounded-xl bg-amber-100 text-amber-950 dark:bg-amber-950/60 dark:text-amber-300 font-black text-xs border border-amber-300 shadow-2xs flex items-center gap-1.5">
+                        {order.paymentMethod === 'CASH_ON_DELIVERY' || order.paymentMethod.includes('Cash') ? t.paymentCodBadge : t.paymentOnlineBadge}
                       </span>
-                      <span className="px-3 py-1 rounded-xl bg-emerald-100 text-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300 font-black text-xs border border-emerald-300">
-                        {order.status === 'ON_THE_WAY' ? '🚀 În Livrare spre Tine' : '📦 Se Împachetează'}
+                      <span className="px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-950 dark:bg-emerald-950/60 dark:text-emerald-300 font-black text-xs border border-emerald-300 shadow-2xs flex items-center gap-1.5">
+                        {order.status === 'ON_THE_WAY' ? t.statusOutForDeliveryBadge : t.statusPackingBadge}
                       </span>
                     </div>
                   </div>
@@ -188,83 +197,127 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                   {/* Body Content */}
                   <div className="p-5 sm:p-6 space-y-6">
                     
-                    {/* Visual 5-Step Fulfillment Stepper */}
+                    {/* Visual 5-Step Fulfillment Stepper with Premium Icon Medallions */}
                     <div>
                       <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-3">
-                        Stadiu Livrare în Timp Real (Supermarket ➔ Curier ➔ Adresă):
+                        {t.realtimeStageTrackerTitle}
                       </span>
-                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-xs">
                         {/* Step 1 */}
-                        <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-emerald-900 dark:text-emerald-300 font-bold">
-                          <div className="flex items-center gap-1.5 mb-1">
-                            <CheckCircle className="w-4 h-4 text-emerald-600" />
-                            <span className="text-[10px] uppercase font-black">Pasul 1</span>
+                        <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-emerald-900 dark:text-emerald-300 font-bold shadow-2xs">
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs">
+                              ✓
+                            </div>
+                            <span className="text-[10px] uppercase font-black tracking-wider text-emerald-800 dark:text-emerald-300">
+                              {t.stepNumberPrefix} 1
+                            </span>
                           </div>
-                          <p className="text-xs font-black">Comandă Plasată</p>
-                          <span className="text-[10px] opacity-75 font-normal">Înregistrată în magazin</span>
+                          <p className="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1">
+                            <span>📋</span>
+                            <span>{t.step1OrderPlaced}</span>
+                          </p>
+                          <span className="text-[10px] opacity-75 font-normal block mt-0.5">
+                            {t.step1OrderPlacedSub}
+                          </span>
                         </div>
 
                         {/* Step 2 */}
-                        <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-emerald-900 dark:text-emerald-300 font-bold">
-                          <div className="flex items-center gap-1.5 mb-1">
-                            <CheckCircle className="w-4 h-4 text-emerald-600" />
-                            <span className="text-[10px] uppercase font-black">Pasul 2</span>
+                        <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-emerald-900 dark:text-emerald-300 font-bold shadow-2xs">
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs shadow-xs">
+                              ✓
+                            </div>
+                            <span className="text-[10px] uppercase font-black tracking-wider text-emerald-800 dark:text-emerald-300">
+                              {t.stepNumberPrefix} 2
+                            </span>
                           </div>
-                          <p className="text-xs font-black">Pregătire Colet</p>
-                          <span className="text-[10px] opacity-75 font-normal">Produse Ceylon ambalate</span>
+                          <p className="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1">
+                            <span>📦</span>
+                            <span>{t.step2Packing}</span>
+                          </p>
+                          <span className="text-[10px] opacity-75 font-normal block mt-0.5">
+                            {t.step2PackingSub}
+                          </span>
                         </div>
 
                         {/* Step 3 */}
-                        <div className={`p-3 rounded-2xl border font-bold ${
+                        <div className={`p-3.5 rounded-2xl border font-bold shadow-2xs ${
                           order.status === 'ON_THE_WAY' || order.status === 'DELIVERED'
                             ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 text-emerald-900 dark:text-emerald-300'
                             : 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 text-amber-900 dark:text-amber-200'
                         }`}>
-                          <div className="flex items-center gap-1.5 mb-1">
-                            {order.status === 'ON_THE_WAY' || order.status === 'DELIVERED' ? (
-                              <CheckCircle className="w-4 h-4 text-emerald-600" />
-                            ) : (
-                              <Clock className="w-4 h-4 text-amber-600 animate-spin" />
-                            )}
-                            <span className="text-[10px] uppercase font-black">Pasul 3</span>
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs shadow-xs ${
+                              order.status === 'ON_THE_WAY' || order.status === 'DELIVERED'
+                                ? 'bg-emerald-600 text-white'
+                                : 'bg-amber-500 text-amber-950 font-black animate-pulse'
+                            }`}>
+                              {order.status === 'ON_THE_WAY' || order.status === 'DELIVERED' ? '✓' : '📞'}
+                            </div>
+                            <span className="text-[10px] uppercase font-black tracking-wider">
+                              {t.stepNumberPrefix} 3
+                            </span>
                           </div>
-                          <p className="text-xs font-black">Apel Dispecerat</p>
-                          <span className="text-[10px] opacity-75 font-normal">Admin cheamă curierul</span>
+                          <p className="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1">
+                            <span>{t.step3DispatchCall}</span>
+                          </p>
+                          <span className="text-[10px] opacity-75 font-normal block mt-0.5">
+                            {t.step3DispatchCallSub}
+                          </span>
                         </div>
 
                         {/* Step 4: Rider Arrives & Mobile Verification */}
-                        <div className={`p-3 rounded-2xl border font-bold ${
+                        <div className={`p-3.5 rounded-2xl border font-bold shadow-2xs ${
                           order.riderVerifiedByAdmin
                             ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 text-emerald-900 dark:text-emerald-300'
                             : 'bg-slate-100 dark:bg-zinc-800 border-slate-300 text-slate-500'
                         }`}>
-                          <div className="flex items-center gap-1.5 mb-1">
-                            {order.riderVerifiedByAdmin ? (
-                              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                            ) : (
-                              <Lock className="w-4 h-4 text-slate-400" />
-                            )}
-                            <span className="text-[10px] uppercase font-black">Pasul 4</span>
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs shadow-xs ${
+                              order.riderVerifiedByAdmin
+                                ? 'bg-emerald-600 text-white'
+                                : 'bg-slate-300 dark:bg-zinc-700 text-slate-600 dark:text-zinc-300'
+                            }`}>
+                              {order.riderVerifiedByAdmin ? '🛡️' : '🔒'}
+                            </div>
+                            <span className="text-[10px] uppercase font-black tracking-wider">
+                              {t.stepNumberPrefix} 4
+                            </span>
                           </div>
-                          <p className="text-xs font-black">Verificare Curier</p>
-                          <span className="text-[10px] opacity-75 font-normal">
-                            {order.riderVerifiedByAdmin ? 'Mobil confirmat la magazin' : 'Așteaptă sosirea la magazin'}
+                          <p className="text-xs font-black flex items-center gap-1">
+                            <span>{t.step4RiderVerification}</span>
+                          </p>
+                          <span className="text-[10px] opacity-75 font-normal block mt-0.5">
+                            {order.riderVerifiedByAdmin ? t.step4RiderConfirmedSub : t.step4RiderWaitingSub}
                           </span>
                         </div>
 
                         {/* Step 5: On The Way */}
-                        <div className={`p-3 rounded-2xl border font-bold ${
+                        <div className={`p-3.5 rounded-2xl border font-bold shadow-2xs ${
                           order.status === 'ON_THE_WAY'
                             ? 'bg-[#E9F5EF] dark:bg-emerald-950 border-[#0A6847] text-[#0A6847] dark:text-[#78F9B8] ring-2 ring-[#0A6847]'
                             : 'bg-slate-100 dark:bg-zinc-800 border-slate-300 text-slate-500'
                         }`}>
-                          <div className="flex items-center gap-1.5 mb-1">
-                            <Truck className="w-4 h-4 text-emerald-700" />
-                            <span className="text-[10px] uppercase font-black">Pasul 5</span>
+                          <div className="flex items-center gap-1.5 mb-1.5">
+                            <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs shadow-xs ${
+                              order.status === 'ON_THE_WAY'
+                                ? 'bg-[#0A6847] text-white animate-bounce'
+                                : order.status === 'DELIVERED'
+                                ? 'bg-emerald-600 text-white'
+                                : 'bg-slate-300 dark:bg-zinc-700 text-slate-600 dark:text-zinc-300'
+                            }`}>
+                              🛵
+                            </div>
+                            <span className="text-[10px] uppercase font-black tracking-wider">
+                              {t.stepNumberPrefix} 5
+                            </span>
                           </div>
-                          <p className="text-xs font-black">Pe Drum spre Tine</p>
-                          <span className="text-[10px] opacity-75 font-normal">
-                            ETA ~{order.deliveryMinutes || 25} min
+                          <p className="text-xs font-black flex items-center gap-1">
+                            <span>{t.step5OnTheWay}</span>
+                          </p>
+                          <span className="text-[10px] opacity-75 font-normal block mt-0.5">
+                            {t.step5EtaPrefix}{order.deliveryMinutes || 25} min
                           </span>
                         </div>
                       </div>
@@ -277,30 +330,30 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                     {/* ============================================================== */}
                     <div className="p-5 rounded-3xl bg-slate-50 dark:bg-zinc-800/80 border-2 border-slate-200 dark:border-zinc-700/80 space-y-4">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-zinc-700 pb-3">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-10 h-10 rounded-2xl bg-[#0B3B2C] text-[#F8B838] flex items-center justify-center font-black">
+                        <div className="flex items-center gap-3">
+                          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#0B3B2C] to-[#0A6847] text-[#F8B838] flex items-center justify-center text-xl shadow-md shadow-emerald-950/20">
                             🛵
                           </div>
                           <div>
                             <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
-                              Partener Curierat România • Contact Direct
+                              {t.courierPartnerDirectContact}
                             </span>
                             <h4 className="font-black text-sm text-slate-900 dark:text-white">
-                              {order.courierCompany || 'Companie de Livrare (Glovo / Bolt / Sameday)'}
+                              {order.courierCompany || t.courierDefaultCompany}
                             </h4>
                           </div>
                         </div>
 
                         {/* Verified or Pending Pill */}
                         {isRiderCallEnabled ? (
-                          <span className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-300 font-black text-xs border border-emerald-300">
-                            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                          <span className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-300 font-black text-xs border border-emerald-300 shadow-2xs">
+                            <span className="text-base">🛡️</span>
                             <span>{t.verifiedRiderBadge}</span>
                           </span>
                         ) : (
-                          <span className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-950 dark:text-amber-300 font-black text-xs border border-amber-300">
-                            <Clock className="w-3.5 h-3.5 text-amber-600 animate-spin" />
-                            <span>În Curs de Alocare la Magazin</span>
+                          <span className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-950 dark:text-amber-300 font-black text-xs border border-amber-300 shadow-2xs">
+                            <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+                            <span>{t.riderAllocatingBadge}</span>
                           </span>
                         )}
                       </div>
@@ -309,13 +362,15 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                       {!isRiderCallEnabled ? (
                         <div className="space-y-3">
                           <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-3">
-                            <AlertCircle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+                            <div className="w-8 h-8 rounded-xl bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-200 flex items-center justify-center shrink-0 text-lg shadow-2xs">
+                              🔒
+                            </div>
                             <div className="space-y-1">
                               <p className="font-black text-sm text-amber-950 dark:text-amber-100">
-                                🔒 Apelul direct către curier este temporar blocat
+                                {t.riderCallLockedWarningTitle}
                               </p>
                               <p className="leading-relaxed">
-                                Administratorul magazinului a contactat dispeceratul curierilor pentru preluarea coletului. În momentul în care curierul ajunge fizic la depozitul din <strong>Strada Academiei 14, București</strong>, acesta își va prezenta numărul direct de mobil administratorului, care îl va valida în sistem. Imediat după verificare, butonul de apel direct se va activa automat aici!
+                                {t.riderCallLockedWarningDesc}
                               </p>
                             </div>
                           </div>
@@ -324,14 +379,14 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                           <div className="flex flex-col sm:flex-row items-center gap-3">
                             <button
                               disabled
-                              className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-slate-200 dark:bg-zinc-700 text-slate-400 dark:text-zinc-500 font-black text-xs cursor-not-allowed border border-slate-300 dark:border-zinc-600"
-                              title="Curierul nu a sosit încă la magazin pentru transmiterea numărului de mobil."
+                              className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-slate-200 dark:bg-zinc-700 text-slate-400 dark:text-zinc-500 font-black text-xs cursor-not-allowed border border-slate-300 dark:border-zinc-600 shadow-inner"
+                              title={t.riderCallLockedBtnTooltip}
                             >
                               <Lock className="w-4 h-4" />
                               <span>{t.callRiderLockedButton}</span>
                             </button>
                             <span className="text-[11px] font-bold text-slate-400 text-center">
-                              ⏱ Curierul sosește la magazin în ~10 min
+                              {t.riderArrivingInMinutes}
                             </span>
                           </div>
                         </div>
@@ -340,74 +395,76 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                         <div className="space-y-4">
                           <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 rounded-2xl bg-white dark:bg-zinc-900 border border-emerald-300 flex items-center justify-center text-xl shadow-xs shrink-0">
+                              <div className="w-12 h-12 rounded-2xl bg-white dark:bg-zinc-900 border border-emerald-300 flex items-center justify-center text-2xl shadow-xs shrink-0">
                                 🛵
                               </div>
                               <div>
                                 <div className="flex items-center gap-2">
                                   <h5 className="font-black text-base text-slate-900 dark:text-white">
-                                    {order.riderName || 'Curier Glovo / Bolt Alocat'}
+                                    {order.riderName || 'Courier Rider'}
                                   </h5>
                                   <span className="px-2 py-0.5 rounded-md bg-emerald-200 text-emerald-900 text-[10px] font-black">
-                                    ✓ VERIFICAT
+                                    {t.riderVerifiedBadge}
                                   </span>
                                 </div>
                                 <p className="text-xs font-mono font-bold text-[#0A6847] dark:text-[#78F9B8] mt-0.5">
-                                  Număr Direct Mobil: <strong>{order.riderPhone}</strong>
+                                  {t.riderDirectMobileLabel} <strong>{order.riderPhone}</strong>
                                 </p>
                                 <span className="text-[10px] text-slate-400">
-                                  Număr furnizat administratorului la ridicarea pachetului din magazin
+                                  {t.riderDirectMobileVerifiedHint}
                                 </span>
                               </div>
                             </div>
 
-                            {/* Active Direct Call Button */}
+                            {/* Active Direct Call Button with Premium High-Visibility CTA */}
                             <a
                               href={`tel:${order.riderPhone}`}
-                              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-[#0A6847] hover:bg-[#085237] text-white font-black text-xs sm:text-sm shadow-lg flex items-center justify-center gap-2 transition active:scale-95 text-center"
+                              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#0A6847] to-[#0D875C] hover:from-[#085237] hover:to-[#0A6847] text-white font-black text-xs sm:text-sm shadow-xl shadow-emerald-900/20 flex items-center justify-center gap-2 transition active:scale-95 text-center border border-emerald-400/30"
                             >
-                              <PhoneCall className="w-4 h-4 animate-bounce" />
+                              <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-xs animate-bounce">
+                                📞
+                              </div>
                               <span>{t.callRiderButton}: {order.riderPhone}</span>
                             </a>
                           </div>
 
-                          <div className="flex items-center justify-between text-xs text-slate-500 pt-1 px-1">
+                          <div className="flex items-center justify-between text-xs text-slate-500 pt-1 px-1 flex-wrap gap-2">
                             <span className="flex items-center gap-1.5 font-bold text-[#0A6847]">
                               <span>🛡️</span>
-                              <span>Puteți suna curierul direct pentru instrucțiuni interfon / adresă.</span>
+                              <span>{t.riderCallDirectInstructions}</span>
                             </span>
                             <span className="font-bold">
-                              Timp estimat până la ușă: ~{order.deliveryMinutes || 25} min
+                              {t.riderEstimatedDoorEta} ~{order.deliveryMinutes || 25} min
                             </span>
                           </div>
                         </div>
                       )}
                     </div>
 
-                    {/* Cash on Delivery Notice Card */}
-                    <div className="p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    {/* Cash on Delivery Notice Card with Premium Icon Badges */}
+                    <div className="p-4 rounded-2xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-2xs">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center shrink-0">
-                          <Banknote className="w-5 h-5 text-amber-700" />
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-amber-950 flex items-center justify-center shrink-0 text-xl shadow-xs">
+                          💵
                         </div>
                         <div>
                           <p className="font-black text-slate-900 dark:text-white text-sm">
-                            {t.cashAmountToPrepare}: <span className="text-[#0A6847] dark:text-[#78F9B8] font-black text-base">{order.totalAmount.toFixed(2)} lei</span>
+                            {t.cashAmountToPrepare} <span className="text-[#0A6847] dark:text-[#78F9B8] font-black text-base">{order.totalAmount.toFixed(2)} lei</span>
                           </p>
                           <span className="text-[11px] text-amber-800 dark:text-amber-300">
-                            Vă rugăm să pregătiți suma exactă în numerar (Cash on Delivery) pentru curier.
+                            {t.cashOnDeliveryExactAmountNotice}
                           </span>
                         </div>
                       </div>
-                      <span className="px-3 py-1 rounded-xl bg-[#E5A91A] text-amber-950 font-black text-xs self-start sm:self-auto">
-                        Plată Ramburs
+                      <span className="px-3.5 py-1.5 rounded-xl bg-[#E5A91A] text-amber-950 font-black text-xs self-start sm:self-auto shadow-2xs">
+                        {t.cashOnDeliveryPaymentTag}
                       </span>
                     </div>
 
                     {/* Order Items List */}
                     <div>
                       <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-2">
-                        Articole Alimentare Comandate ({order.items.length}):
+                        {t.orderedFoodItemsHeader} ({order.items.length}):
                       </span>
                       <div className="divide-y divide-slate-100 dark:divide-zinc-800 bg-slate-50 dark:bg-zinc-800/40 rounded-2xl p-4 border border-slate-200 dark:border-zinc-800 space-y-2">
                         {order.items.map((item, idx) => {
@@ -424,7 +481,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                                 <span className="font-bold text-slate-800 dark:text-zinc-200">{title}</span>
                               </div>
                               {price > 0 && (
-                                <span className="font-black text-slate-900 dark:text-white">
+                                <span className="font-black text-slate-900 dark:text-white font-mono">
                                   {price.toFixed(2)} lei
                                 </span>
                               )}
@@ -436,12 +493,14 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
 
                     {/* Delivery Address & Note */}
                     <div className="p-3.5 rounded-2xl bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-xs flex items-start gap-2.5">
-                      <MapPin className="w-4 h-4 text-[#0A6847] shrink-0 mt-0.5" />
+                      <div className="w-6 h-6 rounded-lg bg-emerald-100 text-[#0A6847] flex items-center justify-center shrink-0 text-xs">
+                        📍
+                      </div>
                       <div>
-                        <span className="font-black text-slate-700 dark:text-zinc-300">Adresă de Livrare:</span>
+                        <span className="font-black text-slate-700 dark:text-zinc-300">{t.deliveryDestinationAddress}</span>
                         <p className="font-bold text-slate-900 dark:text-white mt-0.5">{order.address}</p>
                         {order.notes && (
-                          <p className="text-[11px] text-slate-400 italic mt-0.5">Notă: {order.notes}</p>
+                          <p className="text-[11px] text-slate-400 italic mt-0.5">{t.deliveryNoteLabel} {order.notes}</p>
                         )}
                       </div>
                     </div>
@@ -461,12 +520,14 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
         <div className="space-y-4">
           {historyOrders.length === 0 ? (
             <div className="p-12 text-center rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 space-y-3">
-              <Package className="w-12 h-12 text-slate-300 mx-auto" />
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-zinc-800 flex items-center justify-center text-2xl mx-auto">
+                📦
+              </div>
               <h3 className="text-base font-black text-slate-700 dark:text-zinc-300">
-                Nu aveți comenzi anterioare finalizate
+                {t.noHistoryDeliveriesTitle}
               </h3>
-              <p className="text-xs text-slate-400">
-                După ce curierul livrează produsele la ușa dumneavoastră, istoricul detaliat va fi salvat aici.
+              <p className="text-xs text-slate-400 max-w-md mx-auto">
+                {t.noHistoryDeliveriesDesc}
               </p>
             </div>
           ) : (
@@ -479,20 +540,20 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-black text-base text-slate-900 dark:text-white">
-                        Comandă #{order.orderNumber}
+                        {t.orderNumberPrefix} #{order.orderNumber}
                       </span>
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300">
-                        ✓ LIVRAT & ÎNCASAT
+                        {t.deliveredAndCollectedBadge}
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      Plasată: {order.placedAt} • Adresă: {order.address}
+                      {t.orderPlacedAtPrefix}: {formatPlacedAt(order.placedAt)} • {t.deliveryDestinationAddress} {order.address}
                     </p>
                   </div>
 
                   <div className="text-left sm:text-right">
-                    <span className="text-[10px] font-black uppercase text-slate-400">Total Plătit (Cash on Delivery)</span>
-                    <p className="text-xl font-black text-slate-900 dark:text-white">
+                    <span className="text-[10px] font-black uppercase text-slate-400">{t.totalPaidCodLabel}</span>
+                    <p className="text-xl font-black text-slate-900 dark:text-white font-mono">
                       {order.totalAmount.toFixed(2)} <span className="text-xs font-bold text-slate-500">lei</span>
                     </p>
                   </div>
@@ -500,7 +561,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
 
                 {/* Items preview */}
                 <div className="text-xs text-slate-600 dark:text-zinc-400 space-y-1">
-                  <span className="font-bold text-slate-400 text-[10px] uppercase tracking-wider block">Articole cumpărate:</span>
+                  <span className="font-bold text-slate-400 text-[10px] uppercase tracking-wider block">{t.purchasedItemsSummary}</span>
                   <div className="flex flex-wrap gap-2">
                     {order.items.map((item, i) => {
                       const title = typeof item === 'string' ? item : item.productTitle;
@@ -519,8 +580,8 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                     onClick={() => setSelectedInvoiceOrder(order)}
                     className="flex items-center gap-1.5 font-bold text-[#0A6847] hover:underline"
                   >
-                    <FileText className="w-4 h-4" />
-                    <span>Vezi Chitanță / Factură Oficială</span>
+                    <span>🧾</span>
+                    <span>{t.viewOfficialInvoiceBtn}</span>
                   </button>
 
                   <button
@@ -528,7 +589,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs shadow transition active:scale-95"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
-                    <span>Comandă Din Nou</span>
+                    <span>{t.reorderAgainBtn}</span>
                   </button>
                 </div>
               </div>
@@ -542,9 +603,14 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 text-xs font-sans text-slate-800">
             <div className="flex items-center justify-between border-b pb-3 border-slate-200">
-              <div>
-                <h4 className="font-black text-base text-slate-900">Ceylon Foods Supermarket</h4>
-                <p className="text-[10px] text-slate-400 font-mono">Strada Academiei 14, București, România</p>
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-[#0B3B2C] text-[#F8B838] flex items-center justify-center font-black text-lg">
+                  🇱🇰
+                </div>
+                <div>
+                  <h4 className="font-black text-base text-slate-900">{t.invoiceModalStoreName}</h4>
+                  <p className="text-[10px] text-slate-400 font-mono">{t.invoiceModalStoreAddress}</p>
+                </div>
               </div>
               <button
                 onClick={() => setSelectedInvoiceOrder(null)}
@@ -555,11 +621,11 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
             </div>
 
             <div className="p-3 bg-slate-50 rounded-2xl space-y-1 font-mono text-[11px]">
-              <p>Factură Livrare: <strong>#{selectedInvoiceOrder.orderNumber}</strong></p>
-              <p>Data: <strong>{selectedInvoiceOrder.placedAt}</strong></p>
-              <p>Client: <strong>{selectedInvoiceOrder.customerName}</strong></p>
-              <p>Telefon: <strong>{selectedInvoiceOrder.customerPhone}</strong></p>
-              <p>Plată: <strong>Cash on Delivery (Încasat la Ușă)</strong></p>
+              <p>{t.invoiceModalDeliveryInvoice}: <strong>#{selectedInvoiceOrder.orderNumber}</strong></p>
+              <p>{t.invoiceModalDate} <strong>{formatPlacedAt(selectedInvoiceOrder.placedAt)}</strong></p>
+              <p>{t.invoiceModalCustomer} <strong>{selectedInvoiceOrder.customerName}</strong></p>
+              <p>{t.invoiceModalPhone} <strong>{selectedInvoiceOrder.customerPhone}</strong></p>
+              <p>{t.invoiceModalPayment}</p>
             </div>
 
             <div className="divide-y divide-slate-100 max-h-48 overflow-y-auto">
@@ -578,23 +644,24 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
 
             <div className="border-t pt-2 space-y-1 text-right">
               <div className="flex justify-between font-black text-sm text-slate-900">
-                <span>Total Încasat:</span>
-                <span>{selectedInvoiceOrder.totalAmount.toFixed(2)} lei</span>
+                <span>{t.invoiceModalTotalPaid}</span>
+                <span className="font-mono text-[#0A6847]">{selectedInvoiceOrder.totalAmount.toFixed(2)} lei</span>
               </div>
             </div>
 
             <div className="pt-2 flex gap-2">
               <button
                 onClick={() => window.print()}
-                className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-slate-700"
+                className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-slate-700 flex items-center justify-center gap-1.5"
               >
-                Printează Factura
+                <span>🖨️</span>
+                <span>{t.invoiceModalPrintBtn}</span>
               </button>
               <button
                 onClick={() => setSelectedInvoiceOrder(null)}
                 className="flex-1 py-2.5 rounded-xl bg-[#0A6847] text-white font-black"
               >
-                Închide
+                {t.invoiceModalCloseBtn}
               </button>
             </div>
           </div>
