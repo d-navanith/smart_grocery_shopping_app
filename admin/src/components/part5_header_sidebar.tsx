@@ -61,8 +61,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Brand Header */}
         <div className="p-5 flex items-center gap-3 border-b border-slate-100">
           <img
-            src="/ceylon_foods_logo.png"
-            alt="Ceylon Foods Logo"
+            src="/ceylon_foods_emblem.png"
+            alt="Ceylon Foods Emblem"
             className="w-10 h-10 object-contain rounded-xl shadow-xs"
           />
           <div>

@@ -76,8 +76,8 @@ export default function AdminApp() {
         <div className="max-w-md w-full bg-white rounded-3xl border border-slate-200/80 p-8 shadow-xl space-y-6">
           <div className="text-center space-y-2">
             <img
-              src="/ceylon_foods_logo.png"
-              alt="Ceylon Foods Logo"
+              src="/ceylon_foods_emblem.png"
+              alt="Ceylon Foods Emblem"
               className="w-16 h-16 mx-auto object-contain rounded-2xl shadow-sm"
             />
             <h1 className="text-2xl font-black text-slate-900 tracking-tight">

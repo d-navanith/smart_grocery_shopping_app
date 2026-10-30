@@ -83,6 +83,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(() => typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('menu') === 'open');
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const selectedLangOption = LANGUAGE_OPTIONS.find(l => l.code === currentLanguage) || LANGUAGE_OPTIONS[0];
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -189,7 +190,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
       {/* 2. MAIN NAVBAR (DEEP CEYLON FOREST GREEN #0A6847) */}
       <div className="bg-[#0A6847] text-white py-3.5 px-4 sm:px-8 shadow-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 lg:gap-8">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-4 lg:gap-6">
           {/* Brand Logo & Title */}
           <div
             onClick={() => {
@@ -198,25 +199,25 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             }}
             className="flex items-center gap-3 cursor-pointer group shrink-0"
           >
-            <div className="bg-white p-1 rounded-2xl shadow-sm border border-emerald-800">
+            <div className="bg-white p-1 rounded-2xl shadow-sm border border-emerald-800 shrink-0">
               <img
-                src="/ceylon_foods_logo.png"
+                src="/ceylon_foods_emblem.png"
                 alt="Ceylon Foods Logo"
-                className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+                className="h-11 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105"
               />
             </div>
             <div className="flex flex-col">
               <span className="text-xl sm:text-2xl font-black tracking-tight leading-none text-white drop-shadow-xs">
                 Ceylon <span className="text-[#FFB800]">Foods</span>
               </span>
-              <span className="text-[10px] font-extrabold tracking-widest text-emerald-200 uppercase mt-0.5">
+              <span className="text-[9px] sm:text-[10px] font-extrabold tracking-widest text-emerald-200 uppercase mt-0.5 whitespace-nowrap">
                 {t.storeSubtitle}
               </span>
             </div>
           </div>
 
-          {/* Romanian Delivery Location Selector */}
-          <div className="hidden xl:flex items-center gap-2 bg-emerald-900/70 border border-emerald-700/60 rounded-full px-3.5 py-2 text-xs font-bold text-emerald-100 hover:bg-emerald-900 transition cursor-pointer">
+          {/* Romanian Delivery Location Selector (Only shown on extra-wide screens to prevent search bar squeeze) */}
+          <div className="hidden 2xl:flex items-center gap-2 bg-emerald-900/70 border border-emerald-700/60 rounded-full px-3.5 py-2 text-xs font-bold text-emerald-100 hover:bg-emerald-900 transition cursor-pointer shrink-0">
             <MapPin className="w-4 h-4 text-[#FFB800]" />
             <div className="flex flex-col text-left">
               <span className="text-[9px] uppercase tracking-wider text-emerald-300">{t.deliverToLabel}</span>
@@ -224,10 +225,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             </div>
           </div>
 
-          {/* Search Bar with Integrated Category Dropdown */}
-          <div className="flex-1 max-w-2xl relative">
-            <div className="flex items-center rounded-full bg-white text-slate-800 shadow-inner overflow-hidden border-2 border-transparent focus-within:border-[#FFB800] transition">
-              <div className="hidden sm:flex items-center border-r border-slate-200 px-3 bg-slate-50 text-slate-700 text-xs font-bold shrink-0">
+          {/* Search Bar with Integrated Category Dropdown & Guaranteed Full Visibility */}
+          <div className="flex-1 min-w-[260px] sm:min-w-[340px] max-w-2xl relative mx-1 sm:mx-2">
+            <div className="flex items-center rounded-full bg-white text-slate-800 shadow-inner border-2 border-transparent focus-within:border-[#FFB800] transition overflow-hidden">
+              {/* Category Select (Shown on wide screens so search input is never squished) */}
+              <div className="hidden xl:flex items-center border-r border-slate-200 px-3 bg-slate-50 text-slate-700 text-xs font-bold shrink-0">
                 <select
                   value={selectedCategory === 'All' ? 'All Categories' : selectedCategory}
                   onChange={(e) => {
@@ -235,39 +237,97 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                     setSelectedCategory(val);
                     if (currentPage !== 'SHOP') setCurrentPage('SHOP');
                   }}
-                  className="bg-transparent py-2.5 outline-none cursor-pointer text-xs font-semibold"
+                  className="bg-transparent py-2.5 outline-none cursor-pointer text-xs font-semibold w-28 text-slate-700"
                 >
-                  <option value="All Categories">{t.allCategories}</option>
-                  <option value="Staples & Grains">{t.catRice}</option>
-                  <option value="Fruits & Veg">{t.catVeg}</option>
-                  <option value="Pantry">{t.catSpices}</option>
-                  <option value="Beverages">{t.catTea}</option>
-                  <option value="Bakery">{t.catBakery}</option>
-                  <option value="Snacks">{t.catSnacks}</option>
+                  <option value="All Categories">All Products</option>
+                  <option value="Staples & Grains">Rice & Grains</option>
+                  <option value="Fruits & Veg">Vegetables</option>
+                  <option value="Pantry">Spices</option>
+                  <option value="Beverages">Ceylon Tea</option>
+                  <option value="Bakery">Bakery</option>
+                  <option value="Snacks">Snacks</option>
                 </select>
               </div>
 
-              <input
-                type="text"
-                placeholder={t.searchPlaceholder}
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  if (currentPage !== 'SHOP') setCurrentPage('SHOP');
-                }}
-                className="w-full py-2.5 px-4 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none"
-              />
+              {/* Search Text Input (Guaranteed full flex width, never gets cut off) */}
+              <div className="flex-1 min-w-0 flex items-center relative">
+                <input
+                  type="text"
+                  placeholder={t.searchPlaceholder}
+                  value={searchQuery}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    if (currentPage !== 'SHOP') setCurrentPage('SHOP');
+                  }}
+                  className="w-full min-w-0 py-2.5 pl-3.5 pr-8 text-xs sm:text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none bg-transparent"
+                />
+                {searchQuery.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2 text-slate-400 hover:text-slate-600 p-1 text-xs"
+                    title="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
 
+              {/* Search Button */}
               <button
                 onClick={() => {
                   if (currentPage !== 'SHOP') setCurrentPage('SHOP');
                 }}
-                className="bg-[#0A6847] hover:bg-[#085237] text-white p-2.5 m-1 rounded-full transition shrink-0"
+                className="bg-[#0A6847] hover:bg-[#085237] text-white p-2.5 m-1 rounded-full transition shrink-0 flex items-center justify-center shadow-xs"
                 title={t.searchPlaceholder}
               >
                 <Search className="w-4 h-4" />
               </button>
             </div>
+
+            {/* Quick Live Search Suggestions Dropdown */}
+            {isSearchFocused && (
+              <div
+                onMouseDown={(e) => e.preventDefault()}
+                className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-zinc-800 p-3 z-50 animate-fadeIn text-slate-800 dark:text-zinc-100"
+              >
+                <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-zinc-800 text-[10px] uppercase font-black tracking-wider text-slate-400">
+                  <span>Popular Ceylon Searches in Romania</span>
+                  <button
+                    onClick={() => setIsSearchFocused(false)}
+                    className="text-slate-400 hover:text-slate-600 text-xs"
+                  >
+                    Close ✕
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-2">
+                  {[
+                    { label: 'Keeri Samba (5kg)', cat: 'Staples & Grains', icon: '🌾' },
+                    { label: 'White Raw Rice', cat: 'Staples & Grains', icon: '🌾' },
+                    { label: 'Purple Brinjal (Wambatu)', cat: 'Fruits & Veg', icon: '🍆' },
+                    { label: 'Mysore Red Dhal', cat: 'Staples & Grains', icon: '🍲' },
+                    { label: 'Roasted Curry Powder', cat: 'Pantry', icon: '🌶️' },
+                    { label: 'Dilmah BOPF Tea', cat: 'Beverages', icon: '☕' }
+                  ].map(item => (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery(item.label);
+                        setSelectedCategory(item.cat);
+                        setCurrentPage('SHOP');
+                        setIsSearchFocused(false);
+                      }}
+                      className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-zinc-800 hover:bg-[#0A6847] hover:text-white text-slate-700 dark:text-zinc-300 text-xs font-bold transition flex items-center gap-1.5"
+                    >
+                      <span>{item.icon}</span>
+                      <span>{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Header Action Icons: Wishlist, Cart with Lei display */}
