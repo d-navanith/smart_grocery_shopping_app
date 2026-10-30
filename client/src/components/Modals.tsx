@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import {
   X,
-  Star,
   Plus,
   Minus,
-  Sparkles,
   ShoppingBag,
   Trash2,
-  MapPin,
   AlertCircle,
   LogIn,
   UserPlus,
@@ -15,7 +12,10 @@ import {
   Phone,
   ArrowRight,
   ChevronLeft,
-  Leaf
+  Banknote,
+  CheckCircle,
+  Clock,
+  MapPin
 } from 'lucide-react';
 import { Product, CartItem, CustomerUser } from '../types';
 
@@ -74,12 +74,12 @@ export const Modals: React.FC<ModalsProps> = ({
 
   // Auth Modal State
   const [authTab, setAuthTab] = useState<'LOGIN' | 'REGISTER'>('LOGIN');
-  const [loginForm, setLoginForm] = useState({ email: 'brie@example.com', password: 'password123' });
+  const [loginForm, setLoginForm] = useState({ email: 'mihai@example.ro', password: 'password123' });
   const [registerForm, setRegisterForm] = useState({
     name: '',
     email: '',
     phone: '',
-    address: '33 York Street, Colombo 01',
+    address: 'Strada Mihai Eminescu nr. 42, București Sector 1',
     password: ''
   });
   const [authError, setAuthError] = useState('');
@@ -87,7 +87,6 @@ export const Modals: React.FC<ModalsProps> = ({
 
   // Onboarding Slides State
   const [onboardingView, setOnboardingView] = useState<'SPLASH' | 'SLIDES'>('SPLASH');
-  const [onboardingStep, setOnboardingStep] = useState(0);
 
   const calculateWeightMultiplier = (weightStr?: string) => {
     if (!weightStr) return 1;
@@ -95,6 +94,7 @@ export const Modals: React.FC<ModalsProps> = ({
     if (weightStr === '500g') return 0.5;
     if (weightStr === '1kg') return 1.0;
     if (weightStr === '2kg') return 2.0;
+    if (weightStr === '5kg') return 5.0;
     return 1;
   };
 
@@ -166,11 +166,11 @@ export const Modals: React.FC<ModalsProps> = ({
               </button>
               <div className="absolute top-4 left-4 flex gap-2">
                 <span className="px-3 py-1 rounded-full text-xs font-black bg-[#0A6847] text-white shadow">
-                  ✨ {selectedProduct.aiFreshnessScore}% Fresh
+                  ✨ {selectedProduct.aiFreshnessScore}% Prospețime
                 </span>
                 {selectedProduct.isOrganic && (
                   <span className="px-3 py-1 rounded-full text-xs font-black bg-[#E5A91A] text-amber-950 shadow">
-                    100% Organic
+                    Export Autentic Ceylon
                   </span>
                 )}
               </div>
@@ -184,19 +184,18 @@ export const Modals: React.FC<ModalsProps> = ({
                 </div>
                 <div className="text-right">
                   <span className="text-2xl font-black text-[#0A6847] dark:text-[#78F9B8]">
-                    Rs. {Math.round(selectedProduct.price * calculateWeightMultiplier(modalWeight)).toLocaleString()}
+                    {(selectedProduct.price * calculateWeightMultiplier(modalWeight)).toFixed(2)} lei
                   </span>
                   <span className="text-xs text-slate-400 block font-bold">
-                    {selectedProduct.availableWeights ? `for ${modalWeight}` : `per ${selectedProduct.unit}`}
+                    {selectedProduct.availableWeights ? `pentru ${modalWeight}` : `per ${selectedProduct.unit}`}
                   </span>
                 </div>
               </div>
 
-              {/* Portion Weight Selection */}
               {selectedProduct.availableWeights && selectedProduct.availableWeights.length > 1 && (
                 <div className="space-y-1.5 pt-1">
                   <label className="text-xs font-extrabold uppercase text-slate-400">
-                    Select Produce Portion:
+                    Alege Gramajul:
                   </label>
                   <div className="flex gap-2">
                     {selectedProduct.availableWeights.map(w => (
@@ -218,7 +217,7 @@ export const Modals: React.FC<ModalsProps> = ({
 
               <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed font-medium">
                 {selectedProduct.description ||
-                  'High quality, fresh supermarket staple. Sourced according to strict quality standards and handled with clean refrigeration.'}
+                  'Produs alimentar autentic importat direct din Sri Lanka, păstrat în condiții optime de temperatură și igienă în depozitul nostru din București.'}
               </p>
 
               <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-zinc-800">
@@ -226,7 +225,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   onClick={onCloseProductModal}
                   className="px-4 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 text-xs font-bold text-slate-600 dark:text-zinc-400 hover:bg-slate-50"
                 >
-                  Cancel
+                  Închide
                 </button>
                 <button
                   onClick={() => {
@@ -235,7 +234,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   }}
                   className="px-6 py-2.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black shadow transition active:scale-95"
                 >
-                  Add to Cart
+                  Adaugă în Coș
                 </button>
               </div>
             </div>
@@ -252,7 +251,7 @@ export const Modals: React.FC<ModalsProps> = ({
                 <span className="w-8 h-8 rounded-xl bg-[#0A6847] text-white flex items-center justify-center font-bold">
                   <ShoppingBag className="w-4 h-4" />
                 </span>
-                <h3 className="font-extrabold text-base text-slate-900 dark:text-white">Customer Account</h3>
+                <h3 className="font-extrabold text-base text-slate-900 dark:text-white">Cont Client România</h3>
               </div>
               <button
                 onClick={onCloseAuth}
@@ -276,7 +275,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   authTab === 'LOGIN' ? 'bg-[#0A6847] text-white shadow-sm' : 'text-slate-500'
                 }`}
               >
-                Sign In
+                Autentificare
               </button>
               <button
                 onClick={() => { setAuthTab('REGISTER'); setAuthError(''); }}
@@ -284,14 +283,14 @@ export const Modals: React.FC<ModalsProps> = ({
                   authTab === 'REGISTER' ? 'bg-[#0A6847] text-white shadow-sm' : 'text-slate-500'
                 }`}
               >
-                Create Account
+                Înregistrare Cont
               </button>
             </div>
 
             {authTab === 'LOGIN' ? (
               <form onSubmit={handleLogin} className="space-y-3.5 text-xs font-semibold">
                 <div>
-                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Email Address</label>
+                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Adresă de Email</label>
                   <input
                     type="email"
                     required
@@ -301,7 +300,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Password</label>
+                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Parolă</label>
                   <input
                     type="password"
                     required
@@ -315,13 +314,13 @@ export const Modals: React.FC<ModalsProps> = ({
                   disabled={authLoading}
                   className="w-full py-3.5 rounded-2xl bg-[#0A6847] hover:bg-[#085237] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 transition"
                 >
-                  {authLoading ? 'Signing In...' : <><LogIn className="w-4 h-4" /> Sign In & Continue</>}
+                  {authLoading ? 'Se autentifică...' : <><LogIn className="w-4 h-4" /> Intră în Cont & Continuă</>}
                 </button>
               </form>
             ) : (
               <form onSubmit={handleRegister} className="space-y-3 text-xs font-semibold">
                 <div>
-                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Full Name</label>
+                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Nume și Prenume</label>
                   <input
                     type="text"
                     required
@@ -342,7 +341,7 @@ export const Modals: React.FC<ModalsProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Mobile Phone</label>
+                    <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Telefon (+40)</label>
                     <input
                       type="tel"
                       required
@@ -353,7 +352,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   </div>
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Delivery Address</label>
+                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Adresă de Livrare în România</label>
                   <input
                     type="text"
                     required
@@ -363,7 +362,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Password</label>
+                  <label className="block text-slate-700 dark:text-zinc-300 mb-1 font-bold">Parolă</label>
                   <input
                     type="password"
                     required
@@ -377,7 +376,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   disabled={authLoading}
                   className="w-full py-3.5 rounded-2xl bg-[#0A6847] hover:bg-[#085237] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 transition"
                 >
-                  {authLoading ? 'Creating Account...' : <><UserPlus className="w-4 h-4" /> Create Account</>}
+                  {authLoading ? 'Se creează contul...' : <><UserPlus className="w-4 h-4" /> Creează Cont & Comandă</>}
                 </button>
               </form>
             )}
@@ -385,10 +384,10 @@ export const Modals: React.FC<ModalsProps> = ({
         </div>
       )}
 
-      {/* 3. SPLASH SCREEN & ONBOARDING ("ආයුබෝවන්.!") */}
+      {/* 3. SPLASH SCREEN ("ආයුබෝවන්.!") */}
       {isOnboardingOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          {onboardingView === 'SPLASH' ? (
+          {onboardingView === 'SPLASH' && (
             <div className="relative max-w-sm w-full rounded-[40px] overflow-hidden shadow-2xl border border-emerald-100 flex flex-col justify-between h-[690px] bg-[#FFFDF9] text-slate-800">
               <button
                 onClick={onCloseOnboarding}
@@ -410,7 +409,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   onClick={onCloseOnboarding}
                   className="w-full py-3.5 rounded-full bg-[#0A6847] hover:bg-[#085237] text-white font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 transition active:scale-95"
                 >
-                  <span>Shop Island Groceries</span>
+                  <span>Cumpără Alimente din Sri Lanka</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
@@ -419,77 +418,130 @@ export const Modals: React.FC<ModalsProps> = ({
                     onClick={() => { onCloseOnboarding(); onOpenAuthFromOnboarding(); }}
                     className="font-bold text-slate-500 hover:text-[#0A6847] transition"
                   >
-                    Already have an account? <span className="underline text-[#0A6847]">Sign In</span>
-                  </button>
-                  <span className="text-slate-300">•</span>
-                  <button
-                    onClick={() => { setOnboardingView('SLIDES'); setOnboardingStep(0); }}
-                    className="font-bold text-[#E5A91A] hover:underline"
-                  >
-                    Feature Tour →
+                    Ai deja cont? <span className="underline text-[#0A6847]">Autentificare</span>
                   </button>
                 </div>
-              </div>
-            </div>
-          ) : (
-            <div className="bg-white dark:bg-[#18181A] rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-zinc-800 flex flex-col max-h-[92vh]">
-              <div className="px-6 py-4 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <button onClick={() => setOnboardingView('SPLASH')} className="p-1 rounded-lg text-slate-400">
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <span className="font-black text-sm tracking-tight text-[#0A6847] dark:text-white">
-                    Ceylon <span className="text-[#E5A91A]">Foods</span> Tour
-                  </span>
-                </div>
-                <button onClick={onCloseOnboarding} className="text-xs font-bold text-slate-400 flex items-center gap-1">
-                  <span>Skip</span> <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="p-6 md:p-8 flex-1 overflow-y-auto space-y-4">
-                <div className="h-60 rounded-2xl overflow-hidden shadow">
-                  <img
-                    src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=800"
-                    alt="Groceries"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-2xl font-black text-slate-900 dark:text-white">Island-Fresh Supermarket Quality</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Direct from certified Nuwara Eliya and Dambulla growers with AI freshness inspection and fast 45-minute delivery across Colombo.
-                </p>
-              </div>
-
-              <div className="p-4 border-t border-slate-100 flex justify-end">
-                <button
-                  onClick={onCloseOnboarding}
-                  className="px-6 py-2.5 rounded-full bg-[#0A6847] text-white text-xs font-black"
-                >
-                  Start Shopping
-                </button>
               </div>
             </div>
           )}
         </div>
       )}
 
-      {/* 4. ORDER TRACKING MODAL */}
+      {/* 4. REAL-TIME ORDER TRACKING MODAL (RIDER DISPATCH & COD FLOW) */}
       {isTrackingOpen && activeOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white dark:bg-[#18181A] rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-zinc-800">
-            <div className="p-4 border-b flex items-center justify-between">
-              <h4 className="font-black text-sm">Order #{activeOrder.orderNumber} Live Tracking</h4>
-              <button onClick={onCloseTracking}><X className="w-5 h-5 text-slate-400" /></button>
+            {/* Header */}
+            <div className="p-5 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                  🇷🇴 Livrare Activă în România
+                </span>
+                <h4 className="font-black text-base text-slate-900 dark:text-white mt-1">
+                  Comanda #{activeOrder.orderNumber}
+                </h4>
+              </div>
+              <button
+                onClick={onCloseTracking}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            <div className="p-6 space-y-4 text-xs font-bold">
-              <div className="flex items-center gap-3 p-3 rounded-2xl bg-emerald-50 text-[#0A6847]">
-                <Truck className="w-6 h-6 shrink-0" />
-                <div>
-                  <p className="font-black text-sm">Courier on the Way (Electric Scooter)</p>
-                  <p className="text-[11px] text-emerald-800 font-semibold">Estimated arrival in ~25 minutes</p>
+
+            <div className="p-6 space-y-5 text-xs font-semibold">
+              {/* Cash on Delivery Notice */}
+              <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center shrink-0">
+                    <Banknote className="w-5 h-5 text-amber-700" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black text-amber-800 uppercase tracking-wider block">
+                      Metodă de Plată: Plata la Livrare (Cash)
+                    </span>
+                    <p className="font-extrabold text-sm text-slate-900 dark:text-white mt-0.5">
+                      Pregătiți suma: <span className="text-[#0A6847] dark:text-[#78F9B8] font-black">{Number(activeOrder.totalAmount || 0).toFixed(2)} lei</span>
+                    </p>
+                  </div>
+                </div>
+                <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-[#E5A91A] text-amber-950">
+                  Ramburs Curier
+                </span>
+              </div>
+
+              {/* Courier Company & Rider Dispatch Status */}
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Truck className="w-4 h-4 text-[#0A6847] dark:text-[#78F9B8]" />
+                    <span className="font-black text-xs text-slate-800 dark:text-white">
+                      Companie Curierat: {activeOrder.courierCompany || 'Glovo Express Bucharest'}
+                    </span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">
+                    Dispecerat Apelat
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-zinc-800">
+                  <div className="space-y-0.5">
+                    <p className="text-[11px] font-bold text-slate-700 dark:text-zinc-300">
+                      Curier Alocat: {activeOrder.riderName || 'Ion Popescu (Rider Glovo)'}
+                    </p>
+                    <p className="text-[10px] text-slate-400">
+                      Timp estimat până la sosire: <strong>~25 - 35 minute</strong>
+                    </p>
+                  </div>
+
+                  <a
+                    href={`tel:${activeOrder.courierPhone || '+40219988'}`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0A6847] text-white text-[11px] font-black shadow-xs hover:bg-[#085237]"
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>Apelează Curier</span>
+                  </a>
                 </div>
               </div>
+
+              {/* Live Step Progress */}
+              <div className="space-y-2.5 pt-1">
+                <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider block">
+                  Etapele Livrării Coletului:
+                </span>
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2.5 text-slate-700 dark:text-zinc-200">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>1. Comandă Înregistrată în Sistem (Produse din Sri Lanka rezervate)</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-slate-700 dark:text-zinc-200">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>2. Împachetare la Depozit Central (Strada Academiei 14, București)</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 font-bold text-[#0A6847] dark:text-[#78F9B8] bg-emerald-50 dark:bg-emerald-950/40 p-2 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                    <Clock className="w-4 h-4 animate-spin shrink-0 text-[#0A6847]" />
+                    <span>3. Magazinul a apelat curierul: Colet preluat și în tranzit spre ușa dvs.</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-slate-400">
+                    <MapPin className="w-4 h-4 shrink-0" />
+                    <span>4. Sosire la adresă, predare pachet și încasare numerar (Cash)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-zinc-800 text-[11px] text-slate-500">
+                <span>Adresă Livrare: <strong className="text-slate-800 dark:text-white">{activeOrder.address || 'Strada Mihai Eminescu nr. 42, București'}</strong></span>
+              </div>
+            </div>
+
+            <div className="p-4 border-t border-slate-100 dark:border-zinc-800 flex justify-end">
+              <button
+                onClick={onCloseTracking}
+                className="px-6 py-2.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black shadow transition active:scale-95"
+              >
+                Am înțeles, mulțumesc!
+              </button>
             </div>
           </div>
         </div>
@@ -507,7 +559,7 @@ export const Modals: React.FC<ModalsProps> = ({
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800">
                   <div className="flex items-center gap-2">
                     <ShoppingBag className="w-5 h-5 text-[#0A6847]" />
-                    <h3 className="text-lg font-black">Shopping Basket ({cart.length})</h3>
+                    <h3 className="text-lg font-black">Coș de Cumpărături ({cart.length})</h3>
                   </div>
                   <button onClick={onCloseCartDrawer} className="p-1 rounded-full text-slate-400">
                     <X className="w-5 h-5" />
@@ -525,7 +577,7 @@ export const Modals: React.FC<ModalsProps> = ({
                         <div>
                           <h4 className="text-xs font-extrabold">{item.product.title}</h4>
                           <p className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8]">
-                            Rs. {Math.round(item.effectivePrice * item.quantity).toLocaleString()}
+                            {(item.effectivePrice * item.quantity).toFixed(2)} lei
                           </p>
                         </div>
                       </div>
@@ -537,7 +589,7 @@ export const Modals: React.FC<ModalsProps> = ({
                       </div>
                     </div>
                   ))}
-                  {cart.length === 0 && <p className="text-center text-xs text-slate-400 py-10">Cart is empty.</p>}
+                  {cart.length === 0 && <p className="text-center text-xs text-slate-400 py-10">Coșul este gol.</p>}
                 </div>
               </div>
 
@@ -545,7 +597,7 @@ export const Modals: React.FC<ModalsProps> = ({
                 <div className="pt-4 border-t border-slate-100 dark:border-zinc-800 space-y-3">
                   <div className="flex justify-between font-black text-base">
                     <span>Subtotal:</span>
-                    <span className="text-[#0A6847] dark:text-[#78F9B8]">Rs. {Math.round(subtotal).toLocaleString()}</span>
+                    <span className="text-[#0A6847] dark:text-[#78F9B8]">{subtotal.toFixed(2)} lei</span>
                   </div>
                   <button
                     onClick={() => {
@@ -554,7 +606,7 @@ export const Modals: React.FC<ModalsProps> = ({
                     }}
                     className="w-full py-3 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black shadow transition"
                   >
-                    View Full Cart Page (Image 2 Theme)
+                    Finalizează Comanda cu Plata la Livrare →
                   </button>
                 </div>
               )}

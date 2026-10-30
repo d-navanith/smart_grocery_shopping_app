@@ -34,7 +34,8 @@ import {
   InviteStaffModal,
   EditDeliveryZoneModal,
   AddDeliveryZoneModal,
-  CustomerProfileDrawer
+  CustomerProfileDrawer,
+  CourierDispatchModal
 } from './components/all_modals';
 
 export default function AdminApp() {
@@ -190,6 +191,7 @@ export default function AdminApp() {
               orderPaymentFilter={state.orderPaymentFilter}
               setOrderPaymentFilter={state.setOrderPaymentFilter}
               onOpenOrder={(o) => state.setSelectedOrderForDetail(o)}
+              onOpenDispatchModal={(o) => state.setDispatchingOrder(o)}
               onUpdateStatus={mut.updateOrderStatus}
               onUpdatePayment={mut.updateOrderPayment}
               onPrintInvoice={mut.printOrderInvoice}
@@ -367,7 +369,17 @@ export default function AdminApp() {
         onUpdatePayment={mut.updateOrderPayment}
         onAssignRider={mut.assignOrderRider}
         onPrintInvoice={mut.printOrderInvoice}
+        onOpenDispatchModal={(o) => state.setDispatchingOrder(o)}
         riders={state.riders}
+      />
+
+      <CourierDispatchModal
+        order={state.dispatchingOrder}
+        onClose={() => state.setDispatchingOrder(null)}
+        onConfirmDispatch={(orderId, data) => {
+          mut.dispatchCourier({ orderId, ...data });
+          state.setDispatchingOrder(null);
+        }}
       />
 
       <EditProductModal

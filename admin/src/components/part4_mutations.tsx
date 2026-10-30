@@ -63,6 +63,72 @@ export function createMutations(state: ReturnType<typeof import('./part3_state_a
     showToast(`Assigned courier ${riderName} to order`);
   };
 
+  const dispatchCourier = (dispatchData: {
+    orderId: string;
+    courierCompany: string;
+    courierPhone: string;
+    riderName: string;
+    pickupMinutes: number;
+    deliveryMinutes: number;
+  }) => {
+    const { orderId, courierCompany, courierPhone, riderName, pickupMinutes, deliveryMinutes } = dispatchData;
+    setOrders(prev => prev.map(o => {
+      if (o.id === orderId) {
+        return {
+          ...o,
+          status: 'ON_THE_WAY',
+          assignedRider: riderName || `${courierCompany} Courier`,
+          courierCompany,
+          courierPhone,
+          pickupMinutes,
+          deliveryMinutes,
+          dispatchCallStatus: 'CALLED_DISPATCHED'
+        };
+      }
+      return o;
+    }));
+
+    const targetOrder = orders.find(o => o.id === orderId);
+    if (targetOrder) {
+      setDeliveriesList(prev => {
+        const exists = prev.some(d => d.orderNumber === targetOrder.orderNumber);
+        if (exists) {
+          return prev.map(d => d.orderNumber === targetOrder.orderNumber ? {
+            ...d,
+            assignedRider: riderName || `${courierCompany} Express`,
+            status: 'On the road'
+          } : d);
+        } else {
+          return [
+            ...prev,
+            {
+              id: `del-${Date.now()}`,
+              orderNumber: targetOrder.orderNumber,
+              customerName: targetOrder.customerName,
+              customerPhone: targetOrder.customerPhone,
+              address: targetOrder.customerAddress,
+              timeWindow: `Within ${pickupMinutes + deliveryMinutes} mins`,
+              assignedRider: riderName || `${courierCompany} Express`,
+              payment: targetOrder.paymentMethod === 'COD' ? 'Cash on Delivery (Ramburs)' : 'Online Card',
+              status: 'On the road'
+            }
+          ];
+        }
+      });
+    }
+
+    // Also call server API if available
+    try {
+      fetch(`/api/orders/${orderId}/dispatch-courier`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dispatchData)
+      }).catch(() => {});
+    } catch (e) {}
+
+    showToast(`🚀 Dispatched to ${courierCompany}! Ridicare în ${pickupMinutes}m, Livrare în ${deliveryMinutes}m.`);
+  };
+
   const deleteOrder = (orderId: string) => {
     const o = orders.find(x => x.id === orderId);
     setOrders(prev => prev.filter(x => x.id !== orderId));
@@ -535,6 +601,7 @@ export function createMutations(state: ReturnType<typeof import('./part3_state_a
     updateOrderStatus,
     updateOrderPayment,
     assignOrderRider,
+    dispatchCourier,
     deleteOrder,
     printOrderInvoice,
     addProduct,

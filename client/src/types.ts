@@ -5,7 +5,7 @@ export interface Product {
   description?: string;
   category: string;
   brand: string;
-  price: number;
+  price: number; // In Romanian Lei (lei / RON)
   originalPrice?: number;
   unit: string;
   unitWeight?: string;
@@ -35,6 +35,8 @@ export interface CustomerUser {
   email: string;
   phone: string;
   address: string;
+  buildingDetails?: string;
+  sectorCity?: string;
   role: string;
 }
 
@@ -49,12 +51,28 @@ export interface DeliverySlot {
 export interface DeliveryZone {
   name: string;
   coverage: string;
-  fee: number;
+  fee: number; // in lei
+  eta: string;
 }
 
 export interface PromoCode {
   code: string;
   title: string;
-  discount: number;
+  discount: number; // in lei
   freeDelivery?: boolean;
+}
+
+export interface OrderTrackingInfo {
+  orderNumber: string;
+  status: 'PLACED' | 'PROCESSING' | 'DISPATCHED_TO_COURIER' | 'ON_THE_WAY' | 'DELIVERED';
+  totalAmount: number;
+  paymentMethod: string;
+  items: string[];
+  customerName: string;
+  customerPhone: string;
+  address: string;
+  courierCompany?: string;
+  courierPhone?: string;
+  pickupMinutes?: number;
+  deliveryMinutes?: number;
 }

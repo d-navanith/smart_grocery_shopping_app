@@ -106,6 +106,11 @@ export interface Order {
   paymentStatus: 'PAID' | 'PENDING' | 'FAILED';
   assignedRider?: string;
   notes?: string;
+  courierCompany?: string;
+  courierPhone?: string;
+  dispatchCallStatus?: 'NOT_CALLED' | 'CALLED_DISPATCHED' | 'RIDER_ASSIGNED';
+  pickupMinutes?: number;
+  deliveryMinutes?: number;
 }
 
 export interface FleetRider {

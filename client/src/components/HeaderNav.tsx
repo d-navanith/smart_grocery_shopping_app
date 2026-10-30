@@ -64,48 +64,37 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
   const categories = [
     'All Categories',
-    'Fruits & Vegetables',
-    'Dairy & Eggs',
-    'Bakery & Breads',
-    'Meat & Seafood',
     'Staples & Grains',
-    'Beverages',
-    'Household & Essentials'
+    'Fruits & Veg',
+    'Pantry & Spices',
+    'Dairy & Eggs',
+    'Bakery & Roast Paan',
+    'Beverages & Ceylon Tea',
+    'Snacks & Biscuits'
   ];
 
   return (
     <header className="w-full flex flex-col z-30 select-none">
-      {/* 1. TOP NOTICE / ANNOUNCEMENT BAR (GOLDEN HARVEST YELLOW #E5A91A / #F5A623) */}
+      {/* 1. TOP NOTICE / ANNOUNCEMENT BAR (GOLDEN HARVEST YELLOW #E5A91A) */}
       <div className="bg-[#E5A91A] text-amber-950 text-xs font-bold py-1.5 px-4 sm:px-8 border-b border-amber-500/30">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          {/* Left: Hotline */}
+          {/* Left: Hotline in Romania */}
           <div className="flex items-center gap-2">
             <Phone className="w-3.5 h-3.5 text-amber-900" />
-            <span className="font-extrabold tracking-tight">Call Us: <span className="underline">+94 11 234 5678</span></span>
+            <span className="font-extrabold tracking-tight">
+              București Hub: <span className="underline">+40 721 345 678</span>
+            </span>
           </div>
 
-          {/* Center: First Order Promo Announcement */}
+          {/* Center: Romanian Sri Lankan Market Context Announcement */}
           <div className="hidden md:flex items-center gap-2 text-center">
-            <span>Sign up and GET <span className="font-black text-emerald-950 underline decoration-amber-900 decoration-2">25% OFF</span> for your first order.</span>
-            <button
-              onClick={() => {
-                if (!currentUser) onOpenAuth();
-                else onOpenAppTour();
-              }}
-              className="bg-amber-950 hover:bg-black text-amber-200 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold transition"
-            >
-              Sign up now
-            </button>
+            <span>
+              🇷🇴 🇱🇰 Autentice Alimente din Sri Lanka în România — <span className="font-black text-emerald-950 underline decoration-amber-900 decoration-2">Plata la Livrare (Cash on Delivery)</span> în București & Toată Țara!
+            </span>
           </div>
 
           {/* Right: Social Media, Theme & App Tour */}
           <div className="flex items-center gap-3">
-            <div className="hidden lg:flex items-center gap-2 text-amber-900 pr-2 border-r border-amber-600/40">
-              <span className="hover:text-black cursor-pointer"><Facebook className="w-3.5 h-3.5" /></span>
-              <span className="hover:text-black cursor-pointer"><Twitter className="w-3.5 h-3.5" /></span>
-              <span className="hover:text-black cursor-pointer"><Instagram className="w-3.5 h-3.5" /></span>
-            </div>
-
             <button
               onClick={onOpenAppTour}
               className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-900/15 hover:bg-amber-900/25 text-amber-950 text-[11px] font-black transition"
@@ -126,7 +115,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
         </div>
       </div>
 
-      {/* 2. MAIN NAVBAR (DEEP CEYLON FOREST GREEN #0A6847 / #0C6237) */}
+      {/* 2. MAIN NAVBAR (DEEP CEYLON FOREST GREEN #0A6847) */}
       <div className="bg-[#0A6847] text-white py-3.5 px-4 sm:px-8 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 lg:gap-8">
           {/* Brand Logo & Title */}
@@ -149,24 +138,23 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 Ceylon <span className="text-[#FFB800]">Foods</span>
               </span>
               <span className="text-[10px] font-extrabold tracking-widest text-emerald-200 uppercase mt-0.5">
-                Online Supermarket
+                Supermarket România • Sri Lankan Authentic
               </span>
             </div>
           </div>
 
-          {/* Location Selector (Matching Image 1 & 2) */}
+          {/* Romanian Delivery Location Selector */}
           <div className="hidden xl:flex items-center gap-2 bg-emerald-900/70 border border-emerald-700/60 rounded-full px-3.5 py-2 text-xs font-bold text-emerald-100 hover:bg-emerald-900 transition cursor-pointer">
             <MapPin className="w-4 h-4 text-[#FFB800]" />
             <div className="flex flex-col text-left">
-              <span className="text-[9px] uppercase tracking-wider text-emerald-300">Deliver To</span>
-              <span className="font-extrabold text-white leading-none">Colombo, Sri Lanka ▾</span>
+              <span className="text-[9px] uppercase tracking-wider text-emerald-300">Livrare În România</span>
+              <span className="font-extrabold text-white leading-none">București & Național ▾</span>
             </div>
           </div>
 
-          {/* Search Bar with Integrated Category Dropdown (Matching Reference Image) */}
+          {/* Search Bar with Integrated Category Dropdown */}
           <div className="flex-1 max-w-2xl relative">
             <div className="flex items-center rounded-full bg-white text-slate-800 shadow-inner overflow-hidden border-2 border-transparent focus-within:border-[#FFB800] transition">
-              {/* Category Dropdown Inside Search Input */}
               <div className="hidden sm:flex items-center border-r border-slate-200 px-3 bg-slate-50 text-slate-700 text-xs font-bold shrink-0">
                 <select
                   value={selectedCategory === 'All' ? 'All Categories' : selectedCategory}
@@ -183,10 +171,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 </select>
               </div>
 
-              {/* Text Search Input */}
               <input
                 type="text"
-                placeholder="Search for vegetables, fruits, Ceylon tea, spices..."
+                placeholder="Caută orez alb, orez roșu, wambatu, condimente de Ceylon, ceai..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -195,28 +182,26 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 className="w-full py-2.5 px-4 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none"
               />
 
-              {/* Search Button */}
               <button
                 onClick={() => {
                   if (currentPage !== 'SHOP') setCurrentPage('SHOP');
                 }}
                 className="bg-[#0A6847] hover:bg-[#085237] text-white p-2.5 m-1 rounded-full transition shrink-0"
-                title="Search Products"
+                title="Căutare Produse"
               >
                 <Search className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Header Action Icons: Wishlist, Cart, Profile */}
+          {/* Header Action Icons: Wishlist, Cart with Lei display */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            {/* Wishlist Button */}
             <button
               onClick={() => {
                 if (currentPage !== 'SHOP') setCurrentPage('SHOP');
               }}
               className="relative p-2 rounded-full hover:bg-emerald-800/80 text-white transition flex items-center justify-center"
-              title="My Wishlist"
+              title="Favorite"
             >
               <Heart className="w-5 h-5" />
               {wishlistCount > 0 && (
@@ -226,18 +211,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               )}
             </button>
 
-            {/* Shopping Cart Button with Total Rs. (Matching Reference Image) */}
+            {/* Shopping Cart Button with Total in LEI */}
             <div
-              onClick={() => {
-                if (!currentUser) {
-                  onOpenAuth();
-                } else {
-                  // Direct navigation to dedicated Cart View (Image 2) or Drawer
-                  setCurrentPage('CART');
-                }
-              }}
+              onClick={() => setCurrentPage('CART')}
               className="flex items-center gap-2.5 bg-emerald-900/80 hover:bg-emerald-900 border border-emerald-700/80 rounded-full px-3 py-1.5 cursor-pointer transition active:scale-95"
-              title="View Shopping Cart"
+              title="Vezi Coșul de Cumpărături"
             >
               <div className="relative">
                 <ShoppingBag className="w-5 h-5 text-[#FFB800]" />
@@ -248,9 +226,9 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 )}
               </div>
               <div className="hidden md:flex flex-col text-left">
-                <span className="text-[9px] uppercase font-bold text-emerald-300">My Cart</span>
+                <span className="text-[9px] uppercase font-bold text-emerald-300">Coșul Meu</span>
                 <span className="text-xs font-black text-white leading-tight">
-                  Rs. {Math.round(subtotal).toLocaleString()}
+                  {subtotal.toFixed(2)} lei
                 </span>
               </div>
             </div>
@@ -266,7 +244,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 </span>
                 <button
                   onClick={onLogout}
-                  title="Sign Out"
+                  title="Deconectare"
                   className="p-1 text-emerald-300 hover:text-red-400 rounded-lg transition"
                 >
                   <LogOut className="w-3.5 h-3.5" />
@@ -278,11 +256,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-white hover:bg-slate-100 text-[#0A6847] font-extrabold text-xs shadow-sm transition active:scale-95"
               >
                 <UserIcon className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign In</span>
+                <span className="hidden sm:inline">Autentificare</span>
               </button>
             )}
 
-            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 rounded-lg text-emerald-200 hover:text-white"
@@ -293,7 +270,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
         </div>
       </div>
 
-      {/* 3. SECONDARY SUB-NAVBAR WITH GOLDEN YELLOW CATEGORIES BUTTON (IMAGE 1 & 2) */}
+      {/* 3. SECONDARY SUB-NAVBAR WITH GOLDEN YELLOW BUTTON */}
       <div className={`border-b transition ${isDarkMode ? 'bg-[#121614] border-zinc-800' : 'bg-white border-slate-200 shadow-xs'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-2 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6">
@@ -304,11 +281,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#E5A91A] hover:bg-[#d69b12] text-amber-950 font-black text-xs shadow-sm transition active:scale-95"
               >
                 <span>☰</span>
-                <span>Browse All Categories</span>
+                <span>Toate Categoriile (Browse)</span>
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
-              {/* Category Dropdown Menu */}
               {isCategoryMenuOpen && (
                 <div className="absolute top-full left-0 mt-2 w-64 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl py-2 z-50">
                   {categories.map((c) => (
@@ -338,7 +314,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   currentPage === 'HOME' ? 'text-[#0A6847] dark:text-[#78F9B8] border-b-2 border-[#0A6847] pb-1' : ''
                 }`}
               >
-                Home
+                Acasă
               </button>
               <button
                 onClick={() => {
@@ -349,34 +325,34 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   currentPage === 'SHOP' ? 'text-[#0A6847] dark:text-[#78F9B8] border-b-2 border-[#0A6847] pb-1' : ''
                 }`}
               >
-                Shop
+                Magazin Alimentar (Shop)
               </button>
               <button
                 onClick={() => {
-                  setSelectedCategory('Fruits');
+                  setSelectedCategory('Staples & Grains');
                   setCurrentPage('SHOP');
                 }}
                 className="transition hover:text-[#0A6847] dark:hover:text-[#78F9B8]"
               >
-                Fruits
+                Orez & Cereale (Rice)
               </button>
               <button
                 onClick={() => {
-                  setSelectedCategory('Vegetables');
+                  setSelectedCategory('Fruits & Veg');
                   setCurrentPage('SHOP');
                 }}
                 className="transition hover:text-[#0A6847] dark:hover:text-[#78F9B8]"
               >
-                Vegetables
+                Legume & Wambatu
               </button>
               <button
                 onClick={() => {
-                  setSelectedCategory('Beverages');
+                  setSelectedCategory('Pantry');
                   setCurrentPage('SHOP');
                 }}
                 className="transition hover:text-[#0A6847] dark:hover:text-[#78F9B8]"
               >
-                Beverages
+                Condimente Ceylon (Spices)
               </button>
               <button
                 onClick={() => setCurrentPage('CART')}
@@ -384,7 +360,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   currentPage === 'CART' ? 'text-[#0A6847] dark:text-[#78F9B8] border-b-2 border-[#0A6847] pb-1' : ''
                 }`}
               >
-                <span>Shopping Cart</span>
+                <span>Coș de Cumpărături</span>
                 {totalCartCount > 0 && (
                   <span className="px-1.5 py-0.2 rounded-full bg-[#E5A91A] text-amber-950 text-[10px] font-black">
                     {totalCartCount}
@@ -398,56 +374,42 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5 text-[#0A6847] dark:text-[#78F9B8]" />
-                <span>AI Recipes</span>
+                <span>Rețete AI Chef</span>
               </button>
             </nav>
           </div>
 
-          {/* Right Announcement Badge */}
           <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800/60">
             <Truck className="w-3.5 h-3.5 text-[#0A6847] dark:text-[#78F9B8]" />
-            <span>Free Delivery Over <strong>Rs. 5,000</strong></span>
+            <span>Livrare Gratuită peste <strong>250 lei</strong></span>
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-slate-200 dark:border-zinc-800 px-4 py-3 space-y-2 bg-white dark:bg-zinc-900 text-xs font-bold">
             <button
-              onClick={() => {
-                setCurrentPage('HOME');
-                setMobileMenuOpen(false);
-              }}
+              onClick={() => { setCurrentPage('HOME'); setMobileMenuOpen(false); }}
               className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
-              Home
+              Acasă
             </button>
             <button
-              onClick={() => {
-                setCurrentPage('SHOP');
-                setMobileMenuOpen(false);
-              }}
+              onClick={() => { setCurrentPage('SHOP'); setMobileMenuOpen(false); }}
               className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
-              Shop All Products
+              Magazin Alimentar Sri Lanka
             </button>
             <button
-              onClick={() => {
-                setCurrentPage('CART');
-                setMobileMenuOpen(false);
-              }}
+              onClick={() => { setCurrentPage('CART'); setMobileMenuOpen(false); }}
               className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
-              Shopping Cart ({totalCartCount})
+              Coș ({totalCartCount})
             </button>
             <button
-              onClick={() => {
-                setCurrentPage('RECIPES');
-                setMobileMenuOpen(false);
-              }}
+              onClick={() => { setCurrentPage('RECIPES'); setMobileMenuOpen(false); }}
               className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
-              AI Chef Recipes
+              Rețete CeylonBot AI
             </button>
           </div>
         )}

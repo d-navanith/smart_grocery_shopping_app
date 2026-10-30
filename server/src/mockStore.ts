@@ -13,7 +13,7 @@ export interface Product {
   description?: string;
   category: string;
   brand: string;
-  price: number;
+  price: number; // In Romanian Lei (lei / RON)
   originalPrice?: number;
   unit: string;
   unitWeight?: string;
@@ -33,6 +33,7 @@ export interface Product {
 export interface RiderPartner {
   id: string;
   name: string;
+  company: string; // e.g., Glovo, Bolt, Sameday, Fan Courier, In-House
   phone: string;
   avatarUrl: string;
   vehicleType: string;
@@ -57,588 +58,443 @@ export interface Order {
   orderNumber: string;
   customerId: string;
   customerName: string;
-  customerPhone?: string;
+  customerPhone: string;
   items: OrderItem[];
   subtotal: number;
   vatAmount: number;
   deliveryFee: number;
   discountAmount: number;
-  totalAmount: number;
+  totalAmount: number; // In Romanian Lei (lei)
+  paymentMethod: 'CASH_ON_DELIVERY' | 'CARD_ONLINE' | 'CARD_ON_DELIVERY';
+  paymentStatus: 'PAID' | 'PENDING' | 'FAILED';
   deliveryType: 'STANDARD' | 'EXPRESS' | 'SCHEDULED';
   scheduledTimeSlot?: string;
   deliveryAddress: {
     id: string;
     label: string;
     street: string;
-    city: string;
+    buildingDetails?: string;
+    city: string; // e.g. București Sector 1-6 / Ilfov
     coordinates: { lat: number; lng: number };
   };
   deliveryNote?: string;
-  status: 'PLACED' | 'PROCESSING' | 'ON_THE_WAY' | 'DELIVERED' | 'CANCELLED';
+  status: 'PLACED' | 'PROCESSING' | 'DISPATCHED_TO_COURIER' | 'ON_THE_WAY' | 'DELIVERED' | 'CANCELLED';
+  courierCompany?: string; // Glovo, Bolt, Sameday, Fan Courier
+  courierPhone?: string;
+  dispatchCallStatus?: 'NOT_CALLED' | 'CALLED_DISPATCHED' | 'RIDER_ASSIGNED';
+  pickupMinutes?: number;
+  deliveryMinutes?: number;
   rider?: RiderPartner;
   estimatedDeliveryMinutes?: number;
   placedAt: string;
   updatedAt: string;
 }
 
-// Full-scale realistic supermarket inventory across all 8 aisles tailored for Sri Lanka
+// ---------------------------------------------------------------------------
+// AUTHENTIC DAILY SRI LANKAN FOODS FOR ROMANIA SUPERMARKET (PRICES IN LEI / RON)
+// ---------------------------------------------------------------------------
 export const INITIAL_PRODUCTS: Product[] = [
-  // 1. FRESH PRODUCE (FRUITS & VEGETABLES - MATCHING CEYLON FOODS FEATURED PICKS)
+  // 1. RICE & GRAINS (DAILY STAPLE)
   {
-    id: 'prod-orange',
-    sku: 'FRU-ORNG-001',
-    title: 'Fresh Navel Oranges (පැණි දොඩම්)',
-    description: 'Juicy, sun-ripened sweet Ceylon oranges bursting with natural Vitamin C, sourced directly from local fruit orchards.',
-    category: 'Fruits & Veg',
-    brand: 'Ceylon Orchard',
-    price: 450,
-    unit: 'kg',
-    unitWeight: '1 kg',
-    imageUrl: '/prod_orange.jpg',
-    stock: 80,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 99,
-    isOrganic: true,
-    isFarmSourced: true,
-    rating: 4.9,
-    reviewsCount: 420,
-    createdAt: '2026-10-22'
-  },
-  {
-    id: 'prod-avocado',
-    sku: 'FRU-AVOC-002',
-    title: 'Hass Avocado (අලිගැටපේර)',
-    description: 'Creamy high-altitude avocados from Kandy hills, loaded with healthy monounsaturated fats.',
-    category: 'Fruits & Veg',
-    brand: 'Kandy Highlands',
-    price: 420,
-    unit: 'kg',
-    unitWeight: '1 kg',
-    imageUrl: '/prod_avocado.jpg',
-    stock: 54,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 98,
-    isOrganic: true,
-    isFarmSourced: true,
-    rating: 4.8,
-    reviewsCount: 520,
-    createdAt: '2026-10-21'
-  },
-  {
-    id: 'prod-broccoli',
-    sku: 'VEG-BROC-003',
-    title: 'Fresh Green Broccoli (බ්‍රොකොලි)',
-    description: 'Crisp and nutrient-rich broccoli heads from the cool climate of Nuwara Eliya, perfect for steaming or stir fries.',
-    category: 'Fruits & Veg',
-    brand: 'Nuwara Eliya Greens',
-    price: 580,
-    unit: 'kg',
-    unitWeight: '500g',
-    imageUrl: '/prod_broccoli.jpg',
-    stock: 45,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 97,
-    isOrganic: true,
-    isFarmSourced: true,
-    rating: 4.9,
-    reviewsCount: 290,
-    createdAt: '2026-10-22'
-  },
-  {
-    id: 'prod-tomato',
-    sku: 'VEG-TOMA-004',
-    title: 'Roma Red Tomatoes (රතු තක්කාලි)',
-    description: 'Sweet, juicy vine-ripened red tomatoes from Nuwara Eliya, ideal for curries, salads and fresh lunu miris.',
-    category: 'Fruits & Veg',
-    brand: 'Nuwara Eliya Greens',
-    price: 290,
-    unit: 'kg',
-    unitWeight: '1 kg',
-    imageUrl: '/prod_tomato.jpg',
-    stock: 65,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 97,
-    isOrganic: true,
-    isFarmSourced: true,
-    rating: 4.8,
-    reviewsCount: 410,
-    createdAt: '2026-10-22'
-  },
-  {
-    id: 'prod-1',
-    sku: 'VEG-PUMP-001',
-    title: 'Dambulla Fresh Yellow Pumpkin (වට්ටක්කා)',
-    description: 'High in vitamins A & C, fiber and potassium. Farm-sourced fresh pumpkin from Dambulla economic center.',
-    category: 'Fruits & Veg',
-    brand: 'Dambulla Agro Farms',
-    price: 380,
-    unit: 'kg',
-    unitWeight: '1 kg',
-    imageUrl: 'https://images.unsplash.com/photo-1570586437263-ab629fccc818?w=800',
-    stock: 75,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 98,
-    isOrganic: true,
-    isFarmSourced: true,
-    rating: 4.8,
-    reviewsCount: 310,
-    createdAt: '2026-10-20'
-  },
-  {
-    id: 'prod-2',
-    sku: 'FRU-AVOC-002',
-    title: 'Avocado Hass Creamy (අලිගැටපේර)',
-    description: 'Creamy high-altitude avocados from Kandy hills, loaded with healthy monounsaturated fats.',
-    category: 'Fruits & Veg',
-    brand: 'Kandy Highlands',
-    price: 420,
-    unit: 'kg',
-    unitWeight: '1 kg',
-    imageUrl: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=800',
-    stock: 54,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 96,
-    isOrganic: true,
-    isFarmSourced: true,
-    rating: 4.7,
-    reviewsCount: 520,
-    createdAt: '2026-10-21'
-  },
-  {
-    id: 'prod-3',
-    sku: 'VEG-TOMA-003',
-    title: 'Vine Cherry Tomatoes (තක්කාලි)',
-    description: 'Sweet, juicy vine-ripened red tomatoes from Nuwara Eliya, ideal for curries, salads and fresh lunu miris.',
-    category: 'Fruits & Veg',
-    brand: 'Nuwara Eliya Greens',
-    price: 290,
-    unit: 'kg',
-    unitWeight: '1 kg',
-    imageUrl: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800',
-    stock: 65,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 97,
-    isOrganic: true,
-    isFarmSourced: true,
-    rating: 4.9,
-    reviewsCount: 410,
-    createdAt: '2026-10-22'
-  },
-  {
-    id: 'prod-4',
-    sku: 'FRU-BANA-004',
-    title: 'Sweet Embul & Cavendish Bananas (කෙසෙල්)',
-    description: 'Naturally sweetened sweet bananas packed with potassium, harvested directly from Kurunegala plantations.',
-    category: 'Fruits & Veg',
-    brand: 'SunValley Lanka',
-    price: 320,
-    unit: 'kg',
-    unitWeight: '1 kg',
-    imageUrl: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800',
-    stock: 90,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 99,
-    isOrganic: false,
-    isFarmSourced: true,
-    rating: 4.8,
-    reviewsCount: 680,
-    createdAt: '2026-10-22'
-  },
-
-  // 2. DAIRY & EGGS
-  {
-    id: 'prod-5',
-    sku: 'DAI-MILK-005',
-    title: 'Highland Fresh Full Cream Milk (1L)',
-    description: '100% pure fresh Sri Lankan cow milk, pasteurised and homogenised from the cool Ambewela pastures.',
-    category: 'Dairy & Eggs',
-    brand: 'Highland Pure',
-    price: 480,
-    unit: 'liter',
-    unitWeight: '1 L',
-    imageUrl: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=800',
-    stock: 120,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 99,
-    isOrganic: true,
-    isFarmSourced: true,
-    rating: 4.9,
-    reviewsCount: 940,
-    createdAt: '2026-10-23'
-  },
-  {
-    id: 'prod-6',
-    sku: 'DAI-EGGS-006',
-    title: 'Farm Fresh Brown Eggs (Pack of 12)',
-    description: 'Grade-A fresh farm eggs from free-range hens, high in clean natural protein.',
-    category: 'Dairy & Eggs',
-    brand: 'Bairaha Happy Hen',
-    price: 650,
-    unit: 'pack',
-    unitWeight: '12 pcs',
-    imageUrl: 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=800',
-    stock: 80,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 98,
-    isOrganic: true,
-    isFarmSourced: true,
-    rating: 4.8,
-    reviewsCount: 610,
-    createdAt: '2026-10-23'
-  },
-  {
-    id: 'prod-7',
-    sku: 'DAI-CHSE-007',
-    title: 'Kotmale Natural Cheddar Cheese Block (250g)',
-    description: 'Aged sharp Sri Lankan cheddar cheese made from whole cow milk. Ideal for snacks, sandwiches and melting.',
-    category: 'Dairy & Eggs',
-    brand: 'Kotmale Pure Dairy',
-    price: 890,
-    unit: 'piece',
-    unitWeight: '250 g',
-    imageUrl: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=800',
-    stock: 45,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 95,
-    isOrganic: false,
-    isFarmSourced: false,
-    rating: 4.7,
-    reviewsCount: 380,
-    createdAt: '2026-10-23'
-  },
-
-  // 3. BAKERY & BREAD
-  {
-    id: 'prod-8',
-    sku: 'BAK-BRED-008',
-    title: 'Traditional Crispy Roast Paan (රෝස්ට් පාන් - 4 Slices)',
-    description: 'Authentic woodfired Sri Lankan crispy roast paan with golden crunch. Best enjoyed with spicy pol sambol.',
-    category: 'Bakery',
-    brand: 'Ceylon Heritage Bakery',
-    price: 180,
-    unit: 'pack',
-    unitWeight: '4 slices',
-    imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800',
-    stock: 40,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 99,
-    isOrganic: true,
-    isFarmSourced: false,
-    rating: 4.9,
-    reviewsCount: 290,
-    createdAt: '2026-10-24'
-  },
-  {
-    id: 'prod-9',
-    sku: 'BAK-CROI-009',
-    title: 'Butter French Croissants (Pack of 4)',
-    description: 'Flaky, buttery Viennoiserie baked fresh every morning with pure creamy churned butter.',
-    category: 'Bakery',
-    brand: 'Golden Crust Bakers',
-    price: 680,
-    unit: 'pack',
-    unitWeight: '4 pcs',
-    imageUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=800',
-    stock: 35,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 98,
-    isOrganic: false,
-    isFarmSourced: false,
-    rating: 4.8,
-    reviewsCount: 420,
-    createdAt: '2026-10-24'
-  },
-
-  // 4. MEAT & SEAFOOD
-  {
-    id: 'prod-10',
-    sku: 'MEA-CHIK-010',
-    title: 'Bairaha Skinless Chicken Breast Fillets (1kg)',
-    description: 'Tender, lean boneless chicken breast fillets from farm-raised Sri Lankan poultry without hormones.',
-    category: 'Meat & Seafood',
-    brand: 'Bairaha Prime Cuts',
-    price: 1750,
-    unit: 'kg',
-    unitWeight: '1 kg',
-    imageUrl: 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=800',
-    stock: 55,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 98,
-    isOrganic: true,
-    isFarmSourced: true,
-    rating: 4.8,
-    reviewsCount: 710,
-    createdAt: '2026-10-24'
-  },
-  {
-    id: 'prod-11',
-    sku: 'MEA-FISH-011',
-    title: 'Fresh Kelawalla Yellowfin Tuna Steaks (කෙලවල්ලා - 500g)',
-    description: 'Deep ocean catch Yellowfin Tuna steaks fresh from Mirissa and Beruwala harbours. Rich in Omega-3.',
-    category: 'Meat & Seafood',
-    brand: 'Mirissa Harbour Catch',
-    price: 1450,
-    unit: 'piece',
-    unitWeight: '500 g',
-    imageUrl: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=800',
-    stock: 30,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 97,
-    isOrganic: false,
-    isFarmSourced: false,
-    rating: 4.9,
-    reviewsCount: 340,
-    createdAt: '2026-10-24'
-  },
-
-  // 5. STAPLES & GRAINS (FOOD CUPBOARD)
-  {
-    id: 'prod-12',
-    sku: 'STP-RICE-012',
-    title: 'Araliya Premium Keeri Samba Rice (කීරි සම්බා - 5kg)',
-    description: 'Fragrant, small pearl-grain aged Keeri Samba rice, known as the king of Sri Lankan rice tables.',
+    id: 'prod-white-rice',
+    sku: 'RIC-WHITE-001',
+    title: 'Araliya Keeri Samba & White Raw Rice (සුදු කැකුළු සහල් - 5kg)',
+    description: 'Authentic Sri Lankan white raw rice & premium aromatic Keeri Samba in traditional burlap sack. Fluffy, non-sticky grains essential for daily Sri Lankan rice and curry.',
     category: 'Staples & Grains',
-    brand: 'Araliya Sahal',
-    price: 1680,
-    unit: 'pack',
+    brand: 'Araliya Lanka',
+    price: 38.50,
+    originalPrice: 45.00,
+    unit: '5kg Bag',
     unitWeight: '5 kg',
-    imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800',
-    stock: 150,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 99,
-    isOrganic: false,
-    isFarmSourced: false,
-    rating: 4.9,
-    reviewsCount: 1200,
-    createdAt: '2026-10-20'
-  },
-  {
-    id: 'prod-13',
-    sku: 'STP-COCO-013',
-    title: 'Pure Virgin Coconut Oil (500ml Glass Bottle)',
-    description: 'Cold-pressed virgin coconut oil made from handpicked Sri Lankan coconuts. Ideal for aromatic curries and health.',
-    category: 'Staples & Grains',
-    brand: 'Natureland Organics',
-    price: 980,
-    unit: 'piece',
-    unitWeight: '500 ml',
-    imageUrl: 'https://images.unsplash.com/photo-1620706857370-e1b9770e8bb1?w=800',
-    stock: 90,
-    store: 'Ceylon Foods Supermarket',
+    imageUrl: '/prod_white_rice.jpg', // User-uploaded burlap sack of rice
+    stock: 95,
+    store: 'Ceylon Foods Supermarket Bucharest',
     status: 'Active',
     aiFreshnessScore: 99,
     isOrganic: true,
     isFarmSourced: true,
     rating: 4.9,
-    reviewsCount: 480,
-    createdAt: '2026-10-21'
+    reviewsCount: 380,
+    createdAt: '2026-10-22'
   },
   {
-    id: 'prod-14',
-    sku: 'STP-DHAL-014',
-    title: 'Mysore Red Dhal / Parippu (රතු පරිප්පු - 1kg)',
-    description: 'Premium sorted Mysore red lentils. Cooks into a rich, creamy dhal curry when tempered with coconut milk.',
+    id: 'prod-red-rice',
+    sku: 'RIC-RED-002',
+    title: 'Araliya Traditional Red Raw Rice (රතු කැකුළු සහල් - 5kg)',
+    description: 'Nutritious unpolished Sri Lankan red rice packed with natural fiber, iron, and antioxidants. The favorite wholesome daily grain for authentic village-style meals.',
+    category: 'Staples & Grains',
+    brand: 'Araliya Lanka',
+    price: 39.00,
+    originalPrice: 46.00,
+    unit: '5kg Bag',
+    unitWeight: '5 kg',
+    imageUrl: '/prod_red_rice.jpg',
+    stock: 80,
+    store: 'Ceylon Foods Supermarket Bucharest',
+    status: 'Active',
+    aiFreshnessScore: 98,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.9,
+    reviewsCount: 420,
+    createdAt: '2026-10-22'
+  },
+  {
+    id: 'prod-dhal',
+    sku: 'GRN-DHAL-003',
+    title: 'Mysore Red Split Lentils / Dhal (රතු පරිප්පු - 1kg)',
+    description: 'Premium quick-cooking split red lentils for Sri Lanka’s national daily dish: creamy Parippu Curry with tempered onions, mustard seeds, and coconut milk.',
     category: 'Staples & Grains',
     brand: 'Ceylon Harvest',
-    price: 390,
-    unit: 'piece',
+    price: 12.50,
+    originalPrice: 15.00,
+    unit: 'kg',
     unitWeight: '1 kg',
-    imageUrl: 'https://images.unsplash.com/photo-1621996346565-e3d5d6281059?w=800',
-    stock: 110,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 98,
-    isOrganic: false,
-    isFarmSourced: false,
-    rating: 4.8,
-    reviewsCount: 650,
-    createdAt: '2026-10-21'
-  },
-
-  // 6. BEVERAGES
-  {
-    id: 'prod-15',
-    sku: 'BEV-TEA-015',
-    title: 'Dilmah Premium Ceylon BOPF Black Tea (400g)',
-    description: 'Finest 100% Pure Ceylon BOPF tea harvested from the mist-covered Nuwara Eliya hills. Rich, bright golden liquor.',
-    category: 'Beverages',
-    brand: 'Dilmah Ceylon Tea',
-    price: 980,
-    unit: 'pack',
-    unitWeight: '400 g',
-    imageUrl: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=800',
-    stock: 140,
-    store: 'Ceylon Foods Supermarket',
+    imageUrl: '/prod_dhal.jpg',
+    stock: 150,
+    store: 'Ceylon Foods Supermarket Bucharest',
     status: 'Active',
     aiFreshnessScore: 99,
     isOrganic: true,
     isFarmSourced: true,
     rating: 5.0,
-    reviewsCount: 1540,
-    createdAt: '2026-10-22'
-  },
-  {
-    id: 'prod-16',
-    sku: 'BEV-EGB-016',
-    title: 'Elephant House Ginger Beer EGB (1L PET)',
-    description: 'Sri Lanka’s iconic naturally flavored spicy ginger beer crafted with 100% local ginger extract.',
-    category: 'Beverages',
-    brand: 'Elephant House',
-    price: 380,
-    unit: 'piece',
-    unitWeight: '1 L',
-    imageUrl: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=800',
-    stock: 110,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 98,
-    isOrganic: false,
-    isFarmSourced: true,
-    rating: 4.9,
-    reviewsCount: 1820,
-    createdAt: '2026-10-22'
-  },
-  {
-    id: 'prod-17',
-    sku: 'BEV-MILO-017',
-    title: 'Nestlé Milo Chocolate Malt Powder (400g)',
-    description: 'The beloved family energy drink with Activ-Go malt, vitamins and minerals for active lifestyles.',
-    category: 'Beverages',
-    brand: 'Nestlé Lanka',
-    price: 1180,
-    unit: 'piece',
-    unitWeight: '400 g',
-    imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800',
-    stock: 180,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 95,
-    isOrganic: false,
-    isFarmSourced: false,
-    rating: 4.8,
-    reviewsCount: 2100,
-    createdAt: '2026-10-22'
+    reviewsCount: 650,
+    createdAt: '2026-10-23'
   },
 
-  // 7. SNACKS & CONFECTIONERY
+  // 2. FRESH VEGETABLES (DAILY CURRY VEGETABLES)
   {
-    id: 'prod-18',
-    sku: 'SNK-TREAC-018',
-    title: 'Pure Kithul Treacle Glass Bottle (කිතුල් පැණි - 750ml)',
-    description: '100% unadulterated pure village Kithul treacle. Perfect companion for traditional Sri Lankan buffalo curd.',
-    category: 'Snacks',
-    brand: 'Kithul Lanka',
-    price: 1480,
-    unit: 'piece',
-    unitWeight: '750 ml',
-    imageUrl: 'https://images.unsplash.com/photo-1548907040-4baa42d10919?w=800',
-    stock: 95,
-    store: 'Ceylon Foods Supermarket',
+    id: 'prod-brinjal',
+    sku: 'VEG-BRIN-004',
+    title: 'Sri Lankan Purple Brinjal / Eggplant (නැවුම් වම්බටු - 1kg)',
+    description: 'Glossy, tender violet eggplants sourced fresh. The key ingredient for classic Sri Lankan Wambatu Moju (sweet & sour eggplant pickle) and village curry.',
+    category: 'Fruits & Veg',
+    brand: 'Ceylon Fresh Greens',
+    price: 14.50,
+    originalPrice: 18.00,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: '/prod_brinjal.jpg',
+    stock: 75,
+    store: 'Ceylon Foods Supermarket Bucharest',
+    status: 'Active',
+    aiFreshnessScore: 97,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.8,
+    reviewsCount: 310,
+    createdAt: '2026-10-24'
+  },
+  {
+    id: 'prod-okra',
+    sku: 'VEG-OKRA-005',
+    title: 'Fresh Lady’s Finger / Okra (බණ්ඩක්කා - 500g)',
+    description: 'Tender, crisp green okra pods hand-picked at peak freshness. Ideal for traditional Bandakka Theldala (spicy stir fry) or mild coconut milk curry.',
+    category: 'Fruits & Veg',
+    brand: 'Ceylon Fresh Greens',
+    price: 11.00,
+    originalPrice: 13.50,
+    unit: 'pack',
+    unitWeight: '500g',
+    imageUrl: '/prod_okra.jpg',
+    stock: 60,
+    store: 'Ceylon Foods Supermarket Bucharest',
     status: 'Active',
     aiFreshnessScore: 98,
     isOrganic: true,
     isFarmSourced: true,
-    rating: 4.9,
-    reviewsCount: 880,
+    rating: 4.7,
+    reviewsCount: 220,
+    createdAt: '2026-10-24'
+  },
+  {
+    id: 'prod-pumpkin',
+    sku: 'VEG-PUMP-006',
+    title: 'Fresh Golden Pumpkin (වට්ටක්කා - 1kg)',
+    description: 'Rich, sweet yellow pumpkin cubes that melt into a luscious, velvety golden coconut curry. Packed with dietary fiber and natural vitamins.',
+    category: 'Fruits & Veg',
+    brand: 'Ceylon Fresh Greens',
+    price: 8.50,
+    originalPrice: 10.50,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: 'https://images.unsplash.com/photo-1570586437263-ab629fccc818?w=800',
+    stock: 70,
+    store: 'Ceylon Foods Supermarket Bucharest',
+    status: 'Active',
+    aiFreshnessScore: 98,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.8,
+    reviewsCount: 190,
     createdAt: '2026-10-23'
   },
   {
-    id: 'prod-19',
-    sku: 'SNK-CASH-019',
-    title: 'Munchee Super Cream Crackers (ක්‍රීම් ක්‍රැකර් - 500g)',
-    description: 'Sri Lanka’s favorite crispy, light biscuit snack. Perfect with a warm cup of Ceylon ginger tea.',
+    id: 'prod-tomato',
+    sku: 'VEG-TOMA-007',
+    title: 'Roma Red Tomatoes (නැවුම් තක්කාලි - 1kg)',
+    description: 'Firm, sun-ripened red tomatoes essential for curry tempering bases, fresh Lunu Miris sambols, and salads.',
+    category: 'Fruits & Veg',
+    brand: 'Nuwara Eliya Greens',
+    price: 9.50,
+    originalPrice: 12.00,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: '/prod_tomato.jpg',
+    stock: 90,
+    store: 'Ceylon Foods Supermarket Bucharest',
+    status: 'Active',
+    aiFreshnessScore: 97,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.8,
+    reviewsCount: 310,
+    createdAt: '2026-10-24'
+  },
+  {
+    id: 'prod-onions',
+    sku: 'VEG-SHAL-008',
+    title: 'Sri Lankan Red Baby Shallots (කුඩා රතු ළූණු - 500g)',
+    description: 'Pungent, sweet small red shallots imported fresh from Sri Lanka. Unmatched aromatic base for authentic Pol Sambol, Seeni Sambol, and curries.',
+    category: 'Fruits & Veg',
+    brand: 'Ceylon Farm Direct',
+    price: 10.50,
+    originalPrice: 13.00,
+    unit: 'pack',
+    unitWeight: '500g',
+    imageUrl: '/prod_onions.jpg',
+    stock: 85,
+    store: 'Ceylon Foods Supermarket Bucharest',
+    status: 'Active',
+    aiFreshnessScore: 96,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.9,
+    reviewsCount: 290,
+    createdAt: '2026-10-24'
+  },
+  {
+    id: 'prod-chillies',
+    sku: 'VEG-CHIL-009',
+    title: 'Fresh Green Chillies, Curry Leaves & Pandan (අමු මිරිස් සහ කරපිංචා)',
+    description: 'Air-shipped fresh culinary herbs pack: fiery green chillies, aromatic fresh Karapincha (curry leaves), and fragrant Rampe (pandan leaves). Essential for every single meal.',
+    category: 'Fruits & Veg',
+    brand: 'Ceylon Fresh Greens',
+    price: 9.50,
+    originalPrice: 12.00,
+    unit: 'pack',
+    unitWeight: '250g',
+    imageUrl: '/prod_chillies.jpg',
+    stock: 120,
+    store: 'Ceylon Foods Supermarket Bucharest',
+    status: 'Active',
+    aiFreshnessScore: 99,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 5.0,
+    reviewsCount: 480,
+    createdAt: '2026-10-25'
+  },
+
+  // 3. CEYLON SPICES & COCONUT (HEART OF SRI LANKAN COOKING)
+  {
+    id: 'prod-spices',
+    sku: 'SPI-ROAST-010',
+    title: 'Roasted Ceylon Curry Powder & Spices (ලංකා බැදපු තුනපහ - 250g)',
+    description: 'Signature Sri Lankan roasted black curry powder ground with roasted coriander, cumin, fennel, cinnamon, and curry leaves. Gives authentic dark color and rich aroma to meat & fish curries.',
+    category: 'Pantry',
+    brand: 'Araliya Spices',
+    price: 16.00,
+    originalPrice: 19.50,
+    unit: 'pack',
+    unitWeight: '250g',
+    imageUrl: '/prod_spices.jpg',
+    stock: 110,
+    store: 'Ceylon Foods Supermarket Bucharest',
+    status: 'Active',
+    aiFreshnessScore: 99,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 5.0,
+    reviewsCount: 520,
+    createdAt: '2026-10-23'
+  },
+  {
+    id: 'prod-cinnamon',
+    sku: 'SPI-CINN-011',
+    title: 'Pure Ceylon Alba Cinnamon Quills & Black Pepper (කුරුඳු සහ ගම්මිරිස්)',
+    description: '100% Genuine Ceylon True Cinnamon (Cinnamomum verum) and pungent whole Ceylon black peppercorns from Matale hills.',
+    category: 'Pantry',
+    brand: 'Pure Ceylon Spices',
+    price: 18.00,
+    originalPrice: 22.00,
+    unit: 'glass jar',
+    unitWeight: '100g',
+    imageUrl: '/prod_cinnamon.jpg',
+    stock: 80,
+    store: 'Ceylon Foods Supermarket Bucharest',
+    status: 'Active',
+    aiFreshnessScore: 99,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.9,
+    reviewsCount: 340,
+    createdAt: '2026-10-23'
+  },
+  {
+    id: 'prod-coconut',
+    sku: 'PAN-COCO-012',
+    title: 'Pure Ceylon Coconut Milk & Grated Pol (පොල් කිරි සහ පොල් - 400ml)',
+    description: 'Silky, rich, preservative-free coconut milk extracted from mature Sri Lankan coconuts. The irreplaceable backbone of all curries and hoppers.',
+    category: 'Pantry',
+    brand: 'Maggi Lanka',
+    price: 8.50,
+    originalPrice: 11.00,
+    unit: 'can',
+    unitWeight: '400 ml',
+    imageUrl: '/prod_coconut.jpg',
+    stock: 180,
+    store: 'Ceylon Foods Supermarket Bucharest',
+    status: 'Active',
+    aiFreshnessScore: 99,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.9,
+    reviewsCount: 710,
+    createdAt: '2026-10-24'
+  },
+
+  // 4. TROPICAL FRUITS
+  {
+    id: 'prod-papaya',
+    sku: 'FRU-PAPA-013',
+    title: 'Ceylon Red Lady Sweet Papaya (පැණි ගස්ලබු - 1kg)',
+    description: 'Sweet, golden-red flesh tropical papaya ripened under the tropical sun. Luscious healthy breakfast treat with lime juice.',
+    category: 'Fruits & Veg',
+    brand: 'Ceylon Orchard',
+    price: 16.50,
+    originalPrice: 19.00,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: '/prod_papaya.jpg',
+    stock: 45,
+    store: 'Ceylon Foods Supermarket Bucharest',
+    status: 'Active',
+    aiFreshnessScore: 98,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.8,
+    reviewsCount: 160,
+    createdAt: '2026-10-25'
+  },
+  {
+    id: 'prod-mango',
+    sku: 'FRU-MANG-014',
+    title: 'Karthakolomban Sweet Mangoes (කාර්තකොලොම්බන් අඹ - 1kg)',
+    description: 'Sri Lanka’s most prized sweet mango variety with rich floral perfume and silky non-fibrous pulp.',
+    category: 'Fruits & Veg',
+    brand: 'Jaffna Harvest',
+    price: 19.50,
+    originalPrice: 24.00,
+    unit: 'kg',
+    unitWeight: '1 kg',
+    imageUrl: '/prod_mango.jpg',
+    stock: 50,
+    store: 'Ceylon Foods Supermarket Bucharest',
+    status: 'Active',
+    aiFreshnessScore: 99,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.9,
+    reviewsCount: 280,
+    createdAt: '2026-10-25'
+  },
+
+  // 5. CEYLON TEA, BAKERY & SNACKS
+  {
+    id: 'prod-tea',
+    sku: 'BEV-TEA-015',
+    title: 'Dilmah Pure Ceylon Single Origin BOPF Black Tea (දිල්මා ලංකා තේ - 400g)',
+    description: 'World-renowned 100% pure Ceylon single-origin tea from the central misty highlands. Bold, bright, rich liquor perfect for daily morning milk tea.',
+    category: 'Beverages',
+    brand: 'Dilmah',
+    price: 22.50,
+    originalPrice: 26.00,
+    unit: 'pack',
+    unitWeight: '400g',
+    imageUrl: '/prod_tea.jpg',
+    stock: 140,
+    store: 'Ceylon Foods Supermarket Bucharest',
+    status: 'Active',
+    aiFreshnessScore: 100,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 5.0,
+    reviewsCount: 940,
+    createdAt: '2026-10-22'
+  },
+  {
+    id: 'prod-biscuits',
+    sku: 'SNK-BISC-016',
+    title: 'Munchee Super Cream Crackers & Maliban Biscuits (500g)',
+    description: 'The iconic afternoon tea snack of Sri Lanka: crispy golden Cream Crackers and tangy Maliban Lemon Puff.',
     category: 'Snacks',
-    brand: 'Munchee Biscuits',
-    price: 450,
-    unit: 'piece',
-    unitWeight: '500 g',
-    imageUrl: 'https://images.unsplash.com/photo-1509912760195-4f275e7a9b0c?w=800',
-    stock: 70,
-    store: 'Ceylon Foods Supermarket',
+    brand: 'Munchee / Maliban',
+    price: 12.00,
+    originalPrice: 14.50,
+    unit: 'pack',
+    unitWeight: '500g',
+    imageUrl: '/prod_biscuits.jpg',
+    stock: 110,
+    store: 'Ceylon Foods Supermarket Bucharest',
     status: 'Active',
     aiFreshnessScore: 97,
     isOrganic: false,
     isFarmSourced: false,
     rating: 4.8,
-    reviewsCount: 790,
+    reviewsCount: 510,
     createdAt: '2026-10-23'
   },
-
-  // 8. HOUSEHOLD & CLEANING
   {
-    id: 'prod-20',
-    sku: 'HOU-DISH-020',
-    title: 'Sunlight Lemon Dishwash Liquid (750ml)',
-    description: 'Pure lemon extract grease-cutting dish detergent that eliminates tough curry oil and bacteria.',
-    category: 'Household',
-    brand: 'Sunlight Sri Lanka',
-    price: 680,
-    unit: 'piece',
-    unitWeight: '750 ml',
-    imageUrl: 'https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=800',
-    stock: 130,
-    store: 'Ceylon Foods Supermarket',
+    id: 'prod-roast-paan',
+    sku: 'BAK-ROAS-017',
+    title: 'Traditional Woodfired Roast Paan (රෝස් පාන් - 1 Loaf)',
+    description: 'Baked fresh daily in Bucharest: flat, crusty, golden woodfired loaves made with traditional Sri Lankan baking technique. Made to be dipped in hot pol sambol & parippu.',
+    category: 'Bakery',
+    brand: 'Ceylon Bakery Bucharest',
+    price: 7.50,
+    originalPrice: 9.00,
+    unit: 'loaf',
+    unitWeight: '450g',
+    imageUrl: '/prod_roast_paan.jpg',
+    stock: 65,
+    store: 'Ceylon Foods Supermarket Bucharest',
     status: 'Active',
-    aiFreshnessScore: 95,
-    isOrganic: false,
-    isFarmSourced: false,
-    rating: 4.7,
-    reviewsCount: 650,
-    createdAt: '2026-10-24'
-  },
-  {
-    id: 'prod-21',
-    sku: 'HOU-SOAP-021',
-    title: 'Dettol Sri Lanka Antiseptic Liquid (500ml)',
-    description: 'Hospital-grade antiseptic liquid for first aid, surface disinfection, and family personal hygiene.',
-    category: 'Household',
-    brand: 'Dettol Care Lanka',
-    price: 850,
-    unit: 'piece',
-    unitWeight: '500 ml',
-    imageUrl: 'https://images.unsplash.com/photo-1608248597359-545a90e3dfb5?w=800',
-    stock: 85,
-    store: 'Ceylon Foods Supermarket',
-    status: 'Active',
-    aiFreshnessScore: 96,
-    isOrganic: false,
-    isFarmSourced: false,
-    rating: 4.8,
-    reviewsCount: 420,
-    createdAt: '2026-10-24'
+    aiFreshnessScore: 100,
+    isOrganic: true,
+    isFarmSourced: true,
+    rating: 4.9,
+    reviewsCount: 380,
+    createdAt: '2026-10-25'
   }
 ];
 
 export const INITIAL_RIDER: RiderPartner = {
-  id: 'rider-1',
-  name: 'Brie Larson',
-  phone: '+1 (555) 234-8971',
-  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
-  vehicleType: 'Electric Scooter',
-  rating: 4.95,
-  currentLocation: { lat: 37.7749, lng: -122.4194 }
+  id: 'rider-glovo-1',
+  name: 'Andrei Popescu',
+  company: 'Glovo Express Bucharest',
+  phone: '+40 721 892 411',
+  avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
+  vehicleType: 'Electric Scooter (Glovo)',
+  rating: 4.92,
+  currentLocation: { lat: 44.4361, lng: 26.1027 } // Bucharest City Center
 };
 
 export interface FleetRider {
   id: string;
   name: string;
   phone: string;
+  company: string; // Glovo, Bolt, Sameday, Fan Courier, Store In-House
   vehicleType: string;
   plateNumber: string;
   avatarUrl: string;
@@ -652,121 +508,116 @@ export interface FleetRider {
 export const INITIAL_FLEET_RIDERS: FleetRider[] = [
   {
     id: 'rider-1',
-    name: 'Brie Larson',
-    phone: '+94 77 234 8971',
-    vehicleType: 'Electric Scooter (Eco)',
-    plateNumber: 'WP-BIK-9021',
-    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
+    name: 'Andrei Popescu',
+    phone: '+40 721 892 411',
+    company: 'Glovo Express Bucharest',
+    vehicleType: 'Electric Scooter',
+    plateNumber: 'B-102-GLV',
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
     status: 'DELIVERING',
-    currentOrderId: 'FC-123456',
-    completedDeliveries: 342,
-    rating: 4.95,
-    zone: 'Zone A - Colombo Central'
+    currentOrderId: 'CF-8921',
+    completedDeliveries: 412,
+    rating: 4.92,
+    zone: 'Sector 1 & 2 (București Nord)'
   },
   {
     id: 'rider-2',
-    name: 'Kasun Perera',
-    phone: '+94 71 892 4112',
-    vehicleType: 'Honda Dio 110cc',
-    plateNumber: 'WP-ABG-4412',
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
+    name: 'Ion Ionescu',
+    phone: '+40 732 441 902',
+    company: 'Bolt Delivery Riders',
+    vehicleType: 'Yamaha 125cc Scooter',
+    plateNumber: 'B-88-BLT',
+    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80',
     status: 'AVAILABLE',
-    completedDeliveries: 512,
-    rating: 4.90,
-    zone: 'Zone B - Colombo South'
+    completedDeliveries: 380,
+    rating: 4.88,
+    zone: 'Sector 3 & 4 (București Centru-Sud)'
   },
   {
     id: 'rider-3',
-    name: 'Nimal Fernando',
-    phone: '+94 76 345 7789',
+    name: 'Mihai Radu',
+    phone: '+40 745 612 883',
+    company: 'Sameday 2H Bucharest',
     vehicleType: 'Delivery Van (Chilled)',
-    plateNumber: 'WP-CAS-1920',
-    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80',
+    plateNumber: 'B-340-SMD',
+    avatarUrl: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=200&auto=format&fit=crop&q=80',
     status: 'AVAILABLE',
-    completedDeliveries: 780,
-    rating: 4.88,
-    zone: 'Zone C - Bulk & Chilled'
+    completedDeliveries: 620,
+    rating: 4.95,
+    zone: 'Sector 5, 6 & Ilfov'
   },
   {
     id: 'rider-4',
-    name: 'Dinesh Wickramasinghe',
-    phone: '+94 72 612 3901',
-    vehicleType: 'Yamaha RayZR',
-    plateNumber: 'WP-BCB-8172',
-    avatarUrl: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=200&auto=format&fit=crop&q=80',
-    status: 'OFF_DUTY',
-    completedDeliveries: 215,
-    rating: 4.75,
-    zone: 'Zone A - Colombo Central'
+    name: 'Rajitha Perera',
+    phone: '+40 720 334 119',
+    company: 'Ceylon Foods In-House Courier',
+    vehicleType: 'Honda PCX 150',
+    plateNumber: 'B-99-CEY',
+    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
+    status: 'AVAILABLE',
+    completedDeliveries: 285,
+    rating: 4.96,
+    zone: 'All Sectors Express COD'
   }
 ];
 
+export const INITIAL_ADMIN_STATS = {
+  totalRevenue: 34850.00, // In lei
+  totalOrders: 1420,
+  activeProducts: 17,
+  totalCustomers: 890,
+  todayRevenue: 2840.00,
+  todayOrders: 42,
+  pendingDeliveries: 7,
+  availableBalance: 18450.00
+};
+
 export interface PromotionCoupon {
   id: string;
+  name: string;
   code: string;
-  title: string;
+  offer: string;
   discountType: 'PERCENTAGE' | 'FIXED' | 'FREE_DELIVERY';
   discountValue: number;
-  minOrderValue: number;
-  validUntil: string;
-  usageCount: number;
-  usageLimit: number;
-  status: 'ACTIVE' | 'EXPIRED' | 'PAUSED';
-  badgeColor: string;
+  dates: string;
+  usage: string;
+  currentUsage: number;
+  maxUsage: number;
+  minBasket: string;
+  minBasketValue: number;
+  status: 'Active' | 'Scheduled' | 'Expired' | 'Paused';
 }
 
 export const INITIAL_PROMOTIONS: PromotionCoupon[] = [
   {
     id: 'promo-1',
-    code: 'CEYLON20',
-    title: '20% Off Weekend Harvest',
+    name: 'Welcome to Ceylon Foods Romania',
+    code: 'CEYLON10',
+    offer: '10% OFF any order over 100 lei',
     discountType: 'PERCENTAGE',
-    discountValue: 20,
-    minOrderValue: 4500,
-    validUntil: '2026-11-30',
-    usageCount: 142,
-    usageLimit: 500,
-    status: 'ACTIVE',
-    badgeColor: '#0C6237'
+    discountValue: 10,
+    dates: '01 Nov – 30 Nov 2026',
+    usage: '68 / 500',
+    currentUsage: 68,
+    maxUsage: 500,
+    minBasket: '100 lei',
+    minBasketValue: 100,
+    status: 'Active'
   },
   {
     id: 'promo-2',
-    code: 'FREEDELIVERY',
-    title: 'Free Express Doorstep Delivery',
+    name: 'Free Courier Delivery Bucharest',
+    code: 'LIVRAREGRATIS',
+    offer: 'Free Courier Delivery over 150 lei',
     discountType: 'FREE_DELIVERY',
-    discountValue: 350,
-    minOrderValue: 5000,
-    validUntil: '2026-12-31',
-    usageCount: 389,
-    usageLimit: 1000,
-    status: 'ACTIVE',
-    badgeColor: '#FF6515'
-  },
-  {
-    id: 'promo-3',
-    code: 'VILLAGE15',
-    title: '15% Off Farm-Fresh Organic Veggies',
-    discountType: 'PERCENTAGE',
     discountValue: 15,
-    minOrderValue: 3000,
-    validUntil: '2026-11-15',
-    usageCount: 88,
-    usageLimit: 300,
-    status: 'ACTIVE',
-    badgeColor: '#78F9B8'
-  },
-  {
-    id: 'promo-4',
-    code: 'AYUBOWAN',
-    title: 'Rs. 500 Off First Grocery Basket',
-    discountType: 'FIXED',
-    discountValue: 500,
-    minOrderValue: 4000,
-    validUntil: '2026-12-31',
-    usageCount: 65,
-    usageLimit: 200,
-    status: 'ACTIVE',
-    badgeColor: '#08542E'
+    dates: 'Always Active',
+    usage: '142 / 1000',
+    currentUsage: 142,
+    maxUsage: 1000,
+    minBasket: '150 lei',
+    minBasketValue: 150,
+    status: 'Active'
   }
 ];
 
@@ -775,87 +626,49 @@ export interface CustomerAccount {
   name: string;
   email: string;
   phone: string;
-  address: string;
-  membershipTier: 'Bronze' | 'Silver' | 'Gold' | 'Platinum';
-  totalOrders: number;
-  totalSpent: number;
-  loyaltyPoints: number;
+  ordersCount: number;
+  totalSpent: string;
+  lastOrder: string;
+  status: 'Active' | 'VIP' | 'Blocked';
   joinedDate: string;
-  status: 'ACTIVE' | 'BLOCKED';
+  city: string;
 }
 
 export const INITIAL_CUSTOMERS: CustomerAccount[] = [
   {
     id: 'cust-1',
-    name: 'Brie Larson',
-    email: 'brie@example.com',
-    phone: '+94 77 123 4567',
-    address: '33 York Street, Colombo 01',
-    membershipTier: 'Platinum',
-    totalOrders: 28,
-    totalSpent: 142500,
-    loyaltyPoints: 850,
-    joinedDate: '2026-01-15',
-    status: 'ACTIVE'
+    name: 'Mihai Enache',
+    email: 'mihai.enache@gmail.com',
+    phone: '+40 722 456 789',
+    ordersCount: 8,
+    totalSpent: '645.50 lei',
+    lastOrder: 'Today, 10:15',
+    status: 'VIP',
+    joinedDate: '15 Sep 2026',
+    city: 'București Sector 1'
   },
   {
     id: 'cust-2',
-    name: 'Samantha Silva',
-    email: 'samantha.s@gmail.com',
-    phone: '+94 71 456 7890',
-    address: '14 Havelock Road, Colombo 05',
-    membershipTier: 'Gold',
-    totalOrders: 16,
-    totalSpent: 89200,
-    loyaltyPoints: 420,
-    joinedDate: '2026-03-22',
-    status: 'ACTIVE'
+    name: 'Sandun Jayasuriya',
+    email: 'sandun.j@yahoo.com',
+    phone: '+40 740 112 345',
+    ordersCount: 14,
+    totalSpent: '1,420.00 lei',
+    lastOrder: 'Yesterday',
+    status: 'VIP',
+    joinedDate: '02 Aug 2026',
+    city: 'București Sector 2'
   },
   {
     id: 'cust-3',
-    name: 'Rohan Jayasuriya',
-    email: 'rohan.j@yahoo.com',
-    phone: '+94 76 991 2234',
-    address: '88 Galle Face Terrace, Colombo 03',
-    membershipTier: 'Silver',
-    totalOrders: 7,
-    totalSpent: 34000,
-    loyaltyPoints: 160,
-    joinedDate: '2026-06-10',
-    status: 'ACTIVE'
-  },
-  {
-    id: 'cust-4',
-    name: 'Amara De Silva',
-    email: 'amara.desilva@outlook.com',
-    phone: '+94 75 332 1198',
-    address: '42 Flower Road, Colombo 07',
-    membershipTier: 'Bronze',
-    totalOrders: 3,
-    totalSpent: 11500,
-    loyaltyPoints: 50,
-    joinedDate: '2026-09-02',
-    status: 'ACTIVE'
+    name: 'Elena Dumitrescu',
+    email: 'elena.d@outlook.com',
+    phone: '+40 735 998 123',
+    ordersCount: 4,
+    totalSpent: '310.00 lei',
+    lastOrder: '28 Oct 2026',
+    status: 'Active',
+    joinedDate: '10 Oct 2026',
+    city: 'București Sector 3'
   }
 ];
-
-export const INITIAL_ADMIN_STATS = {
-  availableBalance: 485200,
-  totalOrders: 4592,
-  activeProducts: 21,
-  totalCustomers: 215,
-  unassignedOrders: 2,
-  todayOrders: 14,
-  activeRiders: 7,
-  activeVendors: 12,
-  salesWeekly: [
-    { day: 'Sun', sales: 12 },
-    { day: 'Mon', sales: 65 },
-    { day: 'Tue', sales: 22 },
-    { day: 'Wed', sales: 48 },
-    { day: 'Thu', sales: 15 },
-    { day: 'Fri', sales: 38 },
-    { day: 'Sat', sales: 18 }
-  ],
-  userDistribution: { customers: 70, vendors: 15, riders: 15 }
-};

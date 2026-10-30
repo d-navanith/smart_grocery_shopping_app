@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Product, CartItem, CustomerUser, DeliveryZone } from './types';
+import { INITIAL_PRODUCTS } from './initialProducts';
 import { HeaderNav } from './components/HeaderNav';
 import { ShopView } from './components/ShopView';
 import { CartView } from './components/CartView';
@@ -9,14 +10,17 @@ import { Footer } from './components/Footer';
 import { Modals } from './components/Modals';
 
 const CEYLON_DELIVERY_ZONES: DeliveryZone[] = [
-  { name: 'Colombo Central', coverage: 'Colombo 01–07', fee: 300 },
-  { name: 'Colombo South', coverage: 'Colombo 08–15, Dehiwala', fee: 300 },
-  { name: 'Greater Colombo', coverage: 'Nugegoda, Rajagiriya, Battaramulla', fee: 350 },
-  { name: 'Outer Suburbs', coverage: 'Maharagama, Pannipitiya, Kottawa', fee: 450 }
+  { name: 'București Sector 1 (Nord, Băneasa, Pipera)', coverage: 'Sector 1', fee: 15, eta: '25-35 min' },
+  { name: 'București Sector 2 (Colentina, Pantelimon, Tei)', coverage: 'Sector 2', fee: 15, eta: '25-35 min' },
+  { name: 'București Sector 3 (Centru Vechi, Titan, Dristor)', coverage: 'Sector 3', fee: 15, eta: '20-30 min' },
+  { name: 'București Sector 4 (Berceni, Tineretului)', coverage: 'Sector 4', fee: 15, eta: '30-40 min' },
+  { name: 'București Sector 5 (Cotroceni, Rahova)', coverage: 'Sector 5', fee: 15, eta: '30-40 min' },
+  { name: 'București Sector 6 (Militari, Drumul Taberei)', coverage: 'Sector 6', fee: 15, eta: '30-40 min' },
+  { name: 'Județul Ilfov (Otopeni, Voluntari, Chiajna)', coverage: 'Ilfov Express', fee: 25, eta: '45-60 min' },
+  { name: 'Livrare Națională România (Sameday / Fan Courier)', coverage: 'Toată România', fee: 30, eta: '24-48 ore' }
 ];
 
 export default function ClientWebSupermarket() {
-  // Theme State
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     if (params?.get('theme') === 'dark') return true;
@@ -24,7 +28,6 @@ export default function ClientWebSupermarket() {
     return typeof window !== 'undefined' && localStorage.getItem('ceylonfoods_theme') === 'dark';
   });
 
-  // Navigation State: 'SHOP' is default or 'HOME'
   const [currentPage, setCurrentPage] = useState<'HOME' | 'SHOP' | 'CART' | 'RECIPES'>(() => {
     if (typeof window !== 'undefined') {
       const p = new URLSearchParams(window.location.search).get('page');
@@ -32,111 +35,144 @@ export default function ClientWebSupermarket() {
       if (p === 'recipes') return 'RECIPES';
       if (p === 'home') return 'HOME';
     }
-    return 'SHOP'; // Default to Shop view so user immediately sees the Image 1 theme!
+    return 'SHOP';
   });
 
-  // Data States
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [wishlist, setWishlist] = useState<string[]>(['sample-1']);
+  const [wishlist, setWishlist] = useState<string[]>(['prod-white-rice', 'prod-brinjal']);
 
-  // Customer User Authentication
   const [currentUser, setCurrentUser] = useState<CustomerUser | null>(() => {
     const saved = localStorage.getItem('ceylonfoods_customer_user');
     return saved ? JSON.parse(saved) : {
       id: 'cust-1',
-      name: 'Brie Larson',
-      email: 'brie@example.com',
-      phone: '+94 77 123 4567',
-      address: '33 York Street, Colombo 01',
+      name: 'Mihai Enache',
+      email: 'mihai@example.ro',
+      phone: '+40 722 456 789',
+      address: 'Strada Mihai Eminescu nr. 42',
+      buildingDetails: 'Bloc 12, Scara A, Ap. 14, Interfon 14',
+      sectorCity: 'București Sector 1',
       role: 'CUSTOMER'
     };
   });
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  // Cart State (Initialized with sample items matching Image 2)
+  // Cart with Authentic Sri Lankan staples in Lei (Image 2 Theme)
   const [cart, setCart] = useState<CartItem[]>([
     {
       product: {
-        id: 'sample-1',
-        sku: 'STA-KEERI-01',
-        title: 'Araliya Keeri Samba Rice (5kg)',
-        description: 'Premium aged aromatic Keeri Samba rice',
+        id: 'prod-white-rice',
+        sku: 'RIC-WHITE-001',
+        title: 'Araliya Keeri Samba & White Raw Rice (5kg)',
+        description: 'Authentic Sri Lankan white raw rice & premium aromatic Keeri Samba in traditional burlap sack.',
         category: 'Staples & Grains',
-        brand: 'Araliya',
-        price: 1450,
-        originalPrice: 1600,
+        brand: 'Araliya Lanka',
+        price: 38.50,
+        originalPrice: 45.00,
         unit: '5kg Bag',
-        unitWeight: '5kg',
-        imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80',
-        stock: 45,
-        store: 'Colombo Central Hub',
+        unitWeight: '5 kg',
+        imageUrl: '/prod_white_rice.jpg', // User uploaded burlap sack of rice!
+        stock: 95,
+        store: 'Ceylon Foods Supermarket Bucharest',
         status: 'Active',
-        aiFreshnessScore: 98,
+        aiFreshnessScore: 99,
         isOrganic: true,
         isFarmSourced: true,
         rating: 4.9,
-        reviewsCount: 142,
+        reviewsCount: 380,
         availableWeights: ['5kg', '10kg'],
         productType: 'Packaged Goods'
       },
-      quantity: 2,
+      quantity: 1,
       selectedWeight: '5kg',
-      effectivePrice: 1450
+      effectivePrice: 38.50
     },
     {
       product: {
-        id: 'sample-2',
-        sku: 'DAI-HIGH-01',
-        title: 'Highland Pasteurized Fresh Milk (1L)',
-        description: '100% Pure Sri Lankan highland dairy milk',
-        category: 'Dairy & Eggs',
-        brand: 'Highland',
-        price: 520,
-        originalPrice: 550,
-        unit: '1L Bottle',
-        unitWeight: '1L',
-        imageUrl: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=600&q=80',
-        stock: 30,
-        store: 'Colombo Central Hub',
+        id: 'prod-brinjal',
+        sku: 'VEG-BRIN-004',
+        title: 'Sri Lankan Purple Brinjal / Eggplant (1kg)',
+        description: 'Glossy, tender violet eggplants. Essential for classic Wambatu Moju & curries.',
+        category: 'Fruits & Veg',
+        brand: 'Ceylon Fresh Greens',
+        price: 14.50,
+        originalPrice: 18.00,
+        unit: 'kg',
+        unitWeight: '1 kg',
+        imageUrl: '/prod_brinjal.jpg',
+        stock: 75,
+        store: 'Ceylon Foods Supermarket Bucharest',
         status: 'Active',
-        aiFreshnessScore: 99,
-        isOrganic: false,
+        aiFreshnessScore: 97,
+        isOrganic: true,
         isFarmSourced: true,
         rating: 4.8,
-        reviewsCount: 88,
-        availableWeights: ['1L', '2L'],
-        productType: 'Chilled & Frozen'
+        reviewsCount: 310,
+        availableWeights: ['500g', '1kg', '2kg'],
+        productType: 'Fresh Produce'
       },
-      quantity: 3,
-      selectedWeight: '1L',
-      effectivePrice: 520
+      quantity: 2,
+      selectedWeight: '1kg',
+      effectivePrice: 14.50
+    },
+    {
+      product: {
+        id: 'prod-dhal',
+        sku: 'GRN-DHAL-003',
+        title: 'Mysore Red Split Lentils / Dhal (1kg)',
+        description: 'Premium red split lentils for daily creamy parippu curry.',
+        category: 'Staples & Grains',
+        brand: 'Ceylon Harvest',
+        price: 12.50,
+        originalPrice: 15.00,
+        unit: 'kg',
+        unitWeight: '1 kg',
+        imageUrl: '/prod_dhal.jpg',
+        stock: 150,
+        store: 'Ceylon Foods Supermarket Bucharest',
+        status: 'Active',
+        aiFreshnessScore: 99,
+        isOrganic: true,
+        isFarmSourced: true,
+        rating: 5.0,
+        reviewsCount: 650,
+        availableWeights: ['500g', '1kg', '2kg'],
+        productType: 'Packaged Goods'
+      },
+      quantity: 1,
+      selectedWeight: '1kg',
+      effectivePrice: 12.50
     }
   ]);
 
-  // Delivery & Promo Settings
   const [selectedZone, setSelectedZone] = useState<DeliveryZone>(CEYLON_DELIVERY_ZONES[0]);
   const [appliedPromo, setAppliedPromo] = useState<{ code: string; title: string; discount: number; freeDelivery?: boolean } | null>({
-    code: 'FRESH10',
-    title: '10% Off Supermarket Special',
-    discount: 446
+    code: 'CEYLON10',
+    title: '10% Reducere la prima comandă',
+    discount: 8.00
   });
   const [promoError, setPromoError] = useState('');
 
-  // Modals & Drawers
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
   const [activeOrder, setActiveOrder] = useState<any>({
     orderNumber: 'CF-8921',
-    status: 'OUT_FOR_DELIVERY',
-    totalAmount: 4314,
-    items: ['Araliya Keeri Samba', 'Highland Milk']
+    status: 'PROCESSING',
+    totalAmount: 87.00,
+    items: ['Araliya Keeri Samba (5kg)', 'Purple Brinjal (2kg)', 'Mysore Dhal (1kg)'],
+    customerName: 'Mihai Enache',
+    customerPhone: '+40 722 456 789',
+    address: 'Strada Mihai Eminescu nr. 42, Bloc 12, Ap. 14, București Sector 1',
+    courierCompany: 'Glovo Express Bucharest',
+    courierPhone: '+40 21 9988',
+    riderName: 'Ion Popescu (Glovo Rider #4412)',
+    paymentMethod: 'CASH_ON_DELIVERY'
   });
 
-  // Fetch live products & orders from server
+  // Fetch live products
   useEffect(() => {
     fetch('/api/products')
       .then(res => res.json())
@@ -144,7 +180,7 @@ export default function ClientWebSupermarket() {
         if (data.data && Array.isArray(data.data) && data.data.length > 0) {
           const loadedProducts = data.data.map((p: Product) => ({
             ...p,
-            availableWeights: p.unit === 'kg' ? ['250g', '500g', '1kg', '2kg'] : undefined,
+            availableWeights: p.unit === 'kg' ? ['500g', '1kg', '2kg'] : undefined,
             productType: p.category.includes('Fruit') || p.category.includes('Veg')
               ? 'Fresh Produce'
               : p.category.includes('Dairy') || p.category.includes('Meat')
@@ -164,7 +200,6 @@ export default function ClientWebSupermarket() {
       .catch(err => console.error(err));
   }, []);
 
-  // Theme Sync
   useEffect(() => {
     localStorage.setItem('ceylonfoods_theme', isDarkMode ? 'dark' : 'light');
     if (isDarkMode) {
@@ -174,21 +209,20 @@ export default function ClientWebSupermarket() {
     }
   }, [isDarkMode]);
 
-  // Calculations
+  // Calculations in Romanian Lei
   const subtotal = cart.reduce((sum, item) => sum + item.effectivePrice * item.quantity, 0);
-  const isFreeDeliveryQualified = subtotal >= 5000 || appliedPromo?.freeDelivery === true;
+  const isFreeDeliveryQualified = subtotal >= 250 || appliedPromo?.freeDelivery === true;
   const effectiveDeliveryFee = isFreeDeliveryQualified ? 0 : selectedZone.fee;
   const promoDiscountAmount = appliedPromo ? appliedPromo.discount : 0;
   const totalAmount = Math.max(0, subtotal + effectiveDeliveryFee - promoDiscountAmount);
 
-  // Cart Operations
   const handleAddToCart = (product: Product, qty: number = 1, weight: string = '1kg') => {
     if (!currentUser) {
       setIsAuthModalOpen(true);
       return;
     }
 
-    const multiplier = weight === '250g' ? 0.25 : weight === '500g' ? 0.5 : weight === '2kg' ? 2 : 1;
+    const multiplier = weight === '250g' ? 0.25 : weight === '500g' ? 0.5 : weight === '2kg' ? 2 : weight === '5kg' ? 5 : 1;
     const effectivePrice = product.price * multiplier;
 
     setCart(prev => {
@@ -226,70 +260,80 @@ export default function ClientWebSupermarket() {
     setCart([]);
   };
 
-  // Promo Code Validation
   const handleApplyPromo = (code: string) => {
     setPromoError('');
     const c = code.trim().toUpperCase();
-    if (c === 'FRESH10') {
+    if (c === 'CEYLON10') {
       const disc = Math.round(subtotal * 0.10);
-      setAppliedPromo({ code: 'FRESH10', title: '10% Off Supermarket Special', discount: disc });
-    } else if (c === 'FREESHIP') {
-      setAppliedPromo({ code: 'FREESHIP', title: 'Free Express Delivery Waived', discount: selectedZone.fee, freeDelivery: true });
-    } else if (c === 'AYUBOWAN') {
-      setAppliedPromo({ code: 'AYUBOWAN', title: 'Rs. 500 Welcome Voucher', discount: Math.min(500, subtotal) });
+      setAppliedPromo({ code: 'CEYLON10', title: '10% Reducere la Comandă', discount: disc });
+    } else if (c === 'LIVRAREGRATIS') {
+      setAppliedPromo({ code: 'LIVRAREGRATIS', title: 'Livrare Gratuită Oferită', discount: selectedZone.fee, freeDelivery: true });
     } else {
-      setPromoError('Invalid coupon. Try FRESH10, FREESHIP, or AYUBOWAN');
+      setPromoError('Cupon invalid. Încercați CEYLON10 sau LIVRAREGRATIS');
     }
   };
 
-  // Wishlist Toggle
   const handleToggleWishlist = (productId: string) => {
     setWishlist(prev =>
       prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]
     );
   };
 
-  // Checkout submission
-  const handleCheckout = async () => {
+  // CHECKOUT WITH CASH ON DELIVERY (PLATA LA LIVRARE)
+  const handleCheckoutWithCod = async (payload: { address: string; phone: string; note: string; paymentMethod: string }) => {
     if (!currentUser) {
       setIsAuthModalOpen(true);
       return;
     }
 
+    const orderData = {
+      customerId: currentUser.id,
+      customerName: currentUser.name,
+      customerPhone: payload.phone || currentUser.phone,
+      address: payload.address,
+      deliveryZone: selectedZone.name,
+      deliveryFee: effectiveDeliveryFee,
+      items: cart.map(c => ({
+        productId: c.product.id,
+        productTitle: c.product.title,
+        quantity: c.quantity,
+        price: c.effectivePrice,
+        unit: c.selectedWeight || c.product.unit
+      })),
+      subtotal,
+      totalAmount,
+      paymentMethod: payload.paymentMethod || 'CASH_ON_DELIVERY',
+      paymentStatus: 'PENDING',
+      deliveryNote: payload.note,
+      status: 'PROCESSING',
+      courierCompany: 'Glovo Express Bucharest',
+      courierPhone: '+40 21 9988',
+      riderName: 'Ion Popescu (Glovo Courier #4412)'
+    };
+
     try {
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customerId: currentUser.id,
-          customerName: currentUser.name,
-          customerPhone: currentUser.phone,
-          items: cart.map(c => ({
-            productId: c.product.id,
-            productTitle: c.product.title,
-            quantity: c.quantity,
-            price: c.effectivePrice,
-            unit: c.selectedWeight || c.product.unit
-          })),
-          subtotal,
-          deliveryFee: effectiveDeliveryFee,
-          totalAmount,
-          deliveryZone: selectedZone.name,
-          address: currentUser.address,
-          status: 'CONFIRMED'
-        })
+        body: JSON.stringify(orderData)
       });
       const data = await res.json();
       if (data.data) {
         setActiveOrder(data.data);
       }
     } catch {
-      // Mock order fallback
       setActiveOrder({
         orderNumber: 'CF-' + Math.floor(1000 + Math.random() * 9000),
-        status: 'CONFIRMED',
+        status: 'PROCESSING',
         totalAmount,
-        items: cart.map(c => c.product.title)
+        paymentMethod: 'CASH_ON_DELIVERY',
+        items: cart.map(c => c.product.title),
+        customerName: currentUser.name,
+        customerPhone: payload.phone,
+        address: payload.address,
+        courierCompany: 'Glovo Express Bucharest',
+        courierPhone: '+40 21 9988',
+        riderName: 'Ion Popescu (Glovo Courier #4412)'
       });
     }
 
@@ -299,7 +343,6 @@ export default function ClientWebSupermarket() {
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'dark bg-[#0A0D0B] text-white' : 'bg-[#F9FAF9] text-slate-800'} font-sans flex flex-col transition-colors duration-200`}>
-      {/* 1. HEADER & SUB-NAV WITH IMAGE 1/2 COLOR SCHEME */}
       <HeaderNav
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
@@ -322,7 +365,6 @@ export default function ClientWebSupermarket() {
         subtotal={subtotal}
       />
 
-      {/* 2. DYNAMIC MAIN BODY VIEW */}
       <main className="flex-1 flex flex-col">
         {currentPage === 'SHOP' && (
           <ShopView
@@ -360,7 +402,7 @@ export default function ClientWebSupermarket() {
             effectiveDeliveryFee={effectiveDeliveryFee}
             isFreeDeliveryQualified={isFreeDeliveryQualified}
             currentUser={currentUser}
-            onOpenCheckoutModal={handleCheckout}
+            onOpenCheckoutModal={handleCheckoutWithCod}
             onNavigateShop={() => setCurrentPage('SHOP')}
             onNavigateHome={() => setCurrentPage('HOME')}
             isDarkMode={isDarkMode}
@@ -389,13 +431,11 @@ export default function ClientWebSupermarket() {
         )}
       </main>
 
-      {/* 3. FOOTER */}
       <Footer
         onNavigatePage={setCurrentPage}
         onSelectCategory={(cat) => setSelectedCategory(cat)}
       />
 
-      {/* 4. MODALS & DRAWERS */}
       <Modals
         selectedProduct={selectedProduct}
         onCloseProductModal={() => setSelectedProduct(null)}

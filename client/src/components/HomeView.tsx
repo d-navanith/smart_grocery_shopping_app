@@ -7,7 +7,6 @@ import {
   Award,
   Truck,
   ShieldCheck,
-  CheckCircle,
   ChefHat,
   Star,
   Plus
@@ -35,46 +34,42 @@ export const HomeView: React.FC<HomeViewProps> = ({
   isDarkMode,
   onOpenAppTour
 }) => {
-  // Category Cards
   const CATEGORY_CARDS = [
-    { id: 'cat-fruits', title: 'Fresh Fruits', subtitle: 'Island mangoes & papaya', image: '/cat_fruits.jpg', filterKey: 'Fruits' },
-    { id: 'cat-veg', title: 'Vegetables', subtitle: 'Nuwara Eliya crisp harvest', image: '/cat_vegetables.jpg', filterKey: 'Vegetables' },
-    { id: 'cat-dairy', title: 'Dairy & Eggs', subtitle: 'Highland fresh milk', image: '/cat_dairy.jpg', filterKey: 'Dairy & Eggs' },
-    { id: 'cat-meat', title: 'Meat & Seafood', subtitle: 'Mirissa catch & poultry', image: '/cat_meat.jpg', filterKey: 'Meat & Seafood' },
-    { id: 'cat-bakery', title: 'Bakery', subtitle: 'Roast paan & tea buns', image: '/cat_bakery.jpg', filterKey: 'Bakery' },
-    { id: 'cat-pantry', title: 'Rice & Staples', subtitle: 'Araliya Keeri Samba', image: '/cat_pantry.jpg', filterKey: 'Staples & Grains' }
+    { id: 'cat-rice', title: 'Orez Alb & Orez Roșu', subtitle: 'Keeri Samba & Red Rice', image: '/prod_white_rice.jpg', filterKey: 'Staples & Grains' },
+    { id: 'cat-wambatu', title: 'Legume & Wambatu', subtitle: 'Brinjal proaspăt & Okra', image: '/prod_brinjal.jpg', filterKey: 'Fruits & Veg' },
+    { id: 'cat-spices', title: 'Condimente de Ceylon', subtitle: 'Curry Powder & Scorțișoară', image: '/prod_spices.jpg', filterKey: 'Pantry' },
+    { id: 'cat-tea', title: 'Ceai Dilmah Ceylon', subtitle: 'BOPF Single Origin Tea', image: '/prod_tea.jpg', filterKey: 'Beverages' },
+    { id: 'cat-bakery', title: 'Roast Paan & Panificație', subtitle: 'Pâine tradițională proaspătă', image: '/prod_roast_paan.jpg', filterKey: 'Bakery' },
+    { id: 'cat-fruits', title: 'Fructe Exotice', subtitle: 'Papaya & Mango Ceylon', image: '/prod_papaya.jpg', filterKey: 'Fruits & Veg' }
   ];
 
   const popularProducts = products.slice(0, 8);
 
   return (
     <div className="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-10">
-      {/* 1. SRI LANKAN AUTHENTIC CULTURAL TRUST RIBBON */}
-      <div className="flex flex-wrap items-center justify-between gap-3 text-xs bg-amber-50/60 dark:bg-amber-950/20 p-3 rounded-2xl border border-amber-200/80 dark:border-amber-900/50">
+      {/* 1. ROMANIAN-SRI LANKAN CULTURAL TRUST RIBBON */}
+      <div className="flex flex-wrap items-center justify-between gap-3 text-xs bg-amber-50/70 dark:bg-amber-950/20 p-3 rounded-2xl border border-amber-200/80 dark:border-amber-900/50">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white dark:bg-zinc-800 border border-amber-300 dark:border-amber-700 shadow-xs">
-            <img
-              src="/sri_lanka_flag.svg"
-              alt="Flag of Sri Lanka"
-              className="w-6 h-4 rounded-xs object-cover border border-amber-400"
-            />
+            <span className="text-base">🇷🇴</span>
+            <span className="text-base">🇱🇰</span>
             <span className="text-xs font-black text-amber-950 dark:text-amber-100">
-              100% ශ්‍රී ලාංකික
+              100% Autentic Sri Lanka în România
             </span>
             <span className="text-[11px] text-amber-800 dark:text-amber-300 font-bold hidden sm:inline">
-              • Authentic Sri Lankan Supermarket
+              • Magazin cu Depozit Central în București
             </span>
           </div>
 
           <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100/70 dark:bg-emerald-950/50 text-[#0A6847] dark:text-[#78F9B8] text-[11px] font-extrabold">
             <Leaf className="w-3.5 h-3.5" />
-            <span>Direct from Dambulla & Nuwara Eliya Farms</span>
+            <span>Alimente Zilnice: Orez Alb, Orez Roșu, Wambatu & Condimente</span>
           </div>
         </div>
 
         <div className="flex items-center gap-2 text-[11px] font-bold text-amber-900 dark:text-amber-200">
           <Award className="w-4 h-4 text-amber-600" />
-          <span>Lion Quality Assured & Freshness Certified</span>
+          <span>Plata la Livrare (Cash on Delivery) cu Livrare Rapidă prin Curieri</span>
         </div>
       </div>
 
@@ -88,16 +83,16 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="lg:col-span-6 space-y-5 z-10">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E5EFE7] dark:bg-emerald-950/80 text-[#0A6847] dark:text-[#78F9B8] text-xs font-black tracking-wide">
               <Leaf className="w-3.5 h-3.5 text-[#0A6847] dark:text-[#78F9B8]" />
-              <span>Fresh from our island to your home.</span>
+              <span>Direct din Sri Lanka în casele dumneavoastră din România.</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-[1.12]">
-              Fresh groceries delivered to your door <br />
-              <span className="text-[#0A6847] dark:text-[#78F9B8]">across Sri Lanka.</span>
+              Alimente proaspete din Sri Lanka <br />
+              <span className="text-[#0A6847] dark:text-[#78F9B8]">livrate rapid în România.</span>
             </h1>
 
             <p className="text-sm text-slate-600 dark:text-zinc-300 font-medium leading-relaxed max-w-lg">
-              Handpicked produce, organic harvest, and kitchen essentials delivered straight from Sri Lankan farms to your door in 45 minutes.
+              Orez alb de Ceylon, orez roșu tradițional, wambatu proaspăt, dhal, și condimente originale. Comandați cu plata cash la livrare (Cash on Delivery) în București și în toată România.
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -106,14 +101,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 className="px-6 py-3.5 rounded-full bg-[#0A6847] hover:bg-[#085237] text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-950/20 flex items-center gap-2 transition active:scale-95"
               >
                 <ShoppingBag className="w-4 h-4" />
-                <span>Shop Catalog (Image 1 Theme)</span>
+                <span>Vezi Catalogul cu Prețuri în Lei</span>
               </button>
 
               <button
                 onClick={onOpenAppTour}
-                className="px-6 py-3.5 rounded-full border border-slate-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 hover:bg-white dark:hover:bg-zinc-800 text-slate-800 dark:text-white font-extrabold text-xs sm:text-sm shadow-xs transition active:scale-95"
+                className="px-6 py-3.5 rounded-full border border-slate-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 hover:bg-white text-slate-800 dark:text-white font-extrabold text-xs sm:text-sm shadow-xs transition active:scale-95"
               >
-                App Tour (ආයුබෝවන්)
+                Turul Aplicației (ආයුබෝවන්)
               </button>
             </div>
           </div>
@@ -122,14 +117,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <div className="relative w-full max-w-xl flex items-center justify-center">
               <img
                 src="/home_hero_basket.png"
-                alt="Fresh Harvest Basket"
+                alt="Coș Produse Sri Lanka"
                 className="w-full max-h-[380px] sm:max-h-[440px] object-contain filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.18)] hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute top-2 right-4 px-4 py-2.5 rounded-2xl bg-[#0A6847] text-white shadow-xl flex items-center gap-2 border-2 border-white dark:border-zinc-900 animate-pulse">
                 <Sparkles className="w-4 h-4 text-amber-300" />
                 <div className="flex flex-col text-left">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-200">Fresh picks</span>
-                  <span className="text-xs font-black leading-none">this week</span>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-200">Depozit București</span>
+                  <span className="text-xs font-black leading-none">Plată la Livrare</span>
                 </div>
               </div>
             </div>
@@ -137,13 +132,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </div>
 
-      {/* 3. VALUE PROPOSITION STRIP */}
+      {/* 3. VALUE PROPOSITIONS STRIP */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { icon: <Truck className="w-6 h-6" />, title: '45-Min Express Delivery', desc: 'Fast doorstep delivery across Colombo & suburbs' },
-          { icon: <Leaf className="w-6 h-6" />, title: 'Island Fresh Harvest', desc: 'Direct from certified Nuwara Eliya & Dambulla growers' },
-          { icon: <ShieldCheck className="w-6 h-6" />, title: 'Secure Payments', desc: 'Pay safely with LankaQR, Cards or Cash on Delivery' },
-          { icon: <Award className="w-6 h-6" />, title: '100% Quality Inspected', desc: 'Money-back guarantee or immediate item replacement' }
+          { icon: <Truck className="w-6 h-6" />, title: 'Curier Rapid în București', desc: 'Dispecerat curieri Glovo / Bolt / Sameday în 30-45 min' },
+          { icon: <Leaf className="w-6 h-6" />, title: '100% Export Autentic', desc: 'Orez, condimente de Ceylon și legume importate proaspăt' },
+          { icon: <ShieldCheck className="w-6 h-6" />, title: 'Plata la Livrare (Cash)', desc: 'Plătiți în numerar curierului direct la ușa dumneavoastră' },
+          { icon: <Award className="w-6 h-6" />, title: 'Livrare Națională România', desc: 'Expediere rapidă prin Sameday / Fan Courier în orice oraș' }
         ].map((item, idx) => (
           <div
             key={idx}
@@ -167,17 +162,17 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              Shop by category
+              Cumpără după Categorie
             </h2>
             <p className="text-xs text-slate-500 dark:text-zinc-400">
-              Browse top categories freshly restocked every morning
+              Produsele cumpărate zilnic de consumatorii din Sri Lanka și iubitorii de bucătărie asiatică
             </p>
           </div>
           <button
             onClick={onNavigateShop}
             className="text-xs sm:text-sm font-extrabold text-[#0A6847] dark:text-[#78F9B8] hover:underline flex items-center gap-1"
           >
-            <span>View all in Shop</span>
+            <span>Vezi tot magazinul</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -196,11 +191,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   : 'bg-white border-slate-200 hover:border-emerald-200 shadow-xs'
               }`}
             >
-              <div className="h-28 rounded-xl overflow-hidden mb-2.5 bg-slate-100 dark:bg-zinc-800 flex items-center justify-center">
+              <div className="h-28 rounded-xl overflow-hidden mb-2.5 bg-slate-100 dark:bg-zinc-800 flex items-center justify-center p-1">
                 <img
                   src={cat.image}
                   alt={cat.title}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
               <div>
@@ -219,17 +214,17 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              Popular this week
+              Cele mai vândute alimente (Popular în România)
             </h2>
             <p className="text-xs text-slate-500 dark:text-zinc-400">
-              Our most-loved groceries, picked fresh today from local island producers.
+              Orez alb Keeri Samba, orez roșu, wambatu, dhal, și condimente de Ceylon în stoc în București
             </p>
           </div>
           <button
             onClick={onNavigateShop}
             className="text-xs sm:text-sm font-extrabold text-[#0A6847] dark:text-[#78F9B8] hover:underline flex items-center gap-1"
           >
-            <span>Explore full catalog</span>
+            <span>Vezi toate produsele</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -255,7 +250,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     />
                   </div>
                   <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-black bg-[#0A6847] text-white">
-                    25% OFF
+                    100% CEYLON
                   </div>
                 </div>
 
@@ -272,7 +267,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   </h4>
                   <div className="flex items-center justify-between pt-2">
                     <span className="text-base font-black text-[#0A6847] dark:text-[#78F9B8]">
-                      Rs. {Math.round(product.price).toLocaleString()}
+                      {product.price.toFixed(2)} lei
                     </span>
                     <button
                       onClick={(e) => {
@@ -282,7 +277,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       className="px-3 py-1.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black flex items-center gap-1 shadow-xs transition"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      <span>Add</span>
+                      <span>Adaugă</span>
                     </button>
                   </div>
                 </div>
@@ -292,7 +287,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </section>
 
-      {/* 6. AI RECIPE INGREDIENT BUNDLES */}
+      {/* 6. AI RECIPE INGREDIENT KITS */}
       <section className="space-y-4">
         <div className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-xl bg-amber-100 text-[#E5A91A] flex items-center justify-center">
@@ -300,10 +295,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </div>
           <div>
             <h2 className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
-              Cook Fresh Tonight with AI Recipes
+              Gătește Rețete Tradiționale din Sri Lanka în România
             </h2>
             <p className="text-xs text-slate-400">
-              Add complete chef-curated ingredient kits to your cart with one click
+              Adaugă toate ingredientele necesare în coș cu un singur click
             </p>
           </div>
         </div>
@@ -313,30 +308,30 @@ export const HomeView: React.FC<HomeViewProps> = ({
             isDarkMode ? 'bg-[#141816] border-zinc-800' : 'bg-white border-slate-200'
           }`}>
             <img
-              src="https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&auto=format&fit=crop&q=80"
-              alt="Chicken Curry"
+              src="/prod_brinjal.jpg"
+              alt="Wambatu Moju"
               className="w-24 h-24 rounded-2xl object-cover shrink-0 shadow-sm"
             />
             <div className="flex-1 space-y-1.5">
               <div className="flex items-center justify-between">
-                <h4 className="font-extrabold text-sm">Ceylon Black Pepper Village Chicken Curry</h4>
-                <span className="text-[11px] font-bold text-slate-400">⏱ 30 mins</span>
+                <h4 className="font-extrabold text-sm">Sri Lankan Wambatu Moju & Keeri Samba Combo</h4>
+                <span className="text-[11px] font-bold text-slate-400">⏱ 35 mins</span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                Includes Bairaha Chicken Fillets (1kg), Araliya Keeri Samba (5kg), and Pure Ceylon Spices.
+                Include Vinete violet proaspete (1kg), Orez alb Keeri Samba (5kg), Ceapă roșie mică (500g) și Condimente.
               </p>
               <div className="flex items-center justify-between pt-1">
-                <span className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8]">Rs. 3,820</span>
+                <span className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8]">63.50 lei</span>
                 <button
                   onClick={() => {
-                    const pChik = products.find(p => p.title.includes('Chicken'));
-                    const pRice = products.find(p => p.title.includes('Rice') || p.title.includes('Samba'));
-                    if (pChik) onAddToCart(pChik, 1, '1kg');
+                    const pRice = products.find(p => p.id === 'prod-white-rice');
+                    const pBrin = products.find(p => p.id === 'prod-brinjal');
                     if (pRice) onAddToCart(pRice, 1, '5kg');
+                    if (pBrin) onAddToCart(pBrin, 1, '1kg');
                   }}
                   className="px-3.5 py-1.5 bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-bold rounded-xl transition"
                 >
-                  + Add Ingredients
+                  + Adaugă Ingredientele
                 </button>
               </div>
             </div>
@@ -346,30 +341,30 @@ export const HomeView: React.FC<HomeViewProps> = ({
             isDarkMode ? 'bg-[#141816] border-zinc-800' : 'bg-white border-slate-200'
           }`}>
             <img
-              src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&auto=format&fit=crop&q=80"
-              alt="Dhal Curry"
+              src="/prod_dhal.jpg"
+              alt="Parippu Curry"
               className="w-24 h-24 rounded-2xl object-cover shrink-0 shadow-sm"
             />
             <div className="flex-1 space-y-1.5">
               <div className="flex items-center justify-between">
-                <h4 className="font-extrabold text-sm">Traditional Parippu & Crispy Roast Paan Combo</h4>
+                <h4 className="font-extrabold text-sm">Cremoasă Parippu Dhal Curry & Roast Paan Combo</h4>
                 <span className="text-[11px] font-bold text-slate-400">⏱ 20 mins</span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                Includes Mysore Red Dhal (1kg), Crispy Roast Paan (4 pcs), and Virgin Coconut Oil (500ml).
+                Include Linte roșie Mysore Dhal (1kg), Lapte de cocos Maggi (400ml), Roast Paan proaspăt și Frunze de curry.
               </p>
               <div className="flex items-center justify-between pt-1">
-                <span className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8]">Rs. 1,550</span>
+                <span className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8]">38.00 lei</span>
                 <button
                   onClick={() => {
-                    const pAvo = products.find(p => p.title.includes('Avocado') || p.title.includes('Dhal'));
-                    const pTom = products.find(p => p.title.includes('Tomato') || p.title.includes('Paan'));
-                    if (pAvo) onAddToCart(pAvo, 1, '1kg');
-                    if (pTom) onAddToCart(pTom, 1, '1kg');
+                    const pDhal = products.find(p => p.id === 'prod-dhal');
+                    const pPaan = products.find(p => p.id === 'prod-roast-paan');
+                    if (pDhal) onAddToCart(pDhal, 1, '1kg');
+                    if (pPaan) onAddToCart(pPaan, 1, '1loaf');
                   }}
                   className="px-3.5 py-1.5 bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-bold rounded-xl transition"
                 >
-                  + Add Ingredients
+                  + Adaugă Ingredientele
                 </button>
               </div>
             </div>

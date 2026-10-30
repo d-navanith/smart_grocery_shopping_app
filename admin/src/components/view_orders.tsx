@@ -14,7 +14,8 @@ import {
   Trash2,
   Eye,
   Check,
-  UserCheck
+  UserCheck,
+  Phone
 } from 'lucide-react';
 import { Order } from './part1_imports_types';
 
@@ -25,6 +26,7 @@ interface OrdersViewProps {
   orderPaymentFilter: string;
   setOrderPaymentFilter: (f: string) => void;
   onOpenOrder: (order: Order) => void;
+  onOpenDispatchModal?: (order: Order) => void;
   onUpdateStatus: (orderId: string, status: Order['status']) => void;
   onUpdatePayment: (orderId: string, payment: 'PAID' | 'PENDING' | 'FAILED') => void;
   onPrintInvoice: (order: Order) => void;
@@ -39,6 +41,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
   orderPaymentFilter,
   setOrderPaymentFilter,
   onOpenOrder,
+  onOpenDispatchModal,
   onUpdateStatus,
   onUpdatePayment,
   onPrintInvoice,
@@ -236,10 +239,10 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                 <th className="py-2.5 px-3">Order ID</th>
                 <th className="py-2.5 px-3">Customer & Contact</th>
                 <th className="py-2.5 px-3">Date Placed</th>
-                <th className="py-2.5 px-3">Total (LKR)</th>
+                <th className="py-2.5 px-3">Total (lei)</th>
                 <th className="py-2.5 px-3">Payment</th>
-                <th className="py-2.5 px-3">Order Status (Quick Change)</th>
-                <th className="py-2.5 px-3">Assigned Courier</th>
+                <th className="py-2.5 px-3">Order Status</th>
+                <th className="py-2.5 px-3">Courier Dispatch (Glovo/Bolt/Sameday)</th>
                 <th className="py-2.5 px-3 text-right">Actions</th>
               </tr>
             </thead>
@@ -278,7 +281,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                       {o.placedAt}
                     </td>
                     <td className="py-3 px-3 font-bold text-slate-900 whitespace-nowrap">
-                      {o.totalAmount.toLocaleString()}.00
+                      {o.totalAmount.toFixed(2)} lei
                     </td>
                     <td className="py-3 px-3">
                       {/* Clickable Payment Status */}
@@ -291,7 +294,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                             : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
                         }`}
                       >
-                        {o.paymentStatus === 'PAID' ? '✓ Paid' : '⏳ COD / Unpaid'}
+                        {o.paymentStatus === 'PAID' ? '✓ Paid' : '⏳ COD / Plata la Livrare'}
                       </button>
                     </td>
                     <td className="py-3 px-3">
@@ -315,22 +318,43 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                       </select>
                     </td>
                     <td className="py-3 px-3">
-                      {o.assignedRider ? (
-                        <span className="font-bold text-slate-800 flex items-center gap-1.5">
-                          <Truck className="w-3.5 h-3.5 text-[#0C6237]" />
-                          <span>{o.assignedRider}</span>
-                        </span>
+                      {o.courierCompany || o.assignedRider ? (
+                        <div className="flex flex-col gap-0.5">
+                          <span className="font-bold text-slate-800 flex items-center gap-1.5">
+                            <Truck className="w-3.5 h-3.5 text-[#0C6237]" />
+                            <span>{o.courierCompany || o.assignedRider}</span>
+                          </span>
+                          {o.pickupMinutes && (
+                            <span className="text-[10px] font-black text-emerald-700">
+                              ⏱ Ridicare: {o.pickupMinutes}m | 🚀 Livrare: {o.deliveryMinutes}m
+                            </span>
+                          )}
+                          <button
+                            onClick={() => onOpenDispatchModal ? onOpenDispatchModal(o) : onOpenOrder(o)}
+                            className="text-[10px] font-bold text-amber-600 hover:underline text-left"
+                          >
+                            Re-apelează / Schimbă
+                          </button>
+                        </div>
                       ) : (
                         <button
-                          onClick={() => onOpenOrder(o)}
-                          className="text-[11px] font-bold text-orange-600 hover:underline"
+                          onClick={() => onOpenDispatchModal ? onOpenDispatchModal(o) : onOpenOrder(o)}
+                          className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-[11px] font-black flex items-center gap-1.5 shadow-xs transition active:scale-95"
                         >
-                          + Assign Courier
+                          <Phone className="w-3 h-3" />
+                          <span>📞 Apelează Curier</span>
                         </button>
                       )}
                     </td>
                     <td className="py-3 px-3 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => onOpenDispatchModal ? onOpenDispatchModal(o) : onOpenOrder(o)}
+                          title="Apelează compania de curierat (Glovo / Bolt / Sameday)"
+                          className="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50 hover:text-amber-800 transition"
+                        >
+                          <Phone className="w-4 h-4" />
+                        </button>
                         <button
                           onClick={() => onOpenOrder(o)}
                           title="View order details drawer"

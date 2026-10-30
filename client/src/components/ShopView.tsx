@@ -4,13 +4,10 @@ import {
   Plus,
   Minus,
   Heart,
-  Filter,
-  Check,
   ChevronRight,
   ShoppingBasket,
   X,
-  SlidersHorizontal,
-  Sparkles
+  SlidersHorizontal
 } from 'lucide-react';
 import { Product, CartItem } from '../types';
 
@@ -45,8 +42,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
   isDarkMode,
   onNavigateHome
 }) => {
-  // Filter States
-  const [maxPrice, setMaxPrice] = useState<number>(5000);
+  // Filter States (in Lei)
+  const [maxPrice, setMaxPrice] = useState<number>(200);
   const [minRating, setMinRating] = useState<number>(0);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedProductTypes, setSelectedProductTypes] = useState<string[]>([]);
@@ -55,27 +52,23 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [currentPageNum, setCurrentPageNum] = useState<number>(1);
   const itemsPerPage = 12;
 
-  // Available Sri Lankan Brands list
-  const ALL_BRANDS = ['Araliya', 'Highland', 'Dilmah', 'Munchee', 'Maliban', 'Mirissa Catch', 'Kotmale', 'Sunlight', 'Ceylon Produce'];
+  const ALL_BRANDS = ['Araliya Lanka', 'Ceylon Fresh Greens', 'Pure Ceylon Spices', 'Maggi Lanka', 'Dilmah', 'Munchee / Maliban', 'Ceylon Bakery Bucharest', 'Ceylon Orchard'];
 
-  // Toggle brand
   const handleToggleBrand = (brand: string) => {
     setSelectedBrands(prev =>
       prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
     );
   };
 
-  // Toggle product type
   const handleToggleProductType = (ptype: string) => {
     setSelectedProductTypes(prev =>
       prev.includes(ptype) ? prev.filter(t => t !== ptype) : [...prev, ptype]
     );
   };
 
-  // Reset all filters
   const handleClearFilters = () => {
     setSelectedCategory('All');
-    setMaxPrice(5000);
+    setMaxPrice(200);
     setMinRating(0);
     setSelectedBrands([]);
     setSelectedProductTypes([]);
@@ -83,49 +76,31 @@ export const ShopView: React.FC<ShopViewProps> = ({
     setSearchQuery('');
   };
 
-  // Filtered and Sorted Products
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
-      // Category Match
       let matchCat = true;
       if (selectedCategory !== 'All' && selectedCategory !== 'All Categories') {
         const catLower = selectedCategory.toLowerCase();
-        if (catLower.includes('fruit')) {
-          matchCat = p.category.toLowerCase().includes('fruit') ||
-                     p.title.toLowerCase().includes('banana') ||
-                     p.title.toLowerCase().includes('apple') ||
-                     p.title.toLowerCase().includes('orange') ||
-                     p.title.toLowerCase().includes('avocado');
-        } else if (catLower.includes('veg')) {
-          matchCat = p.category.toLowerCase().includes('veg') ||
-                     p.title.toLowerCase().includes('broccoli') ||
-                     p.title.toLowerCase().includes('tomato') ||
-                     p.title.toLowerCase().includes('pumpkin') ||
-                     p.title.toLowerCase().includes('carrot');
+        if (catLower.includes('rice') || catLower.includes('grain') || catLower.includes('staple')) {
+          matchCat = p.category.toLowerCase().includes('staple') || p.category.toLowerCase().includes('grain') || p.title.toLowerCase().includes('rice');
+        } else if (catLower.includes('veg') || catLower.includes('fruit')) {
+          matchCat = p.category.toLowerCase().includes('veg') || p.category.toLowerCase().includes('fruit') || p.title.toLowerCase().includes('wambatu') || p.title.toLowerCase().includes('brinjal');
+        } else if (catLower.includes('spice') || catLower.includes('pantry')) {
+          matchCat = p.category.toLowerCase().includes('pantry') || p.category.toLowerCase().includes('spice') || p.title.toLowerCase().includes('curry') || p.title.toLowerCase().includes('cinnamon');
         } else {
           matchCat = p.category.toLowerCase().includes(catLower);
         }
       }
 
-      // Search Match
       const matchSearch = !searchQuery ||
         p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.category.toLowerCase().includes(searchQuery.toLowerCase());
 
-      // Price Match
       const matchPrice = p.price <= maxPrice;
-
-      // Rating Match
       const matchRating = minRating === 0 || p.rating >= minRating;
-
-      // Brand Match
       const matchBrand = selectedBrands.length === 0 || selectedBrands.includes(p.brand);
-
-      // In Stock Match
       const matchStock = !onlyInStock || p.stock > 0;
-
-      // Product Type Match
       const matchType = selectedProductTypes.length === 0 ||
         (selectedProductTypes.includes('Fresh Produce') && (p.category.includes('Fruit') || p.category.includes('Veg') || p.isFarmSourced)) ||
         (selectedProductTypes.includes('Packaged Goods') && !p.isFarmSourced) ||
@@ -135,7 +110,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
     });
   }, [products, selectedCategory, searchQuery, maxPrice, minRating, selectedBrands, onlyInStock, selectedProductTypes]);
 
-  // Sorting
   const sortedProducts = useMemo(() => {
     const list = [...filteredProducts];
     if (sortBy === 'priceLow') list.sort((a, b) => a.price - b.price);
@@ -145,11 +119,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
     return list;
   }, [filteredProducts, sortBy]);
 
-  // Pagination
   const totalPages = Math.ceil(sortedProducts.length / itemsPerPage) || 1;
   const paginatedProducts = sortedProducts.slice((currentPageNum - 1) * itemsPerPage, currentPageNum * itemsPerPage);
 
-  // Category counts
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = { 'All': products.length };
     products.forEach(p => {
@@ -158,20 +130,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
     return counts;
   }, [products]);
 
-  const hasActiveFilters = selectedCategory !== 'All' || maxPrice < 5000 || minRating > 0 || selectedBrands.length > 0 || selectedProductTypes.length > 0 || onlyInStock || searchQuery;
+  const hasActiveFilters = selectedCategory !== 'All' || maxPrice < 200 || minRating > 0 || selectedBrands.length > 0 || selectedProductTypes.length > 0 || onlyInStock || searchQuery;
 
   return (
     <div className="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-6">
-      {/* 1. BREADCRUMB BANNER (IMAGE 1) */}
+      {/* 1. BREADCRUMB BANNER */}
       <div className={`p-4 rounded-2xl flex items-center justify-between text-xs font-bold border transition ${
         isDarkMode ? 'bg-[#141816] border-zinc-800 text-zinc-300' : 'bg-white border-slate-200 text-slate-600 shadow-xs'
       }`}>
         <div className="flex items-center gap-2">
           <button onClick={onNavigateHome} className="hover:text-[#0A6847] dark:hover:text-[#78F9B8] transition">
-            Home
+            Acasă (Home)
           </button>
           <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-[#0A6847] dark:text-[#78F9B8] font-black">Shop</span>
+          <span className="text-[#0A6847] dark:text-[#78F9B8] font-black">Magazin Alimentar România</span>
           {selectedCategory !== 'All' && (
             <>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
@@ -180,31 +152,28 @@ export const ShopView: React.FC<ShopViewProps> = ({
           )}
         </div>
 
-        <div className="text-[11px] font-semibold text-slate-400">
-          Supermarket Catalog • 100% Quality Inspected
+        <div className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-300">
+          🇷🇴 Depozit Central București • Plata la Livrare (Cash on Delivery)
         </div>
       </div>
 
       {/* 2. TWO-COLUMN LAYOUT: FILTER SIDEBAR (LEFT) + PRODUCT GRID (RIGHT) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* =========================================================================
-            LEFT SIDEBAR: FILTER OPTIONS (MATCHING IMAGE 1)
-        ========================================================================= */}
+        {/* LEFT SIDEBAR: FILTERS */}
         <aside className={`lg:col-span-3 rounded-2xl p-5 border space-y-6 ${
           isDarkMode ? 'bg-[#141816] border-zinc-800 text-zinc-200' : 'bg-white border-slate-200 text-slate-800 shadow-xs'
         }`}>
-          {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800">
             <div className="flex items-center gap-2">
               <SlidersHorizontal className="w-4 h-4 text-[#0A6847] dark:text-[#78F9B8]" />
-              <h3 className="font-black text-sm uppercase tracking-wider">Filter Options</h3>
+              <h3 className="font-black text-sm uppercase tracking-wider">Filtre Produse</h3>
             </div>
             {hasActiveFilters && (
               <button
                 onClick={handleClearFilters}
                 className="text-[11px] font-bold text-red-500 hover:underline"
               >
-                Clear All
+                Resetează
               </button>
             )}
           </div>
@@ -212,7 +181,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           {/* 1. Category Filter */}
           <div className="space-y-2.5">
             <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-              Categories
+              Categorii Alimente
             </h4>
             <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1 text-xs">
               <label
@@ -230,19 +199,26 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     checked={selectedCategory === 'All'}
                     className="accent-[#0A6847] rounded cursor-pointer"
                   />
-                  <span>All Categories</span>
+                  <span>Toate Produsele (All)</span>
                 </div>
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-500">
                   {products.length}
                 </span>
               </label>
 
-              {['Fruits & Veg', 'Dairy & Eggs', 'Bakery', 'Meat & Seafood', 'Staples & Grains', 'Beverages', 'Household'].map(cat => (
+              {[
+                { key: 'Staples & Grains', label: 'Orez Alb, Orez Roșu & Dhal' },
+                { key: 'Fruits & Veg', label: 'Wambatu & Legume Proaspete' },
+                { key: 'Pantry', label: 'Condimente de Ceylon & Pol' },
+                { key: 'Beverages', label: 'Ceai Dilmah Ceylon & Băuturi' },
+                { key: 'Bakery', label: 'Roast Paan & Panificație' },
+                { key: 'Snacks', label: 'Biscuiți Munchee & Maliban' }
+              ].map(cat => (
                 <label
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
+                  key={cat.key}
+                  onClick={() => setSelectedCategory(cat.key)}
                   className={`flex items-center justify-between p-1.5 rounded-lg cursor-pointer transition ${
-                    selectedCategory === cat
+                    selectedCategory === cat.key
                       ? 'bg-emerald-50 dark:bg-emerald-950/40 text-[#0A6847] dark:text-[#78F9B8] font-black'
                       : 'hover:bg-slate-50 dark:hover:bg-zinc-800 font-semibold text-slate-600 dark:text-zinc-300'
                   }`}
@@ -251,55 +227,54 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     <input
                       type="checkbox"
                       readOnly
-                      checked={selectedCategory === cat}
+                      checked={selectedCategory === cat.key}
                       className="accent-[#0A6847] rounded cursor-pointer"
                     />
-                    <span>{cat}</span>
+                    <span>{cat.label}</span>
                   </div>
                   <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-500">
-                    {categoryCounts[cat] || Math.floor(Math.random() * 15) + 5}
+                    {categoryCounts[cat.key] || 3}
                   </span>
                 </label>
               ))}
             </div>
           </div>
 
-          {/* 2. Price Range Slider */}
+          {/* 2. Price Range Slider in LEI */}
           <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-zinc-800">
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-                Price Range
+                Interval Preț (Lei)
               </h4>
               <span className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8]">
-                Rs. 100 — Rs. {maxPrice.toLocaleString()}
+                5 lei — {maxPrice} lei
               </span>
             </div>
             <input
               type="range"
-              min="100"
-              max="5000"
-              step="50"
+              min="5"
+              max="200"
+              step="5"
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full accent-[#0A6847] cursor-pointer"
             />
             <div className="flex justify-between text-[10px] font-bold text-slate-400">
-              <span>Rs. 100</span>
-              <span>Rs. 2,500</span>
-              <span>Rs. 5,000</span>
+              <span>5 lei</span>
+              <span>100 lei</span>
+              <span>200 lei</span>
             </div>
           </div>
 
           {/* 3. Review Rating Filter */}
           <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-zinc-800">
             <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-              Review Rating
+              Rating & Recenzii
             </h4>
             <div className="space-y-1.5 text-xs">
               {[
-                { stars: 5, label: '5.0 Star Rating' },
-                { stars: 4, label: '4.0 Star & Above' },
-                { stars: 3, label: '3.0 Star & Above' }
+                { stars: 5, label: '5.0 Stele Excelente' },
+                { stars: 4, label: '4.0 Stele & Peste' }
               ].map(r => (
                 <label
                   key={r.stars}
@@ -331,7 +306,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           {/* 4. Authentic Sri Lankan Brands */}
           <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-zinc-800">
             <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-              Sri Lankan Brands
+              Mărci Tradiționale Sri Lanka
             </h4>
             <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1 text-xs">
               {ALL_BRANDS.map(brand => (
@@ -354,35 +329,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </div>
           </div>
 
-          {/* 5. Product Type Filter */}
+          {/* 5. In Stock Only */}
           <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-zinc-800">
-            <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-              Product Type
-            </h4>
-            <div className="space-y-1.5 text-xs">
-              {['Fresh Produce', 'Packaged Goods', 'Chilled & Frozen'].map(ptype => (
-                <label
-                  key={ptype}
-                  onClick={() => handleToggleProductType(ptype)}
-                  className="flex items-center gap-2 p-1 rounded-lg cursor-pointer hover:bg-slate-50 dark:hover:bg-zinc-800 transition"
-                >
-                  <input
-                    type="checkbox"
-                    readOnly
-                    checked={selectedProductTypes.includes(ptype)}
-                    className="accent-[#0A6847] rounded cursor-pointer"
-                  />
-                  <span className="font-semibold text-slate-700 dark:text-zinc-300">{ptype}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* 6. Availability */}
-          <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-zinc-800">
-            <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-              Availability
-            </h4>
             <label
               onClick={() => setOnlyInStock(!onlyInStock)}
               className="flex items-center gap-2 p-1 rounded-lg cursor-pointer hover:bg-slate-50 dark:hover:bg-zinc-800 transition text-xs font-semibold"
@@ -393,14 +341,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 checked={onlyInStock}
                 className="accent-[#0A6847] rounded cursor-pointer"
               />
-              <span>In Stock Only</span>
+              <span>În Stoc în București (Gata de Livrare)</span>
             </label>
           </div>
         </aside>
 
-        {/* =========================================================================
-            RIGHT MAIN COLUMN: CATALOG & GRID (MATCHING IMAGE 1)
-        ========================================================================= */}
+        {/* RIGHT MAIN COLUMN: CATALOG & GRID (MATCHING IMAGE 1 THEME) */}
         <section className="lg:col-span-9 space-y-6">
           {/* Top Bar: Results Count, Active Filter Chips, Sort Dropdown */}
           <div className={`p-4 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 ${
@@ -408,69 +354,55 @@ export const ShopView: React.FC<ShopViewProps> = ({
           }`}>
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <span className="font-bold text-slate-500">
-                Showing <strong className="text-slate-900 dark:text-white">{sortedProducts.length}</strong> products
+                Afișate: <strong className="text-slate-900 dark:text-white">{sortedProducts.length}</strong> produse
               </span>
 
-              {/* Active Filter Chips */}
               {selectedCategory !== 'All' && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-[#0A6847] dark:bg-emerald-950 dark:text-[#78F9B8] text-[11px] font-bold">
                   {selectedCategory}
                   <button onClick={() => setSelectedCategory('All')}><X className="w-3 h-3" /></button>
                 </span>
               )}
-              {maxPrice < 5000 && (
+              {maxPrice < 200 && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200 text-[11px] font-bold">
-                  Under Rs. {maxPrice.toLocaleString()}
-                  <button onClick={() => setMaxPrice(5000)}><X className="w-3 h-3" /></button>
+                  Sub {maxPrice} lei
+                  <button onClick={() => setMaxPrice(200)}><X className="w-3 h-3" /></button>
                 </span>
               )}
-              {minRating > 0 && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200 text-[11px] font-bold">
-                  ★ {minRating}+ Star
-                  <button onClick={() => setMinRating(0)}><X className="w-3 h-3" /></button>
-                </span>
-              )}
-              {selectedBrands.map(b => (
-                <span key={b} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-800 dark:text-white text-[11px] font-bold">
-                  {b}
-                  <button onClick={() => handleToggleBrand(b)}><X className="w-3 h-3" /></button>
-                </span>
-              ))}
               {hasActiveFilters && (
                 <button
                   onClick={handleClearFilters}
                   className="text-[11px] font-black text-red-500 hover:underline ml-1"
                 >
-                  Clear All
+                  Șterge Toate
                 </button>
               )}
             </div>
 
-            {/* Sort Dropdown */}
             <div className="flex items-center gap-2 shrink-0 text-xs font-bold">
-              <span className="text-slate-400">Sort by:</span>
+              <span className="text-slate-400">Sortare:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 className="bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 dark:text-white focus:outline-none focus:border-[#0A6847]"
               >
-                <option value="default">Featured Items</option>
-                <option value="priceLow">Price: Low to High</option>
-                <option value="priceHigh">Price: High to Low</option>
-                <option value="rating">Top Customer Rated</option>
-                <option value="freshness">AI Freshness Score</option>
+                <option value="default">Recomandate (Featured)</option>
+                <option value="priceLow">Preț: Mic la Mare</option>
+                <option value="priceHigh">Preț: Mare la Mic</option>
+                <option value="rating">Top Recenzii Clienți</option>
+                <option value="freshness">Scor Prospețime AI</option>
               </select>
             </div>
           </div>
 
-          {/* Product Cards Grid (3 Columns on desktop matching Image 1) */}
+          {/* Product Cards Grid with Authentic Sri Lankan Products */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {paginatedProducts.map(product => {
               const inCartItem = cart.find(i => i.product.id === product.id);
               const isWishlisted = wishlist.includes(product.id);
               const discountPercent = product.originalPrice && product.originalPrice > product.price
                 ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-                : 20;
+                : 15;
 
               return (
                 <div
@@ -482,32 +414,29 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       : 'bg-white border-slate-200 hover:border-emerald-300 shadow-xs'
                   }`}
                 >
-                  {/* Top Image Container with Discount Badge & Wishlist */}
                   <div className="relative">
                     <div className="w-full h-48 rounded-xl overflow-hidden bg-slate-50 dark:bg-zinc-900 flex items-center justify-center p-2">
                       <img
                         src={product.imageUrl}
                         alt={product.title}
                         onError={(e) => {
-                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=800';
+                          (e.target as HTMLImageElement).src = '/prod_white_rice.jpg';
                         }}
                         className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                       />
                     </div>
 
-                    {/* Discount Badge on Top Left (Golden Yellow / Green matching Image 1) */}
                     <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">
                       <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-[#0A6847] text-white shadow-xs">
-                        {discountPercent}% OFF
+                        {discountPercent}% REDUCERE
                       </span>
                       {product.isOrganic && (
                         <span className="px-2 py-0.5 rounded-md text-[9px] font-black bg-[#E5A91A] text-amber-950 shadow-xs">
-                          ORGANIC
+                          CEYLON EXPORT
                         </span>
                       )}
                     </div>
 
-                    {/* Wishlist Heart on Top Right */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -518,15 +447,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           ? 'bg-red-50 text-red-500'
                           : 'bg-white/80 dark:bg-zinc-800/80 text-slate-400 hover:text-red-500'
                       }`}
-                      title="Add to Wishlist"
+                      title="Adaugă la Favorite"
                     >
                       <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-red-500' : ''}`} />
                     </button>
                   </div>
 
-                  {/* Body Content */}
                   <div className="mt-3.5 space-y-1.5">
-                    {/* Category & Star Rating */}
                     <div className="flex items-center justify-between text-[11px] text-slate-400 uppercase font-black tracking-wider">
                       <span>{product.category}</span>
                       <div className="flex items-center gap-1 text-amber-500 font-extrabold">
@@ -536,31 +463,30 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       </div>
                     </div>
 
-                    {/* Product Title */}
                     <h4 className="text-sm font-extrabold text-slate-900 dark:text-white line-clamp-1 group-hover:text-[#0A6847] dark:group-hover:text-[#78F9B8] transition" title={product.title}>
                       {product.title}
                     </h4>
 
-                    {/* Unit / Weight Tag */}
                     <div className="text-[11px] font-bold text-slate-400">
-                      Unit: <span className="text-slate-600 dark:text-zinc-300">{product.unitWeight || (product.unit === 'kg' ? '1kg' : product.unit)}</span>
+                      Gramaj: <span className="text-slate-600 dark:text-zinc-300">{product.unitWeight || product.unit}</span>
                     </div>
 
-                    {/* Price & Add to Cart Basket Button */}
+                    {/* Price in LEI & Add to Cart */}
                     <div className="flex items-center justify-between pt-2">
                       <div className="flex flex-col">
                         <div className="flex items-baseline gap-1.5">
                           <span className="text-base font-black text-[#0A6847] dark:text-[#78F9B8]">
-                            Rs. {Math.round(product.price).toLocaleString()}
+                            {product.price.toFixed(2)} lei
                           </span>
-                          <span className="text-xs text-slate-400 line-through">
-                            Rs. {Math.round(product.originalPrice || product.price * 1.25).toLocaleString()}
-                          </span>
+                          {product.originalPrice && (
+                            <span className="text-xs text-slate-400 line-through">
+                              {product.originalPrice.toFixed(2)} lei
+                            </span>
+                          )}
                         </div>
-                        <span className="text-[10px] text-slate-400">Per {product.unit}</span>
+                        <span className="text-[10px] text-slate-400">Plata la Livrare (Cash)</span>
                       </div>
 
-                      {/* Add Button or Stepper */}
                       {inCartItem ? (
                         <div
                           onClick={(e) => e.stopPropagation()}
@@ -589,10 +515,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                             onAddToCart(product, 1, '1kg');
                           }}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white font-black text-xs shadow-sm transition active:scale-95"
-                          title="Add to Basket"
+                          title="Adaugă în Coș"
                         >
                           <ShoppingBasket className="w-3.5 h-3.5" />
-                          <span>+ Add</span>
+                          <span>+ Adaugă</span>
                         </button>
                       )}
                     </div>
@@ -602,28 +528,26 @@ export const ShopView: React.FC<ShopViewProps> = ({
             })}
           </div>
 
-          {/* Empty State */}
           {paginatedProducts.length === 0 && (
             <div className="p-12 text-center rounded-2xl border border-dashed border-slate-300 dark:border-zinc-800 space-y-3">
               <ShoppingBasket className="w-12 h-12 text-slate-300 mx-auto" />
-              <h4 className="font-extrabold text-base text-slate-700 dark:text-zinc-300">No products match your filters</h4>
-              <p className="text-xs text-slate-400">Try broadening your price range or clearing category filters.</p>
+              <h4 className="font-extrabold text-base text-slate-700 dark:text-zinc-300">Niciun produs nu corespunde filtrelor selectate</h4>
+              <p className="text-xs text-slate-400">Încercați să lărgiți intervalul de preț sau să resetați categoriile.</p>
               <button
                 onClick={handleClearFilters}
                 className="px-4 py-2 rounded-xl bg-[#0A6847] text-white text-xs font-bold"
               >
-                Reset Filters
+                Resetează Filtrele
               </button>
             </div>
           )}
 
-          {/* Pagination Bar (Matching Image 1: < 1 2 3 ... 10 >) */}
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 pt-6">
               <button
                 disabled={currentPageNum === 1}
                 onClick={() => setCurrentPageNum(p => Math.max(1, p - 1))}
-                className="w-8 h-8 rounded-lg border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-xs font-bold disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-zinc-800"
+                className="w-8 h-8 rounded-lg border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-xs font-bold disabled:opacity-40 hover:bg-slate-100"
               >
                 &lt;
               </button>
@@ -637,7 +561,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     className={`w-8 h-8 rounded-lg text-xs font-bold transition ${
                       currentPageNum === page
                         ? 'bg-[#0A6847] text-white shadow-sm'
-                        : 'border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300'
+                        : 'border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 text-slate-700 dark:text-zinc-300'
                     }`}
                   >
                     {page}
@@ -648,7 +572,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
               <button
                 disabled={currentPageNum === totalPages}
                 onClick={() => setCurrentPageNum(p => Math.min(totalPages, p + 1))}
-                className="w-8 h-8 rounded-lg border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-xs font-bold disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-zinc-800"
+                className="w-8 h-8 rounded-lg border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-xs font-bold disabled:opacity-40 hover:bg-slate-100"
               >
                 &gt;
               </button>
