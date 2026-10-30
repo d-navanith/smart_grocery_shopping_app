@@ -10,6 +10,7 @@ import {
   SlidersHorizontal
 } from 'lucide-react';
 import { Product, CartItem } from '../types';
+import { TranslationDictionary } from '../translations';
 
 interface ShopViewProps {
   products: Product[];
@@ -25,6 +26,7 @@ interface ShopViewProps {
   setSearchQuery: (q: string) => void;
   isDarkMode: boolean;
   onNavigateHome: () => void;
+  t: TranslationDictionary;
 }
 
 export const ShopView: React.FC<ShopViewProps> = ({
@@ -40,7 +42,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
   searchQuery,
   setSearchQuery,
   isDarkMode,
-  onNavigateHome
+  onNavigateHome,
+  t
 }) => {
   // Filter States (in Lei)
   const [maxPrice, setMaxPrice] = useState<number>(200);
@@ -140,10 +143,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
       }`}>
         <div className="flex items-center gap-2">
           <button onClick={onNavigateHome} className="hover:text-[#0A6847] dark:hover:text-[#78F9B8] transition">
-            Acasă (Home)
+            {t.breadcrumbHome}
           </button>
           <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-[#0A6847] dark:text-[#78F9B8] font-black">Magazin Alimentar România</span>
+          <span className="text-[#0A6847] dark:text-[#78F9B8] font-black">{t.breadcrumbShop}</span>
           {selectedCategory !== 'All' && (
             <>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
@@ -153,7 +156,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
         </div>
 
         <div className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-300">
-          🇷🇴 Depozit Central București • Plata la Livrare (Cash on Delivery)
+          🇷🇴 {t.depotNotice}
         </div>
       </div>
 
@@ -166,14 +169,14 @@ export const ShopView: React.FC<ShopViewProps> = ({
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800">
             <div className="flex items-center gap-2">
               <SlidersHorizontal className="w-4 h-4 text-[#0A6847] dark:text-[#78F9B8]" />
-              <h3 className="font-black text-sm uppercase tracking-wider">Filtre Produse</h3>
+              <h3 className="font-black text-sm uppercase tracking-wider">{t.filtersTitle}</h3>
             </div>
             {hasActiveFilters && (
               <button
                 onClick={handleClearFilters}
                 className="text-[11px] font-bold text-red-500 hover:underline"
               >
-                Resetează
+                {t.clearFilters}
               </button>
             )}
           </div>
@@ -181,7 +184,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           {/* 1. Category Filter */}
           <div className="space-y-2.5">
             <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-              Categorii Alimente
+              {t.filterCategories}
             </h4>
             <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1 text-xs">
               <label
@@ -199,7 +202,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     checked={selectedCategory === 'All'}
                     className="accent-[#0A6847] rounded cursor-pointer"
                   />
-                  <span>Toate Produsele (All)</span>
+                  <span>{t.catAll}</span>
                 </div>
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-500">
                   {products.length}
@@ -207,12 +210,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
               </label>
 
               {[
-                { key: 'Staples & Grains', label: 'Orez Alb, Orez Roșu & Dhal' },
-                { key: 'Fruits & Veg', label: 'Wambatu & Legume Proaspete' },
-                { key: 'Pantry', label: 'Condimente de Ceylon & Pol' },
-                { key: 'Beverages', label: 'Ceai Dilmah Ceylon & Băuturi' },
-                { key: 'Bakery', label: 'Roast Paan & Panificație' },
-                { key: 'Snacks', label: 'Biscuiți Munchee & Maliban' }
+                { key: 'Staples & Grains', label: t.catRice },
+                { key: 'Fruits & Veg', label: t.catVeg },
+                { key: 'Pantry', label: t.catSpices },
+                { key: 'Beverages', label: t.catTea },
+                { key: 'Bakery', label: t.catBakery },
+                { key: 'Snacks', label: t.catSnacks }
               ].map(cat => (
                 <label
                   key={cat.key}
@@ -306,7 +309,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           {/* 4. Authentic Sri Lankan Brands */}
           <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-zinc-800">
             <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-              Mărci Tradiționale Sri Lanka
+              {t.filterBrands}
             </h4>
             <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1 text-xs">
               {ALL_BRANDS.map(brand => (
@@ -341,7 +344,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 checked={onlyInStock}
                 className="accent-[#0A6847] rounded cursor-pointer"
               />
-              <span>În Stoc în București (Gata de Livrare)</span>
+              <span>{t.filterStockOnly}</span>
             </label>
           </div>
         </aside>
@@ -354,7 +357,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           }`}>
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <span className="font-bold text-slate-500">
-                Afișate: <strong className="text-slate-900 dark:text-white">{sortedProducts.length}</strong> produse
+                {t.showingCount.replace('{count}', String(sortedProducts.length))}
               </span>
 
               {selectedCategory !== 'All' && (
@@ -374,23 +377,23 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   onClick={handleClearFilters}
                   className="text-[11px] font-black text-red-500 hover:underline ml-1"
                 >
-                  Șterge Toate
+                  {t.clearFilters}
                 </button>
               )}
             </div>
 
             <div className="flex items-center gap-2 shrink-0 text-xs font-bold">
-              <span className="text-slate-400">Sortare:</span>
+              <span className="text-slate-400">{t.sortByLabel}</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 className="bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 dark:text-white focus:outline-none focus:border-[#0A6847]"
               >
-                <option value="default">Recomandate (Featured)</option>
-                <option value="priceLow">Preț: Mic la Mare</option>
-                <option value="priceHigh">Preț: Mare la Mic</option>
-                <option value="rating">Top Recenzii Clienți</option>
-                <option value="freshness">Scor Prospețime AI</option>
+                <option value="default">{t.sortFeatured}</option>
+                <option value="priceLow">{t.sortPriceLow}</option>
+                <option value="priceHigh">{t.sortPriceHigh}</option>
+                <option value="rating">{t.sortRating}</option>
+                <option value="freshness">AI Freshness</option>
               </select>
             </div>
           </div>
@@ -468,7 +471,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     </h4>
 
                     <div className="text-[11px] font-bold text-slate-400">
-                      Gramaj: <span className="text-slate-600 dark:text-zinc-300">{product.unitWeight || product.unit}</span>
+                      {t.weightGramaj} <span className="text-slate-600 dark:text-zinc-300">{product.unitWeight || product.unit}</span>
                     </div>
 
                     {/* Price in LEI & Add to Cart */}
@@ -484,7 +487,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                             </span>
                           )}
                         </div>
-                        <span className="text-[10px] text-slate-400">Plata la Livrare (Cash)</span>
+                        <span className="text-[10px] text-slate-400">{t.codBadge}</span>
                       </div>
 
                       {inCartItem ? (
@@ -515,10 +518,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                             onAddToCart(product, 1, '1kg');
                           }}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white font-black text-xs shadow-sm transition active:scale-95"
-                          title="Adaugă în Coș"
+                          title={t.addToCart}
                         >
                           <ShoppingBasket className="w-3.5 h-3.5" />
-                          <span>+ Adaugă</span>
+                          <span>+ {t.addToCart}</span>
                         </button>
                       )}
                     </div>

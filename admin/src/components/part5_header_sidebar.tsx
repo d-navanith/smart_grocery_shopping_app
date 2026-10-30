@@ -19,7 +19,8 @@ import {
   CheckCircle,
   AlertTriangle,
   Info,
-  X
+  X,
+  Globe
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -180,6 +181,12 @@ export const Header: React.FC<HeaderProps> = ({
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400 bg-white border border-slate-200 px-1.5 py-0.5 rounded">
             ⌘ K
           </span>
+        </div>
+
+        {/* Language Indicator */}
+        <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-black text-slate-700 shadow-2xs">
+          <Globe className="w-3.5 h-3.5 text-[#0C6237]" />
+          <span>🇬🇧 EN • 🇱🇰 SI • 🇷🇴 RO</span>
         </div>
 
         {/* Date Filter Pill */}

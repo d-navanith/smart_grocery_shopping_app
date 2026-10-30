@@ -16,9 +16,12 @@ import {
   Twitter,
   Instagram,
   Menu,
-  X
+  X,
+  Globe,
+  Check
 } from 'lucide-react';
 import { CustomerUser, CartItem } from '../types';
+import { Language, TranslationDictionary, LANGUAGE_OPTIONS } from '../translations';
 
 interface HeaderNavProps {
   currentPage: 'HOME' | 'SHOP' | 'CART' | 'RECIPES';
@@ -37,6 +40,9 @@ interface HeaderNavProps {
   onOpenCartDrawer: () => void;
   onOpenAppTour: () => void;
   subtotal: number;
+  currentLanguage: Language;
+  onLanguageChange: (lang: Language) => void;
+  t: TranslationDictionary;
 }
 
 export const HeaderNav: React.FC<HeaderNavProps> = ({
@@ -55,11 +61,16 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   wishlistCount,
   onOpenCartDrawer,
   onOpenAppTour,
-  subtotal
+  subtotal,
+  currentLanguage,
+  onLanguageChange,
+  t
 }) => {
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
+  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const selectedLangOption = LANGUAGE_OPTIONS.find(l => l.code === currentLanguage) || LANGUAGE_OPTIONS[0];
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const categories = [
@@ -82,34 +93,81 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           <div className="flex items-center gap-2">
             <Phone className="w-3.5 h-3.5 text-amber-900" />
             <span className="font-extrabold tracking-tight">
-              București Hub: <span className="underline">+40 721 345 678</span>
+              {t.hotlineLabel} <span className="underline">+40 721 345 678</span>
             </span>
           </div>
 
           {/* Center: Romanian Sri Lankan Market Context Announcement */}
-          <div className="hidden md:flex items-center gap-2 text-center">
-            <span>
-              🇷🇴 🇱🇰 Autentice Alimente din Sri Lanka în România — <span className="font-black text-emerald-950 underline decoration-amber-900 decoration-2">Plata la Livrare (Cash on Delivery)</span> în București & Toată Țara!
-            </span>
+          <div className="hidden md:flex items-center gap-2 text-center text-[11px] leading-tight max-w-2xl">
+            <span>{t.announcement}</span>
           </div>
 
-          {/* Right: Social Media, Theme & App Tour */}
-          <div className="flex items-center gap-3">
+          {/* Right: Language Selector, Theme & App Tour */}
+          <div className="flex items-center gap-2.5">
+            {/* Language Switcher Dropdown (English, Sinhala, Romanian) */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-900/15 hover:bg-amber-900/25 text-amber-950 text-[11px] font-black transition border border-amber-900/20 shadow-2xs"
+                title="Change language / භාෂාව මාරු කරන්න / Schimbă limba"
+              >
+                <Globe className="w-3.5 h-3.5 text-amber-950" />
+                <span>{selectedLangOption.flag} {selectedLangOption.nativeName.split(' ')[0]}</span>
+                <ChevronDown className="w-3 h-3 text-amber-950" />
+              </button>
+
+              {isLanguageMenuOpen && (
+                <div className="absolute right-0 top-full mt-1.5 w-52 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl py-1.5 z-50 animate-fadeIn text-slate-800 dark:text-zinc-100">
+                  <div className="px-3.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between">
+                    <span>Language / භාෂාව</span>
+                    <span className="text-[9px] text-[#0A6847] dark:text-emerald-400 font-extrabold">3 Active</span>
+                  </div>
+                  {LANGUAGE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.code}
+                      type="button"
+                      onClick={() => {
+                        onLanguageChange(opt.code);
+                        setIsLanguageMenuOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-bold transition text-left ${
+                        currentLanguage === opt.code
+                          ? 'bg-emerald-50 dark:bg-emerald-950/50 text-[#0A6847] dark:text-[#78F9B8] font-black'
+                          : 'text-slate-700 dark:text-zinc-200 hover:bg-slate-50 dark:hover:bg-zinc-800'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-base">{opt.flag}</span>
+                        <div>
+                          <p className="leading-none text-xs">{opt.nativeName}</p>
+                          <p className="text-[10px] text-slate-400 font-normal mt-0.5">{opt.label}</p>
+                        </div>
+                      </div>
+                      {currentLanguage === opt.code && (
+                        <Check className="w-4 h-4 text-[#0A6847] dark:text-[#78F9B8]" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button
               onClick={onOpenAppTour}
-              className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-900/15 hover:bg-amber-900/25 text-amber-950 text-[11px] font-black transition"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-900/15 hover:bg-amber-900/25 text-amber-950 text-[11px] font-black transition"
             >
               <Sparkles className="w-3 h-3 text-amber-900" />
-              <span>ආයුබෝවන් (Tour)</span>
+              <span>{t.tourBtn}</span>
             </button>
 
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-900/15 hover:bg-amber-900/25 text-amber-950 text-[11px] font-bold transition"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-900/15 hover:bg-amber-900/25 text-amber-950 text-[11px] font-bold transition"
               title="Toggle Dark/Light Mode"
             >
               {isDarkMode ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-              <span className="hidden sm:inline">{isDarkMode ? 'Light' : 'Dark'}</span>
+              <span className="hidden sm:inline">{isDarkMode ? t.themeLight : t.themeDark}</span>
             </button>
           </div>
         </div>
@@ -138,7 +196,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 Ceylon <span className="text-[#FFB800]">Foods</span>
               </span>
               <span className="text-[10px] font-extrabold tracking-widest text-emerald-200 uppercase mt-0.5">
-                Supermarket România • Sri Lankan Authentic
+                {t.storeSubtitle}
               </span>
             </div>
           </div>
@@ -147,8 +205,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           <div className="hidden xl:flex items-center gap-2 bg-emerald-900/70 border border-emerald-700/60 rounded-full px-3.5 py-2 text-xs font-bold text-emerald-100 hover:bg-emerald-900 transition cursor-pointer">
             <MapPin className="w-4 h-4 text-[#FFB800]" />
             <div className="flex flex-col text-left">
-              <span className="text-[9px] uppercase tracking-wider text-emerald-300">Livrare În România</span>
-              <span className="font-extrabold text-white leading-none">București & Național ▾</span>
+              <span className="text-[9px] uppercase tracking-wider text-emerald-300">{t.deliverToLabel}</span>
+              <span className="font-extrabold text-white leading-none">{t.deliverToValue}</span>
             </div>
           </div>
 
@@ -165,15 +223,19 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   }}
                   className="bg-transparent py-2.5 outline-none cursor-pointer text-xs font-semibold"
                 >
-                  {categories.map((c) => (
-                    <option key={c} value={c} className="text-slate-800 font-semibold">{c}</option>
-                  ))}
+                  <option value="All Categories">{t.allCategories}</option>
+                  <option value="Staples & Grains">{t.catRice}</option>
+                  <option value="Fruits & Veg">{t.catVeg}</option>
+                  <option value="Pantry">{t.catSpices}</option>
+                  <option value="Beverages">{t.catTea}</option>
+                  <option value="Bakery">{t.catBakery}</option>
+                  <option value="Snacks">{t.catSnacks}</option>
                 </select>
               </div>
 
               <input
                 type="text"
-                placeholder="Caută orez alb, orez roșu, wambatu, condimente de Ceylon, ceai..."
+                placeholder={t.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -187,7 +249,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   if (currentPage !== 'SHOP') setCurrentPage('SHOP');
                 }}
                 className="bg-[#0A6847] hover:bg-[#085237] text-white p-2.5 m-1 rounded-full transition shrink-0"
-                title="Căutare Produse"
+                title={t.searchPlaceholder}
               >
                 <Search className="w-4 h-4" />
               </button>
@@ -201,7 +263,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 if (currentPage !== 'SHOP') setCurrentPage('SHOP');
               }}
               className="relative p-2 rounded-full hover:bg-emerald-800/80 text-white transition flex items-center justify-center"
-              title="Favorite"
+              title={t.wishlistTooltip}
             >
               <Heart className="w-5 h-5" />
               {wishlistCount > 0 && (
@@ -215,7 +277,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             <div
               onClick={() => setCurrentPage('CART')}
               className="flex items-center gap-2.5 bg-emerald-900/80 hover:bg-emerald-900 border border-emerald-700/80 rounded-full px-3 py-1.5 cursor-pointer transition active:scale-95"
-              title="Vezi Coșul de Cumpărături"
+              title={t.myCart}
             >
               <div className="relative">
                 <ShoppingBag className="w-5 h-5 text-[#FFB800]" />
@@ -226,7 +288,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 )}
               </div>
               <div className="hidden md:flex flex-col text-left">
-                <span className="text-[9px] uppercase font-bold text-emerald-300">Coșul Meu</span>
+                <span className="text-[9px] uppercase font-bold text-emerald-300">{t.myCart}</span>
                 <span className="text-xs font-black text-white leading-tight">
                   {subtotal.toFixed(2)} lei
                 </span>
@@ -281,24 +343,33 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[#E5A91A] hover:bg-[#d69b12] text-amber-950 font-black text-xs shadow-sm transition active:scale-95"
               >
                 <span>☰</span>
-                <span>Toate Categoriile (Browse)</span>
+                <span>{t.browseCategories}</span>
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
               {isCategoryMenuOpen && (
                 <div className="absolute top-full left-0 mt-2 w-64 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl py-2 z-50">
-                  {categories.map((c) => (
+                  {[
+                    { key: 'All Categories', label: t.allCategories },
+                    { key: 'Staples & Grains', label: t.catRice },
+                    { key: 'Fruits & Veg', label: t.catVeg },
+                    { key: 'Pantry', label: t.catSpices },
+                    { key: 'Dairy & Eggs', label: t.catDairy },
+                    { key: 'Bakery', label: t.catBakery },
+                    { key: 'Beverages', label: t.catTea },
+                    { key: 'Snacks', label: t.catSnacks }
+                  ].map((c) => (
                     <div
-                      key={c}
+                      key={c.key}
                       onClick={() => {
-                        const val = c === 'All Categories' ? 'All' : c;
+                        const val = c.key === 'All Categories' ? 'All' : c.key;
                         setSelectedCategory(val);
                         setCurrentPage('SHOP');
                         setIsCategoryMenuOpen(false);
                       }}
                       className="px-4 py-2 text-xs font-bold text-slate-700 dark:text-zinc-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-[#0A6847] dark:hover:text-[#78F9B8] cursor-pointer transition flex items-center justify-between"
                     >
-                      <span>{c}</span>
+                      <span>{c.label}</span>
                       <span className="text-[10px] text-slate-400">→</span>
                     </div>
                   ))}
@@ -314,7 +385,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   currentPage === 'HOME' ? 'text-[#0A6847] dark:text-[#78F9B8] border-b-2 border-[#0A6847] pb-1' : ''
                 }`}
               >
-                Acasă
+                {t.tabHome}
               </button>
               <button
                 onClick={() => {
@@ -325,7 +396,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   currentPage === 'SHOP' ? 'text-[#0A6847] dark:text-[#78F9B8] border-b-2 border-[#0A6847] pb-1' : ''
                 }`}
               >
-                Magazin Alimentar (Shop)
+                {t.tabShop}
               </button>
               <button
                 onClick={() => {
@@ -334,7 +405,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 }}
                 className="transition hover:text-[#0A6847] dark:hover:text-[#78F9B8]"
               >
-                Orez & Cereale (Rice)
+                {t.tabRice}
               </button>
               <button
                 onClick={() => {
@@ -343,7 +414,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 }}
                 className="transition hover:text-[#0A6847] dark:hover:text-[#78F9B8]"
               >
-                Legume & Wambatu
+                {t.tabVegetables}
               </button>
               <button
                 onClick={() => {
@@ -352,7 +423,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 }}
                 className="transition hover:text-[#0A6847] dark:hover:text-[#78F9B8]"
               >
-                Condimente Ceylon (Spices)
+                {t.tabSpices}
               </button>
               <button
                 onClick={() => setCurrentPage('CART')}
@@ -360,7 +431,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   currentPage === 'CART' ? 'text-[#0A6847] dark:text-[#78F9B8] border-b-2 border-[#0A6847] pb-1' : ''
                 }`}
               >
-                <span>Coș de Cumpărături</span>
+                <span>{t.tabCart}</span>
                 {totalCartCount > 0 && (
                   <span className="px-1.5 py-0.2 rounded-full bg-[#E5A91A] text-amber-950 text-[10px] font-black">
                     {totalCartCount}
@@ -374,14 +445,14 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5 text-[#0A6847] dark:text-[#78F9B8]" />
-                <span>Rețete AI Chef</span>
+                <span>{t.tabRecipes}</span>
               </button>
             </nav>
           </div>
 
           <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800/60">
             <Truck className="w-3.5 h-3.5 text-[#0A6847] dark:text-[#78F9B8]" />
-            <span>Livrare Gratuită peste <strong>250 lei</strong></span>
+            <span>{t.freeDeliveryBadge}</span>
           </div>
         </div>
 
@@ -391,25 +462,25 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               onClick={() => { setCurrentPage('HOME'); setMobileMenuOpen(false); }}
               className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
-              Acasă
+              {t.tabHome}
             </button>
             <button
               onClick={() => { setCurrentPage('SHOP'); setMobileMenuOpen(false); }}
               className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
-              Magazin Alimentar Sri Lanka
+              {t.tabShop}
             </button>
             <button
               onClick={() => { setCurrentPage('CART'); setMobileMenuOpen(false); }}
               className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
-              Coș ({totalCartCount})
+              {t.tabCart} ({totalCartCount})
             </button>
             <button
               onClick={() => { setCurrentPage('RECIPES'); setMobileMenuOpen(false); }}
               className="block w-full text-left py-1.5 text-slate-800 dark:text-white"
             >
-              Rețete CeylonBot AI
+              {t.tabRecipes}
             </button>
           </div>
         )}

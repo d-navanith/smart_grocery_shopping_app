@@ -1,3 +1,5 @@
+export type Language = 'en' | 'si' | 'ro';
+
 export interface Product {
   id: string;
   sku: string;

@@ -12,6 +12,7 @@ import {
   Plus
 } from 'lucide-react';
 import { Product, CartItem } from '../types';
+import { TranslationDictionary } from '../translations';
 
 interface HomeViewProps {
   products: Product[];
@@ -22,6 +23,7 @@ interface HomeViewProps {
   onSelectCategory: (cat: string) => void;
   isDarkMode: boolean;
   onOpenAppTour: () => void;
+  t: TranslationDictionary;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({
@@ -32,15 +34,16 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onNavigateShop,
   onSelectCategory,
   isDarkMode,
-  onOpenAppTour
+  onOpenAppTour,
+  t
 }) => {
   const CATEGORY_CARDS = [
-    { id: 'cat-rice', title: 'Orez Alb & Orez Roșu', subtitle: 'Keeri Samba & Red Rice', image: '/prod_white_rice.jpg', filterKey: 'Staples & Grains' },
-    { id: 'cat-wambatu', title: 'Legume & Wambatu', subtitle: 'Brinjal proaspăt & Okra', image: '/prod_brinjal.jpg', filterKey: 'Fruits & Veg' },
-    { id: 'cat-spices', title: 'Condimente de Ceylon', subtitle: 'Curry Powder & Scorțișoară', image: '/prod_spices.jpg', filterKey: 'Pantry' },
-    { id: 'cat-tea', title: 'Ceai Dilmah Ceylon', subtitle: 'BOPF Single Origin Tea', image: '/prod_tea.jpg', filterKey: 'Beverages' },
-    { id: 'cat-bakery', title: 'Roast Paan & Panificație', subtitle: 'Pâine tradițională proaspătă', image: '/prod_roast_paan.jpg', filterKey: 'Bakery' },
-    { id: 'cat-fruits', title: 'Fructe Exotice', subtitle: 'Papaya & Mango Ceylon', image: '/prod_papaya.jpg', filterKey: 'Fruits & Veg' }
+    { id: 'cat-rice', title: t.catRice, subtitle: 'Keeri Samba & Red Rice', image: '/prod_white_rice.jpg', filterKey: 'Staples & Grains' },
+    { id: 'cat-wambatu', title: t.catVeg, subtitle: 'Brinjal & Okra', image: '/prod_brinjal.jpg', filterKey: 'Fruits & Veg' },
+    { id: 'cat-spices', title: t.catSpices, subtitle: 'Curry Powder & Cinnamon', image: '/prod_spices.jpg', filterKey: 'Pantry' },
+    { id: 'cat-tea', title: t.catTea, subtitle: 'Dilmah Ceylon BOPF', image: '/prod_tea.jpg', filterKey: 'Beverages' },
+    { id: 'cat-bakery', title: t.catBakery, subtitle: 'Fresh Sri Lankan Roast Paan', image: '/prod_roast_paan.jpg', filterKey: 'Bakery' },
+    { id: 'cat-fruits', title: t.catSnacks, subtitle: 'Ceylon Papaya & Mango', image: '/prod_papaya.jpg', filterKey: 'Fruits & Veg' }
   ];
 
   const popularProducts = products.slice(0, 8);
@@ -83,16 +86,16 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="lg:col-span-6 space-y-5 z-10">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E5EFE7] dark:bg-emerald-950/80 text-[#0A6847] dark:text-[#78F9B8] text-xs font-black tracking-wide">
               <Leaf className="w-3.5 h-3.5 text-[#0A6847] dark:text-[#78F9B8]" />
-              <span>Direct din Sri Lanka în casele dumneavoastră din România.</span>
+              <span>{t.heroBadge}</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-[1.12]">
-              Alimente proaspete din Sri Lanka <br />
-              <span className="text-[#0A6847] dark:text-[#78F9B8]">livrate rapid în România.</span>
+              {t.heroTitle1} <br />
+              <span className="text-[#0A6847] dark:text-[#78F9B8]">{t.heroTitle2}</span>
             </h1>
 
             <p className="text-sm text-slate-600 dark:text-zinc-300 font-medium leading-relaxed max-w-lg">
-              Orez alb de Ceylon, orez roșu tradițional, wambatu proaspăt, dhal, și condimente originale. Comandați cu plata cash la livrare (Cash on Delivery) în București și în toată România.
+              {t.heroDescription}
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -101,14 +104,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 className="px-6 py-3.5 rounded-full bg-[#0A6847] hover:bg-[#085237] text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-950/20 flex items-center gap-2 transition active:scale-95"
               >
                 <ShoppingBag className="w-4 h-4" />
-                <span>Vezi Catalogul cu Prețuri în Lei</span>
+                <span>{t.heroShopBtn}</span>
               </button>
 
               <button
                 onClick={onOpenAppTour}
                 className="px-6 py-3.5 rounded-full border border-slate-300 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 hover:bg-white text-slate-800 dark:text-white font-extrabold text-xs sm:text-sm shadow-xs transition active:scale-95"
               >
-                Turul Aplicației (ආයුබෝවන්)
+                {t.tourBtn}
               </button>
             </div>
           </div>
@@ -123,8 +126,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <div className="absolute top-2 right-4 px-4 py-2.5 rounded-2xl bg-[#0A6847] text-white shadow-xl flex items-center gap-2 border-2 border-white dark:border-zinc-900 animate-pulse">
                 <Sparkles className="w-4 h-4 text-amber-300" />
                 <div className="flex flex-col text-left">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-200">Depozit București</span>
-                  <span className="text-xs font-black leading-none">Plată la Livrare</span>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-200">{t.depotNotice.split('•')[0] || 'Bucharest Hub'}</span>
+                  <span className="text-xs font-black leading-none">{t.codBadge}</span>
                 </div>
               </div>
             </div>
@@ -135,10 +138,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
       {/* 3. VALUE PROPOSITIONS STRIP */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { icon: <Truck className="w-6 h-6" />, title: 'Curier Rapid în București', desc: 'Dispecerat curieri Glovo / Bolt / Sameday în 30-45 min' },
-          { icon: <Leaf className="w-6 h-6" />, title: '100% Export Autentic', desc: 'Orez, condimente de Ceylon și legume importate proaspăt' },
-          { icon: <ShieldCheck className="w-6 h-6" />, title: 'Plata la Livrare (Cash)', desc: 'Plătiți în numerar curierului direct la ușa dumneavoastră' },
-          { icon: <Award className="w-6 h-6" />, title: 'Livrare Națională România', desc: 'Expediere rapidă prin Sameday / Fan Courier în orice oraș' }
+          { icon: <Truck className="w-6 h-6" />, title: t.featureDeliveryTitle, desc: t.featureDeliveryDesc },
+          { icon: <Leaf className="w-6 h-6" />, title: t.featureRiceTitle, desc: t.featureRiceDesc },
+          { icon: <ShieldCheck className="w-6 h-6" />, title: t.featureSpicesTitle, desc: t.featureSpicesDesc },
+          { icon: <Award className="w-6 h-6" />, title: t.featureVegTitle, desc: t.featureVegDesc }
         ].map((item, idx) => (
           <div
             key={idx}
@@ -162,17 +165,17 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-              Cumpără după Categorie
+              {t.browseCategories}
             </h2>
             <p className="text-xs text-slate-500 dark:text-zinc-400">
-              Produsele cumpărate zilnic de consumatorii din Sri Lanka și iubitorii de bucătărie asiatică
+              {t.storeSubtitle}
             </p>
           </div>
           <button
             onClick={onNavigateShop}
             className="text-xs sm:text-sm font-extrabold text-[#0A6847] dark:text-[#78F9B8] hover:underline flex items-center gap-1"
           >
-            <span>Vezi tot magazinul</span>
+            <span>{t.tabShop}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -277,7 +280,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       className="px-3 py-1.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black flex items-center gap-1 shadow-xs transition"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      <span>Adaugă</span>
+                      <span>{t.addToCart}</span>
                     </button>
                   </div>
                 </div>

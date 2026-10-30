@@ -9,13 +9,15 @@ import {
   Facebook,
   Instagram
 } from 'lucide-react';
+import { TranslationDictionary } from '../translations';
 
 interface FooterProps {
   onNavigatePage: (page: 'HOME' | 'SHOP' | 'CART' | 'RECIPES') => void;
   onSelectCategory: (cat: string) => void;
+  t: TranslationDictionary;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory, t }) => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
 
@@ -152,27 +154,27 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
 
           <div className="space-y-3">
             <h4 className="text-sm font-black text-white uppercase tracking-wider">
-              Link-uri Rapide
+              {t.browseCategories}
             </h4>
             <ul className="space-y-2 font-semibold">
               <li>
                 <button onClick={() => onNavigatePage('HOME')} className="hover:text-white transition">
-                  Acasă
+                  {t.tabHome}
                 </button>
               </li>
               <li>
                 <button onClick={() => onNavigatePage('SHOP')} className="hover:text-white transition">
-                  Magazin Alimentar
+                  {t.tabShop}
                 </button>
               </li>
               <li>
                 <button onClick={() => onNavigatePage('CART')} className="hover:text-white transition">
-                  Coș & Plata la Livrare
+                  {t.tabCart}
                 </button>
               </li>
               <li>
                 <button onClick={() => onNavigatePage('RECIPES')} className="hover:text-white transition">
-                  Rețete CeylonBot AI
+                  {t.tabRecipes}
                 </button>
               </li>
             </ul>
@@ -180,27 +182,27 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onSelectCategory
 
           <div className="space-y-3">
             <h4 className="text-sm font-black text-white uppercase tracking-wider">
-              Categorii Alimente
+              {t.filterCategories}
             </h4>
             <ul className="space-y-2 font-semibold">
               <li>
                 <button onClick={() => { onSelectCategory('Staples & Grains'); onNavigatePage('SHOP'); }} className="hover:text-white transition">
-                  Orez Alb Keeri Samba & Orez Roșu
+                  {t.catRice}
                 </button>
               </li>
               <li>
                 <button onClick={() => { onSelectCategory('Fruits & Veg'); onNavigatePage('SHOP'); }} className="hover:text-white transition">
-                  Wambatu & Legume de Ceylon
+                  {t.catVeg}
                 </button>
               </li>
               <li>
                 <button onClick={() => { onSelectCategory('Pantry'); onNavigatePage('SHOP'); }} className="hover:text-white transition">
-                  Condimente de Ceylon & Pol
+                  {t.catSpices}
                 </button>
               </li>
               <li>
                 <button onClick={() => { onSelectCategory('Beverages'); onNavigatePage('SHOP'); }} className="hover:text-white transition">
-                  Ceai Dilmah Single Origin
+                  {t.catTea}
                 </button>
               </li>
             </ul>

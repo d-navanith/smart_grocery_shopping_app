@@ -18,6 +18,7 @@ import {
   MapPin
 } from 'lucide-react';
 import { Product, CartItem, CustomerUser } from '../types';
+import { TranslationDictionary } from '../translations';
 
 interface ModalsProps {
   // Product Detail Modal
@@ -45,6 +46,7 @@ interface ModalsProps {
   subtotal: number;
   onNavigateToCartPage: () => void;
   isDarkMode: boolean;
+  t: TranslationDictionary;
 }
 
 export const Modals: React.FC<ModalsProps> = ({
@@ -67,7 +69,8 @@ export const Modals: React.FC<ModalsProps> = ({
   onRemoveFromCart,
   subtotal,
   onNavigateToCartPage,
-  isDarkMode
+  isDarkMode,
+  t
 }) => {
   // Product Modal State
   const [modalWeight, setModalWeight] = useState('1kg');
@@ -225,7 +228,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   onClick={onCloseProductModal}
                   className="px-4 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 text-xs font-bold text-slate-600 dark:text-zinc-400 hover:bg-slate-50"
                 >
-                  Închide
+                  {t.closeBtn}
                 </button>
                 <button
                   onClick={() => {
@@ -234,7 +237,7 @@ export const Modals: React.FC<ModalsProps> = ({
                   }}
                   className="px-6 py-2.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black shadow transition active:scale-95"
                 >
-                  Adaugă în Coș
+                  {t.addToCart}
                 </button>
               </div>
             </div>
@@ -435,10 +438,10 @@ export const Modals: React.FC<ModalsProps> = ({
             <div className="p-5 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between">
               <div>
                 <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
-                  🇷🇴 Livrare Activă în România
+                  {t.trackingSubtitle}
                 </span>
                 <h4 className="font-black text-base text-slate-900 dark:text-white mt-1">
-                  Comanda #{activeOrder.orderNumber}
+                  {t.trackingTitle} #{activeOrder.orderNumber}
                 </h4>
               </div>
               <button
@@ -458,15 +461,15 @@ export const Modals: React.FC<ModalsProps> = ({
                   </div>
                   <div>
                     <span className="text-[10px] font-black text-amber-800 uppercase tracking-wider block">
-                      Metodă de Plată: Plata la Livrare (Cash)
+                      {t.codOptionTitle}
                     </span>
                     <p className="font-extrabold text-sm text-slate-900 dark:text-white mt-0.5">
-                      Pregătiți suma: <span className="text-[#0A6847] dark:text-[#78F9B8] font-black">{Number(activeOrder.totalAmount || 0).toFixed(2)} lei</span>
+                      {t.cashAmountToPrepare}: <span className="text-[#0A6847] dark:text-[#78F9B8] font-black">{Number(activeOrder.totalAmount || 0).toFixed(2)} lei</span>
                     </p>
                   </div>
                 </div>
                 <span className="text-[11px] font-black px-2.5 py-1 rounded-full bg-[#E5A91A] text-amber-950">
-                  Ramburs Curier
+                  {t.codBadge}
                 </span>
               </div>
 
@@ -476,21 +479,21 @@ export const Modals: React.FC<ModalsProps> = ({
                   <div className="flex items-center gap-2">
                     <Truck className="w-4 h-4 text-[#0A6847] dark:text-[#78F9B8]" />
                     <span className="font-black text-xs text-slate-800 dark:text-white">
-                      Companie Curierat: {activeOrder.courierCompany || 'Glovo Express Bucharest'}
+                      {t.courierAssigned}: {activeOrder.courierCompany || 'Glovo / Bolt / Sameday'}
                     </span>
                   </div>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800">
-                    Dispecerat Apelat
+                    Dispatched
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-zinc-800">
                   <div className="space-y-0.5">
                     <p className="text-[11px] font-bold text-slate-700 dark:text-zinc-300">
-                      Curier Alocat: {activeOrder.riderName || 'Ion Popescu (Rider Glovo)'}
+                      Rider: {activeOrder.riderName || 'Rider Assigned'}
                     </p>
                     <p className="text-[10px] text-slate-400">
-                      Timp estimat până la sosire: <strong>~25 - 35 minute</strong>
+                      {t.deliveryEta}: <strong>~25 - 35 mins</strong>
                     </p>
                   </div>
 
@@ -499,7 +502,7 @@ export const Modals: React.FC<ModalsProps> = ({
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0A6847] text-white text-[11px] font-black shadow-xs hover:bg-[#085237]"
                   >
                     <Phone className="w-3.5 h-3.5" />
-                    <span>Apelează Curier</span>
+                    <span>Call Rider</span>
                   </a>
                 </div>
               </div>
@@ -507,31 +510,31 @@ export const Modals: React.FC<ModalsProps> = ({
               {/* Live Step Progress */}
               <div className="space-y-2.5 pt-1">
                 <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider block">
-                  Etapele Livrării Coletului:
+                  Delivery Progress:
                 </span>
 
                 <div className="space-y-2">
                   <div className="flex items-center gap-2.5 text-slate-700 dark:text-zinc-200">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>1. Comandă Înregistrată în Sistem (Produse din Sri Lanka rezervate)</span>
+                    <span>{t.orderStatusPlaced}</span>
                   </div>
                   <div className="flex items-center gap-2.5 text-slate-700 dark:text-zinc-200">
                     <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>2. Împachetare la Depozit Central (Strada Academiei 14, București)</span>
+                    <span>{t.orderStatusProcessing}</span>
                   </div>
                   <div className="flex items-center gap-2.5 font-bold text-[#0A6847] dark:text-[#78F9B8] bg-emerald-50 dark:bg-emerald-950/40 p-2 rounded-xl border border-emerald-200 dark:border-emerald-800">
                     <Clock className="w-4 h-4 animate-spin shrink-0 text-[#0A6847]" />
-                    <span>3. Magazinul a apelat curierul: Colet preluat și în tranzit spre ușa dvs.</span>
+                    <span>{t.orderStatusDispatched}</span>
                   </div>
                   <div className="flex items-center gap-2.5 text-slate-400">
                     <MapPin className="w-4 h-4 shrink-0" />
-                    <span>4. Sosire la adresă, predare pachet și încasare numerar (Cash)</span>
+                    <span>{t.orderStatusDelivered}</span>
                   </div>
                 </div>
               </div>
 
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-zinc-800 text-[11px] text-slate-500">
-                <span>Adresă Livrare: <strong className="text-slate-800 dark:text-white">{activeOrder.address || 'Strada Mihai Eminescu nr. 42, București'}</strong></span>
+                <span>{t.shippingAddressTitle}: <strong className="text-slate-800 dark:text-white">{activeOrder.address || 'Strada Mihai Eminescu nr. 42, București'}</strong></span>
               </div>
             </div>
 
@@ -540,7 +543,7 @@ export const Modals: React.FC<ModalsProps> = ({
                 onClick={onCloseTracking}
                 className="px-6 py-2.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black shadow transition active:scale-95"
               >
-                Am înțeles, mulțumesc!
+                {t.closeBtn}
               </button>
             </div>
           </div>

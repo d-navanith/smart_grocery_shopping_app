@@ -8,6 +8,7 @@ import { HomeView } from './components/HomeView';
 import { AiRecipeView } from './components/AiRecipeView';
 import { Footer } from './components/Footer';
 import { Modals } from './components/Modals';
+import { Language, TranslationDictionary, TRANSLATIONS } from './translations';
 
 const CEYLON_DELIVERY_ZONES: DeliveryZone[] = [
   { name: 'București Sector 1 (Nord, Băneasa, Pipera)', coverage: 'Sector 1', fee: 15, eta: '25-35 min' },
@@ -21,6 +22,24 @@ const CEYLON_DELIVERY_ZONES: DeliveryZone[] = [
 ];
 
 export default function ClientWebSupermarket() {
+  const [currentLanguage, setCurrentLanguage] = useState<Language>(() => {
+    const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    const langParam = params?.get('lang');
+    if (langParam === 'en' || langParam === 'si' || langParam === 'ro') return langParam;
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('ceylonfoods_lang') : null;
+    if (saved === 'en' || saved === 'si' || saved === 'ro') return saved as Language;
+    return 'en'; // English is must as default
+  });
+
+  const handleLanguageChange = (lang: Language) => {
+    setCurrentLanguage(lang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('ceylonfoods_lang', lang);
+    }
+  };
+
+  const t: TranslationDictionary = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
+
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     if (params?.get('theme') === 'dark') return true;
@@ -363,6 +382,9 @@ export default function ClientWebSupermarket() {
         onOpenCartDrawer={() => setIsCartDrawerOpen(true)}
         onOpenAppTour={() => setIsOnboardingOpen(true)}
         subtotal={subtotal}
+        currentLanguage={currentLanguage}
+        onLanguageChange={handleLanguageChange}
+        t={t}
       />
 
       <main className="flex-1 flex flex-col">
@@ -381,6 +403,7 @@ export default function ClientWebSupermarket() {
             setSearchQuery={setSearchQuery}
             isDarkMode={isDarkMode}
             onNavigateHome={() => setCurrentPage('HOME')}
+            t={t}
           />
         )}
 
@@ -406,6 +429,7 @@ export default function ClientWebSupermarket() {
             onNavigateShop={() => setCurrentPage('SHOP')}
             onNavigateHome={() => setCurrentPage('HOME')}
             isDarkMode={isDarkMode}
+            t={t}
           />
         )}
 
@@ -419,6 +443,7 @@ export default function ClientWebSupermarket() {
             onSelectCategory={(cat) => setSelectedCategory(cat)}
             isDarkMode={isDarkMode}
             onOpenAppTour={() => setIsOnboardingOpen(true)}
+            t={t}
           />
         )}
 
@@ -434,6 +459,7 @@ export default function ClientWebSupermarket() {
       <Footer
         onNavigatePage={setCurrentPage}
         onSelectCategory={(cat) => setSelectedCategory(cat)}
+        t={t}
       />
 
       <Modals
@@ -460,6 +486,7 @@ export default function ClientWebSupermarket() {
         subtotal={subtotal}
         onNavigateToCartPage={() => setCurrentPage('CART')}
         isDarkMode={isDarkMode}
+        t={t}
       />
     </div>
   );

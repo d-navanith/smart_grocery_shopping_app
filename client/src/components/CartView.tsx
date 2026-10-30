@@ -16,6 +16,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { CartItem, CustomerUser, DeliveryZone } from '../types';
+import { TranslationDictionary } from '../translations';
 
 interface CartViewProps {
   cart: CartItem[];
@@ -38,6 +39,7 @@ interface CartViewProps {
   onNavigateShop: () => void;
   onNavigateHome: () => void;
   isDarkMode: boolean;
+  t: TranslationDictionary;
 }
 
 export const CartView: React.FC<CartViewProps> = ({
@@ -60,7 +62,8 @@ export const CartView: React.FC<CartViewProps> = ({
   onOpenCheckoutModal,
   onNavigateShop,
   onNavigateHome,
-  isDarkMode
+  isDarkMode,
+  t
 }) => {
   const [couponInput, setCouponInput] = useState('');
 
@@ -102,14 +105,14 @@ export const CartView: React.FC<CartViewProps> = ({
       }`}>
         <div className="flex items-center gap-2">
           <button onClick={onNavigateHome} className="hover:text-[#0A6847] dark:hover:text-[#78F9B8] transition">
-            Acasă (Home)
+            {t.breadcrumbHome}
           </button>
           <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-[#0A6847] dark:text-[#78F9B8] font-black">Coș de Cumpărături & Plata la Livrare</span>
+          <span className="text-[#0A6847] dark:text-[#78F9B8] font-black">{t.cartBreadcrumb}</span>
         </div>
 
         <div className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-300">
-          🇷🇴 Livrare Rapidă prin Curieri în București & Județul Ilfov • Plata Cash la Livrare
+          🇷🇴 {t.cartSubtitle}
         </div>
       </div>
 
@@ -120,15 +123,15 @@ export const CartView: React.FC<CartViewProps> = ({
           <div className="w-20 h-20 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-[#0A6847] dark:text-[#78F9B8] flex items-center justify-center mx-auto">
             <ShoppingBag className="w-10 h-10" />
           </div>
-          <h3 className="text-xl font-black text-slate-800 dark:text-white">Coșul dumneavoastră este gol</h3>
+          <h3 className="text-xl font-black text-slate-800 dark:text-white">{t.emptyCartTitle}</h3>
           <p className="text-xs text-slate-400 max-w-md mx-auto">
-            Nu aveți niciun produs în coș. Adăugați orez alb, orez roșu, wambatu proaspăt, dhal, și condimente autentice de Ceylon.
+            {t.emptyCartDesc}
           </p>
           <button
             onClick={onNavigateShop}
             className="px-6 py-3 rounded-full bg-[#0A6847] hover:bg-[#085237] text-white font-extrabold text-xs shadow-md transition active:scale-95"
           >
-            Vezi Produsele din Magazin
+            {t.startShoppingBtn}
           </button>
         </div>
       ) : (
@@ -141,10 +144,10 @@ export const CartView: React.FC<CartViewProps> = ({
             }`}>
               {/* GOLDEN YELLOW TABLE HEADER */}
               <div className="bg-[#E5A91A] text-amber-950 px-6 py-3.5 grid grid-cols-12 text-xs font-black uppercase tracking-wider select-none">
-                <div className="col-span-6">Produs Alimentar</div>
-                <div className="col-span-2 text-center">Preț</div>
-                <div className="col-span-2 text-center">Cantitate</div>
-                <div className="col-span-2 text-right">Subtotal</div>
+                <div className="col-span-6">{t.tableProduct}</div>
+                <div className="col-span-2 text-center">{t.tablePrice}</div>
+                <div className="col-span-2 text-center">{t.tableQuantity}</div>
+                <div className="col-span-2 text-right">{t.tableSubtotal}</div>
               </div>
 
               {/* TABLE BODY ROWS */}
@@ -158,7 +161,7 @@ export const CartView: React.FC<CartViewProps> = ({
                       <button
                         onClick={() => onRemoveFromCart(item.product.id, item.selectedWeight)}
                         className="w-7 h-7 rounded-full bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-500 dark:bg-zinc-800 dark:hover:bg-red-950/60 flex items-center justify-center transition shrink-0"
-                        title="Șterge produs"
+                        title="Remove"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -180,7 +183,7 @@ export const CartView: React.FC<CartViewProps> = ({
                         </span>
                         {item.product.isOrganic && (
                           <span className="text-[9px] font-black text-[#0A6847] dark:text-[#78F9B8] uppercase">
-                            🌿 100% Export Autentic din Sri Lanka
+                            🌿 {t.organicBadge}
                           </span>
                         )}
                       </div>
@@ -237,7 +240,7 @@ export const CartView: React.FC<CartViewProps> = ({
                     type="submit"
                     className="px-4 py-2 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black shadow-xs transition active:scale-95 shrink-0"
                   >
-                    Aplică Cupon
+                    {t.applyCoupon}
                   </button>
                 </form>
 
@@ -246,13 +249,13 @@ export const CartView: React.FC<CartViewProps> = ({
                     onClick={onClearCart}
                     className="text-slate-400 hover:text-red-500 transition"
                   >
-                    Golește Coșul
+                    {t.clearCart}
                   </button>
                   <button
                     onClick={onNavigateShop}
                     className="text-[#0A6847] dark:text-[#78F9B8] hover:underline"
                   >
-                    Continuă Cumpărăturile →
+                    {t.continueShopping}
                   </button>
                 </div>
               </div>
@@ -267,13 +270,13 @@ export const CartView: React.FC<CartViewProps> = ({
               <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs font-bold text-[#0A6847] dark:text-[#78F9B8] flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-emerald-600" />
-                  <span>Cupon {appliedPromo.code} aplicat: <strong>-{appliedPromo.discount.toFixed(2)} lei</strong> ({appliedPromo.title})</span>
+                  <span>{t.couponApplied}: {appliedPromo.code} (-{appliedPromo.discount.toFixed(2)} lei)</span>
                 </div>
                 <button
                   onClick={onRemovePromo}
                   className="text-red-500 hover:underline text-[11px]"
                 >
-                  Elimină
+                  {t.removeCoupon}
                 </button>
               </div>
             )}
@@ -282,13 +285,12 @@ export const CartView: React.FC<CartViewProps> = ({
             <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 space-y-2">
               <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200 text-xs font-black">
                 <Truck className="w-4 h-4 text-amber-700" />
-                <span>Cum funcționează livrarea în România (Delivery Workflow):</span>
+                <span>{t.howDeliveryWorksTitle}</span>
               </div>
               <p className="text-[11px] text-amber-800 dark:text-amber-300 leading-relaxed font-medium">
-                1. Plasați comanda cu <strong>Plata la Livrare (Cash on Delivery)</strong>.<br />
-                2. Supermarketul din București împachetează produsele și <strong>apelează compania de livrare (Glovo / Bolt / Sameday)</strong>.<br />
-                3. Curierul preia pachetul și îl livrează rapid la adresa dumneavoastră.<br />
-                4. Plătiți în numerar direct curierului la ușa dumneavoastră!
+                {t.howDeliveryWorksStep1}<br />
+                {t.howDeliveryWorksStep2}<br />
+                {t.howDeliveryWorksStep3}
               </p>
             </div>
           </div>
@@ -299,7 +301,7 @@ export const CartView: React.FC<CartViewProps> = ({
               isDarkMode ? 'bg-[#141816] border-zinc-800 text-zinc-200' : 'bg-white border-slate-200 text-slate-800'
             }`}>
               <h3 className="font-black text-base uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-zinc-800 text-slate-900 dark:text-white">
-                Finalizare Comandă & Livrare
+                {t.checkoutTitle}
               </h3>
 
               {formError && (
@@ -312,15 +314,15 @@ export const CartView: React.FC<CartViewProps> = ({
               {/* Delivery Address in Romania */}
               <div className="space-y-3 text-xs font-semibold">
                 <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
-                  Adresă de Livrare în România
+                  {t.shippingAddressTitle}
                 </span>
 
                 <div>
-                  <label className="block text-[11px] text-slate-500 mb-1 font-bold">Strada și Numărul:</label>
+                  <label className="block text-[11px] text-slate-500 mb-1 font-bold">{t.streetLabel}</label>
                   <input
                     type="text"
                     required
-                    placeholder="ex: Strada Mihai Eminescu nr. 42"
+                    placeholder={t.streetPlaceholder}
                     value={streetAddress}
                     onChange={(e) => setStreetAddress(e.target.value)}
                     className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#0A6847]"
@@ -328,10 +330,10 @@ export const CartView: React.FC<CartViewProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-slate-500 mb-1 font-bold">Detalii Bloc / Scară / Ap / Interfon:</label>
+                  <label className="block text-[11px] text-slate-500 mb-1 font-bold">{t.buildingDetailsLabel}</label>
                   <input
                     type="text"
-                    placeholder="ex: Bloc 12, Scara A, Ap. 14, Interfon 14"
+                    placeholder={t.buildingPlaceholder}
                     value={buildingDetails}
                     onChange={(e) => setBuildingDetails(e.target.value)}
                     className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#0A6847]"
@@ -339,11 +341,11 @@ export const CartView: React.FC<CartViewProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-slate-500 mb-1 font-bold">Telefon Contact (pentru Curier):</label>
+                  <label className="block text-[11px] text-slate-500 mb-1 font-bold">{t.phoneLabel}</label>
                   <input
                     type="tel"
                     required
-                    placeholder="ex: +40 722 456 789"
+                    placeholder={t.phonePlaceholder}
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
                     className="w-full bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#0A6847]"
@@ -355,10 +357,10 @@ export const CartView: React.FC<CartViewProps> = ({
               <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-zinc-800">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
-                    Zona / Oraș Livrare
+                    {t.selectZoneTitle}
                   </span>
                   <span className="text-[10px] font-bold text-[#0A6847] dark:text-[#78F9B8]">
-                    {isFreeDeliveryQualified ? 'Transport Gratuit Activat' : 'Tarife Curier'}
+                    {isFreeDeliveryQualified ? t.freeLabel : t.courierRates}
                   </span>
                 </div>
 
@@ -387,7 +389,7 @@ export const CartView: React.FC<CartViewProps> = ({
                         </div>
                       </div>
                       <span className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8]">
-                        {isFreeDeliveryQualified ? 'GRATIS' : `${zone.fee} lei`}
+                        {isFreeDeliveryQualified ? t.freeLabel : `${zone.fee} lei`}
                       </span>
                     </label>
                   ))}
@@ -397,7 +399,7 @@ export const CartView: React.FC<CartViewProps> = ({
               {/* PAYMENT METHOD SELECTION: CASH ON DELIVERY PRIMARY */}
               <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-zinc-800">
                 <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
-                  Metodă de Plată (Payment Method)
+                  {t.paymentMethodTitle}
                 </span>
 
                 <div className="space-y-2">
@@ -420,36 +422,14 @@ export const CartView: React.FC<CartViewProps> = ({
                     <div className="space-y-0.5">
                       <div className="flex items-center gap-1.5 font-black text-xs text-[#0A6847] dark:text-[#78F9B8]">
                         <Banknote className="w-4 h-4 text-emerald-600" />
-                        <span>Plata la Livrare (Cash on Delivery / Ramburs)</span>
+                        <span>{t.codOptionTitle}</span>
                         <span className="px-1.5 py-0.2 rounded bg-[#E5A91A] text-amber-950 text-[9px] font-black">
-                          RECOMANDAT
+                          {t.recommendedTag}
                         </span>
                       </div>
                       <p className="text-[11px] text-slate-500 font-medium">
-                        Plătiți în numerar (cash) direct curierului la primirea coletului la ușa dumneavoastră.
+                        {t.codOptionDesc}
                       </p>
-                    </div>
-                  </label>
-
-                  {/* Option 2: Card POS la Livrare */}
-                  <label
-                    onClick={() => setPaymentMethod('POS_AT_DELIVERY')}
-                    className={`flex items-start gap-3 p-2.5 rounded-xl border cursor-pointer transition ${
-                      paymentMethod === 'POS_AT_DELIVERY'
-                        ? 'border-[#0A6847] bg-emerald-50/80 dark:bg-emerald-950/30'
-                        : 'border-slate-200 dark:border-zinc-800'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      readOnly
-                      checked={paymentMethod === 'POS_AT_DELIVERY'}
-                      className="accent-[#0A6847] mt-0.5"
-                    />
-                    <div>
-                      <p className="font-extrabold text-xs text-slate-800 dark:text-white">Card la Curier (POS Mobil)</p>
-                      <p className="text-[10px] text-slate-400">Plata cu cardul la terminalul POS al curierului.</p>
                     </div>
                   </label>
                 </div>
@@ -458,20 +438,20 @@ export const CartView: React.FC<CartViewProps> = ({
               {/* Order Cost Breakdown */}
               <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-zinc-800 text-xs font-semibold">
                 <div className="flex justify-between text-slate-400">
-                  <span>Subtotal Produse</span>
+                  <span>{t.subtotalLabel}</span>
                   <span className="font-extrabold text-slate-900 dark:text-white text-sm">
                     {subtotal.toFixed(2)} lei
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-400">
-                  <span>Livrare Curier ({selectedZone.name})</span>
+                  <span>{t.deliveryFeeLabel} ({selectedZone.name})</span>
                   <span className="font-extrabold text-slate-900 dark:text-white">
-                    {effectiveDeliveryFee === 0 ? <strong className="text-emerald-600">GRATUIT</strong> : `${effectiveDeliveryFee.toFixed(2)} lei`}
+                    {effectiveDeliveryFee === 0 ? <strong className="text-emerald-600">{t.freeLabel}</strong> : `${effectiveDeliveryFee.toFixed(2)} lei`}
                   </span>
                 </div>
                 {appliedPromo && (
                   <div className="flex justify-between text-emerald-600 font-bold">
-                    <span>Reducere Cupon ({appliedPromo.code})</span>
+                    <span>{t.discountLabel} ({appliedPromo.code})</span>
                     <span>-{appliedPromo.discount.toFixed(2)} lei</span>
                   </div>
                 )}
@@ -482,8 +462,8 @@ export const CartView: React.FC<CartViewProps> = ({
 
                 <div className="pt-3 border-t border-slate-100 dark:border-zinc-800 flex justify-between items-baseline">
                   <div>
-                    <span className="font-black text-sm uppercase text-slate-800 dark:text-white block">Total de Plată</span>
-                    <span className="text-[10px] text-amber-700 font-bold">Suma de pregătit în numerar (Cash)</span>
+                    <span className="font-black text-sm uppercase text-slate-800 dark:text-white block">{t.totalToPayLabel}</span>
+                    <span className="text-[10px] text-amber-700 font-bold">{t.codOptionTitle}</span>
                   </div>
                   <span className="text-2xl font-black text-[#0A6847] dark:text-[#78F9B8]">
                     {totalAmount.toFixed(2)} lei
@@ -497,7 +477,7 @@ export const CartView: React.FC<CartViewProps> = ({
                 className="w-full py-4 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-98"
               >
                 <Lock className="w-4 h-4" />
-                <span>Plasează Comanda ({totalAmount.toFixed(2)} lei - Cash la Livrare)</span>
+                <span>{t.placeOrderBtn} ({totalAmount.toFixed(2)} lei)</span>
               </button>
 
               <div className="pt-2 text-center space-y-1">
