@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
 import {
   INITIAL_PRODUCTS,
   INITIAL_ADMIN_STATS,
@@ -1030,6 +1032,40 @@ app.post('/api/ai/assistant', (req: Request, res: Response) => {
     }
   });
 });
+
+// --- PRODUCTION STATIC HOSTING FOR CLIENT & ADMIN ---
+const possibleAdminPaths = [
+  path.resolve(__dirname, '../public/admin'),
+  path.resolve(__dirname, '../../admin/dist'),
+  path.resolve(process.cwd(), 'public/admin'),
+  path.resolve(process.cwd(), 'admin/dist')
+];
+const adminStaticPath = possibleAdminPaths.find(p => fs.existsSync(p));
+
+if (adminStaticPath) {
+  console.log(`[Production] Serving Admin Dashboard from: ${adminStaticPath}`);
+  app.use('/admin', express.static(adminStaticPath));
+  app.get('/admin*', (_req: Request, res: Response) => {
+    res.sendFile(path.join(adminStaticPath, 'index.html'));
+  });
+}
+
+const possibleClientPaths = [
+  path.resolve(__dirname, '../public/client'),
+  path.resolve(__dirname, '../../client/dist'),
+  path.resolve(process.cwd(), 'public/client'),
+  path.resolve(process.cwd(), 'client/dist')
+];
+const clientStaticPath = possibleClientPaths.find(p => fs.existsSync(p));
+
+if (clientStaticPath) {
+  console.log(`[Production] Serving Client Storefront from: ${clientStaticPath}`);
+  app.use(express.static(clientStaticPath));
+  app.get('*', (req: Request, res: Response, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(clientStaticPath, 'index.html'));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`Ceylon Foods Romania Server running on http://localhost:${PORT}`);

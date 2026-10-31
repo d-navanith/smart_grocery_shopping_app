@@ -14,7 +14,8 @@
     "dev:server": "npm --workspace=server run dev",
     "dev:admin": "npm --workspace=admin run dev",
     "dev:client": "npm --workspace=client run dev",
-    "build": "npm --workspaces run build"
+    "build": "npm --workspaces run build",
+    "package:monsterasp": "node scripts/package-monsterasp.js"
   },
   "keywords": [
     "supermarket",
