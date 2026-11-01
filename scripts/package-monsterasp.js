@@ -51,57 +51,37 @@ copyDirSync(path.join(ROOT_DIR, 'admin', 'dist'), path.join(DEPLOY_DIR, 'public'
 console.log('📄 Step 4: Writing root index.js and web.config...');
 fs.writeFileSync(
   path.join(DEPLOY_DIR, 'index.js'),
-  `// MonsterASP.NET / IISNode Root Entrypoint
+  `// MonsterASP.NET / httpPlatformHandler Root Entrypoint
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 require('./dist/index.js');
 `
 );
 
-// 5. Create MonsterASP.NET web.config
+// Ensure logs directory exists for stdout/stderr logs
+fs.mkdirSync(path.join(DEPLOY_DIR, 'logs'), { recursive: true });
+
+// 5. Create MonsterASP.NET web.config (Native httpPlatformHandler for Node.js)
 const webConfigContent = `<?xml version="1.0" encoding="utf-8"?>
 <!-- MonsterASP.NET IIS Configuration for Ceylon Foods Full-Stack Node.js Application -->
 <configuration>
   <system.webServer>
-    <!-- Configure iisnode to handle root index.js -->
     <handlers>
-      <add name="iisnode" path="index.js" verb="*" modules="iisnode" />
+      <add name="httpPlatformHandler" path="*" verb="*" modules="httpPlatformHandler" resourceType="Unspecified" />
     </handlers>
-
-    <!-- Rewrite all incoming requests to index.js so Express handles routing -->
-    <rewrite>
-      <rules>
-        <rule name="NodeInspector" patternSyntax="ECMAScript" stopProcessing="true">
-          <match url="^index.js\\/debug[\\/]?" />
-        </rule>
-        <rule name="DynamicContent">
-          <conditions>
-            <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="True" />
-          </conditions>
-          <action type="Rewrite" url="index.js" />
-        </rule>
-      </rules>
-    </rewrite>
-
-    <!-- Hide sensitive files from direct web browsing -->
+    <httpPlatform processPath="node" arguments=".\\index.js" startupTimeLimit="60" stdoutLogEnabled="true" stdoutLogFile=".\\logs\\node">
+      <environmentVariables>
+        <environmentVariable name="PORT" value="%HTTP_PLATFORM_PORT%" />
+        <environmentVariable name="NODE_ENV" value="production" />
+      </environmentVariables>
+    </httpPlatform>
     <security>
       <requestFiltering>
         <hiddenSegments>
           <add segment="node_modules" />
-          <add segment="iisnode" />
           <add segment=".git" />
         </hiddenSegments>
       </requestFiltering>
     </security>
-
-    <!-- iisnode options for production logging and resilience -->
-    <iisnode
-      node_env="production"
-      debuggingEnabled="false"
-      loggingEnabled="true"
-      logDirectory="iisnode"
-      maxLogFileSizeInKB="2048"
-      watchedFiles="web.config;index.js;dist\\*.js"
-    />
   </system.webServer>
 </configuration>
 `;
