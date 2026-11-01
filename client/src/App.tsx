@@ -65,8 +65,9 @@ export default function ClientWebSupermarket() {
       if (p === 'completed') return 'ORDER_COMPLETED';
       if (p === 'track' || p === 'track-order') return 'TRACK_ORDER';
       if (p === 'account') return 'ACCOUNT';
+      if (p === 'shop') return 'SHOP';
     }
-    return 'SHOP';
+    return 'HOME';
   });
 
   const [lastCompletedOrder, setLastCompletedOrder] = useState<ClientOrder | null>(null);
@@ -536,7 +537,7 @@ export default function ClientWebSupermarket() {
   };
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'dark bg-[#0A0D0B] text-white' : 'bg-[#F9FAF9] text-slate-800'} font-sans flex flex-col transition-colors duration-200`}>
+    <div className={`min-h-screen ${isDarkMode ? 'dark bg-[#0A0D0B] text-white' : 'bg-white text-slate-900'} font-sans flex flex-col transition-colors duration-200`}>
       <HeaderNav
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}

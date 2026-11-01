@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
 import {
-  Phone,
   Search,
-  MapPin,
   Heart,
-  ShoppingBag,
-  Sparkles,
+  ShoppingCart,
   Sun,
   Moon,
   ChevronDown,
   User as UserIcon,
   LogOut,
-  Truck,
-  Facebook,
-  Twitter,
-  Instagram,
   Menu,
   X,
   Globe,
-  Check
+  Check,
+  Truck,
+  Sparkles,
+  ChefHat
 } from 'lucide-react';
 import { CustomerUser, CartItem } from '../types';
 import { Language, TranslationDictionary, LANGUAGE_OPTIONS } from '../translations';
@@ -72,71 +68,71 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   onLogout,
   cart,
   wishlistCount,
-  onOpenCartDrawer,
   onOpenAppTour,
-  subtotal,
   currentLanguage,
   onLanguageChange,
   t,
   ongoingDeliveriesCount = 0
 }) => {
-  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(() => typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('menu') === 'open');
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(
+    () => typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('menu') === 'open'
+  );
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const selectedLangOption = LANGUAGE_OPTIONS.find(l => l.code === currentLanguage) || LANGUAGE_OPTIONS[0];
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  const categories = [
-    'All Categories',
-    'Staples & Grains',
-    'Fruits & Veg',
-    'Pantry & Spices',
-    'Dairy & Eggs',
-    'Bakery & Roast Paan',
-    'Beverages & Ceylon Tea',
-    'Snacks & Biscuits'
-  ];
+  // Display name in golden pill (matches Figma "Brie" or logged-in user's first name)
+  const displayUserName = currentUser ? currentUser.name.split(' ')[0] : 'Brie';
 
   return (
     <header className="w-full flex flex-col z-30 select-none">
-      {/* 1. TOP NOTICE / ANNOUNCEMENT BAR (GOLDEN HARVEST YELLOW #E5A91A) */}
-      <div className="bg-[#E5A91A] text-amber-950 text-xs font-bold py-1.5 px-4 sm:px-8 border-b border-amber-500/30">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          {/* Left: Hotline in Romania */}
-          <div className="flex items-center gap-2">
-            <Phone className="w-3.5 h-3.5 text-amber-900" />
-            <span className="font-extrabold tracking-tight">
-              {t.hotlineLabel} <span className="underline">+40 721 345 678</span>
+      {/* 1. TOP ANNOUNCEMENT BAR (FIGMA EXACT #F8C519) */}
+      <div className="bg-[#F8C519] text-[#664E00] min-h-[50px] px-4 sm:px-8 flex items-center">
+        <div className="max-w-[1240px] w-full mx-auto flex items-center justify-between gap-4 py-1.5">
+          {/* Left spacer on desktop so greeting stays centered */}
+          <div className="hidden xl:block w-[180px]" />
+
+          {/* Center Greeting: ආයුබෝවන් · வணக்கம் · Welcome | The taste of Sri Lanka, delivered to your home. */}
+          <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-[#664E00] mx-auto text-center flex-wrap">
+            <img
+              src="/figma_ayubowan.png"
+              alt="ආයුබෝවන්"
+              className="h-5 sm:h-6 w-auto object-contain inline-block"
+            />
+            <span className="text-[#664E00] font-bold">·</span>
+            <span className="text-[#D84315] font-bold">வணக்கம்</span>
+            <span className="text-[#664E00] font-bold">·</span>
+            <span className="text-[#664E00] font-medium">
+              {currentLanguage === 'en'
+                ? 'Welcome | The taste of Sri Lanka, delivered to your home.'
+                : t.announcement}
             </span>
           </div>
 
-          {/* Center: Romanian Sri Lankan Market Context Announcement */}
-          <div className="hidden md:flex items-center gap-2 text-center text-[11px] leading-tight max-w-2xl">
-            <span>{t.announcement}</span>
-          </div>
-
-          {/* Right: Language Selector, Theme & App Tour */}
-          <div className="flex items-center gap-2.5">
-            {/* Language Switcher Dropdown (English, Sinhala, Romanian) */}
+          {/* Right Controls: Language Pill & Dark Mode Pill (#EEAB1E with #C08512 border) */}
+          <div className="flex items-center gap-3 shrink-0">
+            {/* Language Switcher */}
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-900/15 hover:bg-amber-900/25 text-amber-950 text-[11px] font-black transition border border-amber-900/20 shadow-2xs"
+                className="h-[32px] px-3 rounded-md bg-[#EEAB1E] hover:bg-[#e59f10] border border-[#C08512] text-[#664E00] text-xs font-medium flex items-center gap-2 transition cursor-pointer"
                 title="Change language / භාෂාව මාරු කරන්න / Schimbă limba"
               >
-                <Globe className="w-3.5 h-3.5 text-amber-950" />
-                <span>{selectedLangOption.flag} {selectedLangOption.nativeName.split(' ')[0]}</span>
-                <ChevronDown className="w-3 h-3 text-amber-950" />
+                <Globe className="w-3.5 h-3.5 text-[#664E00]" />
+                <span>{selectedLangOption.label}</span>
+                <ChevronDown className="w-3.5 h-3.5 text-[#664E00]" />
               </button>
 
               {isLanguageMenuOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-52 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl py-1.5 z-50 animate-fadeIn text-slate-800 dark:text-zinc-100">
+                <div className="absolute right-0 top-full mt-1.5 w-52 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl py-1.5 z-50 text-slate-800 dark:text-zinc-100">
                   <div className="px-3.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between">
                     <span>Language / භාෂාව</span>
-                    <span className="text-[9px] text-[#0A6847] dark:text-emerald-400 font-extrabold">3 Active</span>
+                    <span className="text-[9px] text-[#1B8057] font-extrabold">3 Active</span>
                   </div>
                   {LANGUAGE_OPTIONS.map((opt) => (
                     <button
@@ -148,7 +144,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                       }}
                       className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-bold transition text-left ${
                         currentLanguage === opt.code
-                          ? 'bg-emerald-50 dark:bg-emerald-950/50 text-[#0A6847] dark:text-[#78F9B8] font-black'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/50 text-[#1B8057] dark:text-[#78F9B8] font-black'
                           : 'text-slate-700 dark:text-zinc-200 hover:bg-slate-50 dark:hover:bg-zinc-800'
                       }`}
                     >
@@ -160,7 +156,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                         </div>
                       </div>
                       {currentLanguage === opt.code && (
-                        <Check className="w-4 h-4 text-[#0A6847] dark:text-[#78F9B8]" />
+                        <Check className="w-4 h-4 text-[#1B8057] dark:text-[#78F9B8]" />
                       )}
                     </button>
                   ))}
@@ -168,68 +164,44 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               )}
             </div>
 
+            {/* Dark / Light Mode Toggle */}
             <button
-              onClick={onOpenAppTour}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-900/15 hover:bg-amber-900/25 text-amber-950 text-[11px] font-black transition"
-            >
-              <Sparkles className="w-3 h-3 text-amber-900" />
-              <span>{t.tourBtn}</span>
-            </button>
-
-            <button
+              type="button"
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-900/15 hover:bg-amber-900/25 text-amber-950 text-[11px] font-bold transition"
+              className="h-[32px] px-3 rounded-md bg-[#EEAB1E] hover:bg-[#e59f10] border border-[#C08512] text-[#664E00] text-xs font-medium flex items-center gap-1.5 transition cursor-pointer"
               title="Toggle Dark/Light Mode"
             >
-              {isDarkMode ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-              <span className="hidden sm:inline">{isDarkMode ? t.themeLight : t.themeDark}</span>
+              {isDarkMode ? <Sun className="w-3.5 h-3.5 text-[#664E00]" /> : <Moon className="w-3.5 h-3.5 text-[#664E00]" />}
+              <span>{isDarkMode ? t.themeLight : 'Dark'}</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* 2. MAIN NAVBAR (DEEP CEYLON FOREST GREEN #0A6847) */}
-      <div className="bg-[#0A6847] text-white py-3.5 px-4 sm:px-8 shadow-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-4 lg:gap-6">
-          {/* Brand Logo & Title */}
+      {/* 2. MAIN HEADER & SUB-NAVBAR WRAPPER (FIGMA EXACT #1B8057) */}
+      <div className="bg-[#1B8057] text-white px-4 sm:px-8">
+        {/* Top Row: Logo Card + Pill Search Bar + Circle Actions + Golden User Pill */}
+        <div className="max-w-[1240px] mx-auto pt-3 pb-4 flex items-center justify-between gap-4 lg:gap-6">
+          {/* Left: White Rounded Logo Box (Figma 251x141 style scaled responsively) */}
           <div
             onClick={() => {
               setCurrentPage('HOME');
               setSelectedCategory('All');
             }}
-            className="flex items-center gap-3 cursor-pointer group shrink-0"
+            className="bg-[#FBFBFB] rounded-2xl px-4 sm:px-5 py-2 sm:py-2.5 shadow-[0_4px_12px_rgba(0,0,0,0.15)] cursor-pointer hover:scale-[1.01] transition shrink-0 flex items-center justify-center"
           >
-            <div className="bg-white p-1 rounded-2xl shadow-sm border border-emerald-800 shrink-0">
-              <img
-                src="/ceylon_foods_emblem.png"
-                alt="Ceylon Foods Logo"
-                className="h-11 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105"
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-black tracking-tight leading-none text-white drop-shadow-xs">
-                Ceylon <span className="text-[#FFB800]">Foods</span>
-              </span>
-              <span className="text-[9px] sm:text-[10px] font-extrabold tracking-widest text-emerald-200 uppercase mt-0.5 whitespace-nowrap">
-                {t.storeSubtitle}
-              </span>
-            </div>
+            <img
+              src="/figma_logo_tight.png"
+              alt="Ceylon Foods - Fresh from our island to your home"
+              className="h-14 sm:h-[78px] w-auto object-contain"
+            />
           </div>
 
-          {/* Romanian Delivery Location Selector (Only shown on extra-wide screens to prevent search bar squeeze) */}
-          <div className="hidden 2xl:flex items-center gap-2 bg-emerald-900/70 border border-emerald-700/60 rounded-full px-3.5 py-2 text-xs font-bold text-emerald-100 hover:bg-emerald-900 transition cursor-pointer shrink-0">
-            <MapPin className="w-4 h-4 text-[#FFB800]" />
-            <div className="flex flex-col text-left">
-              <span className="text-[9px] uppercase tracking-wider text-emerald-300">{t.deliverToLabel}</span>
-              <span className="font-extrabold text-white leading-none">{t.deliverToValue}</span>
-            </div>
-          </div>
-
-          {/* Search Bar with Integrated Category Dropdown & Guaranteed Full Visibility */}
-          <div className="flex-1 min-w-[260px] sm:min-w-[340px] max-w-2xl relative mx-1 sm:mx-2">
-            <div className="flex items-center rounded-full bg-white text-slate-800 shadow-inner border-2 border-transparent focus-within:border-[#FFB800] transition overflow-hidden">
-              {/* Category Select (Shown on wide screens so search input is never squished) */}
-              <div className="hidden xl:flex items-center border-r border-slate-200 px-3 bg-slate-50 text-slate-700 text-xs font-bold shrink-0">
+          {/* Center: Unified Translucent Green Search Pill (#39906D with white border) */}
+          <div className="flex-1 min-w-[240px] max-w-[532px] relative">
+            <div className="h-[52px] sm:h-[60px] rounded-full bg-[#39906D] border border-white/80 flex items-center px-4 sm:px-6 shadow-xs focus-within:border-[#F8C519] transition">
+              {/* All Categories Select Inside Pill */}
+              <div className="hidden sm:flex items-center shrink-0 pr-3">
                 <select
                   value={selectedCategory === 'All' ? 'All Categories' : selectedCategory}
                   onChange={(e) => {
@@ -237,36 +209,39 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                     setSelectedCategory(val);
                     if (currentPage !== 'SHOP') setCurrentPage('SHOP');
                   }}
-                  className="bg-transparent py-2.5 outline-none cursor-pointer text-xs font-semibold w-28 text-slate-700"
+                  className="bg-transparent text-white text-xs sm:text-sm font-semibold outline-none cursor-pointer pr-1 [&>option]:text-slate-900"
                 >
-                  <option value="All Categories">All Products</option>
+                  <option value="All Categories">All Categories</option>
                   <option value="Staples & Grains">Rice & Grains</option>
-                  <option value="Fruits & Veg">Vegetables</option>
-                  <option value="Pantry">Spices</option>
+                  <option value="Fruits & Veg">Veggies & Fruits</option>
+                  <option value="Pantry">Ceylon Spices</option>
                   <option value="Beverages">Ceylon Tea</option>
                   <option value="Bakery">Bakery</option>
                   <option value="Snacks">Snacks</option>
                 </select>
               </div>
 
-              {/* Search Text Input (Guaranteed full flex width, never gets cut off) */}
+              {/* Vertical White Divider */}
+              <div className="hidden sm:block h-9 w-[1.5px] bg-white/80 mx-2 shrink-0" />
+
+              {/* Search Input */}
               <div className="flex-1 min-w-0 flex items-center relative">
                 <input
                   type="text"
-                  placeholder={t.searchPlaceholder}
+                  placeholder={currentLanguage === 'en' ? 'Search For Products' : t.searchPlaceholder}
                   value={searchQuery}
                   onFocus={() => setIsSearchFocused(true)}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
                     if (currentPage !== 'SHOP') setCurrentPage('SHOP');
                   }}
-                  className="w-full min-w-0 py-2.5 pl-3.5 pr-8 text-xs sm:text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none bg-transparent"
+                  className="w-full min-w-0 py-2 px-2 text-sm sm:text-base font-medium text-white placeholder-[#80F6C7] bg-transparent focus:outline-none"
                 />
                 {searchQuery.length > 0 && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-2 text-slate-400 hover:text-slate-600 p-1 text-xs"
+                    className="text-white/70 hover:text-white p-1 text-xs mr-1"
                     title="Clear search"
                   >
                     ✕
@@ -274,15 +249,16 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 )}
               </div>
 
-              {/* Search Button */}
+              {/* Right Magnifier Button */}
               <button
+                type="button"
                 onClick={() => {
                   if (currentPage !== 'SHOP') setCurrentPage('SHOP');
                 }}
-                className="bg-[#0A6847] hover:bg-[#085237] text-white p-2.5 m-1 rounded-full transition shrink-0 flex items-center justify-center shadow-xs"
-                title={t.searchPlaceholder}
+                className="p-1.5 text-[#80F6C7] hover:text-white transition shrink-0 cursor-pointer"
+                title="Search"
               >
-                <Search className="w-4 h-4" />
+                <Search className="w-7 h-7 stroke-[2.2]" />
               </button>
             </div>
 
@@ -290,10 +266,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             {isSearchFocused && (
               <div
                 onMouseDown={(e) => e.preventDefault()}
-                className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-zinc-800 p-3 z-50 animate-fadeIn text-slate-800 dark:text-zinc-100"
+                className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-zinc-800 p-3 z-50 text-slate-800 dark:text-zinc-100"
               >
                 <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-zinc-800 text-[10px] uppercase font-black tracking-wider text-slate-400">
-                  <span>Popular Ceylon Searches in Romania</span>
+                  <span>Popular Ceylon Searches in Bucharest</span>
                   <button
                     onClick={() => setIsSearchFocused(false)}
                     className="text-slate-400 hover:text-slate-600 text-xs"
@@ -308,7 +284,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                     { label: 'Purple Brinjal (Wambatu)', cat: 'Fruits & Veg', icon: '🍆' },
                     { label: 'Mysore Red Dhal', cat: 'Staples & Grains', icon: '🍲' },
                     { label: 'Roasted Curry Powder', cat: 'Pantry', icon: '🌶️' },
-                    { label: 'Dilmah BOPF Tea', cat: 'Beverages', icon: '☕' }
+                    { label: 'Fresh Coconut', cat: 'Fruits & Veg', icon: '🥥' }
                   ].map(item => (
                     <button
                       key={item.label}
@@ -319,7 +295,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                         setCurrentPage('SHOP');
                         setIsSearchFocused(false);
                       }}
-                      className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-zinc-800 hover:bg-[#0A6847] hover:text-white text-slate-700 dark:text-zinc-300 text-xs font-bold transition flex items-center gap-1.5"
+                      className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-zinc-800 hover:bg-[#1B8057] hover:text-white text-slate-700 dark:text-zinc-300 text-xs font-bold transition flex items-center gap-1.5"
                     >
                       <span>{item.icon}</span>
                       <span>{item.label}</span>
@@ -330,432 +306,522 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             )}
           </div>
 
-          {/* Header Action Icons: Wishlist, Cart with Lei display */}
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+          {/* Right Action Icons: Heart Circle, Cart Circle, Golden User Pill */}
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+            {/* Wishlist Circle Button (#39906D with white border) */}
             <button
+              type="button"
               onClick={() => setCurrentPage('WISHLIST')}
-              className="relative p-2 rounded-full hover:bg-emerald-800/80 text-white transition flex items-center justify-center"
+              className="relative w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] rounded-full bg-[#39906D] hover:bg-[#2e7d5e] border border-white/80 flex items-center justify-center text-white transition cursor-pointer shadow-xs"
               title={t.wishlistTitle}
             >
-              <Heart className="w-5 h-5" />
+              <Heart className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2]" />
               {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#E5A91A] text-amber-950 text-[10px] font-black flex items-center justify-center shadow">
+                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#F8C519] text-[#664E00] text-[11px] font-black flex items-center justify-center shadow">
                   {wishlistCount}
                 </span>
               )}
             </button>
 
-            {/* Shopping Cart Button with Total in LEI */}
-            <div
+            {/* Cart Circle Button (#39906D with white border) */}
+            <button
+              type="button"
               onClick={() => setCurrentPage('CART')}
-              className="flex items-center gap-2.5 bg-emerald-900/80 hover:bg-emerald-900 border border-emerald-700/80 rounded-full px-3 py-1.5 cursor-pointer transition active:scale-95"
+              className="relative w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] rounded-full bg-[#39906D] hover:bg-[#2e7d5e] border border-white/80 flex items-center justify-center text-white transition cursor-pointer shadow-xs"
               title={t.myCart}
             >
-              <div className="relative">
-                <ShoppingBag className="w-5 h-5 text-[#FFB800]" />
-                {totalCartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-[#E5A91A] text-amber-950 text-[10px] font-black flex items-center justify-center shadow">
-                    {totalCartCount}
-                  </span>
-                )}
-              </div>
-              <div className="hidden md:flex flex-col text-left">
-                <span className="text-[9px] uppercase font-bold text-emerald-300">{t.myCart}</span>
-                <span className="text-xs font-black text-white leading-tight">
-                  {subtotal.toFixed(2)} lei
+              <ShoppingCart className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2]" />
+              {totalCartCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#F8C519] text-[#664E00] text-[11px] font-black flex items-center justify-center shadow">
+                  {totalCartCount}
                 </span>
-              </div>
+              )}
+            </button>
+
+            {/* Golden User Pill ("Brie" / User Profile) */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="h-[50px] sm:h-[60px] px-3.5 sm:px-4 rounded-full bg-[#F8C519] hover:bg-[#EEAB1E] text-[#664E00] flex items-center gap-2.5 sm:gap-3 shadow-xs transition cursor-pointer"
+                title={t.accountTitle}
+              >
+                <div className="w-8 h-8 rounded-full border-2 border-[#664E00] flex items-center justify-center shrink-0">
+                  <UserIcon className="w-4 h-4 text-[#664E00] stroke-[2.2]" />
+                </div>
+                <div className="hidden sm:block h-9 w-[1px] bg-[#AA870F]" />
+                <span className="hidden sm:inline font-semibold text-base sm:text-lg text-[#664E00] tracking-tight">
+                  {displayUserName}
+                </span>
+                <ChevronDown className="w-4 h-4 text-[#664E00]" />
+              </button>
+
+              {isUserMenuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-60 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl py-2 z-50 text-slate-800 dark:text-zinc-100">
+                  <div className="px-4 py-2 border-b border-slate-100 dark:border-zinc-800">
+                    <p className="text-xs font-black text-[#1B8057] dark:text-emerald-400">
+                      {currentUser ? currentUser.name : 'Brie (Customer Account)'}
+                    </p>
+                    <p className="text-[11px] text-slate-400 truncate">
+                      {currentUser ? currentUser.email : 'Bucharest • Cash on Delivery'}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentPage('ACCOUNT');
+                      setIsUserMenuOpen(false);
+                    }}
+                    className="w-full px-4 py-2.5 text-xs font-bold text-left hover:bg-slate-50 dark:hover:bg-zinc-800 flex items-center gap-2.5"
+                  >
+                    <UserIcon className="w-4 h-4 text-[#1B8057]" />
+                    <span>{t.accountTitle}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentPage('DELIVERIES');
+                      setIsUserMenuOpen(false);
+                    }}
+                    className="w-full px-4 py-2.5 text-xs font-bold text-left hover:bg-slate-50 dark:hover:bg-zinc-800 flex items-center justify-between"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Truck className="w-4 h-4 text-[#1B8057]" />
+                      <span>{t.tabDeliveries}</span>
+                    </span>
+                    {ongoingDeliveriesCount > 0 && (
+                      <span className="px-2 py-0.5 rounded-full bg-[#F8C519] text-[#664E00] text-[10px] font-black">
+                        {ongoingDeliveriesCount}
+                      </span>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentPage('TRACK_ORDER');
+                      setIsUserMenuOpen(false);
+                    }}
+                    className="w-full px-4 py-2.5 text-xs font-bold text-left hover:bg-slate-50 dark:hover:bg-zinc-800 flex items-center gap-2.5"
+                  >
+                    <Truck className="w-4 h-4 text-[#F96D26]" />
+                    <span>{t.trackOrderTitle}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentPage('RECIPES');
+                      setIsUserMenuOpen(false);
+                    }}
+                    className="w-full px-4 py-2.5 text-xs font-bold text-left hover:bg-slate-50 dark:hover:bg-zinc-800 flex items-center gap-2.5"
+                  >
+                    <ChefHat className="w-4 h-4 text-[#1B8057]" />
+                    <span>{t.tabRecipes}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onOpenAppTour();
+                      setIsUserMenuOpen(false);
+                    }}
+                    className="w-full px-4 py-2.5 text-xs font-bold text-left hover:bg-slate-50 dark:hover:bg-zinc-800 flex items-center gap-2.5"
+                  >
+                    <Sparkles className="w-4 h-4 text-[#EEAB1E]" />
+                    <span>{t.tourBtn}</span>
+                  </button>
+
+                  <div className="border-t border-slate-100 dark:border-zinc-800 mt-1 pt-1">
+                    {currentUser ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onLogout();
+                          setIsUserMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center gap-2.5"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Sign Out</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onOpenAuth();
+                          setIsUserMenuOpen(false);
+                        }}
+                        className="w-full px-4 py-2 text-xs font-bold text-[#1B8057] hover:bg-emerald-50 dark:hover:bg-emerald-950/30 flex items-center gap-2.5"
+                      >
+                        <UserIcon className="w-4 h-4" />
+                        <span>Sign In / Register</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* User Account / Profile */}
-            {currentUser ? (
-              <div className="flex items-center gap-2 bg-emerald-900/60 border border-emerald-700/60 pl-2 pr-1.5 py-1 rounded-full text-xs">
-                <div
-                  onClick={() => setCurrentPage('ACCOUNT')}
-                  className="flex items-center gap-2 cursor-pointer hover:opacity-90"
-                  title={t.accountTitle}
-                >
-                  <div className="w-7 h-7 rounded-full bg-[#E5A91A] text-amber-950 font-black flex items-center justify-center text-xs">
-                    {currentUser.name.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="font-bold max-w-[90px] truncate hidden lg:inline text-white">
-                    {currentUser.name.split(' ')[0]}
-                  </span>
-                </div>
-                <button
-                  onClick={onLogout}
-                  title="Deconectare"
-                  className="p-1 text-emerald-300 hover:text-red-400 rounded-lg transition"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={onOpenAuth}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-white hover:bg-slate-100 text-[#0A6847] font-extrabold text-xs shadow-sm transition active:scale-95"
-              >
-                <UserIcon className="w-4 h-4" />
-                <span className="hidden sm:inline">Autentificare</span>
-              </button>
-            )}
-
+            {/* Mobile Hamburger Button */}
             <button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg text-emerald-200 hover:text-white"
+              className="lg:hidden p-2 rounded-lg text-white hover:bg-white/10"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
-      </div>
 
-      {/* 3. SECONDARY SUB-NAVBAR WITH GOLDEN YELLOW BUTTON */}
-      <div className={`border-b transition ${isDarkMode ? 'bg-[#121614] border-zinc-800' : 'bg-white border-slate-200 shadow-xs'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-2 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-6">
-              {/* Golden Yellow Category Button with Modern Figma Mega Menu */}
-              <div className="relative">
-                <button
-                  onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
-                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-[#E5A91A] to-amber-500 hover:from-amber-500 hover:to-amber-600 text-amber-950 font-black text-xs shadow-md shadow-amber-900/10 transition active:scale-95"
-                >
-                  <span className="text-sm">🗂️</span>
-                  <span>{t.browseCategories}</span>
-                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isCategoryMenuOpen ? 'rotate-180' : ''}`} />
-                </button>
+        {/* 3. SUB-NAVIGATION BAR (FIGMA EXACT #1B8057 WITH #39906D TOP BORDER & #F8C519 "All" BUTTON) */}
+        <div className="max-w-[1240px] mx-auto border-t border-[#39906D] py-2.5 flex items-center justify-between gap-6">
+          <div className="flex items-center gap-6 sm:gap-9">
+            {/* Golden "All" Button with Mega Menu */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
+                className="h-[41px] min-w-[117px] px-5 rounded-lg bg-[#F8C519] hover:bg-[#EEAB1E] text-[#664E00] font-semibold text-sm flex items-center justify-center gap-3 shadow-xs transition cursor-pointer"
+              >
+                <Menu className="w-5 h-5 text-[#664E00] stroke-[2.2]" />
+                <span>All</span>
+              </button>
 
-                {isCategoryMenuOpen && (
-                  <div className="absolute top-full left-0 mt-3 w-[840px] max-w-[95vw] rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl p-6 z-50 animate-fadeIn text-slate-800 dark:text-zinc-100">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                      
-                      {/* Column 1: Rice, Grains & Dhal */}
-                      <div className="space-y-3">
-                        <div
-                          onClick={() => {
-                            setSelectedCategory('Staples & Grains');
-                            setCurrentPage('SHOP');
-                            setIsCategoryMenuOpen(false);
-                          }}
-                          className="font-black text-xs uppercase tracking-wider text-[#0A6847] dark:text-[#78F9B8] pb-1 border-b border-slate-100 dark:border-zinc-800 cursor-pointer flex items-center justify-between hover:underline"
-                        >
-                          <span>🌾 {t.catRice}</span>
-                          <span className="text-[10px]">→</span>
-                        </div>
-                        <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
-                          {['Araliya Keeri Samba (5kg)', 'White Raw Kakulu Rice', 'Traditional Red Raw Rice', 'Mysore Red Split Dhal (1kg)', 'Pol Roti & String Hopper Flour'].map(item => (
-                            <li
-                              key={item}
-                              onClick={() => {
-                                setSelectedCategory('Staples & Grains');
-                                setCurrentPage('SHOP');
-                                setIsCategoryMenuOpen(false);
-                              }}
-                              className="hover:text-[#0A6847] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
-                            >
-                              <span className="text-[10px] text-[#E5A91A]">•</span>
-                              <span>{item}</span>
-                            </li>
-                          ))}
-                        </ul>
+              {isCategoryMenuOpen && (
+                <div className="absolute top-full left-0 mt-3 w-[840px] max-w-[95vw] rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl p-6 z-50 text-slate-800 dark:text-zinc-100">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    {/* Column 1: Rice, Grains & Dhal */}
+                    <div className="space-y-3">
+                      <div
+                        onClick={() => {
+                          setSelectedCategory('Staples & Grains');
+                          setCurrentPage('SHOP');
+                          setIsCategoryMenuOpen(false);
+                        }}
+                        className="font-black text-xs uppercase tracking-wider text-[#1B8057] dark:text-[#78F9B8] pb-1 border-b border-slate-100 dark:border-zinc-800 cursor-pointer flex items-center justify-between hover:underline"
+                      >
+                        <span>🌾 {t.catRice}</span>
+                        <span className="text-[10px]">→</span>
                       </div>
+                      <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
+                        {[
+                          'Araliya Keeri Samba (5kg)',
+                          'White Raw Kakulu Rice',
+                          'Traditional Red Raw Rice',
+                          'Mysore Red Split Dhal (1kg)',
+                          'Pol Roti & String Hopper Flour'
+                        ].map(item => (
+                          <li
+                            key={item}
+                            onClick={() => {
+                              setSelectedCategory('Staples & Grains');
+                              setCurrentPage('SHOP');
+                              setIsCategoryMenuOpen(false);
+                            }}
+                            className="hover:text-[#1B8057] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
+                          >
+                            <span className="text-[10px] text-[#F8C519]">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
 
-                      {/* Column 2: Ceylon Fresh Vegetables */}
-                      <div className="space-y-3">
-                        <div
-                          onClick={() => {
-                            setSelectedCategory('Fruits & Veg');
-                            setCurrentPage('SHOP');
-                            setIsCategoryMenuOpen(false);
-                          }}
-                          className="font-black text-xs uppercase tracking-wider text-[#0A6847] dark:text-[#78F9B8] pb-1 border-b border-slate-100 dark:border-zinc-800 cursor-pointer flex items-center justify-between hover:underline"
-                        >
-                          <span>🍆 {t.catVeg}</span>
-                          <span className="text-[10px]">→</span>
-                        </div>
-                        <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
-                          {['Sri Lankan Purple Brinjal (Wambatu)', 'Fresh Lady\'s Finger (Bandakka)', 'Bitter Gourd (Karavila)', 'Snake Gourd (Pathola)', 'Fresh Green Hot Chillies'].map(item => (
-                            <li
-                              key={item}
-                              onClick={() => {
-                                setSelectedCategory('Fruits & Veg');
-                                setCurrentPage('SHOP');
-                                setIsCategoryMenuOpen(false);
-                              }}
-                              className="hover:text-[#0A6847] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
-                            >
-                              <span className="text-[10px] text-[#E5A91A]">•</span>
-                              <span>{item}</span>
-                            </li>
-                          ))}
-                        </ul>
+                    {/* Column 2: Ceylon Fresh Vegetables */}
+                    <div className="space-y-3">
+                      <div
+                        onClick={() => {
+                          setSelectedCategory('Fruits & Veg');
+                          setCurrentPage('SHOP');
+                          setIsCategoryMenuOpen(false);
+                        }}
+                        className="font-black text-xs uppercase tracking-wider text-[#1B8057] dark:text-[#78F9B8] pb-1 border-b border-slate-100 dark:border-zinc-800 cursor-pointer flex items-center justify-between hover:underline"
+                      >
+                        <span>🍆 {t.catVeg}</span>
+                        <span className="text-[10px]">→</span>
                       </div>
-
-                      {/* Column 3: Spices, Coconut & Tea */}
-                      <div className="space-y-3">
-                        <div
-                          onClick={() => {
-                            setSelectedCategory('Pantry');
-                            setCurrentPage('SHOP');
-                            setIsCategoryMenuOpen(false);
-                          }}
-                          className="font-black text-xs uppercase tracking-wider text-[#0A6847] dark:text-[#78F9B8] pb-1 border-b border-slate-100 dark:border-zinc-800 cursor-pointer flex items-center justify-between hover:underline"
-                        >
-                          <span>🌶️ {t.catSpices}</span>
-                          <span className="text-[10px]">→</span>
-                        </div>
-                        <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
-                          {['Roasted Ceylon Curry Powder', 'Jaffna Hot Curry Powder', 'Pure Ceylon Cinnamon Quills', 'Dilmah Single Origin BOPF Tea', 'Rich Coconut Milk & Cream'].map(item => (
-                            <li
-                              key={item}
-                              onClick={() => {
-                                setSelectedCategory('Pantry');
-                                setCurrentPage('SHOP');
-                                setIsCategoryMenuOpen(false);
-                              }}
-                              className="hover:text-[#0A6847] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
-                            >
-                              <span className="text-[10px] text-[#E5A91A]">•</span>
-                              <span>{item}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Column 4: Promotional Banner Card (Matching Figma Reference) */}
-                      <div className="rounded-2xl bg-gradient-to-br from-[#E5A91A] via-amber-400 to-amber-500 p-5 text-amber-950 flex flex-col justify-between shadow-lg relative overflow-hidden">
-                        <div className="space-y-1 relative z-10">
-                          <span className="px-2 py-0.5 rounded-full bg-amber-900/20 text-amber-950 text-[10px] font-black uppercase tracking-wider">
-                            Special Offer
-                          </span>
-                          <h4 className="font-black text-base leading-tight mt-1">
-                            20% Off on Fresh Ceylon Veggies
-                          </h4>
-                          <p className="text-[11px] font-medium opacity-90">
-                            Cash on Delivery in Bucharest & Ilfov.
-                          </p>
-                        </div>
-
-                        <div className="mt-4 pt-2 relative z-10">
-                          <button
+                      <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
+                        {[
+                          'Sri Lankan Purple Brinjal (Wambatu)',
+                          "Fresh Lady's Finger (Bandakka)",
+                          'Bitter Gourd (Karavila)',
+                          'Fresh Ceylon Papaya & Coconut',
+                          'Fresh Green Hot Chillies'
+                        ].map(item => (
+                          <li
+                            key={item}
                             onClick={() => {
                               setSelectedCategory('Fruits & Veg');
                               setCurrentPage('SHOP');
                               setIsCategoryMenuOpen(false);
                             }}
-                            className="w-full py-2.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black shadow transition active:scale-95"
+                            className="hover:text-[#1B8057] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
                           >
-                            Shop Vegetables Now →
-                          </button>
-                        </div>
+                            <span className="text-[10px] text-[#F8C519]">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Column 3: Spices, Coconut & Tea */}
+                    <div className="space-y-3">
+                      <div
+                        onClick={() => {
+                          setSelectedCategory('Pantry');
+                          setCurrentPage('SHOP');
+                          setIsCategoryMenuOpen(false);
+                        }}
+                        className="font-black text-xs uppercase tracking-wider text-[#1B8057] dark:text-[#78F9B8] pb-1 border-b border-slate-100 dark:border-zinc-800 cursor-pointer flex items-center justify-between hover:underline"
+                      >
+                        <span>🌶️ {t.catSpices}</span>
+                        <span className="text-[10px]">→</span>
+                      </div>
+                      <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
+                        {[
+                          'Roasted Ceylon Curry Powder',
+                          'Jaffna Hot Curry Powder',
+                          'Pure Ceylon Cinnamon Quills',
+                          'Dilmah Single Origin BOPF Tea',
+                          'Rich Coconut Milk & Cream'
+                        ].map(item => (
+                          <li
+                            key={item}
+                            onClick={() => {
+                              setSelectedCategory('Pantry');
+                              setCurrentPage('SHOP');
+                              setIsCategoryMenuOpen(false);
+                            }}
+                            className="hover:text-[#1B8057] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
+                          >
+                            <span className="text-[10px] text-[#F8C519]">•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Column 4: Promotional Banner Card */}
+                    <div className="rounded-2xl bg-gradient-to-br from-[#F8C519] via-amber-400 to-amber-500 p-5 text-[#664E00] flex flex-col justify-between shadow-lg relative overflow-hidden">
+                      <div className="space-y-1 relative z-10">
+                        <span className="px-2 py-0.5 rounded-full bg-amber-900/20 text-[#664E00] text-[10px] font-black uppercase tracking-wider">
+                          Weekly Deals
+                        </span>
+                        <h4 className="font-black text-base leading-tight mt-1">
+                          20% Off on Fresh Ceylon Veggies
+                        </h4>
+                        <p className="text-[11px] font-medium opacity-90">
+                          Cash on Delivery in Bucharest & Ilfov.
+                        </p>
+                      </div>
+
+                      <div className="mt-4 pt-2 relative z-10">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedCategory('Fruits & Veg');
+                            setCurrentPage('SHOP');
+                            setIsCategoryMenuOpen(false);
+                          }}
+                          className="w-full py-2.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black shadow transition"
+                        >
+                          Shop Vegetables Now →
+                        </button>
                       </div>
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
+            </div>
 
-            {/* Navigation Links with Premium Icons */}
-            <nav className="hidden lg:flex items-center gap-2 xl:gap-3 text-xs font-black text-slate-700 dark:text-zinc-300">
+            {/* Primary Uppercase Navigation Links Matching Figma */}
+            <nav className="hidden lg:flex items-center gap-7 xl:gap-9 text-sm font-medium text-white tracking-wide uppercase">
               <button
+                type="button"
                 onClick={() => setCurrentPage('HOME')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
-                  currentPage === 'HOME'
-                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
-                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
+                className={`hover:text-[#F8C519] transition cursor-pointer ${
+                  currentPage === 'HOME' ? 'text-[#F8C519] font-bold underline underline-offset-8' : ''
                 }`}
               >
-                <span className="text-sm">🏠</span>
-                <span>{t.tabHome}</span>
+                {currentLanguage === 'en' ? 'HOME' : t.tabHome}
               </button>
 
               <button
+                type="button"
                 onClick={() => {
                   setSelectedCategory('All');
                   setCurrentPage('SHOP');
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                className={`hover:text-[#F8C519] transition cursor-pointer ${
                   currentPage === 'SHOP' && selectedCategory === 'All'
-                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
-                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
+                    ? 'text-[#F8C519] font-bold underline underline-offset-8'
+                    : ''
                 }`}
               >
-                <span className="text-sm">🏪</span>
-                <span>{t.tabShop}</span>
+                {currentLanguage === 'en' ? 'SHOP' : t.tabShop}
               </button>
 
               <button
+                type="button"
                 onClick={() => {
                   setSelectedCategory('Staples & Grains');
                   setCurrentPage('SHOP');
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                className={`hover:text-[#F8C519] transition cursor-pointer ${
                   currentPage === 'SHOP' && selectedCategory === 'Staples & Grains'
-                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
-                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
+                    ? 'text-[#F8C519] font-bold underline underline-offset-8'
+                    : ''
                 }`}
               >
-                <span className="text-sm">🌾</span>
-                <span>{t.tabRice}</span>
+                {currentLanguage === 'en' ? 'RICE & GRAINS' : t.tabRice}
               </button>
 
               <button
+                type="button"
                 onClick={() => {
                   setSelectedCategory('Fruits & Veg');
                   setCurrentPage('SHOP');
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                className={`hover:text-[#F8C519] transition cursor-pointer ${
                   currentPage === 'SHOP' && selectedCategory === 'Fruits & Veg'
-                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
-                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
+                    ? 'text-[#F8C519] font-bold underline underline-offset-8'
+                    : ''
                 }`}
               >
-                <span className="text-sm">🍆</span>
-                <span>{t.tabVegetables}</span>
+                {currentLanguage === 'en' ? 'VEGGIES' : t.tabVegetables}
               </button>
 
               <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategory('Fruits & Veg');
+                  setCurrentPage('SHOP');
+                }}
+                className="hover:text-[#F8C519] transition cursor-pointer"
+              >
+                FRUITS
+              </button>
+
+              <button
+                type="button"
                 onClick={() => {
                   setSelectedCategory('Pantry');
                   setCurrentPage('SHOP');
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
+                className={`hover:text-[#F8C519] transition cursor-pointer ${
                   currentPage === 'SHOP' && selectedCategory === 'Pantry'
-                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
-                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
+                    ? 'text-[#F8C519] font-bold underline underline-offset-8'
+                    : ''
                 }`}
               >
-                <span className="text-sm">🌶️</span>
-                <span>{t.tabSpices}</span>
-              </button>
-
-              {/* Wishlist Link with Heart Badge */}
-              <button
-                onClick={() => setCurrentPage('WISHLIST')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
-                  currentPage === 'WISHLIST'
-                    ? 'bg-rose-500/10 text-rose-700 dark:text-rose-300 ring-1 ring-rose-500/30 shadow-xs'
-                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-rose-600'
-                }`}
-              >
-                <span className="text-sm">❤️</span>
-                <span>{t.wishlistTitle}</span>
-                {wishlistCount > 0 && (
-                  <span className="px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[9px] font-black">
-                    {wishlistCount}
-                  </span>
-                )}
-              </button>
-
-              {/* Track Order Direct Link */}
-              <button
-                onClick={() => setCurrentPage('TRACK_ORDER')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
-                  currentPage === 'TRACK_ORDER'
-                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
-                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
-                }`}
-              >
-                <span className="text-sm">🚚</span>
-                <span>{t.trackOrderTitle}</span>
-              </button>
-
-              <button
-                onClick={() => setCurrentPage('CART')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
-                  currentPage === 'CART'
-                    ? 'bg-[#0A6847]/10 text-[#0A6847] dark:text-[#78F9B8] ring-1 ring-[#0A6847]/30 shadow-xs'
-                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
-                }`}
-              >
-                <span className="text-sm">🛒</span>
-                <span>{t.tabCart}</span>
-                {totalCartCount > 0 && (
-                  <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-[#E5A91A] text-amber-950 text-[10px] font-black shadow-xs">
-                    {totalCartCount}
-                  </span>
-                )}
-              </button>
-
-              <button
-                onClick={() => setCurrentPage('RECIPES')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
-                  currentPage === 'RECIPES'
-                    ? 'bg-purple-500/10 text-purple-700 dark:text-purple-300 ring-1 ring-purple-500/30 shadow-xs'
-                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-purple-700'
-                }`}
-              >
-                <span className="text-sm">👨‍🍳</span>
-                <span>{t.tabRecipes}</span>
-              </button>
-
-              <button
-                onClick={() => setCurrentPage('DELIVERIES')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl transition font-black ${
-                  currentPage === 'DELIVERIES'
-                    ? 'bg-[#0A6847] text-white shadow-md shadow-emerald-950/20'
-                    : 'hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-[#0A6847]'
-                }`}
-              >
-                <span className="text-sm">🛵</span>
-                <span>{t.tabDeliveries}</span>
-                {ongoingDeliveriesCount > 0 && (
-                  <span className="px-2 py-0.5 rounded-full bg-[#E5A91A] text-amber-950 text-[10px] font-black animate-pulse shadow-xs">
-                    {ongoingDeliveriesCount}
-                  </span>
-                )}
+                {currentLanguage === 'en' ? 'CEYLON SPICES' : t.tabSpices}
               </button>
             </nav>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-3.5 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800/60 shadow-2xs">
-            <span className="text-sm">🚚</span>
-            <span>{t.freeDeliveryBadge}</span>
+          {/* Right Quick Links for Track Order & My Deliveries */}
+          <div className="hidden xl:flex items-center gap-5 text-xs font-semibold text-white/95 uppercase tracking-wide">
+            <button
+              type="button"
+              onClick={() => setCurrentPage('TRACK_ORDER')}
+              className={`hover:text-[#F8C519] transition cursor-pointer ${
+                currentPage === 'TRACK_ORDER' ? 'text-[#F8C519] font-bold' : ''
+              }`}
+            >
+              {t.trackOrderTitle}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setCurrentPage('DELIVERIES')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${
+                currentPage === 'DELIVERIES'
+                  ? 'bg-[#F8C519] text-[#664E00] font-bold'
+                  : 'bg-[#39906D] hover:bg-[#2e7d5e] text-white'
+              }`}
+            >
+              <span>{t.tabDeliveries}</span>
+              {ongoingDeliveriesCount > 0 && (
+                <span className="px-1.5 py-0.2 rounded-full bg-[#F8C519] text-[#664E00] text-[10px] font-black">
+                  {ongoingDeliveriesCount}
+                </span>
+              )}
+            </button>
           </div>
         </div>
 
+        {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-slate-200 dark:border-zinc-800 px-4 py-3 space-y-2 bg-white dark:bg-zinc-900 text-xs font-bold">
+          <div className="lg:hidden border-t border-[#39906D] py-3 space-y-2 text-sm font-semibold text-white">
             <button
-              onClick={() => { setCurrentPage('HOME'); setMobileMenuOpen(false); }}
-              className="flex items-center gap-2 w-full text-left py-1.5 text-slate-800 dark:text-white"
+              onClick={() => {
+                setCurrentPage('HOME');
+                setMobileMenuOpen(false);
+              }}
+              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
             >
-              <span>🏠</span>
-              <span>{t.tabHome}</span>
+              HOME
             </button>
             <button
-              onClick={() => { setCurrentPage('SHOP'); setMobileMenuOpen(false); }}
-              className="flex items-center gap-2 w-full text-left py-1.5 text-slate-800 dark:text-white"
+              onClick={() => {
+                setSelectedCategory('All');
+                setCurrentPage('SHOP');
+                setMobileMenuOpen(false);
+              }}
+              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
             >
-              <span>🏪</span>
-              <span>{t.tabShop}</span>
+              SHOP
             </button>
             <button
-              onClick={() => { setCurrentPage('CART'); setMobileMenuOpen(false); }}
-              className="flex items-center gap-2 w-full text-left py-1.5 text-slate-800 dark:text-white"
+              onClick={() => {
+                setSelectedCategory('Staples & Grains');
+                setCurrentPage('SHOP');
+                setMobileMenuOpen(false);
+              }}
+              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
             >
-              <span>🛒</span>
-              <span>{t.tabCart} ({totalCartCount})</span>
+              RICE & GRAINS
             </button>
             <button
-              onClick={() => { setCurrentPage('RECIPES'); setMobileMenuOpen(false); }}
-              className="flex items-center gap-2 w-full text-left py-1.5 text-slate-800 dark:text-white"
+              onClick={() => {
+                setSelectedCategory('Fruits & Veg');
+                setCurrentPage('SHOP');
+                setMobileMenuOpen(false);
+              }}
+              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
             >
-              <span>👨‍🍳</span>
-              <span>{t.tabRecipes}</span>
+              VEGGIES & FRUITS
             </button>
             <button
-              onClick={() => { setCurrentPage('DELIVERIES'); setMobileMenuOpen(false); }}
-              className="w-full py-2 px-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#0A6847] dark:text-[#78F9B8] font-black text-left flex items-center justify-between"
+              onClick={() => {
+                setSelectedCategory('Pantry');
+                setCurrentPage('SHOP');
+                setMobileMenuOpen(false);
+              }}
+              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
             >
-              <div className="flex items-center gap-2">
-                <span>🛵</span>
-                <span>{t.tabDeliveries}</span>
-              </div>
-              {ongoingDeliveriesCount > 0 && (
-                <span className="px-2 py-0.5 rounded-full bg-[#E5A91A] text-amber-950 text-[10px] font-black">
-                  {ongoingDeliveriesCount} Active
-                </span>
-              )}
+              CEYLON SPICES
+            </button>
+            <button
+              onClick={() => {
+                setCurrentPage('TRACK_ORDER');
+                setMobileMenuOpen(false);
+              }}
+              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
+            >
+              TRACK YOUR ORDER
+            </button>
+            <button
+              onClick={() => {
+                setCurrentPage('DELIVERIES');
+                setMobileMenuOpen(false);
+              }}
+              className="block w-full text-left py-1.5 text-[#F8C519] font-bold"
+            >
+              MY DELIVERIES ({ongoingDeliveriesCount})
             </button>
           </div>
         )}
