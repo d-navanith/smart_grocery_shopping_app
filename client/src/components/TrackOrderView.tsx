@@ -27,6 +27,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
   initialOrderNumber = '',
   onConfirmReceived,
   onNavigateHome,
+  isDarkMode,
   t
 }) => {
   const [searchInput, setSearchInput] = useState(initialOrderNumber);
@@ -83,7 +84,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
           <div className="bg-[#F0FAF3] dark:bg-zinc-900 border border-[#15875D] rounded-lg px-4 py-2.5 flex items-center gap-3">
             <img src="/figma_icon_delivery.png" alt="" className="w-8 h-8 object-contain shrink-0" />
             <div className="text-xs">
-              <span className="font-bold text-[#1B8057] block">Live Bucharest & RO Dispatch</span>
+              <span className="font-bold text-[#1B8057] dark:text-[#80F6C7] block">Live Bucharest & RO Dispatch</span>
               <span className="text-[#003D25] dark:text-zinc-300 text-[11px]">{t.trackOrderSubtitle}</span>
             </div>
           </div>
@@ -176,41 +177,41 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
 
             {/* 5-Step Fulfillment Stepper */}
             <div className="space-y-3">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B8057] block">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7] block">
                 {t.realtimeStageTrackerTitle}
               </span>
 
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-xs">
-                <div className="p-3.5 rounded-lg bg-[#F0FAF3] dark:bg-emerald-950/40 border border-[#15875D] font-bold">
-                  <span className="text-[10px] uppercase font-bold text-[#1B8057]">Step 1</span>
+                <div className="p-3.5 rounded-lg bg-[#F0FAF3] dark:bg-[#0E2E20] border border-[#15875D] font-bold">
+                  <span className="text-[10px] uppercase font-bold text-[#1B8057] dark:text-emerald-400">Step 1</span>
                   <p className="font-bold text-black dark:text-white mt-1">📋 {t.step1OrderPlaced}</p>
-                  <span className="text-[10px] text-[#003D25]">{t.step1OrderPlacedSub}</span>
+                  <span className="text-[10px] text-[#003D25] dark:text-zinc-300 font-medium block mt-0.5">{t.step1OrderPlacedSub}</span>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-[#F0FAF3] dark:bg-emerald-950/40 border border-[#15875D] font-bold">
-                  <span className="text-[10px] uppercase font-bold text-[#1B8057]">Step 2</span>
+                <div className="p-3.5 rounded-lg bg-[#F0FAF3] dark:bg-[#0E2E20] border border-[#15875D] font-bold">
+                  <span className="text-[10px] uppercase font-bold text-[#1B8057] dark:text-emerald-400">Step 2</span>
                   <p className="font-bold text-black dark:text-white mt-1">📦 {t.step2Packing}</p>
-                  <span className="text-[10px] text-[#003D25]">{t.step2PackingSub}</span>
+                  <span className="text-[10px] text-[#003D25] dark:text-zinc-300 font-medium block mt-0.5">{t.step2PackingSub}</span>
                 </div>
 
-                <div className="p-3.5 rounded-lg bg-[#F8C519]/25 border border-[#C08512] font-bold">
-                  <span className="text-[10px] uppercase font-bold text-[#664E00]">Step 3</span>
+                <div className="p-3.5 rounded-lg bg-[#F8C519]/25 dark:bg-[#3D2D00] border border-[#C08512] font-bold">
+                  <span className="text-[10px] uppercase font-bold text-[#664E00] dark:text-amber-300">Step 3</span>
                   <p className="font-bold text-black dark:text-white mt-1">📞 {t.step3DispatchCall}</p>
-                  <span className="text-[10px] text-[#664E00]">{t.step3DispatchCallSub}</span>
+                  <span className="text-[10px] text-[#664E00] dark:text-amber-200 font-medium block mt-0.5">{t.step3DispatchCallSub}</span>
                 </div>
 
                 <div
                   className={`p-3.5 rounded-lg border font-bold ${
                     isRiderCallEnabled
-                      ? 'bg-[#F0FAF3] border-[#15875D]'
-                      : 'bg-[#F2F7F4] dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 text-slate-400'
+                      ? 'bg-[#F0FAF3] dark:bg-[#0E2E20] border-[#15875D] text-black dark:text-white'
+                      : 'bg-[#F2F7F4] dark:bg-zinc-800/90 border-slate-200 dark:border-zinc-700 text-slate-500 dark:text-zinc-400'
                   }`}
                 >
-                  <span className="text-[10px] uppercase font-bold">Step 4</span>
-                  <p className="font-bold text-black dark:text-white mt-1">
+                  <span className={`text-[10px] uppercase font-bold ${isRiderCallEnabled ? 'text-[#1B8057] dark:text-emerald-400' : 'text-slate-400 dark:text-zinc-500'}`}>Step 4</span>
+                  <p className={`font-bold mt-1 ${isRiderCallEnabled ? 'text-black dark:text-white' : 'text-slate-500 dark:text-zinc-400'}`}>
                     {isRiderCallEnabled ? '🛡️ Rider Verified' : '🔒 Verification'}
                   </p>
-                  <span className="text-[10px] opacity-75">
+                  <span className={`text-[10px] font-medium block mt-0.5 ${isRiderCallEnabled ? 'text-[#003D25] dark:text-zinc-300' : 'text-slate-400 dark:text-zinc-500'}`}>
                     {isRiderCallEnabled ? t.step4RiderConfirmedSub : t.step4RiderWaitingSub}
                   </span>
                 </div>
@@ -219,23 +220,23 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
                   className={`p-3.5 rounded-lg border font-bold ${
                     searchedOrder.status === 'ON_THE_WAY'
                       ? 'bg-[#0A6847] text-white border-[#0A6847] shadow-sm'
-                      : 'bg-[#F2F7F4] dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 text-slate-400'
+                      : 'bg-[#F2F7F4] dark:bg-zinc-800/90 border-slate-200 dark:border-zinc-700 text-slate-500 dark:text-zinc-400'
                   }`}
                 >
-                  <span className="text-[10px] uppercase font-bold">Step 5</span>
-                  <p className="font-bold mt-1">🛵 {t.step5OnTheWay}</p>
-                  <span className="text-[10px] opacity-75">{t.step5EtaPrefix} ~25 min</span>
+                  <span className={`text-[10px] uppercase font-bold ${searchedOrder.status === 'ON_THE_WAY' ? 'text-emerald-200' : 'text-slate-400 dark:text-zinc-500'}`}>Step 5</span>
+                  <p className={`font-bold mt-1 ${searchedOrder.status === 'ON_THE_WAY' ? 'text-white' : 'text-slate-500 dark:text-zinc-400'}`}>🛵 {t.step5OnTheWay}</p>
+                  <span className={`text-[10px] font-medium block mt-0.5 ${searchedOrder.status === 'ON_THE_WAY' ? 'text-emerald-100' : 'text-slate-400 dark:text-zinc-500'}`}>{t.step5EtaPrefix} ~25 min</span>
                 </div>
               </div>
             </div>
 
             {/* Courier & Rider Direct Call Verification Card */}
-            <div className="p-5 rounded-xl bg-[#F0FAF3] dark:bg-zinc-800/80 border border-[#15875D] space-y-4">
+            <div className="p-5 rounded-xl bg-[#F0FAF3] dark:bg-[#0E2E20] border border-[#15875D] space-y-4">
               <div className="flex items-center justify-between border-b border-[#15875D]/20 pb-3">
                 <div className="flex items-center gap-3">
                   <img src="/figma_icon_delivery.png" alt="" className="w-10 h-10 object-contain shrink-0" />
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#1B8057]">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#1B8057] dark:text-emerald-400">
                       {t.courierPartnerDirectContact}
                     </span>
                     <h4 className="font-bold text-sm text-black dark:text-white">
@@ -320,7 +321,9 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
 
             {/* Customer Confirm Received Button (When order is active or out for delivery) */}
             {searchedOrder.status !== 'DELIVERED' && searchedOrder.status !== 'CANCELLED' && onConfirmReceived && (
-              <div className="p-4 rounded-xl bg-gradient-to-r from-[#F0FAF3] to-[#F2F7F4] border-2 border-[#15875D] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+              <div className={`p-4 rounded-xl border-2 border-[#15875D] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs ${
+                isDarkMode ? 'bg-[#0E2E20]' : 'bg-gradient-to-r from-[#F0FAF3] to-[#F2F7F4]'
+              }`}>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-[#0A6847] text-white flex items-center justify-center shrink-0">
                     <PackageCheck className="w-5 h-5 text-[#F8C519]" />

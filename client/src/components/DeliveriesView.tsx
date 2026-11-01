@@ -53,7 +53,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
       <div className="w-full bg-[#F2F7F4] dark:bg-[#121A16] border-b border-[#15875D]/20 py-7">
         <div className="max-w-[1290px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#1B8057] mb-1.5">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#1B8057] dark:text-[#80F6C7] mb-1.5">
               <span onClick={onNavigateShop} className="cursor-pointer hover:underline">
                 {t.tabHome}
               </span>
@@ -104,7 +104,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
               className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                 activeTab === 'ONGOING'
                   ? 'bg-[#F8C519] text-[#664E00]'
-                  : 'bg-white text-[#1B8057]'
+                  : 'bg-white dark:bg-zinc-800 text-[#1B8057] dark:text-[#80F6C7]'
               }`}
             >
               {ongoingOrders.length}
@@ -124,7 +124,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
               className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                 activeTab === 'HISTORY'
                   ? 'bg-[#F8C519] text-[#664E00]'
-                  : 'bg-white text-[#1B8057]'
+                  : 'bg-white dark:bg-zinc-800 text-[#1B8057] dark:text-[#80F6C7]'
               }`}
             >
               {historyOrders.length}
@@ -203,38 +203,38 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                     <div className="p-5 sm:p-6 space-y-6">
                       {/* Visual 5-Step Fulfillment Stepper */}
                       <div>
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B8057] block mb-3">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7] block mb-3">
                           {t.realtimeStageTrackerTitle}
                         </span>
                         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-xs">
                           {/* Step 1 */}
-                          <div className="p-3.5 rounded-lg bg-[#F0FAF3] dark:bg-emerald-950/40 border border-[#15875D] font-bold">
+                          <div className="p-3.5 rounded-lg bg-[#F0FAF3] dark:bg-[#0E2E20] border border-[#15875D] font-bold">
                             <div className="flex items-center gap-1.5 mb-1.5">
                               <div className="w-5 h-5 rounded bg-[#0A6847] text-white flex items-center justify-center text-[10px]">
                                 ✓
                               </div>
-                              <span className="text-[10px] uppercase font-bold tracking-wider text-[#1B8057]">
+                              <span className="text-[10px] uppercase font-bold tracking-wider text-[#1B8057] dark:text-emerald-400">
                                 {t.stepNumberPrefix} 1
                               </span>
                             </div>
                             <p className="text-xs font-bold text-black dark:text-white">📋 {t.step1OrderPlaced}</p>
-                            <span className="text-[10px] text-[#003D25] font-normal block mt-0.5">
+                            <span className="text-[10px] text-[#003D25] dark:text-zinc-300 font-normal block mt-0.5">
                               {t.step1OrderPlacedSub}
                             </span>
                           </div>
 
                           {/* Step 2 */}
-                          <div className="p-3.5 rounded-lg bg-[#F0FAF3] dark:bg-emerald-950/40 border border-[#15875D] font-bold">
+                          <div className="p-3.5 rounded-lg bg-[#F0FAF3] dark:bg-[#0E2E20] border border-[#15875D] font-bold">
                             <div className="flex items-center gap-1.5 mb-1.5">
                               <div className="w-5 h-5 rounded bg-[#0A6847] text-white flex items-center justify-center text-[10px]">
                                 ✓
                               </div>
-                              <span className="text-[10px] uppercase font-bold tracking-wider text-[#1B8057]">
+                              <span className="text-[10px] uppercase font-bold tracking-wider text-[#1B8057] dark:text-emerald-400">
                                 {t.stepNumberPrefix} 2
                               </span>
                             </div>
                             <p className="text-xs font-bold text-black dark:text-white">📦 {t.step2Packing}</p>
-                            <span className="text-[10px] text-[#003D25] font-normal block mt-0.5">
+                            <span className="text-[10px] text-[#003D25] dark:text-zinc-300 font-normal block mt-0.5">
                               {t.step2PackingSub}
                             </span>
                           </div>
@@ -243,8 +243,8 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                           <div
                             className={`p-3.5 rounded-lg border font-bold ${
                               order.status === 'ON_THE_WAY' || order.status === 'DELIVERED'
-                                ? 'bg-[#F0FAF3] border-[#15875D]'
-                                : 'bg-[#F8C519]/20 border-[#C08512]'
+                                ? 'bg-[#F0FAF3] dark:bg-[#0E2E20] border-[#15875D]'
+                                : 'bg-[#F8C519]/20 dark:bg-[#3D2D00] border-[#C08512]'
                             }`}
                           >
                             <div className="flex items-center gap-1.5 mb-1.5">
@@ -257,12 +257,20 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                               >
                                 {order.status === 'ON_THE_WAY' || order.status === 'DELIVERED' ? '✓' : '📞'}
                               </div>
-                              <span className="text-[10px] uppercase font-bold tracking-wider">
+                              <span className={`text-[10px] uppercase font-bold tracking-wider ${
+                                order.status === 'ON_THE_WAY' || order.status === 'DELIVERED'
+                                  ? 'text-[#1B8057] dark:text-emerald-400'
+                                  : 'text-[#664E00] dark:text-amber-300'
+                              }`}>
                                 {t.stepNumberPrefix} 3
                               </span>
                             </div>
                             <p className="text-xs font-bold text-black dark:text-white">{t.step3DispatchCall}</p>
-                            <span className="text-[10px] opacity-75 font-normal block mt-0.5">
+                            <span className={`text-[10px] font-normal block mt-0.5 ${
+                              order.status === 'ON_THE_WAY' || order.status === 'DELIVERED'
+                                ? 'text-[#003D25] dark:text-zinc-300'
+                                : 'text-[#664E00] dark:text-amber-200'
+                            }`}>
                               {t.step3DispatchCallSub}
                             </span>
                           </div>
@@ -271,8 +279,8 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                           <div
                             className={`p-3.5 rounded-lg border font-bold ${
                               order.riderVerifiedByAdmin
-                                ? 'bg-[#F0FAF3] border-[#15875D]'
-                                : 'bg-[#F2F7F4] dark:bg-zinc-800 border-slate-300 text-slate-500'
+                                ? 'bg-[#F0FAF3] dark:bg-[#0E2E20] border-[#15875D]'
+                                : 'bg-[#F2F7F4] dark:bg-zinc-800/90 border-slate-300 dark:border-zinc-700 text-slate-500 dark:text-zinc-400'
                             }`}
                           >
                             <div className="flex items-center gap-1.5 mb-1.5">
@@ -280,17 +288,23 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                                 className={`w-5 h-5 rounded flex items-center justify-center text-[10px] ${
                                   order.riderVerifiedByAdmin
                                     ? 'bg-[#0A6847] text-white'
-                                    : 'bg-slate-300 text-slate-600'
+                                    : 'bg-slate-300 dark:bg-zinc-700 text-slate-600 dark:text-zinc-300'
                                 }`}
                               >
                                 {order.riderVerifiedByAdmin ? '🛡️' : '🔒'}
                               </div>
-                              <span className="text-[10px] uppercase font-bold tracking-wider">
+                              <span className={`text-[10px] uppercase font-bold tracking-wider ${
+                                order.riderVerifiedByAdmin
+                                  ? 'text-[#1B8057] dark:text-emerald-400'
+                                  : 'text-slate-500 dark:text-zinc-500'
+                              }`}>
                                 {t.stepNumberPrefix} 4
                               </span>
                             </div>
-                            <p className="text-xs font-bold">{t.step4RiderVerification}</p>
-                            <span className="text-[10px] opacity-75 font-normal block mt-0.5">
+                            <p className={`text-xs font-bold ${order.riderVerifiedByAdmin ? 'text-black dark:text-white' : 'text-slate-500 dark:text-zinc-400'}`}>{t.step4RiderVerification}</p>
+                            <span className={`text-[10px] font-normal block mt-0.5 ${
+                              order.riderVerifiedByAdmin ? 'text-[#003D25] dark:text-zinc-300' : 'text-slate-400 dark:text-zinc-500'
+                            }`}>
                               {order.riderVerifiedByAdmin ? t.step4RiderConfirmedSub : t.step4RiderWaitingSub}
                             </span>
                           </div>
@@ -300,21 +314,24 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                             className={`p-3.5 rounded-lg border font-bold ${
                               order.status === 'ON_THE_WAY'
                                 ? 'bg-[#0A6847] text-white border-[#0A6847] shadow-sm'
-                                : 'bg-[#F2F7F4] dark:bg-zinc-800 border-slate-300 text-slate-500'
+                                : 'bg-[#F2F7F4] dark:bg-zinc-800/90 border-slate-300 dark:border-zinc-700 text-slate-500 dark:text-zinc-400'
                             }`}
                           >
                             <div className="flex items-center gap-1.5 mb-1.5">
                               <div className="w-5 h-5 rounded bg-[#F8C519] text-[#664E00] flex items-center justify-center text-[10px]">
                                 🛵
                               </div>
-                              <span className="text-[10px] uppercase font-bold tracking-wider">
+                              <span className={`text-[10px] uppercase font-bold tracking-wider ${
+                                order.status === 'ON_THE_WAY' ? 'text-emerald-200' : 'text-slate-500 dark:text-zinc-500'
+                              }`}>
                                 {t.stepNumberPrefix} 5
                               </span>
                             </div>
-                            <p className="text-xs font-bold">{t.step5OnTheWay}</p>
-                            <span className="text-[10px] opacity-75 font-normal block mt-0.5">
-                              {t.step5EtaPrefix}
-                              {order.deliveryMinutes || 25} min
+                            <p className={`text-xs font-bold ${order.status === 'ON_THE_WAY' ? 'text-white' : 'text-slate-500 dark:text-zinc-400'}`}>🛵 {t.step5OnTheWay}</p>
+                            <span className={`text-[10px] font-normal block mt-0.5 ${
+                              order.status === 'ON_THE_WAY' ? 'text-emerald-100' : 'text-slate-400 dark:text-zinc-500'
+                            }`}>
+                              {t.step5EtaPrefix} ~25 min
                             </span>
                           </div>
                         </div>
@@ -328,7 +345,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                           <div className="flex items-center gap-3">
                             <img src="/figma_icon_delivery.png" alt="" className="w-10 h-10 object-contain shrink-0" />
                             <div>
-                              <span className="text-[10px] font-bold uppercase tracking-wider text-[#1B8057]">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7]">
                                 {t.courierPartnerDirectContact}
                               </span>
                               <h4 className="font-bold text-sm text-black dark:text-white">
@@ -376,7 +393,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                                 <Lock className="w-4 h-4 text-[#F96D26]" />
                                 <span>{t.callRiderLockedButton}</span>
                               </button>
-                              <span className="text-[11px] font-semibold text-[#1B8057] text-center">
+                              <span className="text-[11px] font-semibold text-[#1B8057] dark:text-[#80F6C7] text-center">
                                 {t.riderArrivingInMinutes}
                               </span>
                             </div>
@@ -386,7 +403,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                           <div className="space-y-3">
                             <div className="p-4 rounded-lg bg-white dark:bg-zinc-900 border border-[#15875D] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                               <div className="flex items-center gap-3">
-                                <div className="w-11 h-11 rounded-lg bg-[#F0FAF3] border border-[#15875D] flex items-center justify-center text-xl shrink-0">
+                                <div className="w-11 h-11 rounded-lg bg-[#F0FAF3] dark:bg-zinc-800 border border-[#15875D] flex items-center justify-center text-xl shrink-0">
                                   🛵
                                 </div>
                                 <div>
@@ -401,7 +418,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                                   <p className="text-xs font-mono font-bold text-[#0A6847] dark:text-[#80F6C7] mt-0.5">
                                     {t.riderDirectMobileLabel} <strong>{order.riderPhone}</strong>
                                   </p>
-                                  <span className="text-[10px] text-[#1B8057]">
+                                  <span className="text-[10px] text-[#1B8057] dark:text-zinc-400">
                                     {t.riderDirectMobileVerifiedHint}
                                   </span>
                                 </div>
@@ -418,8 +435,8 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                               </a>
                             </div>
 
-                            <div className="flex items-center justify-between text-xs text-[#1B8057] pt-1 px-1 flex-wrap gap-2">
-                              <span className="font-bold text-[#0A6847]">
+                            <div className="flex items-center justify-between text-xs text-[#1B8057] dark:text-zinc-300 pt-1 px-1 flex-wrap gap-2">
+                              <span className="font-bold text-[#0A6847] dark:text-[#80F6C7]">
                                 🛡️ {t.riderCallDirectInstructions}
                               </span>
                               <span className="font-bold">
@@ -453,7 +470,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
 
                       {/* Order Items List */}
                       <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#1B8057] block mb-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7] block mb-2">
                           {t.orderedFoodItemsHeader} ({order.items.length}):
                         </span>
                         <div className="divide-y divide-[#15875D]/15 bg-[#F2F7F4] dark:bg-zinc-800/40 rounded-lg p-4 border border-[#15875D]/25 space-y-2">
@@ -487,7 +504,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                           📍
                         </div>
                         <div>
-                          <span className="font-bold text-[#1B8057]">{t.deliveryDestinationAddress}</span>
+                          <span className="font-bold text-[#1B8057] dark:text-[#80F6C7]">{t.deliveryDestinationAddress}</span>
                           <p className="font-bold text-black dark:text-white mt-0.5">{order.address}</p>
                           {order.notes && (
                             <p className="text-[11px] text-slate-500 italic mt-0.5">
@@ -498,7 +515,9 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                       </div>
 
                       {/* Customer Received Parcel Confirmation Banner & Button */}
-                      <div className="p-4 rounded-xl bg-gradient-to-r from-[#F0FAF3] to-[#F2F7F4] dark:bg-zinc-800/90 border-2 border-[#15875D] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                      <div className={`p-4 rounded-xl border-2 border-[#15875D] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs ${
+                        isDarkMode ? 'bg-[#0E2E20]' : 'bg-gradient-to-r from-[#F0FAF3] to-[#F2F7F4]'
+                      }`}>
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-[#0A6847] text-white flex items-center justify-center shrink-0 shadow-xs">
                             <PackageCheck className="w-5 h-5 text-[#F8C519]" />
@@ -544,7 +563,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                 <h3 className="text-base font-bold text-[#003D25] dark:text-zinc-300">
                   {t.noHistoryDeliveriesTitle}
                 </h3>
-                <p className="text-xs text-[#1B8057] max-w-md mx-auto">
+                <p className="text-xs text-[#1B8057] dark:text-zinc-400 max-w-md mx-auto">
                   {t.noHistoryDeliveriesDesc}
                 </p>
               </div>
@@ -560,18 +579,18 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                         <span className="font-bold text-base text-black dark:text-white">
                           {t.orderNumberPrefix} #{order.orderNumber}
                         </span>
-                        <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#F0FAF3] text-[#0A6847] border border-[#15875D]">
+                        <span className="px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#F0FAF3] dark:bg-zinc-800 text-[#0A6847] dark:text-[#80F6C7] border border-[#15875D]">
                           {t.deliveredAndCollectedBadge}
                         </span>
                       </div>
-                      <p className="text-xs text-[#1B8057] mt-0.5">
+                      <p className="text-xs text-[#1B8057] dark:text-zinc-400 mt-0.5">
                         {t.orderPlacedAtPrefix}: {formatPlacedAt(order.placedAt)} • {t.deliveryDestinationAddress}{' '}
                         {order.address}
                       </p>
                     </div>
 
                     <div className="text-left sm:text-right">
-                      <span className="text-[10px] font-bold uppercase text-[#1B8057]">{t.totalPaidCodLabel}</span>
+                      <span className="text-[10px] font-bold uppercase text-[#1B8057] dark:text-[#80F6C7]">{t.totalPaidCodLabel}</span>
                       <p className="text-xl font-bold text-[#0A6847] dark:text-white font-mono">
                         {order.totalAmount.toFixed(2)} <span className="text-xs font-bold">lei</span>
                       </p>
@@ -580,7 +599,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
 
                   {/* Items preview */}
                   <div className="text-xs space-y-1">
-                    <span className="font-bold text-[#1B8057] text-[10px] uppercase tracking-wider block">
+                    <span className="font-bold text-[#1B8057] dark:text-[#80F6C7] text-[10px] uppercase tracking-wider block">
                       {t.purchasedItemsSummary}
                     </span>
                     <div className="flex flex-wrap gap-2">

@@ -36,7 +36,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage }) => {
             </div>
 
             <p className="text-white text-base sm:text-[17px] leading-relaxed max-w-[350px] font-normal">
-              Authentic Sri Lankan supermarket in Bucharest. Fresh vegetables, aromatic rice, pure Ceylon spices, and island groceries delivered fast to your doorstep across Romania.
+              Keeri Samba white rice, Rathu Kekulu red rice, fresh brinjal, dhal, and Ceylon spices in stock in Bucharest
             </p>
 
             {/* 3 Circular Social Icons (#32A778) */}

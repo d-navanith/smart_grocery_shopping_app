@@ -309,23 +309,23 @@ export const AccountView: React.FC<AccountViewProps> = ({
               <div className="space-y-4 max-w-md">
                 <h3 className="font-bold text-base text-black dark:text-white">Password Manager</h3>
                 <div>
-                  <label className="text-[11px] font-bold uppercase text-[#003D25] block mb-1">
+                  <label className="text-[11px] font-bold uppercase text-[#003D25] dark:text-zinc-300 block mb-1">
                     Current Password
                   </label>
                   <input
                     type="password"
                     placeholder="••••••••"
-                    className="w-full px-4 py-2.5 rounded-lg border border-[#15875D]/40 bg-[#F2F7F4] text-xs"
+                    className="w-full px-4 py-2.5 rounded-lg border border-[#15875D]/40 bg-[#F2F7F4] dark:bg-zinc-800 dark:text-white text-xs"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold uppercase text-[#003D25] block mb-1">
+                  <label className="text-[11px] font-bold uppercase text-[#003D25] dark:text-zinc-300 block mb-1">
                     New Password
                   </label>
                   <input
                     type="password"
                     placeholder="••••••••"
-                    className="w-full px-4 py-2.5 rounded-lg border border-[#15875D]/40 bg-[#F2F7F4] text-xs"
+                    className="w-full px-4 py-2.5 rounded-lg border border-[#15875D]/40 bg-[#F2F7F4] dark:bg-zinc-800 dark:text-white text-xs"
                   />
                 </div>
                 <div className="flex items-center gap-3">

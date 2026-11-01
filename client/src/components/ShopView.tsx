@@ -167,7 +167,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           <div className="bg-[#F0FAF3] dark:bg-zinc-900 border border-[#15875D] rounded-lg px-4 py-2.5 flex items-center gap-3">
             <img src="/figma_icon_delivery.png" alt="" className="w-8 h-8 object-contain shrink-0" />
             <div className="text-xs">
-              <span className="font-bold text-[#1B8057] block">Island-to-Door Bucharest & RO</span>
+              <span className="font-bold text-[#1B8057] dark:text-[#80F6C7] block">Island-to-Door Bucharest & RO</span>
               <span className="text-[#003D25] dark:text-zinc-300 text-[11px]">{t.depotNotice}</span>
             </div>
           </div>
@@ -203,7 +203,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
           {/* 1. Category Filter */}
           <div className="space-y-2.5">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057]">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7]">
               {t.filterCategories}
             </h4>
             <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1 text-xs">
@@ -212,7 +212,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition ${
                   selectedCategory === 'All'
                     ? 'bg-[#0A6847] text-white font-bold shadow-xs'
-                    : 'bg-white/80 dark:bg-zinc-900 hover:bg-white font-semibold text-[#003D25] dark:text-zinc-300'
+                    : 'bg-white/80 dark:bg-zinc-800 hover:bg-white dark:hover:bg-zinc-700 font-semibold text-[#003D25] dark:text-zinc-200'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -228,7 +228,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
                     selectedCategory === 'All'
                       ? 'bg-[#F8C519] text-[#664E00]'
-                      : 'bg-[#F2F7F4] text-[#1B8057]'
+                      : 'bg-[#F2F7F4] dark:bg-zinc-700 text-[#1B8057] dark:text-emerald-300'
                   }`}
                 >
                   {products.length}
@@ -249,7 +249,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition ${
                     selectedCategory === cat.key
                       ? 'bg-[#0A6847] text-white font-bold shadow-xs'
-                      : 'bg-white/80 dark:bg-zinc-900 hover:bg-white font-semibold text-[#003D25] dark:text-zinc-300'
+                    : 'bg-white/80 dark:bg-zinc-800 hover:bg-white dark:hover:bg-zinc-700 font-semibold text-[#003D25] dark:text-zinc-200'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -265,7 +265,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
                       selectedCategory === cat.key
                         ? 'bg-[#F8C519] text-[#664E00]'
-                        : 'bg-[#F2F7F4] text-[#1B8057]'
+                        : 'bg-[#F2F7F4] dark:bg-zinc-700 text-[#1B8057] dark:text-emerald-300'
                     }`}
                   >
                     {categoryCounts[cat.key] || 3}
@@ -278,7 +278,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           {/* 2. Price Range Slider in LEI */}
           <div className="space-y-3 pt-3 border-t border-[#15875D]/20">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057]">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7]">
                 {t.filterPriceRange}
               </h4>
               <span className="text-xs font-bold text-[#0A6847] dark:text-[#80F6C7]">
@@ -294,7 +294,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full accent-[#0A6847] cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] font-semibold text-[#1B8057]">
+            <div className="flex justify-between text-[10px] font-semibold text-[#1B8057] dark:text-zinc-300">
               <span>5 lei</span>
               <span>100 lei</span>
               <span>200 lei</span>
@@ -303,7 +303,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
           {/* 3. Review Rating Filter */}
           <div className="space-y-2 pt-3 border-t border-[#15875D]/20">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057]">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7]">
               {t.filterRating}
             </h4>
             <div className="space-y-1.5 text-xs">
@@ -317,7 +317,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition ${
                     minRating === r.stars
                       ? 'bg-[#F8C519] text-[#664E00] font-bold'
-                      : 'bg-white/80 dark:bg-zinc-900 hover:bg-white'
+                      : 'bg-white/80 dark:bg-zinc-800 hover:bg-white dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200'
                   }`}
                 >
                   <input
@@ -344,7 +344,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
           {/* 4. Authentic Sri Lankan Brands */}
           <div className="space-y-2 pt-3 border-t border-[#15875D]/20">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057]">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7]">
               {t.filterBrands}
             </h4>
             <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1 text-xs">
@@ -352,7 +352,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 <label
                   key={brand}
                   onClick={() => handleToggleBrand(brand)}
-                  className="flex items-center justify-between p-1.5 rounded-lg cursor-pointer bg-white/70 dark:bg-zinc-900 hover:bg-white transition"
+                  className="flex items-center justify-between p-1.5 rounded-lg cursor-pointer bg-white/70 dark:bg-zinc-800 hover:bg-white dark:hover:bg-zinc-700 transition"
                 >
                   <div className="flex items-center gap-2">
                     <input
@@ -361,7 +361,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       checked={selectedBrands.includes(brand)}
                       className="accent-[#0A6847] rounded cursor-pointer"
                     />
-                    <span className="font-semibold text-[#003D25] dark:text-zinc-300">{brand}</span>
+                    <span className="font-semibold text-[#003D25] dark:text-zinc-200">{brand}</span>
                   </div>
                 </label>
               ))}
@@ -372,7 +372,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           <div className="space-y-2 pt-3 border-t border-[#15875D]/20">
             <label
               onClick={() => setOnlyInStock(!onlyInStock)}
-              className="flex items-center gap-2 p-2 rounded-lg cursor-pointer bg-white/80 dark:bg-zinc-900 hover:bg-white transition text-xs font-semibold"
+              className="flex items-center gap-2 p-2 rounded-lg cursor-pointer bg-white/80 dark:bg-zinc-800 hover:bg-white dark:hover:bg-zinc-700 text-[#003D25] dark:text-zinc-200 transition text-xs font-semibold"
             >
               <input
                 type="checkbox"
@@ -512,7 +512,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="px-2.5 py-0.5 rounded bg-[#F2F7F4] dark:bg-zinc-800 text-[#9E9E9E] text-xs font-medium">
+                      <span className="px-2.5 py-0.5 rounded bg-[#F2F7F4] dark:bg-zinc-800 text-[#9E9E9E] dark:text-zinc-300 text-xs font-medium">
                         {product.unitWeight || product.unit}
                       </span>
                       {product.originalPrice ? (

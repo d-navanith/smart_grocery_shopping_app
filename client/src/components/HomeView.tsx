@@ -150,9 +150,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
               className="w-full max-w-[460px] lg:max-w-[514px] h-auto object-contain relative z-10 select-none"
             />
 
-            {/* Floating White Card ("The taste of Sri Lanka, delivered to your home.") */}
-            <div className="absolute bottom-6 sm:bottom-11 left-2 sm:-left-6 lg:-left-16 z-20 bg-white dark:bg-zinc-900 rounded-2xl px-6 py-3.5 shadow-[0_6px_20px_rgba(0,0,0,0.12)] border border-slate-100 dark:border-zinc-800 text-center">
-              <p className="text-[#1B8057] dark:text-emerald-400 font-semibold text-sm sm:text-[17px] leading-snug">
+            {/* Floating Card ("The taste of Sri Lanka, delivered to your home.") */}
+            <div className="absolute bottom-6 sm:bottom-11 left-2 sm:-left-6 lg:-left-16 z-20 bg-white dark:bg-[#0E2E20] rounded-2xl px-6 py-3.5 shadow-[0_6px_20px_rgba(0,0,0,0.18)] border border-slate-100 dark:border-[#15875D] text-center">
+              <p className="text-[#1B8057] dark:text-[#80F6C7] font-bold text-sm sm:text-[17px] leading-snug">
                 The taste of Sri Lanka,
                 <br />
                 delivered to your home.
@@ -168,7 +168,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           {/* Card 1: Fastest Delivery */}
           <div
             className={`rounded-xl border border-[#15875D] px-7 py-7 min-h-[155px] flex items-center gap-6 shadow-[0_3px_10px_rgba(0,0,0,0.06)] transition ${
-              isDarkMode ? 'bg-emerald-950/30' : 'bg-[#F0FAF3]'
+              isDarkMode ? 'bg-[#0E2E20]/90 border-[#15875D]' : 'bg-[#F0FAF3]'
             }`}
           >
             <img
@@ -177,10 +177,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
               className="w-[68px] h-[46px] object-contain shrink-0"
             />
             <div>
-              <h3 className="text-[#0A6847] dark:text-emerald-400 font-bold text-xl sm:text-[22px] leading-tight">
+              <h3 className="text-[#0A6847] dark:text-[#80F6C7] font-bold text-xl sm:text-[22px] leading-tight">
                 Fastest Delivery
               </h3>
-              <p className="text-[#003D25] dark:text-emerald-100/80 text-sm sm:text-base leading-snug mt-1.5">
+              <p className={`text-sm sm:text-base leading-snug mt-1.5 ${isDarkMode ? 'text-zinc-200' : 'text-[#003D25]'}`}>
                 Glovo, Bolt & Sameday
                 <br />
                 door delivery.
@@ -191,7 +191,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           {/* Card 2: Freshness you can trust */}
           <div
             className={`rounded-xl border border-[#15875D] px-7 py-7 min-h-[155px] flex items-center gap-6 shadow-[0_3px_10px_rgba(0,0,0,0.06)] transition ${
-              isDarkMode ? 'bg-emerald-950/30' : 'bg-[#F0FAF3]'
+              isDarkMode ? 'bg-[#0E2E20]/90 border-[#15875D]' : 'bg-[#F0FAF3]'
             }`}
           >
             <img
@@ -200,10 +200,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
               className="w-[50px] h-[48px] object-contain shrink-0"
             />
             <div>
-              <h3 className="text-[#0A6847] dark:text-emerald-400 font-bold text-xl sm:text-[22px] leading-tight">
+              <h3 className="text-[#0A6847] dark:text-[#80F6C7] font-bold text-xl sm:text-[22px] leading-tight">
                 Freshness you can trust
               </h3>
-              <p className="text-[#003D25] dark:text-emerald-100/80 text-sm sm:text-base leading-snug mt-1.5">
+              <p className={`text-sm sm:text-base leading-snug mt-1.5 ${isDarkMode ? 'text-zinc-200' : 'text-[#003D25]'}`}>
                 Quality produce, carefully
                 <br />
                 selected.
@@ -214,7 +214,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           {/* Card 3: Cash on delivery */}
           <div
             className={`rounded-xl border border-[#15875D] px-7 py-7 min-h-[155px] flex items-center gap-6 shadow-[0_3px_10px_rgba(0,0,0,0.06)] transition ${
-              isDarkMode ? 'bg-emerald-950/30' : 'bg-[#F0FAF3]'
+              isDarkMode ? 'bg-[#0E2E20]/90 border-[#15875D]' : 'bg-[#F0FAF3]'
             }`}
           >
             <img
@@ -223,10 +223,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
               className="w-[52px] h-[48px] object-contain shrink-0"
             />
             <div>
-              <h3 className="text-[#0A6847] dark:text-emerald-400 font-bold text-xl sm:text-[22px] leading-tight">
+              <h3 className="text-[#0A6847] dark:text-[#80F6C7] font-bold text-xl sm:text-[22px] leading-tight">
                 Cash on delivery
               </h3>
-              <p className="text-[#003D25] dark:text-emerald-100/80 text-sm sm:text-base leading-snug mt-1.5">
+              <p className={`text-sm sm:text-base leading-snug mt-1.5 ${isDarkMode ? 'text-zinc-200' : 'text-[#003D25]'}`}>
                 Shop with confident
               </p>
             </div>
@@ -379,7 +379,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </h3>
 
             <p className="text-white/95 text-base sm:text-[18px] leading-relaxed max-w-[530px] font-normal pt-1">
-              Save up to 25% on weekly bundles: handpicked organic produce, staple grains, and authentic Ceylon pantry essentials with guaranteed freshness.
+              Keeri Samba white rice, Rathu Kekulu red rice, fresh brinjal, dhal, and Ceylon spices in stock in Bucharest
             </p>
           </div>
 
