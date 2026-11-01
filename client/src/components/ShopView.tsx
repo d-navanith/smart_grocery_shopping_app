@@ -5,6 +5,7 @@ import {
   Minus,
   Heart,
   ChevronRight,
+  ShoppingCart,
   ShoppingBasket,
   X,
   SlidersHorizontal
@@ -55,17 +56,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [currentPageNum, setCurrentPageNum] = useState<number>(1);
   const itemsPerPage = 12;
 
-  const ALL_BRANDS = ['Araliya Lanka', 'Ceylon Fresh Greens', 'Pure Ceylon Spices', 'Maggi Lanka', 'Dilmah', 'Munchee / Maliban', 'Ceylon Bakery Bucharest', 'Ceylon Orchard'];
+  const ALL_BRANDS = [
+    'Araliya Lanka',
+    'Ceylon Fresh Greens',
+    'Pure Ceylon Spices',
+    'Maggi Lanka',
+    'Dilmah',
+    'Munchee / Maliban',
+    'Ceylon Bakery Bucharest',
+    'Ceylon Orchard'
+  ];
 
   const handleToggleBrand = (brand: string) => {
     setSelectedBrands(prev =>
       prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
-    );
-  };
-
-  const handleToggleProductType = (ptype: string) => {
-    setSelectedProductTypes(prev =>
-      prev.includes(ptype) ? prev.filter(t => t !== ptype) : [...prev, ptype]
     );
   };
 
@@ -136,45 +140,61 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const hasActiveFilters = selectedCategory !== 'All' || maxPrice < 200 || minRating > 0 || selectedBrands.length > 0 || selectedProductTypes.length > 0 || onlyInStock || searchQuery;
 
   return (
-    <div className="w-full flex-1 max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-6">
-      {/* 1. BREADCRUMB BANNER */}
-      <div className={`p-4 rounded-2xl flex items-center justify-between text-xs font-bold border transition ${
-        isDarkMode ? 'bg-[#141816] border-zinc-800 text-zinc-300' : 'bg-white border-slate-200 text-slate-600 shadow-xs'
-      }`}>
-        <div className="flex items-center gap-2">
-          <button onClick={onNavigateHome} className="hover:text-[#0A6847] dark:hover:text-[#78F9B8] transition">
-            {t.breadcrumbHome}
-          </button>
-          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-[#0A6847] dark:text-[#78F9B8] font-black">{t.breadcrumbShop}</span>
-          {selectedCategory !== 'All' && (
-            <>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-slate-800 dark:text-white">{selectedCategory}</span>
-            </>
-          )}
-        </div>
+    <div className="w-full flex-1 bg-white dark:bg-[#0D1210] pb-16">
+      {/* 1. FIGMA PAGE HERO / BREADCRUMB BAND */}
+      <div className="w-full bg-[#F2F7F4] dark:bg-[#121A16] border-b border-[#15875D]/20 py-7">
+        <div className="max-w-[1290px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#1B8057] mb-1.5">
+              <button onClick={onNavigateHome} className="hover:underline">
+                {t.breadcrumbHome}
+              </button>
+              <ChevronRight className="w-3.5 h-3.5 text-[#1B8057]" />
+              <span className="text-[#0A6847] dark:text-[#80F6C7] font-bold">{t.breadcrumbShop}</span>
+              {selectedCategory !== 'All' && (
+                <>
+                  <ChevronRight className="w-3.5 h-3.5 text-[#1B8057]" />
+                  <span className="text-[#F96D26] font-bold">{selectedCategory}</span>
+                </>
+              )}
+            </div>
+            <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight leading-tight">
+              <span className="text-[#0A6847] dark:text-white">Authentic Sri Lankan </span>
+              <span className="text-[#F96D26]">Groceries</span>
+            </h1>
+          </div>
 
-        <div className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-300">
-          🇷🇴 {t.depotNotice}
+          <div className="bg-[#F0FAF3] dark:bg-zinc-900 border border-[#15875D] rounded-lg px-4 py-2.5 flex items-center gap-3">
+            <img src="/figma_icon_delivery.png" alt="" className="w-8 h-8 object-contain shrink-0" />
+            <div className="text-xs">
+              <span className="font-bold text-[#1B8057] block">Island-to-Door Bucharest & RO</span>
+              <span className="text-[#003D25] dark:text-zinc-300 text-[11px]">{t.depotNotice}</span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* 2. TWO-COLUMN LAYOUT: FILTER SIDEBAR (LEFT) + PRODUCT GRID (RIGHT) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* LEFT SIDEBAR: FILTERS */}
-        <aside className={`lg:col-span-3 rounded-2xl p-5 border space-y-6 ${
-          isDarkMode ? 'bg-[#141816] border-zinc-800 text-zinc-200' : 'bg-white border-slate-200 text-slate-800 shadow-xs'
-        }`}>
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800">
+      <div className="max-w-[1290px] mx-auto px-4 sm:px-6 pt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* LEFT SIDEBAR: FILTERS (FIGMA MINT & GREEN THEME) */}
+        <aside
+          className={`lg:col-span-3 rounded-xl p-5 border space-y-6 ${
+            isDarkMode
+              ? 'bg-[#141816] border-[#15875D]/40 text-zinc-200'
+              : 'bg-[#F0FAF3] border-[#15875D] text-[#003D25] shadow-xs'
+          }`}
+        >
+          <div className="flex items-center justify-between pb-3 border-b border-[#15875D]/25">
             <div className="flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4 text-[#0A6847] dark:text-[#78F9B8]" />
-              <h3 className="font-black text-sm uppercase tracking-wider">{t.filtersTitle}</h3>
+              <SlidersHorizontal className="w-4 h-4 text-[#0A6847] dark:text-[#80F6C7]" />
+              <h3 className="font-bold text-sm uppercase tracking-wider text-[#0A6847] dark:text-white">
+                {t.filtersTitle}
+              </h3>
             </div>
             {hasActiveFilters && (
               <button
                 onClick={handleClearFilters}
-                className="text-[11px] font-bold text-red-500 hover:underline"
+                className="text-[11px] font-bold text-[#F96D26] hover:underline"
               >
                 {t.clearFilters}
               </button>
@@ -183,16 +203,16 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
           {/* 1. Category Filter */}
           <div className="space-y-2.5">
-            <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057]">
               {t.filterCategories}
             </h4>
-            <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1 text-xs">
+            <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1 text-xs">
               <label
                 onClick={() => setSelectedCategory('All')}
-                className={`flex items-center justify-between p-1.5 rounded-lg cursor-pointer transition ${
+                className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition ${
                   selectedCategory === 'All'
-                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-[#0A6847] dark:text-[#78F9B8] font-black'
-                    : 'hover:bg-slate-50 dark:hover:bg-zinc-800 font-semibold text-slate-600 dark:text-zinc-300'
+                    ? 'bg-[#0A6847] text-white font-bold shadow-xs'
+                    : 'bg-white/80 dark:bg-zinc-900 hover:bg-white font-semibold text-[#003D25] dark:text-zinc-300'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -200,11 +220,17 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     type="checkbox"
                     readOnly
                     checked={selectedCategory === 'All'}
-                    className="accent-[#0A6847] rounded cursor-pointer"
+                    className="accent-[#F8C519] rounded cursor-pointer"
                   />
                   <span>{t.catAll}</span>
                 </div>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-500">
+                <span
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                    selectedCategory === 'All'
+                      ? 'bg-[#F8C519] text-[#664E00]'
+                      : 'bg-[#F2F7F4] text-[#1B8057]'
+                  }`}
+                >
                   {products.length}
                 </span>
               </label>
@@ -220,10 +246,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 <label
                   key={cat.key}
                   onClick={() => setSelectedCategory(cat.key)}
-                  className={`flex items-center justify-between p-1.5 rounded-lg cursor-pointer transition ${
+                  className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition ${
                     selectedCategory === cat.key
-                      ? 'bg-emerald-50 dark:bg-emerald-950/40 text-[#0A6847] dark:text-[#78F9B8] font-black'
-                      : 'hover:bg-slate-50 dark:hover:bg-zinc-800 font-semibold text-slate-600 dark:text-zinc-300'
+                      ? 'bg-[#0A6847] text-white font-bold shadow-xs'
+                      : 'bg-white/80 dark:bg-zinc-900 hover:bg-white font-semibold text-[#003D25] dark:text-zinc-300'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -231,11 +257,17 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       type="checkbox"
                       readOnly
                       checked={selectedCategory === cat.key}
-                      className="accent-[#0A6847] rounded cursor-pointer"
+                      className="accent-[#F8C519] rounded cursor-pointer"
                     />
                     <span>{cat.label}</span>
                   </div>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-500">
+                  <span
+                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                      selectedCategory === cat.key
+                        ? 'bg-[#F8C519] text-[#664E00]'
+                        : 'bg-[#F2F7F4] text-[#1B8057]'
+                    }`}
+                  >
                     {categoryCounts[cat.key] || 3}
                   </span>
                 </label>
@@ -244,12 +276,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
 
           {/* 2. Price Range Slider in LEI */}
-          <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-zinc-800">
+          <div className="space-y-3 pt-3 border-t border-[#15875D]/20">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057]">
                 {t.filterPriceRange}
               </h4>
-              <span className="text-xs font-black text-[#0A6847] dark:text-[#78F9B8]">
+              <span className="text-xs font-bold text-[#0A6847] dark:text-[#80F6C7]">
                 5 lei — {maxPrice} lei
               </span>
             </div>
@@ -262,7 +294,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full accent-[#0A6847] cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] font-bold text-slate-400">
+            <div className="flex justify-between text-[10px] font-semibold text-[#1B8057]">
               <span>5 lei</span>
               <span>100 lei</span>
               <span>200 lei</span>
@@ -270,8 +302,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
 
           {/* 3. Review Rating Filter */}
-          <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-zinc-800">
-            <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
+          <div className="space-y-2 pt-3 border-t border-[#15875D]/20">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057]">
               {t.filterRating}
             </h4>
             <div className="space-y-1.5 text-xs">
@@ -282,8 +314,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 <label
                   key={r.stars}
                   onClick={() => setMinRating(minRating === r.stars ? 0 : r.stars)}
-                  className={`flex items-center gap-2 p-1.5 rounded-lg cursor-pointer transition ${
-                    minRating === r.stars ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 font-bold' : 'hover:bg-slate-50 dark:hover:bg-zinc-800'
+                  className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition ${
+                    minRating === r.stars
+                      ? 'bg-[#F8C519] text-[#664E00] font-bold'
+                      : 'bg-white/80 dark:bg-zinc-900 hover:bg-white'
                   }`}
                 >
                   <input
@@ -296,7 +330,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
                         key={i}
-                        className={`w-3.5 h-3.5 ${i < r.stars ? 'fill-amber-400 text-amber-400' : 'text-slate-300 dark:text-zinc-600'}`}
+                        className={`w-3.5 h-3.5 ${
+                          i < r.stars ? 'fill-[#F96D26] text-[#F96D26]' : 'text-slate-300 dark:text-zinc-600'
+                        }`}
                       />
                     ))}
                   </div>
@@ -307,8 +343,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
 
           {/* 4. Authentic Sri Lankan Brands */}
-          <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-zinc-800">
-            <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
+          <div className="space-y-2 pt-3 border-t border-[#15875D]/20">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057]">
               {t.filterBrands}
             </h4>
             <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1 text-xs">
@@ -316,7 +352,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 <label
                   key={brand}
                   onClick={() => handleToggleBrand(brand)}
-                  className="flex items-center justify-between p-1 rounded-lg cursor-pointer hover:bg-slate-50 dark:hover:bg-zinc-800 transition"
+                  className="flex items-center justify-between p-1.5 rounded-lg cursor-pointer bg-white/70 dark:bg-zinc-900 hover:bg-white transition"
                 >
                   <div className="flex items-center gap-2">
                     <input
@@ -325,7 +361,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                       checked={selectedBrands.includes(brand)}
                       className="accent-[#0A6847] rounded cursor-pointer"
                     />
-                    <span className="font-semibold text-slate-700 dark:text-zinc-300">{brand}</span>
+                    <span className="font-semibold text-[#003D25] dark:text-zinc-300">{brand}</span>
                   </div>
                 </label>
               ))}
@@ -333,10 +369,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
 
           {/* 5. In Stock Only */}
-          <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-zinc-800">
+          <div className="space-y-2 pt-3 border-t border-[#15875D]/20">
             <label
               onClick={() => setOnlyInStock(!onlyInStock)}
-              className="flex items-center gap-2 p-1 rounded-lg cursor-pointer hover:bg-slate-50 dark:hover:bg-zinc-800 transition text-xs font-semibold"
+              className="flex items-center gap-2 p-2 rounded-lg cursor-pointer bg-white/80 dark:bg-zinc-900 hover:bg-white transition text-xs font-semibold"
             >
               <input
                 type="checkbox"
@@ -349,45 +385,53 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
         </aside>
 
-        {/* RIGHT MAIN COLUMN: CATALOG & GRID (MATCHING IMAGE 1 THEME) */}
+        {/* RIGHT MAIN COLUMN: CATALOG & GRID (EXACT FIGMA PRODUCT CARD DESIGN) */}
         <section className="lg:col-span-9 space-y-6">
           {/* Top Bar: Results Count, Active Filter Chips, Sort Dropdown */}
-          <div className={`p-4 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 ${
-            isDarkMode ? 'bg-[#141816] border-zinc-800 text-zinc-300' : 'bg-white border-slate-200 text-slate-700 shadow-xs'
-          }`}>
+          <div
+            className={`p-4 rounded-xl border flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+              isDarkMode
+                ? 'bg-[#141816] border-zinc-800 text-zinc-300'
+                : 'bg-[#F2F7F4] border-[#15875D]/30 text-[#003D25]'
+            }`}
+          >
             <div className="flex flex-wrap items-center gap-2 text-xs">
-              <span className="font-bold text-slate-500">
+              <span className="font-bold text-[#1B8057]">
                 {t.showingCount.replace('{count}', String(sortedProducts.length))}
               </span>
 
               {selectedCategory !== 'All' && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-[#0A6847] dark:bg-emerald-950 dark:text-[#78F9B8] text-[11px] font-bold">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#0A6847] text-white text-[11px] font-semibold">
                   {selectedCategory}
-                  <button onClick={() => setSelectedCategory('All')}><X className="w-3 h-3" /></button>
+                  <button onClick={() => setSelectedCategory('All')}>
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               )}
               {maxPrice < 200 && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200 text-[11px] font-bold">
-                  Sub {maxPrice} lei
-                  <button onClick={() => setMaxPrice(200)}><X className="w-3 h-3" /></button>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#F8C519] text-[#664E00] text-[11px] font-bold">
+                  Under {maxPrice} lei
+                  <button onClick={() => setMaxPrice(200)}>
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               )}
               {hasActiveFilters && (
                 <button
                   onClick={handleClearFilters}
-                  className="text-[11px] font-black text-red-500 hover:underline ml-1"
+                  className="text-[11px] font-bold text-[#F96D26] hover:underline ml-1"
                 >
                   {t.clearFilters}
                 </button>
               )}
             </div>
 
-            <div className="flex items-center gap-2 shrink-0 text-xs font-bold">
-              <span className="text-slate-400">{t.sortByLabel}</span>
+            <div className="flex items-center gap-2 shrink-0 text-xs font-semibold">
+              <span className="text-[#1B8057]">{t.sortByLabel}</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-slate-50 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 dark:text-white focus:outline-none focus:border-[#0A6847]"
+                className="bg-white dark:bg-zinc-900 border border-[#15875D]/40 rounded-lg px-3 py-1.5 text-xs font-bold text-[#003D25] dark:text-white focus:outline-none focus:border-[#0A6847]"
               >
                 <option value="default">{t.sortFeatured}</option>
                 <option value="priceLow">{t.sortPriceLow}</option>
@@ -398,115 +442,111 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </div>
           </div>
 
-          {/* Product Cards Grid with Authentic Sri Lankan Products */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {/* Product Cards Grid — Exact Figma Popular Products Card Style */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {paginatedProducts.map(product => {
               const inCartItem = cart.find(i => i.product.id === product.id);
               const isWishlisted = wishlist.includes(product.id);
-              const discountPercent = product.originalPrice && product.originalPrice > product.price
-                ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-                : 15;
+              const discountPercent =
+                product.originalPrice && product.originalPrice > product.price
+                  ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+                  : null;
 
               return (
                 <div
                   key={product.id}
                   onClick={() => onSelectProduct(product)}
-                  className={`group rounded-2xl p-4 border cursor-pointer transition transform hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between ${
+                  className={`group rounded-lg p-5 cursor-pointer transition-all duration-200 flex flex-col justify-between border ${
                     isDarkMode
-                      ? 'bg-[#141816] border-zinc-800 hover:border-emerald-800'
-                      : 'bg-white border-slate-200 hover:border-emerald-300 shadow-xs'
+                      ? 'bg-[#141816] border-zinc-800 hover:border-[#15875D]'
+                      : 'bg-white border-transparent hover:border-[#15875D] shadow-[0_4px_14px_rgba(0,0,0,0.08)]'
                   }`}
                 >
+                  {/* Top Image & Badges */}
                   <div className="relative">
-                    <div className="w-full h-48 rounded-xl overflow-hidden bg-slate-50 dark:bg-zinc-900 flex items-center justify-center p-2">
+                    <div className="w-full h-48 rounded-md overflow-hidden bg-white dark:bg-zinc-900 flex items-center justify-center p-2">
                       <img
                         src={product.imageUrl}
                         alt={product.title}
                         onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/prod_white_rice.jpg';
+                          (e.target as HTMLImageElement).src = '/figma_prod_rice_sack.png';
                         }}
                         className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                       />
                     </div>
 
-                    <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-[#0A6847] text-white shadow-xs">
-                        {discountPercent}% REDUCERE
+                    {discountPercent && (
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-[#F96D26] text-white text-[10px] font-bold shadow-xs">
+                        -{discountPercent}%
                       </span>
-                      {product.isOrganic && (
-                        <span className="px-2 py-0.5 rounded-md text-[9px] font-black bg-[#E5A91A] text-amber-950 shadow-xs">
-                          CEYLON EXPORT
-                        </span>
-                      )}
-                    </div>
+                    )}
 
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         onToggleWishlist(product.id);
                       }}
-                      className={`absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md shadow-sm transition ${
+                      className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center border transition ${
                         isWishlisted
-                          ? 'bg-red-50 text-red-500'
-                          : 'bg-white/80 dark:bg-zinc-800/80 text-slate-400 hover:text-red-500'
+                          ? 'bg-[#FFF4EE] border-[#F96D26] text-[#F96D26]'
+                          : 'bg-[#F2F7F4] border-[#15875D]/30 text-[#1B8057] hover:text-[#F96D26]'
                       }`}
-                      title="Adaugă la Favorite"
+                      title="Save to Wishlist"
                     >
-                      <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-red-500' : ''}`} />
+                      <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#F96D26]' : ''}`} />
                     </button>
                   </div>
 
-                  <div className="mt-3.5 space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px] text-slate-400 uppercase font-black tracking-wider">
-                      <span>{product.category}</span>
-                      <div className="flex items-center gap-1 text-amber-500 font-extrabold">
-                        <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                  {/* Figma Card Details: Title + Price Row, Unit Pill + Old Price Row, Bottom-Right Add Button */}
+                  <div className="mt-4 pt-2 space-y-2.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <h4
+                        className="text-base font-bold text-black dark:text-white line-clamp-1 group-hover:text-[#0A6847] transition"
+                        title={product.title}
+                      >
+                        {product.title}
+                      </h4>
+                      <span className="text-base font-bold text-black dark:text-white shrink-0">
+                        {product.price.toFixed(2)} lei
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="px-2.5 py-0.5 rounded bg-[#F2F7F4] dark:bg-zinc-800 text-[#9E9E9E] text-xs font-medium">
+                        {product.unitWeight || product.unit}
+                      </span>
+                      {product.originalPrice ? (
+                        <span className="text-xs font-medium text-[#C7C7C7] line-through">
+                          {product.originalPrice.toFixed(2)} lei
+                        </span>
+                      ) : (
+                        <span className="text-xs text-[#1B8057] font-medium">In Stock</span>
+                      )}
+                    </div>
+
+                    <div className="pt-2 flex items-center justify-between">
+                      <div className="flex items-center gap-1 text-xs font-semibold text-[#1B8057]">
+                        <Star className="w-3.5 h-3.5 fill-[#F8C519] text-[#F8C519]" />
                         <span>{product.rating}</span>
-                        <span className="text-[10px] text-slate-400 font-normal">({product.reviewsCount || 18})</span>
-                      </div>
-                    </div>
-
-                    <h4 className="text-sm font-extrabold text-slate-900 dark:text-white line-clamp-1 group-hover:text-[#0A6847] dark:group-hover:text-[#78F9B8] transition" title={product.title}>
-                      {product.title}
-                    </h4>
-
-                    <div className="text-[11px] font-bold text-slate-400">
-                      {t.weightGramaj} <span className="text-slate-600 dark:text-zinc-300">{product.unitWeight || product.unit}</span>
-                    </div>
-
-                    {/* Price in LEI & Add to Cart */}
-                    <div className="flex items-center justify-between pt-2">
-                      <div className="flex flex-col">
-                        <div className="flex items-baseline gap-1.5">
-                          <span className="text-base font-black text-[#0A6847] dark:text-[#78F9B8]">
-                            {product.price.toFixed(2)} lei
-                          </span>
-                          {product.originalPrice && (
-                            <span className="text-xs text-slate-400 line-through">
-                              {product.originalPrice.toFixed(2)} lei
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-[10px] text-slate-400">{t.codBadge}</span>
                       </div>
 
                       {inCartItem ? (
                         <div
                           onClick={(e) => e.stopPropagation()}
-                          className="flex items-center gap-2 bg-[#0A6847] text-white px-2.5 py-1.5 rounded-xl shadow-sm"
+                          className="flex items-center gap-2.5 bg-[#0A6847] text-white h-[40px] px-3.5 rounded-md shadow-sm"
                         >
                           <button
                             onClick={() => onUpdateCartQty(product.id, inCartItem.selectedWeight, -1)}
-                            className="text-white hover:text-amber-300 font-black"
+                            className="text-white hover:text-[#F8C519] font-bold"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
-                          <span className="text-xs font-black min-w-[16px] text-center">
+                          <span className="text-xs font-bold min-w-[16px] text-center">
                             {inCartItem.quantity}
                           </span>
                           <button
                             onClick={() => onUpdateCartQty(product.id, inCartItem.selectedWeight, 1)}
-                            className="text-white hover:text-amber-300 font-black"
+                            className="text-white hover:text-[#F8C519] font-bold"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -517,11 +557,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
                             e.stopPropagation();
                             onAddToCart(product, 1, '1kg');
                           }}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white font-black text-xs shadow-sm transition active:scale-95"
+                          className="h-[40px] px-5 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-medium text-sm inline-flex items-center gap-2 shadow-sm transition active:scale-95"
                           title={t.addToCart}
                         >
-                          <ShoppingBasket className="w-3.5 h-3.5" />
-                          <span>+ {t.addToCart}</span>
+                          <span>Add</span>
+                          <ShoppingCart className="w-4 h-4" />
                         </button>
                       )}
                     </div>
@@ -532,15 +572,19 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
 
           {paginatedProducts.length === 0 && (
-            <div className="p-12 text-center rounded-2xl border border-dashed border-slate-300 dark:border-zinc-800 space-y-3">
-              <ShoppingBasket className="w-12 h-12 text-slate-300 mx-auto" />
-              <h4 className="font-extrabold text-base text-slate-700 dark:text-zinc-300">Niciun produs nu corespunde filtrelor selectate</h4>
-              <p className="text-xs text-slate-400">Încercați să lărgiți intervalul de preț sau să resetați categoriile.</p>
+            <div className="p-12 text-center rounded-xl bg-[#F0FAF3] dark:bg-zinc-900 border border-dashed border-[#15875D] space-y-3">
+              <ShoppingBasket className="w-12 h-12 text-[#1B8057] mx-auto" />
+              <h4 className="font-bold text-base text-[#003D25] dark:text-zinc-200">
+                No products match your selected filters
+              </h4>
+              <p className="text-xs text-[#1B8057]">
+                Try expanding the price range or resetting the category filter.
+              </p>
               <button
                 onClick={handleClearFilters}
-                className="px-4 py-2 rounded-xl bg-[#0A6847] text-white text-xs font-bold"
+                className="px-5 py-2.5 rounded-md bg-[#0A6847] text-white text-xs font-semibold"
               >
-                Resetează Filtrele
+                {t.clearFilters}
               </button>
             </div>
           )}
@@ -550,7 +594,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
               <button
                 disabled={currentPageNum === 1}
                 onClick={() => setCurrentPageNum(p => Math.max(1, p - 1))}
-                className="w-8 h-8 rounded-lg border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-xs font-bold disabled:opacity-40 hover:bg-slate-100"
+                className="w-9 h-9 rounded-md border border-[#15875D]/40 flex items-center justify-center text-xs font-bold disabled:opacity-40 hover:bg-[#F0FAF3]"
               >
                 &lt;
               </button>
@@ -561,10 +605,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   <button
                     key={page}
                     onClick={() => setCurrentPageNum(page)}
-                    className={`w-8 h-8 rounded-lg text-xs font-bold transition ${
+                    className={`w-9 h-9 rounded-md text-xs font-bold transition ${
                       currentPageNum === page
                         ? 'bg-[#0A6847] text-white shadow-sm'
-                        : 'border border-slate-200 dark:border-zinc-800 hover:bg-slate-100 text-slate-700 dark:text-zinc-300'
+                        : 'border border-[#15875D]/40 hover:bg-[#F0FAF3] text-[#003D25] dark:text-zinc-300'
                     }`}
                   >
                     {page}
@@ -575,7 +619,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
               <button
                 disabled={currentPageNum === totalPages}
                 onClick={() => setCurrentPageNum(p => Math.min(totalPages, p + 1))}
-                className="w-8 h-8 rounded-lg border border-slate-200 dark:border-zinc-800 flex items-center justify-center text-xs font-bold disabled:opacity-40 hover:bg-slate-100"
+                className="w-9 h-9 rounded-md border border-[#15875D]/40 flex items-center justify-center text-xs font-bold disabled:opacity-40 hover:bg-[#F0FAF3]"
               >
                 &gt;
               </button>

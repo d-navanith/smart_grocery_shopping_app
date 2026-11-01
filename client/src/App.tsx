@@ -13,7 +13,7 @@ import { OrderCompletedView } from './components/OrderCompletedView';
 import { TrackOrderView } from './components/TrackOrderView';
 import { AccountView } from './components/AccountView';
 import { Footer } from './components/Footer';
-import { Modals } from './components/Modals';
+import { Modals, PopupNotification } from './components/Modals';
 import { Language, TranslationDictionary, TRANSLATIONS } from './translations';
 
 const CEYLON_DELIVERY_ZONES: DeliveryZone[] = [
@@ -284,6 +284,21 @@ export default function ClientWebSupermarket() {
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
+  const [popupMessage, setPopupMessage] = useState<PopupNotification | null>(null);
+
+  const showPopupMessage = (
+    title: string,
+    message: string,
+    type: 'success' | 'info' | 'warning' = 'success',
+    actionLabel?: string,
+    onAction?: () => void
+  ) => {
+    const id = String(Date.now());
+    setPopupMessage({ id, title, message, type, actionLabel, onAction });
+    setTimeout(() => {
+      setPopupMessage(prev => (prev?.id === id ? null : prev));
+    }, 4000);
+  };
   const [activeOrder, setActiveOrder] = useState<any>({
     orderNumber: 'CF-8921',
     status: 'PROCESSING',
@@ -362,6 +377,14 @@ export default function ClientWebSupermarket() {
       }
       return [...prev, { product, quantity: qty, selectedWeight: weight, effectivePrice }];
     });
+
+    showPopupMessage(
+      'Added to Cart',
+      `${qty}x ${product.title} (${weight}) added to your basket.`,
+      'success',
+      'View Cart',
+      () => setCurrentPage('CART')
+    );
   };
 
   const handleUpdateCartQty = (productId: string, weight: string | undefined, delta: number) => {
@@ -400,8 +423,19 @@ export default function ClientWebSupermarket() {
   };
 
   const handleToggleWishlist = (productId: string) => {
+    const prod = products.find(p => p.id === productId);
+    const alreadyIn = wishlist.includes(productId);
     setWishlist(prev =>
       prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]
+    );
+    showPopupMessage(
+      alreadyIn ? 'Removed from Wishlist' : 'Saved to Wishlist',
+      alreadyIn
+        ? `${prod?.title || 'Item'} was removed from your saved list.`
+        : `${prod?.title || 'Item'} was added to your wishlist.`,
+      'info',
+      'Open Wishlist',
+      () => setCurrentPage('WISHLIST')
     );
   };
 
@@ -756,6 +790,8 @@ export default function ClientWebSupermarket() {
         onRemoveFromCart={handleRemoveFromCart}
         subtotal={subtotal}
         onNavigateToCartPage={() => setCurrentPage('CART')}
+        popupMessage={popupMessage}
+        onClosePopupMessage={() => setPopupMessage(null)}
         isDarkMode={isDarkMode}
         t={t}
       />
