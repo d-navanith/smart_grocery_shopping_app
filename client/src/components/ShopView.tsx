@@ -54,7 +54,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const [onlyInStock, setOnlyInStock] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<'default' | 'priceLow' | 'priceHigh' | 'rating' | 'freshness'>('default');
   const [currentPageNum, setCurrentPageNum] = useState<number>(1);
-  const itemsPerPage = 12;
+  const itemsPerPage = 24;
 
   const ALL_BRANDS = [
     'Araliya Lanka',

@@ -624,7 +624,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
 
     // Popular section
     popularTitle: 'Top Selling Ceylon Groceries (Popular in Romania)',
-    popularDesc: 'Keeri Samba white rice, Rathu Kekulu red rice, fresh brinjal, dhal, and Ceylon spices in stock in Bucharest',
+    popularDesc: 'Discover our most loved groceries: fresh organic produce, aromatic heirloom rice, and authentic Ceylon pantry essentials.',
     viewAllProducts: 'View All Products',
 
     // Recipe kits
@@ -1013,7 +1013,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
 
     // Popular section
     popularTitle: 'රුමේනියාවේ වැඩිම ඉල්ලුමක් ඇති ලංකා ආහාර',
-    popularDesc: 'කීරි සම්බා, රතු කැකුළු සහල්, නැවුම් වම්බටු, පරිප්පු සහ තුනපහ බුකාරෙස්ට් ගබඩාවේ තොග ඇත',
+    popularDesc: 'අපගේ වඩාත්ම ජනප්‍රිය ශ්‍රී ලාංකික ආහාර: නැවුම් එළවළු, කැකුළු සහල් සහ සුවඳැති කුළුබඩු.',
     viewAllProducts: 'සියලුම නිෂ්පාදන බලන්න',
 
     // Recipe kits
@@ -1402,7 +1402,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
 
     // Popular section
     popularTitle: 'Cele mai vândute alimente (Popular în România)',
-    popularDesc: 'Orez alb Keeri Samba, orez roșu, wambatu, dhal, și condimente de Ceylon în stoc în București',
+    popularDesc: 'Descoperiți cele mai căutate produse: legume proaspete, orez tradițional și condimente autentice din Ceylon.',
     viewAllProducts: 'Vezi toate produsele',
 
     // Recipe kits

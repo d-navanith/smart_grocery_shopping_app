@@ -60,7 +60,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const FIGMA_POPULAR_CARDS = [
     {
       id: 'pop-coconut',
-      displayTitle: 'Coconut',
+      displayTitle: 'Fresh Coconut',
       unitLabel: 'Unit : 3 pcs',
       displayPrice: 'RS. 546.00',
       oldPrice: 'RS. 600.00',
@@ -69,8 +69,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
     },
     {
       id: 'pop-papaya',
-      displayTitle: 'Coconut',
-      unitLabel: 'kg: 100g',
+      displayTitle: 'Ceylon Papaya',
+      unitLabel: 'Unit : 1 kg',
       displayPrice: 'RS. 145.00',
       oldPrice: '',
       image: '/figma_prod_papaya.png',
@@ -78,8 +78,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
     },
     {
       id: 'pop-rice',
-      displayTitle: 'Coconut',
-      unitLabel: 'kg: 1kg',
+      displayTitle: 'Keeri Samba Rice',
+      unitLabel: 'Bag : 5 kg',
       displayPrice: 'RS. 242.00',
       oldPrice: 'RS. 250.00',
       image: '/figma_prod_rice_sack.png',
@@ -87,10 +87,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
     },
     {
       id: 'pop-onions',
-      displayTitle: 'Coconut',
-      unitLabel: 'Unit : 3 pcs',
-      displayPrice: 'RS. 546.00',
-      oldPrice: 'RS. 600.00',
+      displayTitle: 'Red Baby Shallots',
+      unitLabel: 'Pack : 500g',
+      displayPrice: 'RS. 185.00',
+      oldPrice: 'RS. 210.00',
       image: '/figma_prod_onions.png',
       product: onionProduct
     }
@@ -379,7 +379,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </h3>
 
             <p className="text-white/95 text-base sm:text-[18px] leading-relaxed max-w-[530px] font-normal pt-1">
-              Keeri Samba white rice, Rathu Kekulu red rice, fresh brinjal, dhal, and Ceylon spices in stock in Bucharest
+              Save up to 25% on weekly bundles: handpicked organic produce, staple grains, and authentic Ceylon pantry essentials with guaranteed freshness.
             </p>
           </div>
 
