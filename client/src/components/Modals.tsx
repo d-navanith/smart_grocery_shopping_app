@@ -49,6 +49,7 @@ interface ModalsProps {
   isTrackingOpen: boolean;
   onCloseTracking: () => void;
   activeOrder: any;
+  onConfirmReceived?: (orderIdOrNumber: string) => void;
   onNavigateDeliveries?: () => void;
   // Cart Drawer
   isCartDrawerOpen: boolean;
@@ -78,6 +79,7 @@ export const Modals: React.FC<ModalsProps> = ({
   isTrackingOpen,
   onCloseTracking,
   activeOrder,
+  onConfirmReceived,
   onNavigateDeliveries,
   isCartDrawerOpen,
   onCloseCartDrawer,
@@ -762,6 +764,29 @@ export const Modals: React.FC<ModalsProps> = ({
                   </strong>
                 </span>
               </div>
+
+              {/* Confirm Parcel Received Action in Modal */}
+              {activeOrder.status !== 'DELIVERED' && activeOrder.status !== 'CANCELLED' && onConfirmReceived && (
+                <div className="p-3.5 rounded-xl bg-[#F0FAF3] dark:bg-emerald-950/40 border border-[#15875D] flex items-center justify-between gap-3">
+                  <div>
+                    <span className="font-bold text-xs text-black dark:text-white block">
+                      Parcel received & paid?
+                    </span>
+                    <span className="text-[10px] text-[#1B8057] dark:text-zinc-300">
+                      Confirm you received your goods from the rider
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      onConfirmReceived(activeOrder.id || activeOrder.orderNumber);
+                      onCloseTracking();
+                    }}
+                    className="px-3.5 py-2 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white text-xs font-semibold shadow transition active:scale-95 shrink-0"
+                  >
+                    {t.confirmParcelReceivedBtn}
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="p-4 bg-[#F2F7F4] dark:bg-zinc-900 border-t border-[#15875D]/20 flex items-center justify-between">

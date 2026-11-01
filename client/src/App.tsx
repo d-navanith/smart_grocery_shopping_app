@@ -536,6 +536,45 @@ export default function ClientWebSupermarket() {
     setCurrentPage('ORDER_COMPLETED');
   };
 
+  const handleConfirmParcelReceived = (orderIdOrNumber: string) => {
+    setCustomerOrders(prev =>
+      prev.map(ord => {
+        if (ord.id === orderIdOrNumber || ord.orderNumber === orderIdOrNumber) {
+          return {
+            ...ord,
+            status: 'DELIVERED',
+            paymentStatus: 'PAID'
+          };
+        }
+        return ord;
+      })
+    );
+
+    setActiveOrder((prev: any) => {
+      if (prev && (prev.id === orderIdOrNumber || prev.orderNumber === orderIdOrNumber)) {
+        return {
+          ...prev,
+          status: 'DELIVERED',
+          paymentStatus: 'PAID'
+        };
+      }
+      return prev;
+    });
+
+    // Notify backend if API is live
+    fetch(`/api/orders/${orderIdOrNumber}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'DELIVERED', paymentStatus: 'PAID' })
+    }).catch(() => {});
+
+    showPopupMessage(
+      t.confirmParcelSuccessTitle,
+      t.confirmParcelSuccessDesc,
+      'success'
+    );
+  };
+
   const handleReorder = (order: ClientOrder) => {
     order.items.forEach(it => {
       const title = typeof it === 'string' ? it : it.productTitle;
@@ -705,6 +744,7 @@ export default function ClientWebSupermarket() {
           <TrackOrderView
             orders={customerOrders}
             initialOrderNumber={initialTrackNumber}
+            onConfirmReceived={handleConfirmParcelReceived}
             onNavigateShop={() => setCurrentPage('SHOP')}
             onNavigateHome={() => setCurrentPage('HOME')}
             isDarkMode={isDarkMode}
@@ -753,6 +793,7 @@ export default function ClientWebSupermarket() {
           <DeliveriesView
             orders={customerOrders}
             onReorder={handleReorder}
+            onConfirmReceived={handleConfirmParcelReceived}
             onNavigateShop={() => setCurrentPage('SHOP')}
             isDarkMode={isDarkMode}
             t={t}
@@ -782,6 +823,7 @@ export default function ClientWebSupermarket() {
         isTrackingOpen={isTrackingModalOpen}
         onCloseTracking={() => setIsTrackingModalOpen(false)}
         activeOrder={activeOrder}
+        onConfirmReceived={handleConfirmParcelReceived}
         onNavigateDeliveries={() => setCurrentPage('DELIVERIES')}
         isCartDrawerOpen={isCartDrawerOpen}
         onCloseCartDrawer={() => setIsCartDrawerOpen(false)}

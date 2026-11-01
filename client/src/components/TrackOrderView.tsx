@@ -5,7 +5,9 @@ import {
   ChevronRight,
   AlertCircle,
   Lock,
-  ArrowRight
+  ArrowRight,
+  PackageCheck,
+  CheckCircle
 } from 'lucide-react';
 import { ClientOrder } from '../types';
 import { TranslationDictionary } from '../translations';
@@ -13,6 +15,7 @@ import { TranslationDictionary } from '../translations';
 interface TrackOrderViewProps {
   orders: ClientOrder[];
   initialOrderNumber?: string;
+  onConfirmReceived?: (orderIdOrNumber: string) => void;
   onNavigateShop: () => void;
   onNavigateHome: () => void;
   isDarkMode: boolean;
@@ -22,6 +25,7 @@ interface TrackOrderViewProps {
 export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
   orders,
   initialOrderNumber = '',
+  onConfirmReceived,
   onNavigateHome,
   t
 }) => {
@@ -313,6 +317,33 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
                 {t.cashOnDeliveryPaymentTag}
               </span>
             </div>
+
+            {/* Customer Confirm Received Button (When order is active or out for delivery) */}
+            {searchedOrder.status !== 'DELIVERED' && searchedOrder.status !== 'CANCELLED' && onConfirmReceived && (
+              <div className="p-4 rounded-xl bg-gradient-to-r from-[#F0FAF3] to-[#F2F7F4] border-2 border-[#15875D] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#0A6847] text-white flex items-center justify-center shrink-0">
+                    <PackageCheck className="w-5 h-5 text-[#F8C519]" />
+                  </div>
+                  <div>
+                    <h5 className="font-bold text-xs text-black dark:text-white">
+                      Did the rider hand over your parcel?
+                    </h5>
+                    <p className="text-[11px] text-[#1B8057] dark:text-zinc-300">
+                      Confirm below once you have inspected your grocery parcel and paid the courier.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => onConfirmReceived(searchedOrder.id || searchedOrder.orderNumber)}
+                  className="px-5 py-2.5 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-semibold text-xs shadow-sm flex items-center justify-center gap-2 transition active:scale-95 shrink-0"
+                >
+                  <CheckCircle className="w-4 h-4 text-[#F8C519]" />
+                  <span>{t.confirmParcelReceivedBtn}</span>
+                </button>
+              </div>
+            )}
           </div>
         ) : null}
       </div>

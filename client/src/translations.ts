@@ -86,6 +86,10 @@ export interface TranslationDictionary {
   purchasedItemsSummary: string;
   viewOfficialInvoiceBtn: string;
   reorderAgainBtn: string;
+  confirmParcelReceivedBtn: string;
+  confirmParcelSuccessTitle: string;
+  confirmParcelSuccessDesc: string;
+  parcelReceivedBadge: string;
   invoiceModalStoreName: string;
   invoiceModalStoreAddress: string;
   invoiceModalDeliveryInvoice: string;
@@ -472,6 +476,10 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     purchasedItemsSummary: 'Purchased items:',
     viewOfficialInvoiceBtn: 'View Official Receipt / Invoice',
     reorderAgainBtn: 'Reorder Again',
+    confirmParcelReceivedBtn: 'Confirm Parcel Received ✓',
+    confirmParcelSuccessTitle: 'Parcel Received Confirmed!',
+    confirmParcelSuccessDesc: 'Thank you for confirming receipt of your Ceylon Foods order.',
+    parcelReceivedBadge: '✓ RECEIVED & COMPLETED',
     invoiceModalStoreName: 'Ceylon Foods Supermarket Bucharest',
     invoiceModalStoreAddress: 'Strada Academiei 14, Bucharest, Romania',
     invoiceModalDeliveryInvoice: 'Delivery Invoice',
@@ -857,6 +865,10 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     purchasedItemsSummary: 'මිලදී ගත් භාණ්ඩ:',
     viewOfficialInvoiceBtn: 'නිල බිල්පත බලන්න',
     reorderAgainBtn: 'නැවත ඇණවුම් කරන්න',
+    confirmParcelReceivedBtn: 'පාර්සලය ලැබුණු බව තහවුරු කරන්න ✓',
+    confirmParcelSuccessTitle: 'පාර්සලය ලැබුණු බව තහවුරු විය!',
+    confirmParcelSuccessDesc: 'ඔබගේ Ceylon Foods ඇණවුම ලැබුණු බව තහවුරු කිරීම ගැන ස්තූතියි.',
+    parcelReceivedBadge: '✓ ලැබී සම්පූර්ණයි',
     invoiceModalStoreName: 'Ceylon Foods Supermarket Bucharest',
     invoiceModalStoreAddress: 'Strada Academiei 14, Bucharest, Romania',
     invoiceModalDeliveryInvoice: 'නිල බෙදාහැරීමේ බිල්පත',
@@ -1242,6 +1254,10 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     purchasedItemsSummary: 'Articole cumpărate:',
     viewOfficialInvoiceBtn: 'Vezi Chitanță / Factură Oficială',
     reorderAgainBtn: 'Comandă Din Nou',
+    confirmParcelReceivedBtn: 'Confirmă Preluarea Coletului ✓',
+    confirmParcelSuccessTitle: 'Colet Preluat cu Succes!',
+    confirmParcelSuccessDesc: 'Vă mulțumim pentru confirmarea primirii comenzii Ceylon Foods.',
+    parcelReceivedBadge: '✓ PRELUAT & FINALIZAT',
     invoiceModalStoreName: 'Ceylon Foods Supermarket Bucharest',
     invoiceModalStoreAddress: 'Strada Academiei 14, București, România',
     invoiceModalDeliveryInvoice: 'Factură Livrare',
