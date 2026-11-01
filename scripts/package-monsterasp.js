@@ -60,11 +60,13 @@ require('./dist/index.js');
 // Ensure logs directory exists for stdout/stderr logs
 fs.mkdirSync(path.join(DEPLOY_DIR, 'logs'), { recursive: true });
 
-// 5. Create MonsterASP.NET web.config (Native httpPlatformHandler for Node.js)
+// 5. Create MonsterASP.NET web.config (Native httpPlatformHandler for Node.js with Detailed Error Reporting)
 const webConfigContent = `<?xml version="1.0" encoding="utf-8"?>
 <!-- MonsterASP.NET IIS Configuration for Ceylon Foods Full-Stack Node.js Application -->
 <configuration>
   <system.webServer>
+    <httpErrors errorMode="Detailed" />
+    <asp scriptErrorSentToBrowser="true"/>
     <handlers>
       <add name="httpPlatformHandler" path="*" verb="*" modules="httpPlatformHandler" resourceType="Unspecified" />
     </handlers>
@@ -83,6 +85,10 @@ const webConfigContent = `<?xml version="1.0" encoding="utf-8"?>
       </requestFiltering>
     </security>
   </system.webServer>
+  <system.web>
+    <customErrors mode="Off"/>
+    <compilation debug="true"/>
+  </system.web>
 </configuration>
 `;
 fs.writeFileSync(path.join(DEPLOY_DIR, 'web.config'), webConfigContent);
