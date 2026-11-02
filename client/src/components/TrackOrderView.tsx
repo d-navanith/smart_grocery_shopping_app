@@ -503,46 +503,71 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
           </div>
         )}
 
-        {/* 4. THREE VALUE CARDS (EXACTLY MATCHING ATTACHMENT 2 BOTTOM BAR) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
-          <div className="flex items-center gap-3.5 p-4 rounded-xl bg-white dark:bg-[#121A16] border border-slate-200 dark:border-zinc-800">
-            <div className="w-10 h-10 rounded-full bg-[#E8F5EE] dark:bg-[#0E2E20] flex items-center justify-center text-[#0A6847] dark:text-[#80F6C7] shrink-0 text-xl">
-              📦
-            </div>
+        {/* 4. THREE FEATURE HIGHLIGHTS (EXACTLY MATCHING ATTACHMENT 2) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-4">
+          {/* Card 1: Fastest Delivery */}
+          <div
+            className={`rounded-xl border border-[#15875D] px-6 py-6 min-h-[140px] flex items-center gap-5 shadow-[0_3px_10px_rgba(0,0,0,0.06)] transition ${
+              isDarkMode ? 'bg-[#0E2E20]/90 border-[#15875D]' : 'bg-[#F0FAF3]'
+            }`}
+          >
+            <img
+              src="/figma_icon_delivery.png"
+              alt="Fastest Delivery"
+              className="w-[62px] h-[42px] object-contain shrink-0"
+            />
             <div>
-              <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
-                Free Shipping
-              </h4>
-              <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                Free shipping for order above 250 lei
+              <h3 className="text-[#0A6847] dark:text-[#80F6C7] font-bold text-lg sm:text-[20px] leading-tight">
+                Fastest Delivery
+              </h3>
+              <p className={`text-xs sm:text-sm leading-snug mt-1.5 ${isDarkMode ? 'text-zinc-200' : 'text-[#003D25]'}`}>
+                Glovo, Bolt & Sameday
+                <br />
+                door delivery.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-4 rounded-xl bg-white dark:bg-[#121A16] border border-slate-200 dark:border-zinc-800">
-            <div className="w-10 h-10 rounded-full bg-[#E8F5EE] dark:bg-[#0E2E20] flex items-center justify-center text-[#0A6847] dark:text-[#80F6C7] shrink-0 text-xl">
-              💳
-            </div>
+          {/* Card 2: Freshness you can trust */}
+          <div
+            className={`rounded-xl border border-[#15875D] px-6 py-6 min-h-[140px] flex items-center gap-5 shadow-[0_3px_10px_rgba(0,0,0,0.06)] transition ${
+              isDarkMode ? 'bg-[#0E2E20]/90 border-[#15875D]' : 'bg-[#F0FAF3]'
+            }`}
+          >
+            <img
+              src="/figma_icon_freshness.png"
+              alt="Freshness you can trust"
+              className="w-[48px] h-[46px] object-contain shrink-0"
+            />
             <div>
-              <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
-                Flexible Payment
-              </h4>
-              <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                Cash on delivery & secure options
+              <h3 className="text-[#0A6847] dark:text-[#80F6C7] font-bold text-lg sm:text-[20px] leading-tight">
+                Freshness you can trust
+              </h3>
+              <p className={`text-xs sm:text-sm leading-snug mt-1.5 ${isDarkMode ? 'text-zinc-200' : 'text-[#003D25]'}`}>
+                Quality produce, carefully
+                <br />
+                selected.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-4 rounded-xl bg-white dark:bg-[#121A16] border border-slate-200 dark:border-zinc-800">
-            <div className="w-10 h-10 rounded-full bg-[#E8F5EE] dark:bg-[#0E2E20] flex items-center justify-center text-[#0A6847] dark:text-[#80F6C7] shrink-0 text-xl">
-              🎧
-            </div>
+          {/* Card 3: Cash on delivery */}
+          <div
+            className={`rounded-xl border border-[#15875D] px-6 py-6 min-h-[140px] flex items-center gap-5 shadow-[0_3px_10px_rgba(0,0,0,0.06)] transition ${
+              isDarkMode ? 'bg-[#0E2E20]/90 border-[#15875D]' : 'bg-[#F0FAF3]'
+            }`}
+          >
+            <img
+              src="/figma_icon_cod.png"
+              alt="Cash on delivery"
+              className="w-[50px] h-[46px] object-contain shrink-0"
+            />
             <div>
-              <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
-                24×7 Support
-              </h4>
-              <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                We support online all days in Bucharest
+              <h3 className="text-[#0A6847] dark:text-[#80F6C7] font-bold text-lg sm:text-[20px] leading-tight">
+                Cash on delivery
+              </h3>
+              <p className={`text-xs sm:text-sm leading-snug mt-1.5 ${isDarkMode ? 'text-zinc-200' : 'text-[#003D25]'}`}>
+                Shop with confident
               </p>
             </div>
           </div>
