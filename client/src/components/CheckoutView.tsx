@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ShieldCheck,
   ChevronRight,
@@ -63,13 +63,22 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   t
 }) => {
   // Form State
-  const [fullName, setFullName] = useState(currentUser?.name || 'Mihai Enache');
-  const [phone, setPhone] = useState(currentUser?.phone || '+40 722 456 789');
-  const [streetAddress, setStreetAddress] = useState(currentUser?.address || 'Strada Mihai Eminescu nr. 42');
-  const [buildingDetails, setBuildingDetails] = useState(currentUser?.buildingDetails || 'Bl. 12, Sc. A, Et. 3, Ap. 14, Interfon 14');
+  const [fullName, setFullName] = useState(currentUser?.name || '');
+  const [phone, setPhone] = useState(currentUser?.phone || '');
+  const [streetAddress, setStreetAddress] = useState(currentUser?.address || '');
+  const [buildingDetails, setBuildingDetails] = useState(currentUser?.buildingDetails || '');
   const [deliveryNote, setDeliveryNote] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'CASH_ON_DELIVERY' | 'CARD_ON_DELIVERY'>('CASH_ON_DELIVERY');
   const [preferredSlot, setPreferredSlot] = useState('EXPRESS');
+
+  useEffect(() => {
+    if (currentUser) {
+      if (currentUser.name) setFullName(currentUser.name);
+      if (currentUser.phone) setPhone(currentUser.phone);
+      if (currentUser.address) setStreetAddress(currentUser.address);
+      if (currentUser.buildingDetails) setBuildingDetails(currentUser.buildingDetails);
+    }
+  }, [currentUser]);
 
   // Cash Change Calculator State
   const [cashAmountGiven, setCashAmountGiven] = useState<number>(Math.ceil(totalAmount / 10) * 10);

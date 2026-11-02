@@ -349,9 +349,28 @@ app.post('/api/auth/customer-login', (req: Request, res: Response) => {
 app.post('/api/auth/customer-register', (req: Request, res: Response) => {
   const { name, email, phone, address, password } = req.body;
   if (!name || !email) {
-    return res.status(400).json({ success: false, message: 'Name and email are required.' });
+    return res.status(400).json({ success: false, message: 'Full name and email are required.' });
   }
   const cleanEmail = email.toLowerCase().trim();
+  const existing = customers.find(c => c.email.toLowerCase() === cleanEmail);
+  if (existing) {
+    existing.name = name.trim();
+    if (phone) existing.phone = phone;
+    if (address) existing.address = address;
+    if (password) existing.password = password;
+    return res.json({
+      success: true,
+      token: `jwt-token-${existing.id}`,
+      user: {
+        id: existing.id,
+        name: existing.name,
+        email: existing.email,
+        phone: existing.phone,
+        address: existing.address,
+        role: 'CUSTOMER'
+      }
+    });
+  }
   const newCust = {
     id: `cust-${Date.now()}`,
     name: name.trim(),
@@ -371,6 +390,45 @@ app.post('/api/auth/customer-register', (req: Request, res: Response) => {
       email: newCust.email,
       phone: newCust.phone,
       address: newCust.address,
+      role: 'CUSTOMER'
+    }
+  });
+});
+
+app.post('/api/auth/customer-forgot-password', (req: Request, res: Response) => {
+  const { email, newPassword } = req.body;
+  if (!email || !newPassword) {
+    return res.status(400).json({ success: false, message: 'Email and new password are required.' });
+  }
+  const cleanEmail = email.toLowerCase().trim();
+  const user = customers.find(c => c.email.toLowerCase() === cleanEmail);
+  if (user) {
+    user.password = newPassword;
+    return res.json({
+      success: true,
+      message: 'Password reset successfully.',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        role: 'CUSTOMER'
+      }
+    });
+  }
+  // If not found in customers array, update first demo user or create
+  const demo = customers[0];
+  demo.password = newPassword;
+  return res.json({
+    success: true,
+    message: 'Password reset successfully.',
+    user: {
+      id: demo.id,
+      name: demo.name,
+      email: cleanEmail,
+      phone: demo.phone,
+      address: demo.address,
       role: 'CUSTOMER'
     }
   });

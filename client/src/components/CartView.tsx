@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Trash2,
   Plus,
@@ -11,7 +11,8 @@ import {
   Banknote,
   Lock,
   AlertCircle,
-  CreditCard
+  CreditCard,
+  User
 } from 'lucide-react';
 import { CartItem, CustomerUser, DeliveryZone } from '../types';
 import { TranslationDictionary } from '../translations';
@@ -69,13 +70,21 @@ export const CartView: React.FC<CartViewProps> = ({
 }) => {
   const [couponInput, setCouponInput] = useState('');
 
-  // Romanian Delivery Address Form State
-  const [streetAddress, setStreetAddress] = useState(currentUser?.address || 'Strada Mihai Eminescu nr. 42');
-  const [buildingDetails, setBuildingDetails] = useState(currentUser?.buildingDetails || 'Bloc 12, Scara A, Ap. 14, Interfon 14');
-  const [customerPhone, setCustomerPhone] = useState(currentUser?.phone || '+40 722 456 789');
-  const [deliveryNote, setDeliveryNote] = useState('Am pregătit suma exactă în numerar. Vă rog sunați la interfon când ajungeți.');
+  // Romanian Delivery Address Form State (derived from authenticated user)
+  const [streetAddress, setStreetAddress] = useState(currentUser?.address || '');
+  const [buildingDetails, setBuildingDetails] = useState(currentUser?.buildingDetails || '');
+  const [customerPhone, setCustomerPhone] = useState(currentUser?.phone || '');
+  const [deliveryNote, setDeliveryNote] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'CASH_ON_DELIVERY' | 'CARD_ON_DELIVERY'>('CASH_ON_DELIVERY');
   const [formError, setFormError] = useState('');
+
+  useEffect(() => {
+    if (currentUser) {
+      if (currentUser.address) setStreetAddress(currentUser.address);
+      if (currentUser.buildingDetails) setBuildingDetails(currentUser.buildingDetails);
+      if (currentUser.phone) setCustomerPhone(currentUser.phone);
+    }
+  }, [currentUser]);
 
   const handleApply = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,12 +98,8 @@ export const CartView: React.FC<CartViewProps> = ({
       if (onOpenAuth) onOpenAuth();
       return;
     }
-    if (onNavigateCheckout) {
-      onNavigateCheckout();
-      return;
-    }
     if (!streetAddress.trim() || !customerPhone.trim()) {
-      setFormError('Please enter your complete delivery address and mobile phone number.');
+      setFormError('Please enter your complete delivery address and contact phone number.');
       return;
     }
     setFormError('');
@@ -338,7 +343,7 @@ export const CartView: React.FC<CartViewProps> = ({
                 }`}
               >
                 <h3 className="font-bold text-base uppercase tracking-wider pb-3 border-b border-[#15875D]/25 text-[#0A6847] dark:text-white">
-                  {t.checkoutTitle}
+                  {!currentUser ? 'Order Summary' : t.checkoutTitle}
                 </h3>
 
                 {formError && (
@@ -348,117 +353,153 @@ export const CartView: React.FC<CartViewProps> = ({
                   </div>
                 )}
 
-                {/* Delivery Address in Romania */}
-                <div className="space-y-3 text-xs font-semibold">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B8057] block">
-                    {t.shippingAddressTitle}
-                  </span>
-
-                  <div>
-                    <label className="block text-[11px] text-[#003D25] dark:text-zinc-300 mb-1 font-bold">
-                      {t.streetLabel}
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder={t.streetPlaceholder}
-                      value={streetAddress}
-                      onChange={(e) => setStreetAddress(e.target.value)}
-                      className="w-full bg-white dark:bg-zinc-900 border border-[#15875D]/40 rounded-lg px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#0A6847]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] text-[#003D25] dark:text-zinc-300 mb-1 font-bold">
-                      {t.buildingDetailsLabel}
-                    </label>
-                    <input
-                      type="text"
-                      placeholder={t.buildingPlaceholder}
-                      value={buildingDetails}
-                      onChange={(e) => setBuildingDetails(e.target.value)}
-                      className="w-full bg-white dark:bg-zinc-900 border border-[#15875D]/40 rounded-lg px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#0A6847]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] text-[#003D25] dark:text-zinc-300 mb-1 font-bold">
-                      {t.phoneLabel}
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder={t.phonePlaceholder}
-                      value={customerPhone}
-                      onChange={(e) => setCustomerPhone(e.target.value)}
-                      className="w-full bg-white dark:bg-zinc-900 border border-[#15875D]/40 rounded-lg px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#0A6847]"
-                    />
-                  </div>
-                </div>
-
-                {/* PAYMENT METHOD SELECTION: ONLY 2 OPTIONS (CASH ON DELIVERY & CARD ON DELIVERY) */}
-                <div className="space-y-2.5 pt-2 border-t border-[#15875D]/20">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B8057] block">
-                    {t.paymentMethodTitle}
-                  </span>
-
-                  {/* Option 1: Cash on Delivery */}
-                  <label
-                    onClick={() => setPaymentMethod('CASH_ON_DELIVERY')}
-                    className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition ${
-                      paymentMethod === 'CASH_ON_DELIVERY'
-                        ? 'border-[#0A6847] bg-white dark:bg-zinc-900 shadow-2xs ring-1 ring-[#0A6847]'
-                        : 'border-[#15875D]/30 bg-white/70 dark:bg-zinc-900/50 hover:bg-white'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      readOnly
-                      checked={paymentMethod === 'CASH_ON_DELIVERY'}
-                      className="accent-[#0A6847] mt-0.5 cursor-pointer"
-                    />
-                    <div className="space-y-0.5 flex-1">
-                      <div className="flex items-center gap-1.5 font-bold text-xs text-[#0A6847] dark:text-[#80F6C7]">
-                        <Banknote className="w-4 h-4 text-[#0A6847]" />
-                        <span>{t.codOptionTitle}</span>
-                        <span className="px-2 py-0.5 rounded bg-[#F8C519] text-[#664E00] text-[9px] font-bold">
-                          {t.recommendedTag}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-[#003D25] dark:text-zinc-300 font-medium">
-                        {t.codOptionDesc}
-                      </p>
+                {/* GUEST MODE: DO NOT SHOW ADDRESS OR PAYMENT INPUTS. ONLY SHOW SIGN-IN GATE */}
+                {!currentUser ? (
+                  <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-[#15875D]/30 shadow-xs space-y-2.5">
+                    <div className="flex items-center gap-2 text-[#0A6847] dark:text-[#80F6C7] font-bold text-xs">
+                      <Lock className="w-4 h-4 shrink-0 text-[#F96D26]" />
+                      <span>Sign In Required for Delivery</span>
                     </div>
-                  </label>
-
-                  {/* Option 2: Card on Delivery */}
-                  <label
-                    onClick={() => setPaymentMethod('CARD_ON_DELIVERY')}
-                    className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition ${
-                      paymentMethod === 'CARD_ON_DELIVERY'
-                        ? 'border-[#0A6847] bg-white dark:bg-zinc-900 shadow-2xs ring-1 ring-[#0A6847]'
-                        : 'border-[#15875D]/30 bg-white/70 dark:bg-zinc-900/50 hover:bg-white'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      readOnly
-                      checked={paymentMethod === 'CARD_ON_DELIVERY'}
-                      className="accent-[#0A6847] mt-0.5 cursor-pointer"
-                    />
-                    <div className="space-y-0.5 flex-1">
-                      <div className="flex items-center gap-1.5 font-bold text-xs text-[#0A6847] dark:text-[#80F6C7]">
-                        <CreditCard className="w-4 h-4 text-[#0A6847]" />
-                        <span>Card on Delivery (POS Mobil Curier)</span>
+                    <p className="text-[11px] text-slate-600 dark:text-zinc-300 leading-relaxed">
+                      You can add and review products freely in your cart. To enter your delivery address in Bucharest and complete your order, please sign in or create an account.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (onOpenAuth) onOpenAuth();
+                      }}
+                      className="w-full py-2.5 px-3 rounded-lg bg-[#F8C519] hover:bg-[#EEAB1E] text-[#664E00] font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition active:scale-95 cursor-pointer mt-1"
+                    >
+                      <User className="w-3.5 h-3.5 stroke-[2.2]" />
+                      <span>Sign In / Create Account</span>
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    {/* Signed-in user badge */}
+                    <div className="flex items-center justify-between p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-xs">
+                      <div className="flex items-center gap-2 text-[#0A6847] dark:text-emerald-300 font-semibold truncate">
+                        <User className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">{currentUser.name} ({currentUser.email})</span>
                       </div>
-                      <p className="text-[11px] text-[#003D25] dark:text-zinc-300 font-medium">
-                        Pay with contactless card or phone on courier's mobile POS terminal at your door.
-                      </p>
+                      <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 text-[10px] font-bold shrink-0">
+                        Verified
+                      </span>
                     </div>
-                  </label>
-                </div>
+
+                    {/* Delivery Address in Romania */}
+                    <div className="space-y-3 text-xs font-semibold">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B8057] block">
+                        {t.shippingAddressTitle}
+                      </span>
+
+                      <div>
+                        <label className="block text-[11px] text-[#003D25] dark:text-zinc-300 mb-1 font-bold">
+                          {t.streetLabel}
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder={t.streetPlaceholder}
+                          value={streetAddress}
+                          onChange={(e) => setStreetAddress(e.target.value)}
+                          className="w-full bg-white dark:bg-zinc-900 border border-[#15875D]/40 rounded-lg px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#0A6847]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] text-[#003D25] dark:text-zinc-300 mb-1 font-bold">
+                          {t.buildingDetailsLabel}
+                        </label>
+                        <input
+                          type="text"
+                          placeholder={t.buildingPlaceholder}
+                          value={buildingDetails}
+                          onChange={(e) => setBuildingDetails(e.target.value)}
+                          className="w-full bg-white dark:bg-zinc-900 border border-[#15875D]/40 rounded-lg px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#0A6847]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] text-[#003D25] dark:text-zinc-300 mb-1 font-bold">
+                          {t.phoneLabel}
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          placeholder={t.phonePlaceholder}
+                          value={customerPhone}
+                          onChange={(e) => setCustomerPhone(e.target.value)}
+                          className="w-full bg-white dark:bg-zinc-900 border border-[#15875D]/40 rounded-lg px-3 py-2 text-xs font-semibold focus:outline-none focus:border-[#0A6847]"
+                        />
+                      </div>
+                    </div>
+
+                    {/* PAYMENT METHOD SELECTION: ONLY 2 OPTIONS (CASH ON DELIVERY & CARD ON DELIVERY) */}
+                    <div className="space-y-2.5 pt-2 border-t border-[#15875D]/20">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B8057] block">
+                        {t.paymentMethodTitle}
+                      </span>
+
+                      {/* Option 1: Cash on Delivery */}
+                      <label
+                        onClick={() => setPaymentMethod('CASH_ON_DELIVERY')}
+                        className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition ${
+                          paymentMethod === 'CASH_ON_DELIVERY'
+                            ? 'border-[#0A6847] bg-white dark:bg-zinc-900 shadow-2xs ring-1 ring-[#0A6847]'
+                            : 'border-[#15875D]/30 bg-white/70 dark:bg-zinc-900/50 hover:bg-white'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          readOnly
+                          checked={paymentMethod === 'CASH_ON_DELIVERY'}
+                          className="accent-[#0A6847] mt-0.5 cursor-pointer"
+                        />
+                        <div className="space-y-0.5 flex-1">
+                          <div className="flex items-center gap-1.5 font-bold text-xs text-[#0A6847] dark:text-[#80F6C7]">
+                            <Banknote className="w-4 h-4 text-[#0A6847]" />
+                            <span>{t.codOptionTitle}</span>
+                            <span className="px-2 py-0.5 rounded bg-[#F8C519] text-[#664E00] text-[9px] font-bold">
+                              {t.recommendedTag}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-[#003D25] dark:text-zinc-300 font-medium">
+                            {t.codOptionDesc}
+                          </p>
+                        </div>
+                      </label>
+
+                      {/* Option 2: Card on Delivery */}
+                      <label
+                        onClick={() => setPaymentMethod('CARD_ON_DELIVERY')}
+                        className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition ${
+                          paymentMethod === 'CARD_ON_DELIVERY'
+                            ? 'border-[#0A6847] bg-white dark:bg-zinc-900 shadow-2xs ring-1 ring-[#0A6847]'
+                            : 'border-[#15875D]/30 bg-white/70 dark:bg-zinc-900/50 hover:bg-white'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          readOnly
+                          checked={paymentMethod === 'CARD_ON_DELIVERY'}
+                          className="accent-[#0A6847] mt-0.5 cursor-pointer"
+                        />
+                        <div className="space-y-0.5 flex-1">
+                          <div className="flex items-center gap-1.5 font-bold text-xs text-[#0A6847] dark:text-[#80F6C7]">
+                            <CreditCard className="w-4 h-4 text-[#0A6847]" />
+                            <span>Card on Delivery (POS Mobil Curier)</span>
+                          </div>
+                          <p className="text-[11px] text-[#003D25] dark:text-zinc-300 font-medium">
+                            Pay with contactless card or phone on courier's mobile POS terminal at your door.
+                          </p>
+                        </div>
+                      </label>
+                    </div>
+                  </>
+                )}
 
                 {/* Order Cost Breakdown */}
                 <div className="space-y-2 pt-2 border-t border-[#15875D]/20 text-xs font-semibold">
@@ -502,15 +543,25 @@ export const CartView: React.FC<CartViewProps> = ({
 
                 {/* Proceed to Checkout CTA */}
                 <button
+                  type="button"
                   onClick={handleProceedCheckout}
-                  className="w-full py-3.5 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-medium text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-98"
+                  className="w-full py-3.5 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-medium text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-98 cursor-pointer"
                 >
-                  <ShoppingCart className="w-4 h-4 text-[#F8C519]" />
-                  <span>
-                    {onNavigateCheckout
-                      ? `${t.checkoutPageTitle} (${totalAmount.toFixed(2)} lei) →`
-                      : `${t.placeOrderBtn} (${totalAmount.toFixed(2)} lei)`}
-                  </span>
+                  {!currentUser ? (
+                    <>
+                      <Lock className="w-4 h-4 text-[#F8C519]" />
+                      <span>Sign In to Complete Checkout ({totalAmount.toFixed(2)} lei) →</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="w-4 h-4 text-[#F8C519]" />
+                      <span>
+                        {onNavigateCheckout
+                          ? `${t.checkoutPageTitle} (${totalAmount.toFixed(2)} lei) →`
+                          : `${t.placeOrderBtn} (${totalAmount.toFixed(2)} lei)`}
+                      </span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
