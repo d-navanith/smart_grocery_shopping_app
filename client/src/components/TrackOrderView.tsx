@@ -149,21 +149,22 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
 
   return (
     <div className="w-full flex-1 bg-white dark:bg-[#0B0F0D] pb-16">
-      {/* 1. HEADER BANNER (MATCHING ATTACHMENT 2: CENTERED "Track Your Order") */}
+      {/* 1. HEADER BANNER (COLORS MATCHING ATTACHMENT 1) */}
       <div className="w-full bg-[#F4F9F6] dark:bg-[#121A16] border-b border-[#15875D]/15 py-10 sm:py-12 text-center">
         <div className="max-w-4xl mx-auto px-4">
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
-            {t.trackOrderTitle}
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
+            <span className="text-[#0A6847] dark:text-white">Track Your </span>
+            <span className="text-[#F96D26]">Order</span>
           </h1>
-          <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-slate-500 dark:text-zinc-400 mt-2.5">
+          <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold mt-2.5">
             <button
               onClick={onNavigateHome}
-              className="hover:text-[#0A6847] dark:hover:text-[#80F6C7] transition"
+              className="text-[#1B8057] dark:text-[#80F6C7] hover:underline"
             >
               {t.breadcrumbHome}
             </button>
-            <span>/</span>
-            <span className="text-[#0A6847] dark:text-[#80F6C7] font-semibold">
+            <span className="text-[#1B8057] dark:text-[#80F6C7]">/</span>
+            <span className="text-[#F96D26] font-bold">
               {t.trackOrderBreadcrumb}
             </span>
           </div>
