@@ -367,36 +367,15 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                           )}
                         </div>
 
-                        {/* Condition A: RIDER NOT VERIFIED YET (CALL BUTTON LOCKED) */}
+                        {/* If rider phone is not assigned yet: show clean courier & support hotline without locked warnings */}
                         {!isRiderCallEnabled ? (
-                          <div className="space-y-3">
-                            <div className="p-4 rounded-lg bg-white dark:bg-zinc-900 border border-[#15875D]/40 text-xs text-[#003D25] dark:text-amber-200 flex items-start gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#FFF4EE] border border-[#F96D26]/40 text-[#F96D26] flex items-center justify-center shrink-0 text-base">
-                                🔒
-                              </div>
-                              <div className="space-y-1">
-                                <p className="font-bold text-sm text-black dark:text-white">
-                                  {t.riderCallLockedWarningTitle}
-                                </p>
-                                <p className="leading-relaxed text-[#003D25] dark:text-zinc-300">
-                                  {t.riderCallLockedWarningDesc}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex flex-col sm:flex-row items-center gap-3">
-                              <button
-                                disabled
-                                className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-md bg-[#F2F7F4] dark:bg-zinc-700 text-slate-400 font-bold text-xs cursor-not-allowed border border-slate-300"
-                                title={t.riderCallLockedBtnTooltip}
-                              >
-                                <Lock className="w-4 h-4 text-[#F96D26]" />
-                                <span>{t.callRiderLockedButton}</span>
-                              </button>
-                              <span className="text-[11px] font-semibold text-[#1B8057] dark:text-[#80F6C7] text-center">
-                                {t.riderArrivingInMinutes}
-                              </span>
-                            </div>
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-600 dark:text-zinc-400 py-1">
+                            <span className="font-medium">
+                              Courier Partner: <strong className="text-black dark:text-white">{order.courierCompany || t.courierDefaultCompany}</strong>
+                            </span>
+                            <span className="text-[11px] text-slate-500 dark:text-zinc-400">
+                              Support Hotline: <a href="tel:+40721345678" className="text-[#0A6847] dark:text-[#80F6C7] font-bold hover:underline">+40 721 345 678</a>
+                            </span>
                           </div>
                         ) : (
                           /* Condition B: RIDER ARRIVED & ADMIN ENTERED MOBILE NUMBER */

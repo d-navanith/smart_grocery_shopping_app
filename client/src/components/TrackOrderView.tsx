@@ -2,12 +2,19 @@ import React, { useState } from 'react';
 import {
   Search,
   Phone,
-  ChevronRight,
-  AlertCircle,
-  Lock,
-  ArrowRight,
+  ClipboardList,
+  CheckCircle2,
+  Package,
+  Truck,
+  Home,
+  CheckCircle,
   PackageCheck,
-  CheckCircle
+  ShieldCheck,
+  Clock,
+  CreditCard,
+  MapPin,
+  ArrowRight,
+  Headphones
 } from 'lucide-react';
 import { ClientOrder } from '../types';
 import { TranslationDictionary } from '../translations';
@@ -22,11 +29,43 @@ interface TrackOrderViewProps {
   t: TranslationDictionary;
 }
 
+const getProductThumbnail = (title: string, customImage?: string): string => {
+  if (customImage) return customImage;
+  const clean = title.toLowerCase();
+  if (clean.includes('white') || clean.includes('samba') || clean.includes('kekulu')) return '/prod_white_rice.jpg';
+  if (clean.includes('red rice') || clean.includes('rathu')) return '/prod_red_rice.jpg';
+  if (clean.includes('brinjal') || clean.includes('eggplant') || clean.includes('wambatu')) return '/prod_brinjal.jpg';
+  if (clean.includes('dhal') || clean.includes('lentil') || clean.includes('parippu')) return '/prod_dhal.jpg';
+  if (clean.includes('okra') || clean.includes('ladies') || clean.includes('finger') || clean.includes('bandakka')) return '/prod_okra.jpg';
+  if (clean.includes('pumpkin') || clean.includes('wattakka')) return '/prod_pumpkin.jpg';
+  if (clean.includes('tea') || clean.includes('dilmah')) return '/prod_tea.jpg';
+  if (clean.includes('roast') || clean.includes('paan') || clean.includes('bread')) return '/prod_roast_paan_1793528122873.jpg';
+  if (clean.includes('cream cracker') || clean.includes('biscuit') || clean.includes('munchee')) return '/prod_biscuits_1793528101280.jpg';
+  if (clean.includes('coconut') || clean.includes('pol')) return '/prod_coconut_1793528053012.jpg';
+  if (clean.includes('mango') || clean.includes('amba')) return '/prod_mango_1793528023394.jpg';
+  if (clean.includes('chilli') || clean.includes('miris')) return '/prod_chillies_1793528006246.jpg';
+  if (clean.includes('cinnamon') || clean.includes('kurundu')) return '/prod_cinnamon_1793528038262.jpg';
+  if (clean.includes('tomato')) return '/figma_prod_tomatoes.png';
+  if (clean.includes('onion') || clean.includes('shallot')) return '/figma_prod_shallots.png';
+  return '/figma_prod_rice_sack.png';
+};
+
+const extractWeightLabel = (title: string, defaultUnit?: string): string => {
+  const match = title.match(/\(([^)]*(?:kg|g|loaf|pack|pcs|bunch|tin)[^)]*)\)/i);
+  if (match) {
+    const cleaned = match[1].replace(/[\u0D80-\u0DFF]/g, '').replace(/[-/]/g, '').trim();
+    if (cleaned) return cleaned;
+  }
+  if (defaultUnit) return defaultUnit;
+  return '500 g';
+};
+
 export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
   orders,
   initialOrderNumber = '',
   onConfirmReceived,
   onNavigateHome,
+  onNavigateShop,
   isDarkMode,
   t
 }) => {
@@ -55,70 +94,112 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
     setSearchedOrder(found || null);
   };
 
-  const isRiderCallEnabled = Boolean(
-    searchedOrder &&
-      searchedOrder.riderVerifiedByAdmin &&
-      searchedOrder.riderPhone &&
-      searchedOrder.riderPhone.trim().length > 5
-  );
+  // Stepper milestone status calculation
+  const getStepProgress = (order: ClientOrder) => {
+    switch (order.status) {
+      case 'PENDING':
+        return 0; // Step 1: Order Placed
+      case 'PROCESSING':
+        return 2; // Step 3: In Progress (Placed, Accepted, In Progress)
+      case 'ON_THE_WAY':
+        return 3; // Step 4: On the Way
+      case 'DELIVERED':
+        return 4; // Step 5: Delivered
+      case 'CANCELLED':
+      default:
+        return 0;
+    }
+  };
+
+  const currentStepIndex = searchedOrder ? getStepProgress(searchedOrder) : 0;
+  const progressPercent = (currentStepIndex / 4) * 100;
+
+  const milestones = [
+    {
+      id: 'placed',
+      title: 'Order Placed',
+      Icon: ClipboardList,
+      time: searchedOrder?.placedAt || 'Today 10:15 AM'
+    },
+    {
+      id: 'accepted',
+      title: 'Accepted',
+      Icon: CheckCircle2,
+      time: 'Order Confirmed'
+    },
+    {
+      id: 'in_progress',
+      title: 'In Progress',
+      Icon: Package,
+      time: searchedOrder?.status === 'PENDING' ? 'Expected today' : 'Packing in Store'
+    },
+    {
+      id: 'on_the_way',
+      title: 'On the Way',
+      Icon: Truck,
+      time: searchedOrder?.status === 'ON_THE_WAY' ? 'ETA ~25 min' : 'Expected today'
+    },
+    {
+      id: 'delivered',
+      title: 'Delivered',
+      Icon: Home,
+      time: searchedOrder?.status === 'DELIVERED' ? 'Delivered' : 'Expected today'
+    }
+  ];
 
   return (
-    <div className="w-full flex-1 bg-white dark:bg-[#0D1210] pb-16">
-      {/* 1. FIGMA PAGE HERO BAND */}
-      <div className="w-full bg-[#F2F7F4] dark:bg-[#121A16] border-b border-[#15875D]/20 py-7">
-        <div className="max-w-[1290px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <nav className="flex items-center gap-2 text-xs font-semibold text-[#1B8057] mb-1.5">
-              <button onClick={onNavigateHome} className="hover:underline">
-                {t.breadcrumbHome}
-              </button>
-              <ChevronRight className="w-3.5 h-3.5" />
-              <span className="text-[#F96D26] font-bold">{t.trackOrderTitle}</span>
-            </nav>
-            <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight">
-              <span className="text-[#0A6847] dark:text-white">Track Your </span>
-              <span className="text-[#F96D26]">Order</span>
-            </h1>
-          </div>
-
-          <div className="bg-[#F0FAF3] dark:bg-zinc-900 border border-[#15875D] rounded-lg px-4 py-2.5 flex items-center gap-3">
-            <img src="/figma_icon_delivery.png" alt="" className="w-8 h-8 object-contain shrink-0" />
-            <div className="text-xs">
-              <span className="font-bold text-[#1B8057] dark:text-[#80F6C7] block">Live Bucharest & RO Dispatch</span>
-              <span className="text-[#003D25] dark:text-zinc-300 text-[11px]">{t.trackOrderSubtitle}</span>
-            </div>
+    <div className="w-full flex-1 bg-white dark:bg-[#0B0F0D] pb-16">
+      {/* 1. HEADER BANNER (MATCHING ATTACHMENT 2: CENTERED "Track Your Order") */}
+      <div className="w-full bg-[#F4F9F6] dark:bg-[#121A16] border-b border-[#15875D]/15 py-10 sm:py-12 text-center">
+        <div className="max-w-4xl mx-auto px-4">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
+            {t.trackOrderTitle}
+          </h1>
+          <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-slate-500 dark:text-zinc-400 mt-2.5">
+            <button
+              onClick={onNavigateHome}
+              className="hover:text-[#0A6847] dark:hover:text-[#80F6C7] transition"
+            >
+              {t.breadcrumbHome}
+            </button>
+            <span>/</span>
+            <span className="text-[#0A6847] dark:text-[#80F6C7] font-semibold">
+              {t.trackOrderBreadcrumb}
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 space-y-8">
-        {/* 2. SEARCH & LOOKUP CARD (FIGMA GREEN BANNER) */}
-        <div className="p-6 sm:p-8 rounded-xl bg-[#1B8057] text-white shadow-md space-y-4 border-2 border-[#15875D]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6 space-y-6">
+        {/* 2. SEARCH BAR & QUICK TRACK CHIPS */}
+        <div className="bg-white dark:bg-[#141C18] rounded-xl border border-slate-200 dark:border-zinc-800 p-4 shadow-xs">
           <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2.5">
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-[#80F6C7] absolute left-4 top-3.5" />
+              <Search className="w-4 h-4 text-slate-400 dark:text-zinc-500 absolute left-3.5 top-3.5" />
               <input
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder={t.trackOrderSearchPlaceholder}
-                className="w-full pl-11 pr-4 py-3 rounded-lg bg-[#39906D] border border-white/80 text-white text-xs sm:text-sm font-medium placeholder-[#80F6C7] focus:outline-none focus:ring-2 focus:ring-[#F8C519]"
+                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-900 text-slate-900 dark:text-white text-xs sm:text-sm focus:outline-none focus:border-[#0A6847]"
               />
             </div>
             <button
               type="submit"
-              className="px-8 py-3 rounded-lg bg-[#F8C519] hover:bg-[#EEAB1E] text-[#664E00] border border-[#C08512] font-bold text-xs sm:text-sm shadow-sm transition active:scale-95 shrink-0 flex items-center justify-center gap-2"
+              className="px-6 py-2.5 rounded-lg bg-[#0A6847] hover:bg-[#075238] text-white font-bold text-xs sm:text-sm transition active:scale-95 shrink-0 flex items-center justify-center gap-2 shadow-xs"
             >
               <span>{t.trackOrderBtn}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
-          {/* Quick Track Chips for Customer Recent Orders */}
+          {/* Quick Track Chips for customer's available orders */}
           {orders.length > 0 && (
-            <div className="flex items-center gap-2 flex-wrap pt-1 text-xs">
-              <span className="text-[#80F6C7] font-semibold text-[11px]">{t.trackOrderQuickTrack}:</span>
-              {orders.slice(0, 3).map(o => (
+            <div className="flex items-center gap-2 flex-wrap pt-3 text-xs border-t border-slate-100 dark:border-zinc-800/80 mt-3">
+              <span className="text-slate-500 dark:text-zinc-400 font-semibold text-[11px]">
+                {t.trackOrderQuickTrack}:
+              </span>
+              {orders.slice(0, 3).map((o) => (
                 <button
                   key={o.id}
                   type="button"
@@ -127,228 +208,344 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
                     setSearchedOrder(o);
                     setHasSearched(true);
                   }}
-                  className="px-3 py-1 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-mono text-xs border border-white/40 transition"
+                  className={`px-3 py-1 rounded-md text-xs font-mono font-bold transition border ${
+                    searchedOrder?.orderNumber === o.orderNumber
+                      ? 'bg-[#0A6847] text-white border-[#0A6847]'
+                      : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-700 hover:bg-slate-200'
+                  }`}
                 >
-                  #{o.orderNumber} ({o.status})
+                  #{o.orderNumber} ({o.status.replace('_', ' ')})
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        {/* 3. TRACKING RESULTS */}
-        {hasSearched && !searchedOrder ? (
-          <div className="p-12 text-center rounded-xl bg-[#F0FAF3] dark:bg-zinc-900 border border-[#15875D] space-y-3">
-            <AlertCircle className="w-12 h-12 text-[#F96D26] mx-auto" />
-            <h3 className="text-lg font-bold text-[#003D25] dark:text-white">
+        {/* 3. ORDER STATUS CARD (FAITHFUL TO ATTACHMENT 2) */}
+        {!searchedOrder ? (
+          <div className="p-12 text-center rounded-2xl bg-[#F8FAF9] dark:bg-[#121A16] border border-slate-200 dark:border-zinc-800 space-y-3">
+            <h3 className="text-lg font-bold text-slate-800 dark:text-white">
               {t.trackOrderNotFound}
             </h3>
-            <p className="text-xs text-[#1B8057] dark:text-zinc-400 max-w-md mx-auto">
+            <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-md mx-auto">
               {t.trackOrderNotFoundDesc}
             </p>
           </div>
-        ) : searchedOrder ? (
-          <div className="rounded-xl bg-white dark:bg-zinc-900 border-2 border-[#15875D] shadow-md overflow-hidden space-y-6 p-6">
-            {/* Order Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-[#15875D]/20">
+        ) : (
+          <div className="bg-white dark:bg-[#121A16] rounded-2xl border border-slate-200 dark:border-zinc-800 shadow-sm p-6 sm:p-8 space-y-8">
+            {/* Header: "Order Status" & "Order ID : #SBX..." */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-zinc-800 pb-5">
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-md bg-[#0A6847] text-white font-bold text-xs uppercase font-mono">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+                  Order Status
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400 mt-0.5">
+                  Order ID :{' '}
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">
                     #{searchedOrder.orderNumber}
                   </span>
-                  <span className="text-xs font-semibold text-[#1B8057]">
-                    • {searchedOrder.placedAt.replace(/^(Astăzi|Today|අද)/i, t.todayLabel)}
-                  </span>
-                </div>
-                <h3 className="text-lg font-bold text-black dark:text-white mt-1">
-                  {t.expressDeliveryTo} {searchedOrder.deliveryZone || 'București Sector 1'}
-                </h3>
+                </p>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="px-3 py-1 rounded-md bg-[#F8C519] text-[#664E00] font-bold text-xs border border-[#C08512]/40">
-                  {searchedOrder.paymentMethod}
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#E8F5EE] dark:bg-[#0E2E20] text-[#0A6847] dark:text-[#80F6C7] border border-[#15875D]/30">
+                  {searchedOrder.status.replace('_', ' ')}
                 </span>
-                <span className="px-3 py-1 rounded-md bg-[#F0FAF3] text-[#0A6847] font-bold text-xs border border-[#15875D]">
-                  {searchedOrder.status}
+                <span className="text-xs font-medium text-slate-400 dark:text-zinc-500">
+                  • {searchedOrder.placedAt}
                 </span>
               </div>
             </div>
 
-            {/* 5-Step Fulfillment Stepper */}
-            <div className="space-y-3">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7] block">
-                {t.realtimeStageTrackerTitle}
-              </span>
+            {/* Progress Stepper (Timeline with Icons, Progress Line & Checkmarks) */}
+            <div className="py-2">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 sm:gap-2 text-center">
+                {milestones.map((m, idx) => {
+                  const isDone = idx <= currentStepIndex;
+                  const isCurrent = idx === currentStepIndex;
 
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-xs">
-                <div className="p-3.5 rounded-lg bg-[#F0FAF3] dark:bg-[#0E2E20] border border-[#15875D] font-bold">
-                  <span className="text-[10px] uppercase font-bold text-[#1B8057] dark:text-emerald-400">Step 1</span>
-                  <p className="font-bold text-black dark:text-white mt-1">📋 {t.step1OrderPlaced}</p>
-                  <span className="text-[10px] text-[#003D25] dark:text-zinc-300 font-medium block mt-0.5">{t.step1OrderPlacedSub}</span>
-                </div>
+                  return (
+                    <div
+                      key={m.id}
+                      className="flex flex-col items-center"
+                    >
+                      {/* Top Icon Box */}
+                      <div
+                        className={`w-12 h-12 rounded-xl flex items-center justify-center transition mb-2 shadow-xs ${
+                          isDone
+                            ? 'text-[#0A6847] dark:text-[#80F6C7] bg-[#E8F5EE] dark:bg-[#0E2E20]'
+                            : 'text-slate-400 dark:text-zinc-500 bg-slate-100 dark:bg-zinc-800'
+                        }`}
+                      >
+                        <m.Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                      </div>
 
-                <div className="p-3.5 rounded-lg bg-[#F0FAF3] dark:bg-[#0E2E20] border border-[#15875D] font-bold">
-                  <span className="text-[10px] uppercase font-bold text-[#1B8057] dark:text-emerald-400">Step 2</span>
-                  <p className="font-bold text-black dark:text-white mt-1">📦 {t.step2Packing}</p>
-                  <span className="text-[10px] text-[#003D25] dark:text-zinc-300 font-medium block mt-0.5">{t.step2PackingSub}</span>
-                </div>
+                      {/* Milestone Title */}
+                      <span
+                        className={`text-xs font-bold leading-tight h-7 flex items-center justify-center ${
+                          isDone
+                            ? 'text-slate-900 dark:text-white'
+                            : 'text-slate-400 dark:text-zinc-500'
+                        }`}
+                      >
+                        {m.title}
+                      </span>
 
-                <div className="p-3.5 rounded-lg bg-[#F8C519]/25 dark:bg-[#3D2D00] border border-[#C08512] font-bold">
-                  <span className="text-[10px] uppercase font-bold text-[#664E00] dark:text-amber-300">Step 3</span>
-                  <p className="font-bold text-black dark:text-white mt-1">📞 {t.step3DispatchCall}</p>
-                  <span className="text-[10px] text-[#664E00] dark:text-amber-200 font-medium block mt-0.5">{t.step3DispatchCallSub}</span>
-                </div>
+                      {/* Checkmark Node with segment-based connecting lines */}
+                      <div className="w-full flex items-center justify-center relative my-2">
+                        {/* Left half connector line */}
+                        <div
+                          className={`hidden sm:block absolute left-0 right-1/2 h-0.5 ${
+                            idx === 0
+                              ? 'invisible'
+                              : isDone
+                              ? 'bg-[#0A6847]'
+                              : 'bg-slate-200 dark:bg-zinc-700'
+                          }`}
+                        />
+                        {/* Right half connector line */}
+                        <div
+                          className={`hidden sm:block absolute left-1/2 right-0 h-0.5 ${
+                            idx === milestones.length - 1
+                              ? 'invisible'
+                              : idx < currentStepIndex
+                              ? 'bg-[#0A6847]'
+                              : 'bg-slate-200 dark:bg-zinc-700'
+                          }`}
+                        />
 
-                <div
-                  className={`p-3.5 rounded-lg border font-bold ${
-                    isRiderCallEnabled
-                      ? 'bg-[#F0FAF3] dark:bg-[#0E2E20] border-[#15875D] text-black dark:text-white'
-                      : 'bg-[#F2F7F4] dark:bg-zinc-800/90 border-slate-200 dark:border-zinc-700 text-slate-500 dark:text-zinc-400'
-                  }`}
-                >
-                  <span className={`text-[10px] uppercase font-bold ${isRiderCallEnabled ? 'text-[#1B8057] dark:text-emerald-400' : 'text-slate-400 dark:text-zinc-500'}`}>Step 4</span>
-                  <p className={`font-bold mt-1 ${isRiderCallEnabled ? 'text-black dark:text-white' : 'text-slate-500 dark:text-zinc-400'}`}>
-                    {isRiderCallEnabled ? '🛡️ Rider Verified' : '🔒 Verification'}
-                  </p>
-                  <span className={`text-[10px] font-medium block mt-0.5 ${isRiderCallEnabled ? 'text-[#003D25] dark:text-zinc-300' : 'text-slate-400 dark:text-zinc-500'}`}>
-                    {isRiderCallEnabled ? t.step4RiderConfirmedSub : t.step4RiderWaitingSub}
-                  </span>
-                </div>
+                        {/* Node Circle */}
+                        <div
+                          className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold relative z-10 transition ${
+                            isDone
+                              ? 'bg-[#0A6847] text-white shadow-xs'
+                              : 'bg-white dark:bg-zinc-900 border-2 border-slate-300 dark:border-zinc-700 text-transparent'
+                          } ${isCurrent ? 'ring-4 ring-[#0A6847]/20 animate-pulse' : ''}`}
+                        >
+                          ✓
+                        </div>
+                      </div>
 
-                <div
-                  className={`p-3.5 rounded-lg border font-bold ${
-                    searchedOrder.status === 'ON_THE_WAY'
-                      ? 'bg-[#0A6847] text-white border-[#0A6847] shadow-sm'
-                      : 'bg-[#F2F7F4] dark:bg-zinc-800/90 border-slate-200 dark:border-zinc-700 text-slate-500 dark:text-zinc-400'
-                  }`}
-                >
-                  <span className={`text-[10px] uppercase font-bold ${searchedOrder.status === 'ON_THE_WAY' ? 'text-emerald-200' : 'text-slate-400 dark:text-zinc-500'}`}>Step 5</span>
-                  <p className={`font-bold mt-1 ${searchedOrder.status === 'ON_THE_WAY' ? 'text-white' : 'text-slate-500 dark:text-zinc-400'}`}>🛵 {t.step5OnTheWay}</p>
-                  <span className={`text-[10px] font-medium block mt-0.5 ${searchedOrder.status === 'ON_THE_WAY' ? 'text-emerald-100' : 'text-slate-400 dark:text-zinc-500'}`}>{t.step5EtaPrefix} ~25 min</span>
-                </div>
+                      {/* Timestamp / Status below */}
+                      <span className="text-[11px] text-slate-500 dark:text-zinc-400 font-medium leading-tight max-w-[120px]">
+                        {m.time}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Courier & Rider Direct Call Verification Card */}
-            <div className="p-5 rounded-xl bg-[#F0FAF3] dark:bg-[#0E2E20] border border-[#15875D] space-y-4">
-              <div className="flex items-center justify-between border-b border-[#15875D]/20 pb-3">
-                <div className="flex items-center gap-3">
-                  <img src="/figma_icon_delivery.png" alt="" className="w-10 h-10 object-contain shrink-0" />
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#1B8057] dark:text-emerald-400">
-                      {t.courierPartnerDirectContact}
-                    </span>
-                    <h4 className="font-bold text-sm text-black dark:text-white">
-                      {searchedOrder.courierCompany || 'Glovo Express Bucharest'}
-                    </h4>
-                  </div>
-                </div>
-                <span
-                  className={`px-2.5 py-1 rounded-md text-xs font-bold ${
-                    isRiderCallEnabled
-                      ? 'bg-[#0A6847] text-white'
-                      : 'bg-[#F8C519] text-[#664E00] border border-[#C08512]/40'
-                  }`}
-                >
-                  {isRiderCallEnabled ? '✓ Rider Verified' : t.riderAllocatingBadge}
-                </span>
-              </div>
+            {/* Products Section (Clean List Matching Attachment 2) */}
+            <div className="border-t border-slate-100 dark:border-zinc-800 pt-6">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-4">
+                Products
+              </h3>
 
-              {/* Direct Call Button (Locked vs Unlocked) */}
-              {!isRiderCallEnabled ? (
-                <div className="p-4 rounded-lg bg-white dark:bg-zinc-900 border border-[#15875D]/40 text-xs space-y-2">
-                  <div className="flex items-center gap-2 font-bold text-[#003D25] dark:text-amber-200">
-                    <Lock className="w-4 h-4 text-[#F96D26]" />
-                    <span>{t.riderCallLockedWarningTitle}</span>
-                  </div>
-                  <p className="text-[11px] text-[#003D25] dark:text-zinc-300 leading-relaxed">
-                    {t.riderCallLockedWarningDesc}
-                  </p>
-                  <button
-                    disabled
-                    className="w-full py-3 rounded-md bg-[#F2F7F4] dark:bg-zinc-800 text-slate-400 text-xs font-bold cursor-not-allowed flex items-center justify-center gap-2 border border-slate-200"
-                  >
-                    <Lock className="w-3.5 h-3.5 text-[#F96D26]" />
-                    <span>{t.riderCallLockedBtnTooltip}</span>
-                  </button>
-                </div>
-              ) : (
-                <div className="p-4 rounded-lg bg-white dark:bg-zinc-900 border border-[#15875D] space-y-3">
-                  <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="divide-y divide-slate-100 dark:divide-zinc-800/80">
+                {searchedOrder.items.map((item, idx) => {
+                  const title = typeof item === 'string' ? item : item.productTitle;
+                  const qty = typeof item === 'string' ? 1 : item.quantity;
+                  const price = typeof item === 'string' ? 0 : item.price;
+                  const img = getProductThumbnail(
+                    title,
+                    typeof item === 'object' ? item.imageUrl : undefined
+                  );
+                  const weight = extractWeightLabel(
+                    title,
+                    typeof item === 'object' ? item.unit : undefined
+                  );
+
+                  return (
+                    <div
+                      key={idx}
+                      className="py-4 first:pt-0 last:pb-0 flex items-center justify-between gap-4"
+                    >
+                      <div className="flex items-center gap-3.5 sm:gap-4">
+                        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-[#F8FAF9] dark:bg-zinc-800/80 border border-slate-100 dark:border-zinc-700/60 p-1.5 flex items-center justify-center shrink-0">
+                          <img
+                            src={img}
+                            alt={title}
+                            className="max-w-full max-h-full object-contain"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/figma_prod_rice_sack.png';
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white line-clamp-1">
+                            {title}
+                          </h4>
+                          <p className="text-xs text-slate-500 dark:text-zinc-400 font-medium mt-0.5">
+                            {weight} | {qty} Qty
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <span className="font-mono font-bold text-sm sm:text-base text-slate-900 dark:text-white">
+                          {(price * qty).toFixed(2)} lei
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Clean Contact Details & Order Summary (No Locked Warning!) */}
+            <div className="border-t border-slate-100 dark:border-zinc-800 pt-6 space-y-4">
+              {/* Only show direct contact if available/needed */}
+              {searchedOrder.riderPhone ? (
+                <div className="rounded-xl p-4 bg-[#F0FAF3] dark:bg-[#0E2E20] border border-[#15875D] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-[#0A6847] text-white flex items-center justify-center text-xl shrink-0">
+                      🛵
+                    </div>
                     <div>
-                      <h5 className="font-bold text-xs text-black dark:text-white">
-                        {searchedOrder.riderName}
+                      <h5 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                        {searchedOrder.riderName || 'Courier Rider'} ({searchedOrder.courierCompany || 'Glovo Express'})
                       </h5>
-                      <p className="text-xs font-mono font-bold text-[#0A6847] dark:text-[#80F6C7]">
-                        {t.riderDirectMobileLabel} <strong>{searchedOrder.riderPhone}</strong>
+                      <p className="text-xs font-mono font-bold text-[#0A6847] dark:text-[#80F6C7] mt-0.5">
+                        Direct Mobile: {searchedOrder.riderPhone}
                       </p>
                     </div>
-                    <a
-                      href={`tel:${searchedOrder.riderPhone}`}
-                      className="px-6 py-3 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-semibold text-xs shadow-sm flex items-center gap-2 transition active:scale-95"
-                    >
-                      <Phone className="w-4 h-4 text-[#F8C519]" />
-                      <span>
-                        {t.callRiderButton}: {searchedOrder.riderPhone}
-                      </span>
-                    </a>
+                  </div>
+
+                  <a
+                    href={`tel:${searchedOrder.riderPhone}`}
+                    className="px-5 py-2.5 rounded-lg bg-[#0A6847] hover:bg-[#075238] text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition active:scale-95"
+                  >
+                    <Phone className="w-4 h-4 text-[#F8C519]" />
+                    <span>Call Rider</span>
+                  </a>
+                </div>
+              ) : (
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-600 dark:text-zinc-400 py-1">
+                  <div className="flex items-center gap-2">
+                    <Truck className="w-4 h-4 text-[#0A6847] dark:text-[#80F6C7]" />
+                    <span>
+                      Courier: <strong>{searchedOrder.courierCompany || 'Glovo Express Bucharest'}</strong>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Headphones className="w-4 h-4 text-[#0A6847] dark:text-[#80F6C7]" />
+                    <span>
+                      Support Hotline:{' '}
+                      <a
+                        href="tel:+40721345678"
+                        className="font-bold text-[#0A6847] dark:text-[#80F6C7] hover:underline"
+                      >
+                        +40 721 345 678
+                      </a>
+                    </span>
                   </div>
                 </div>
               )}
-            </div>
 
-            {/* Cash on Delivery Notice */}
-            <div className="p-4 rounded-xl bg-[#F8C519]/20 border border-[#C08512] text-xs flex justify-between items-center flex-wrap gap-2">
-              <div className="flex items-center gap-3">
-                <img src="/figma_icon_cod.png" alt="" className="w-9 h-9 object-contain shrink-0" />
-                <div>
-                  <p className="font-bold text-black dark:text-white">
-                    {t.cashAmountToPrepare}{' '}
-                    <span className="text-[#0A6847] dark:text-[#80F6C7] text-sm font-extrabold">
-                      {searchedOrder.totalAmount.toFixed(2)} lei
-                    </span>
-                  </p>
-                  <span className="text-[10px] text-[#664E00] dark:text-amber-300">
-                    {t.cashOnDeliveryExactAmountNotice}
-                  </span>
-                </div>
-              </div>
-              <span className="px-3 py-1 rounded bg-[#F8C519] text-[#664E00] font-bold text-xs border border-[#C08512]/40">
-                {t.cashOnDeliveryPaymentTag}
-              </span>
-            </div>
-
-            {/* Customer Confirm Received Button (When order is active or out for delivery) */}
-            {searchedOrder.status !== 'DELIVERED' && searchedOrder.status !== 'CANCELLED' && onConfirmReceived && (
-              <div className={`p-4 rounded-xl border-2 border-[#15875D] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs ${
-                isDarkMode ? 'bg-[#0E2E20]' : 'bg-gradient-to-r from-[#F0FAF3] to-[#F2F7F4]'
-              }`}>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#0A6847] text-white flex items-center justify-center shrink-0">
-                    <PackageCheck className="w-5 h-5 text-[#F8C519]" />
-                  </div>
+              {/* Order Delivery & Payment Info */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-700/60 flex items-start gap-2.5">
+                  <MapPin className="w-4 h-4 text-[#0A6847] dark:text-[#80F6C7] shrink-0 mt-0.5" />
                   <div>
-                    <h5 className="font-bold text-xs text-black dark:text-white">
-                      Did the rider hand over your parcel?
-                    </h5>
-                    <p className="text-[11px] text-[#1B8057] dark:text-zinc-300">
-                      Confirm below once you have inspected your grocery parcel and paid the courier.
+                    <span className="font-bold text-slate-700 dark:text-zinc-300">Delivery Address:</span>
+                    <p className="text-slate-900 dark:text-white font-semibold mt-0.5">
+                      {searchedOrder.address}
                     </p>
                   </div>
                 </div>
 
-                <button
-                  onClick={() => onConfirmReceived(searchedOrder.id || searchedOrder.orderNumber)}
-                  className="px-5 py-2.5 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-semibold text-xs shadow-sm flex items-center justify-center gap-2 transition active:scale-95 shrink-0"
-                >
-                  <CheckCircle className="w-4 h-4 text-[#F8C519]" />
-                  <span>{t.confirmParcelReceivedBtn}</span>
-                </button>
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-700/60 flex items-center justify-between gap-2.5">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-[#0A6847] dark:text-[#80F6C7] shrink-0" />
+                    <div>
+                      <span className="font-bold text-slate-700 dark:text-zinc-300">Payment:</span>
+                      <p className="text-slate-900 dark:text-white font-semibold">
+                        Cash on Delivery
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[10px] text-slate-500 dark:text-zinc-400 block font-bold uppercase">Total Due:</span>
+                    <span className="font-mono font-bold text-base text-[#0A6847] dark:text-[#80F6C7]">
+                      {searchedOrder.totalAmount.toFixed(2)} lei
+                    </span>
+                  </div>
+                </div>
               </div>
-            )}
+
+              {/* Customer "Confirm Parcel Received" Button */}
+              {searchedOrder.status !== 'DELIVERED' && searchedOrder.status !== 'CANCELLED' && onConfirmReceived && (
+                <div className="p-4 rounded-xl border border-[#15875D] bg-[#F0FAF3] dark:bg-[#0E2E20] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs mt-3">
+                  <div className="flex items-center gap-3">
+                    <PackageCheck className="w-5 h-5 text-[#0A6847] dark:text-[#80F6C7] shrink-0" />
+                    <div>
+                      <h5 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                        Received your grocery delivery?
+                      </h5>
+                      <p className="text-xs text-slate-600 dark:text-zinc-300">
+                        Confirm once you have checked your parcel and handed payment to the rider.
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => onConfirmReceived(searchedOrder.id || searchedOrder.orderNumber)}
+                    className="px-5 py-2.5 rounded-lg bg-[#0A6847] hover:bg-[#075238] text-white font-semibold text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow-sm shrink-0 cursor-pointer"
+                  >
+                    <CheckCircle className="w-4 h-4 text-[#F8C519]" />
+                    <span>Confirm Parcel Received</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        ) : null}
+        )}
+
+        {/* 4. THREE VALUE CARDS (EXACTLY MATCHING ATTACHMENT 2 BOTTOM BAR) */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
+          <div className="flex items-center gap-3.5 p-4 rounded-xl bg-white dark:bg-[#121A16] border border-slate-200 dark:border-zinc-800">
+            <div className="w-10 h-10 rounded-full bg-[#E8F5EE] dark:bg-[#0E2E20] flex items-center justify-center text-[#0A6847] dark:text-[#80F6C7] shrink-0 text-xl">
+              📦
+            </div>
+            <div>
+              <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                Free Shipping
+              </h4>
+              <p className="text-[11px] text-slate-500 dark:text-zinc-400">
+                Free shipping for order above 250 lei
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3.5 p-4 rounded-xl bg-white dark:bg-[#121A16] border border-slate-200 dark:border-zinc-800">
+            <div className="w-10 h-10 rounded-full bg-[#E8F5EE] dark:bg-[#0E2E20] flex items-center justify-center text-[#0A6847] dark:text-[#80F6C7] shrink-0 text-xl">
+              💳
+            </div>
+            <div>
+              <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                Flexible Payment
+              </h4>
+              <p className="text-[11px] text-slate-500 dark:text-zinc-400">
+                Cash on delivery & secure options
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3.5 p-4 rounded-xl bg-white dark:bg-[#121A16] border border-slate-200 dark:border-zinc-800">
+            <div className="w-10 h-10 rounded-full bg-[#E8F5EE] dark:bg-[#0E2E20] flex items-center justify-center text-[#0A6847] dark:text-[#80F6C7] shrink-0 text-xl">
+              🎧
+            </div>
+            <div>
+              <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                24×7 Support
+              </h4>
+              <p className="text-[11px] text-slate-500 dark:text-zinc-400">
+                We support online all days in Bucharest
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
