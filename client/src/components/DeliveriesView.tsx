@@ -16,7 +16,9 @@ interface DeliveriesViewProps {
   orders: ClientOrder[];
   onReorder: (order: ClientOrder) => void;
   onConfirmReceived?: (orderIdOrNumber: string) => void;
+  onConfirmCallReceived?: (orderIdOrNumber: string) => void;
   onNavigateShop: () => void;
+  onNavigateHome?: () => void;
   isDarkMode: boolean;
   t: TranslationDictionary;
 }
@@ -25,7 +27,9 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
   orders,
   onReorder,
   onConfirmReceived,
+  onConfirmCallReceived,
   onNavigateShop,
+  onNavigateHome,
   isDarkMode,
   t
 }) => {
@@ -54,13 +58,20 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
         <div className="max-w-[1290px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold text-[#1B8057] dark:text-[#80F6C7] mb-1.5">
-              <span onClick={onNavigateShop} className="cursor-pointer hover:underline">
+              <span onClick={onNavigateHome || onNavigateShop} className="cursor-pointer hover:underline">
                 {t.tabHome}
               </span>
               <ChevronRight className="w-3.5 h-3.5" />
               <span className="text-[#F96D26] font-bold">{t.tabDeliveries}</span>
             </div>
             <div className="flex items-center gap-3 flex-wrap">
+              <button
+                type="button"
+                onClick={onNavigateShop}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#15875D]/40 bg-white dark:bg-zinc-800 text-xs font-bold text-[#0A6847] dark:text-[#80F6C7] hover:bg-[#E8F5EE] transition cursor-pointer"
+              >
+                ← Back to Shopping
+              </button>
               <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight">
                 <span className="text-[#0A6847] dark:text-white">
                   {t.tabDeliveries.split(' ')[0]}{' '}
@@ -74,13 +85,13 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
               </span>
             </div>
             <p className="text-xs text-[#003D25] dark:text-zinc-400 mt-1 max-w-2xl">
-              {t.adminVerificationNotice}
+              Track your active grocery deliveries in real time with our live 4-stage fulfillment updates.
             </p>
           </div>
 
           <button
             onClick={onNavigateShop}
-            className="self-start md:self-auto flex items-center gap-2 px-5 py-2.5 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-medium text-xs shadow-sm transition active:scale-95"
+            className="self-start md:self-auto flex items-center gap-2 px-5 py-2.5 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-medium text-xs shadow-sm transition active:scale-95 cursor-pointer"
           >
             <ShoppingCart className="w-4 h-4 text-[#F8C519]" />
             <span>{t.startShoppingBtn}</span>
@@ -194,20 +205,26 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                             : t.paymentOnlineBadge}
                         </span>
                         <span className="px-3 py-1 rounded-md bg-[#F0FAF3] dark:bg-[#0E2E20] text-[#0A6847] dark:text-[#80F6C7] font-bold text-xs border border-[#15875D] shadow-xs">
-                          {order.status === 'ON_THE_WAY' ? t.statusOutForDeliveryBadge : t.statusPackingBadge}
+                          {order.status === 'PROCESSING'
+                            ? '📞 Order Accepted'
+                            : order.status === 'ON_THE_WAY'
+                            ? t.statusOutForDeliveryBadge
+                            : order.status === 'DELIVERED'
+                            ? '✓ Delivered'
+                            : '📋 Order Placed'}
                         </span>
                       </div>
                     </div>
 
                     {/* Body Content */}
                     <div className="p-5 sm:p-6 space-y-6">
-                      {/* Visual 5-Step Fulfillment Stepper */}
+                      {/* Visual 4-Step Fulfillment Stepper */}
                       <div>
                         <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7] block mb-3">
                           {t.realtimeStageTrackerTitle}
                         </span>
-                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-xs">
-                          {/* Step 1 */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                          {/* Step 1: Order Placed */}
                           <div className="p-3.5 rounded-lg bg-[#F0FAF3] dark:bg-[#0E2E20] border border-[#15875D] font-bold">
                             <div className="flex items-center gap-1.5 mb-1.5">
                               <div className="w-5 h-5 rounded bg-[#0A6847] text-white flex items-center justify-center text-[10px]">
@@ -223,207 +240,171 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                             </span>
                           </div>
 
-                          {/* Step 2 */}
-                          <div className="p-3.5 rounded-lg bg-[#F0FAF3] dark:bg-[#0E2E20] border border-[#15875D] font-bold">
+                          {/* Step 2: Accepted (Admin call verification) */}
+                          <div
+                            className={`p-3.5 rounded-lg border font-bold ${
+                              order.status === 'PROCESSING' || order.status === 'ON_THE_WAY' || order.status === 'DELIVERED'
+                                ? 'bg-[#F0FAF3] dark:bg-[#0E2E20] border-[#15875D]'
+                                : 'bg-[#F2F7F4] dark:bg-zinc-800/90 border-slate-300 text-slate-500'
+                            }`}
+                          >
                             <div className="flex items-center gap-1.5 mb-1.5">
-                              <div className="w-5 h-5 rounded bg-[#0A6847] text-white flex items-center justify-center text-[10px]">
-                                ✓
+                              <div
+                                className={`w-5 h-5 rounded flex items-center justify-center text-[10px] ${
+                                  order.status === 'PROCESSING' || order.status === 'ON_THE_WAY' || order.status === 'DELIVERED'
+                                    ? 'bg-[#0A6847] text-white'
+                                    : 'bg-slate-300 text-slate-600'
+                                }`}
+                              >
+                                {order.status === 'ON_THE_WAY' || order.status === 'DELIVERED' ? '✓' : '📞'}
                               </div>
                               <span className="text-[10px] uppercase font-bold tracking-wider text-[#1B8057] dark:text-emerald-400">
                                 {t.stepNumberPrefix} 2
                               </span>
                             </div>
-                            <p className="text-xs font-bold text-black dark:text-white">📦 {t.statusPackingBadge.replace('📦 ', '') || t.step2Packing}</p>
+                            <p className="text-xs font-bold text-black dark:text-white">📞 Order Accepted</p>
                             <span className="text-[10px] text-[#003D25] dark:text-zinc-300 font-normal block mt-0.5">
-                              {t.step2PackingSub}
+                              Admin call confirmation
                             </span>
                           </div>
 
-                          {/* Step 3 */}
+                          {/* Step 3: On the Way */}
                           <div
                             className={`p-3.5 rounded-lg border font-bold ${
                               order.status === 'ON_THE_WAY' || order.status === 'DELIVERED'
-                                ? 'bg-[#F0FAF3] dark:bg-[#0E2E20] border-[#15875D]'
-                                : 'bg-[#F8C519]/20 dark:bg-[#3D2D00] border-[#C08512]'
-                            }`}
-                          >
-                            <div className="flex items-center gap-1.5 mb-1.5">
-                              <div
-                                className={`w-5 h-5 rounded flex items-center justify-center text-[10px] ${
-                                  order.status === 'ON_THE_WAY' || order.status === 'DELIVERED'
-                                    ? 'bg-[#0A6847] text-white'
-                                    : 'bg-[#F8C519] text-[#664E00] font-bold'
-                                }`}
-                              >
-                                {order.status === 'ON_THE_WAY' || order.status === 'DELIVERED' ? '✓' : '📞'}
-                              </div>
-                              <span className={`text-[10px] uppercase font-bold tracking-wider ${
-                                order.status === 'ON_THE_WAY' || order.status === 'DELIVERED'
-                                  ? 'text-[#1B8057] dark:text-emerald-400'
-                                  : 'text-[#664E00] dark:text-amber-300'
-                              }`}>
-                                {t.stepNumberPrefix} 3
-                              </span>
-                            </div>
-                            <p className="text-xs font-bold text-black dark:text-white">{t.step3DispatchCall}</p>
-                            <span className={`text-[10px] font-normal block mt-0.5 ${
-                              order.status === 'ON_THE_WAY' || order.status === 'DELIVERED'
-                                ? 'text-[#003D25] dark:text-zinc-300'
-                                : 'text-[#664E00] dark:text-amber-200'
-                            }`}>
-                              {t.step3DispatchCallSub}
-                            </span>
-                          </div>
-
-                          {/* Step 4 */}
-                          <div
-                            className={`p-3.5 rounded-lg border font-bold ${
-                              order.riderVerifiedByAdmin
-                                ? 'bg-[#F0FAF3] dark:bg-[#0E2E20] border-[#15875D]'
-                                : 'bg-[#F2F7F4] dark:bg-zinc-800/90 border-slate-300 dark:border-zinc-700 text-slate-500 dark:text-zinc-400'
-                            }`}
-                          >
-                            <div className="flex items-center gap-1.5 mb-1.5">
-                              <div
-                                className={`w-5 h-5 rounded flex items-center justify-center text-[10px] ${
-                                  order.riderVerifiedByAdmin
-                                    ? 'bg-[#0A6847] text-white'
-                                    : 'bg-slate-300 dark:bg-zinc-700 text-slate-600 dark:text-zinc-300'
-                                }`}
-                              >
-                                {order.riderVerifiedByAdmin ? '🛡️' : '🔒'}
-                              </div>
-                              <span className={`text-[10px] uppercase font-bold tracking-wider ${
-                                order.riderVerifiedByAdmin
-                                  ? 'text-[#1B8057] dark:text-emerald-400'
-                                  : 'text-slate-500 dark:text-zinc-500'
-                              }`}>
-                                {t.stepNumberPrefix} 4
-                              </span>
-                            </div>
-                            <p className={`text-xs font-bold ${order.riderVerifiedByAdmin ? 'text-black dark:text-white' : 'text-slate-500 dark:text-zinc-400'}`}>{t.step4RiderVerification}</p>
-                            <span className={`text-[10px] font-normal block mt-0.5 ${
-                              order.riderVerifiedByAdmin ? 'text-[#003D25] dark:text-zinc-300' : 'text-slate-400 dark:text-zinc-500'
-                            }`}>
-                              {order.riderVerifiedByAdmin ? t.step4RiderConfirmedSub : t.step4RiderWaitingSub}
-                            </span>
-                          </div>
-
-                          {/* Step 5 */}
-                          <div
-                            className={`p-3.5 rounded-lg border font-bold ${
-                              order.status === 'ON_THE_WAY'
                                 ? 'bg-[#0A6847] text-white border-[#0A6847] shadow-sm'
                                 : 'bg-[#F2F7F4] dark:bg-zinc-800/90 border-slate-300 dark:border-zinc-700 text-slate-500 dark:text-zinc-400'
                             }`}
                           >
                             <div className="flex items-center gap-1.5 mb-1.5">
-                              <div className="w-5 h-5 rounded bg-[#F8C519] text-[#664E00] flex items-center justify-center text-[10px]">
-                                🛵
+                              <div
+                                className={`w-5 h-5 rounded flex items-center justify-center text-[10px] ${
+                                  order.status === 'DELIVERED'
+                                    ? 'bg-white text-[#0A6847] font-bold'
+                                    : order.status === 'ON_THE_WAY'
+                                    ? 'bg-[#F8C519] text-[#664E00] font-bold'
+                                    : 'bg-slate-300 text-slate-600'
+                                }`}
+                              >
+                                {order.status === 'DELIVERED' ? '✓' : '🛵'}
                               </div>
                               <span className={`text-[10px] uppercase font-bold tracking-wider ${
                                 order.status === 'ON_THE_WAY' ? 'text-emerald-200' : 'text-slate-500 dark:text-zinc-500'
                               }`}>
-                                {t.stepNumberPrefix} 5
+                                {t.stepNumberPrefix} 3
                               </span>
                             </div>
-                            <p className={`text-xs font-bold ${order.status === 'ON_THE_WAY' ? 'text-white' : 'text-slate-500 dark:text-zinc-400'}`}>🛵 {t.step5OnTheWay}</p>
+                            <p className={`text-xs font-bold ${order.status === 'ON_THE_WAY' ? 'text-white' : 'text-slate-500 dark:text-zinc-400'}`}>
+                              🛵 {t.step5OnTheWay}
+                            </p>
                             <span className={`text-[10px] font-normal block mt-0.5 ${
                               order.status === 'ON_THE_WAY' ? 'text-emerald-100' : 'text-slate-400 dark:text-zinc-500'
                             }`}>
-                              {t.step5EtaPrefix} ~25 min
+                              {order.status === 'ON_THE_WAY' ? 'ETA ~25 min' : 'Pending dispatch'}
+                            </span>
+                          </div>
+
+                          {/* Step 4: Delivered */}
+                          <div
+                            className={`p-3.5 rounded-lg border font-bold ${
+                              order.status === 'DELIVERED'
+                                ? 'bg-[#0A6847] text-white border-[#0A6847]'
+                                : 'bg-[#F2F7F4] dark:bg-zinc-800/90 border-slate-300 dark:border-zinc-700 text-slate-500 dark:text-zinc-400'
+                            }`}
+                          >
+                            <div className="flex items-center gap-1.5 mb-1.5">
+                              <div
+                                className={`w-5 h-5 rounded flex items-center justify-center text-[10px] ${
+                                  order.status === 'DELIVERED'
+                                    ? 'bg-white text-[#0A6847] font-bold'
+                                    : 'bg-slate-300 text-slate-600'
+                                }`}
+                              >
+                                {order.status === 'DELIVERED' ? '✓' : '🏠'}
+                              </div>
+                              <span className={`text-[10px] uppercase font-bold tracking-wider ${
+                                order.status === 'DELIVERED' ? 'text-emerald-200' : 'text-slate-500 dark:text-zinc-500'
+                              }`}>
+                                {t.stepNumberPrefix} 4
+                              </span>
+                            </div>
+                            <p className={`text-xs font-bold ${order.status === 'DELIVERED' ? 'text-white' : 'text-slate-500 dark:text-zinc-400'}`}>
+                              🏠 Delivered
+                            </p>
+                            <span className={`text-[10px] font-normal block mt-0.5 ${
+                              order.status === 'DELIVERED' ? 'text-emerald-100' : 'text-slate-400 dark:text-zinc-500'
+                            }`}>
+                              {order.status === 'DELIVERED' ? 'Parcel received' : 'Pending handover'}
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      {/* ============================================================== */}
-                      {/* CRITICAL FEATURE: RIDER VERIFICATION & DIRECT CALL CONTROL     */}
-                      {/* ============================================================== */}
+                      {/* 4-STAGE INTERACTIVE ACTION & SUPPORT HOTLINE BANNER */}
                       <div className="p-5 rounded-xl bg-[#F0FAF3] dark:bg-zinc-800/80 border border-[#15875D] space-y-4">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#15875D]/20 pb-3">
-                          <div className="flex items-center gap-3">
-                            <img src="/figma_icon_delivery.png" alt="" className="w-10 h-10 object-contain shrink-0" />
-                            <div>
-                              <span className="text-[10px] font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7]">
-                                {t.courierPartnerDirectContact}
-                              </span>
-                              <h4 className="font-bold text-sm text-black dark:text-white">
-                                {order.courierCompany || t.courierDefaultCompany}
-                              </h4>
-                            </div>
-                          </div>
-
-                          {isRiderCallEnabled ? (
-                            <span className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#0A6847] text-white font-bold text-xs">
-                              <span>🛡️</span>
-                              <span>{t.verifiedRiderBadge}</span>
-                            </span>
-                          ) : (
-                            <span className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#F8C519] text-[#664E00] font-bold text-xs border border-[#C08512]/40">
-                              <span className="w-2 h-2 rounded-full bg-[#F96D26] animate-ping" />
-                              <span>{t.riderAllocatingBadge}</span>
-                            </span>
-                          )}
-                        </div>
-
-                        {/* If rider phone is not assigned yet: show clean courier & support hotline without locked warnings */}
-                        {!isRiderCallEnabled ? (
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-600 dark:text-zinc-400 py-1">
-                            <span className="font-medium">
-                              Courier Partner: <strong className="text-black dark:text-white">{order.courierCompany || t.courierDefaultCompany}</strong>
-                            </span>
-                            <span className="text-[11px] text-slate-500 dark:text-zinc-400">
-                              Support Hotline: <a href="tel:+40721345678" className="text-[#0A6847] dark:text-[#80F6C7] font-bold hover:underline">+40 721 345 678</a>
-                            </span>
-                          </div>
-                        ) : (
-                          /* Condition B: RIDER ARRIVED & ADMIN ENTERED MOBILE NUMBER */
-                          <div className="space-y-3">
-                            <div className="p-4 rounded-lg bg-white dark:bg-zinc-900 border border-[#15875D] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                              <div className="flex items-center gap-3">
-                                <div className="w-11 h-11 rounded-lg bg-[#F0FAF3] dark:bg-zinc-800 border border-[#15875D] flex items-center justify-center text-xl shrink-0">
-                                  🛵
-                                </div>
-                                <div>
-                                  <div className="flex items-center gap-2">
-                                    <h5 className="font-bold text-base text-black dark:text-white">
-                                      {order.riderName || 'Courier Rider'}
-                                    </h5>
-                                    <span className="px-2 py-0.5 rounded bg-[#F8C519] text-[#664E00] text-[10px] font-bold">
-                                      {t.riderVerifiedBadge}
-                                    </span>
-                                  </div>
-                                  <p className="text-xs font-mono font-bold text-[#0A6847] dark:text-[#80F6C7] mt-0.5">
-                                    {t.riderDirectMobileLabel} <strong>{order.riderPhone}</strong>
-                                  </p>
-                                  <span className="text-[10px] text-[#1B8057] dark:text-zinc-400">
-                                    {t.riderDirectMobileVerifiedHint}
-                                  </span>
-                                </div>
+                        {/* Stage 2 Action: Admin Call Verification Button */}
+                        {order.status === 'PROCESSING' && (
+                          <div className="p-4 rounded-xl border-2 border-[#F8C519] bg-[#FFFBEB] dark:bg-[#2A2308] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-[#F8C519] text-[#664E00] flex items-center justify-center font-bold text-lg shrink-0">
+                                📞
                               </div>
-
-                              <a
-                                href={`tel:${order.riderPhone}`}
-                                className="w-full sm:w-auto px-6 py-3 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-semibold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-95"
-                              >
-                                <Phone className="w-4 h-4 text-[#F8C519] animate-bounce" />
-                                <span>
-                                  {t.callRiderButton}: {order.riderPhone}
-                                </span>
-                              </a>
+                              <div>
+                                <h5 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                                  Admin Call Verification
+                                </h5>
+                                <p className="text-xs text-slate-600 dark:text-zinc-300">
+                                  Our supermarket admin will call you within a minute to confirm your order details. Once you speak with our admin, please confirm below.
+                                </p>
+                              </div>
                             </div>
 
-                            <div className="flex items-center justify-between text-xs text-[#1B8057] dark:text-zinc-300 pt-1 px-1 flex-wrap gap-2">
-                              <span className="font-bold text-[#0A6847] dark:text-[#80F6C7]">
-                                🛡️ {t.riderCallDirectInstructions}
-                              </span>
-                              <span className="font-bold">
-                                {t.riderEstimatedDoorEta} ~{order.deliveryMinutes || 25} min
-                              </span>
-                            </div>
+                            <button
+                              type="button"
+                              onClick={() => onConfirmCallReceived && onConfirmCallReceived(order.id || order.orderNumber)}
+                              className="px-5 py-2.5 rounded-lg bg-[#0A6847] hover:bg-[#075238] text-white font-bold text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow-sm shrink-0 cursor-pointer"
+                            >
+                              <CheckCircle className="w-4 h-4 text-[#F8C519]" />
+                              <span>Confirm Call Received</span>
+                            </button>
                           </div>
                         )}
+
+                        {/* Stage 4 Action: Customer Confirm Parcel Received Button */}
+                        {order.status === 'ON_THE_WAY' && onConfirmReceived && (
+                          <div className="p-4 rounded-xl border border-[#15875D] bg-[#F0FAF3] dark:bg-[#0E2E20] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                            <div className="flex items-center gap-3">
+                              <PackageCheck className="w-5 h-5 text-[#0A6847] dark:text-[#80F6C7] shrink-0" />
+                              <div>
+                                <h5 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                                  Parcel is on the way! Received your groceries?
+                                </h5>
+                                <p className="text-xs text-slate-600 dark:text-zinc-300">
+                                  Confirm once our courier has handed over your package and you have checked your items.
+                                </p>
+                              </div>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => onConfirmReceived(order.id || order.orderNumber)}
+                              className="px-5 py-2.5 rounded-lg bg-[#0A6847] hover:bg-[#075238] text-white font-semibold text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow-sm shrink-0 cursor-pointer"
+                            >
+                              <CheckCircle className="w-4 h-4 text-[#F8C519]" />
+                              <span>Confirm Parcel Received</span>
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Always display clean support hotline and courier info */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-600 dark:text-zinc-400 py-1">
+                          <span className="font-medium">
+                            Courier Partner: <strong className="text-black dark:text-white">{order.courierCompany || t.courierDefaultCompany}</strong>
+                          </span>
+                          <span className="text-[11px] text-slate-500 dark:text-zinc-400">
+                            Support Hotline: <a href="tel:+40721345678" className="text-[#0A6847] dark:text-[#80F6C7] font-bold hover:underline">+40 721 345 678</a>
+                          </span>
+                        </div>
                       </div>
 
                       {/* Cash on Delivery Notice Card */}

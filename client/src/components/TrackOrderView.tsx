@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Search,
   Phone,
@@ -14,7 +14,9 @@ import {
   CreditCard,
   MapPin,
   ArrowRight,
-  Headphones
+  Headphones,
+  ArrowLeft,
+  X
 } from 'lucide-react';
 import { ClientOrder } from '../types';
 import { TranslationDictionary } from '../translations';
@@ -23,6 +25,8 @@ interface TrackOrderViewProps {
   orders: ClientOrder[];
   initialOrderNumber?: string;
   onConfirmReceived?: (orderIdOrNumber: string) => void;
+  onConfirmCallReceived?: (orderIdOrNumber: string) => void;
+  onNavigateDeliveries?: () => void;
   onNavigateShop: () => void;
   onNavigateHome: () => void;
   isDarkMode: boolean;
@@ -64,6 +68,8 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
   orders,
   initialOrderNumber = '',
   onConfirmReceived,
+  onConfirmCallReceived,
+  onNavigateDeliveries,
   onNavigateHome,
   onNavigateShop,
   isDarkMode,
@@ -78,6 +84,17 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
     return orders[0] || null;
   });
   const [hasSearched, setHasSearched] = useState(Boolean(initialOrderNumber));
+  const [isAcceptedModalOpen, setIsAcceptedModalOpen] = useState(false);
+  const [acknowledgedOrders, setAcknowledgedOrders] = useState<string[]>([]);
+
+  // Automatically show the Accepted popup modal when viewing an order in Accepted state
+  useEffect(() => {
+    if (searchedOrder && (searchedOrder.status === 'PROCESSING' || searchedOrder.status === 'PENDING')) {
+      if (!acknowledgedOrders.includes(searchedOrder.orderNumber)) {
+        setIsAcceptedModalOpen(true);
+      }
+    }
+  }, [searchedOrder?.orderNumber, searchedOrder?.status]);
 
   const handleSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -94,17 +111,18 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
     setSearchedOrder(found || null);
   };
 
-  // Stepper milestone status calculation
+  // 4-Stage Stepper milestone calculation:
+  // 1: Order Placed -> 2: Accepted -> 3: On the Way -> 4: Delivered
   const getStepProgress = (order: ClientOrder) => {
     switch (order.status) {
       case 'PENDING':
-        return 0; // Step 1: Order Placed
+        return 0; // Stage 1: Order Placed
       case 'PROCESSING':
-        return 2; // Step 3: In Progress (Placed, Accepted, In Progress)
+        return 1; // Stage 2: Accepted (Admin call verification)
       case 'ON_THE_WAY':
-        return 3; // Step 4: On the Way
+        return 2; // Stage 3: On the Way
       case 'DELIVERED':
-        return 4; // Step 5: Delivered
+        return 3; // Stage 4: Delivered
       case 'CANCELLED':
       default:
         return 0;
@@ -112,7 +130,6 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
   };
 
   const currentStepIndex = searchedOrder ? getStepProgress(searchedOrder) : 0;
-  const progressPercent = (currentStepIndex / 4) * 100;
 
   const milestones = [
     {
@@ -125,33 +142,78 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
       id: 'accepted',
       title: 'Accepted',
       Icon: CheckCircle2,
-      time: 'Order Confirmed'
-    },
-    {
-      id: 'in_progress',
-      title: 'Packing in Store',
-      Icon: Package,
-      time: searchedOrder?.status === 'PENDING' ? 'Expected today' : 'Ceylon items packed'
+      time: searchedOrder?.status === 'PENDING' ? 'Waiting confirmation' : 'Admin Call Confirmed'
     },
     {
       id: 'on_the_way',
       title: 'On the Way',
       Icon: Truck,
-      time: searchedOrder?.status === 'ON_THE_WAY' ? 'ETA ~25 min' : 'Expected today'
+      time: searchedOrder?.status === 'ON_THE_WAY' ? 'ETA ~25 min' : searchedOrder?.status === 'DELIVERED' ? 'Arrived' : 'Next stage'
     },
     {
       id: 'delivered',
       title: 'Delivered',
       Icon: Home,
-      time: searchedOrder?.status === 'DELIVERED' ? 'Delivered' : 'Expected today'
+      time: searchedOrder?.status === 'DELIVERED' ? 'Handed over' : 'Pending handover'
     }
   ];
 
   return (
     <div className="w-full flex-1 bg-white dark:bg-[#0B0F0D] pb-16">
-      {/* 1. HEADER BANNER (COLORS MATCHING ATTACHMENT 1) */}
-      <div className="w-full bg-[#F4F9F6] dark:bg-[#121A16] border-b border-[#15875D]/15 py-10 sm:py-12 text-center">
+      {/* Pop-up message for Accepted status: Admin confirmation call */}
+      {isAcceptedModalOpen && searchedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white dark:bg-[#141C18] rounded-2xl max-w-md w-full border-2 border-[#15875D] shadow-2xl overflow-hidden p-6 text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-[#E8F5EE] dark:bg-[#0E2E20] border-2 border-[#0A6847] flex items-center justify-center mx-auto text-[#0A6847] dark:text-[#80F6C7]">
+              <Phone className="w-8 h-8 animate-pulse text-[#0A6847]" />
+            </div>
+            <div>
+              <span className="px-3 py-1 rounded-full bg-[#F8C519] text-[#664E00] text-xs font-bold uppercase tracking-wider inline-block mb-2">
+                Order #{searchedOrder.orderNumber} Accepted
+              </span>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                We will contact you within a minute
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-zinc-300 mt-2 leading-relaxed">
+                Our supermarket admin will call you to confirm your order details and delivery address. Our delivery courier will then contact you. Thank you for choosing Ceylon Foods!
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setAcknowledgedOrders(prev => [...prev, searchedOrder.orderNumber]);
+                setIsAcceptedModalOpen(false);
+              }}
+              className="w-full py-3 rounded-xl bg-[#0A6847] hover:bg-[#075238] text-white font-bold text-sm shadow-md transition active:scale-98 cursor-pointer"
+            >
+              OK, I Understand
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 1. HEADER BANNER (WITH EXPLICIT BACK BUTTON OPTIONS) */}
+      <div className="w-full bg-[#F4F9F6] dark:bg-[#121A16] border-b border-[#15875D]/15 py-8 sm:py-10 text-center">
         <div className="max-w-4xl mx-auto px-4">
+          <div className="flex items-center justify-center gap-3 mb-3 flex-wrap">
+            {onNavigateDeliveries && (
+              <button
+                type="button"
+                onClick={onNavigateDeliveries}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-[#15875D]/40 bg-white dark:bg-zinc-800 text-xs font-bold text-[#0A6847] dark:text-[#80F6C7] hover:bg-[#E8F5EE] transition cursor-pointer"
+              >
+                ← Back to Deliveries
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onNavigateShop}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-[#15875D]/40 bg-white dark:bg-zinc-800 text-xs font-bold text-[#0A6847] dark:text-[#80F6C7] hover:bg-[#E8F5EE] transition cursor-pointer"
+            >
+              ← Back to Shopping
+            </button>
+          </div>
+
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
             <span className="text-[#0A6847] dark:text-white">Track Your </span>
             <span className="text-[#F96D26]">Order</span>
@@ -262,7 +324,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
               <div className="flex items-center gap-2">
                 <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F0FAF3] dark:bg-[#0E2E20] text-[#0A6847] dark:text-[#80F6C7] border border-[#15875D] shadow-xs inline-flex items-center gap-1.5">
                   {searchedOrder.status === 'PROCESSING'
-                    ? t.statusPackingBadge
+                    ? '📞 Order Accepted'
                     : searchedOrder.status === 'ON_THE_WAY'
                     ? t.statusOutForDeliveryBadge
                     : searchedOrder.status === 'DELIVERED'
@@ -275,9 +337,9 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
               </div>
             </div>
 
-            {/* Progress Stepper (Timeline with Icons, Progress Line & Checkmarks) */}
+            {/* 4-Stage Progress Stepper (Timeline with Icons, Progress Line & Checkmarks) */}
             <div className="py-2">
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 sm:gap-2 text-center">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-3 text-center">
                 {milestones.map((m, idx) => {
                   const isDone = idx <= currentStepIndex;
                   const isCurrent = idx === currentStepIndex;
@@ -345,7 +407,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
                       </div>
 
                       {/* Timestamp / Status below */}
-                      <span className="text-[11px] text-slate-500 dark:text-zinc-400 font-medium leading-tight max-w-[120px]">
+                      <span className="text-[11px] text-slate-500 dark:text-zinc-400 font-medium leading-tight max-w-[140px]">
                         {m.time}
                       </span>
                     </div>
@@ -411,55 +473,28 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
               </div>
             </div>
 
-            {/* Clean Contact Details & Order Summary (No Locked Warning!) */}
+            {/* Clean Contact Details & Order Summary (Only Support Hotline, No Rider Contact) */}
             <div className="border-t border-slate-100 dark:border-zinc-800 pt-6 space-y-4">
-              {/* Only show direct contact if available/needed */}
-              {searchedOrder.riderPhone ? (
-                <div className="rounded-xl p-4 bg-[#F0FAF3] dark:bg-[#0E2E20] border border-[#15875D] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#0A6847] text-white flex items-center justify-center text-xl shrink-0">
-                      🛵
-                    </div>
-                    <div>
-                      <h5 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
-                        {searchedOrder.riderName || 'Courier Rider'} ({searchedOrder.courierCompany || 'Glovo Express'})
-                      </h5>
-                      <p className="text-xs font-mono font-bold text-[#0A6847] dark:text-[#80F6C7] mt-0.5">
-                        Direct Mobile: {searchedOrder.riderPhone}
-                      </p>
-                    </div>
-                  </div>
-
-                  <a
-                    href={`tel:${searchedOrder.riderPhone}`}
-                    className="px-5 py-2.5 rounded-lg bg-[#0A6847] hover:bg-[#075238] text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition active:scale-95"
-                  >
-                    <Phone className="w-4 h-4 text-[#F8C519]" />
-                    <span>Call Rider</span>
-                  </a>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-600 dark:text-zinc-400 py-1">
+                <div className="flex items-center gap-2">
+                  <Truck className="w-4 h-4 text-[#0A6847] dark:text-[#80F6C7]" />
+                  <span>
+                    Fulfillment Status: <strong className="text-slate-900 dark:text-white">{searchedOrder.status === 'PROCESSING' ? 'Admin Phone Call Verification' : searchedOrder.status === 'ON_THE_WAY' ? 'Courier En Route' : searchedOrder.status === 'DELIVERED' ? 'Delivered' : 'Order Placed'}</strong>
+                  </span>
                 </div>
-              ) : (
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-600 dark:text-zinc-400 py-1">
-                  <div className="flex items-center gap-2">
-                    <Truck className="w-4 h-4 text-[#0A6847] dark:text-[#80F6C7]" />
-                    <span>
-                      Courier: <strong>{searchedOrder.courierCompany || 'Glovo Express Bucharest'}</strong>
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Headphones className="w-4 h-4 text-[#0A6847] dark:text-[#80F6C7]" />
-                    <span>
-                      Support Hotline:{' '}
-                      <a
-                        href="tel:+40721345678"
-                        className="font-bold text-[#0A6847] dark:text-[#80F6C7] hover:underline"
-                      >
-                        +40 721 345 678
-                      </a>
-                    </span>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <Headphones className="w-4 h-4 text-[#0A6847] dark:text-[#80F6C7]" />
+                  <span>
+                    Support Hotline:{' '}
+                    <a
+                      href="tel:+40721345678"
+                      className="font-bold text-[#0A6847] dark:text-[#80F6C7] hover:underline"
+                    >
+                      +40 721 345 678
+                    </a>
+                  </span>
                 </div>
-              )}
+              </div>
 
               {/* Order Delivery & Payment Info */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
@@ -479,7 +514,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
                     <div>
                       <span className="font-bold text-slate-700 dark:text-zinc-300">Payment:</span>
                       <p className="text-slate-900 dark:text-white font-semibold">
-                        Cash on Delivery
+                        {searchedOrder.paymentMethod === 'CARD_ON_DELIVERY' ? 'Card on Delivery (POS Mobil)' : 'Cash on Delivery'}
                       </p>
                     </div>
                   </div>
@@ -492,22 +527,51 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
                 </div>
               </div>
 
-              {/* Customer "Confirm Parcel Received" Button */}
-              {searchedOrder.status !== 'DELIVERED' && searchedOrder.status !== 'CANCELLED' && onConfirmReceived && (
-                <div className="p-4 rounded-xl border border-[#15875D] bg-[#F0FAF3] dark:bg-[#0E2E20] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs mt-3">
+              {/* Stage 2 Action: Customer "Confirm Call Received" Button */}
+              {searchedOrder.status === 'PROCESSING' && (
+                <div className="p-4 rounded-xl border-2 border-[#F8C519] bg-[#FFFBEB] dark:bg-[#2A2308] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs mt-3">
                   <div className="flex items-center gap-3">
-                    <PackageCheck className="w-5 h-5 text-[#0A6847] dark:text-[#80F6C7] shrink-0" />
+                    <div className="w-10 h-10 rounded-lg bg-[#F8C519] text-[#664E00] flex items-center justify-center font-bold text-lg shrink-0">
+                      📞
+                    </div>
                     <div>
                       <h5 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
-                        Received your grocery delivery?
+                        Admin Call Verification
                       </h5>
                       <p className="text-xs text-slate-600 dark:text-zinc-300">
-                        Confirm once you have checked your parcel and handed payment to the rider.
+                        Our supermarket admin will call you within a minute to confirm your order details. Once you speak with our admin, please confirm below.
                       </p>
                     </div>
                   </div>
 
                   <button
+                    type="button"
+                    onClick={() => onConfirmCallReceived && onConfirmCallReceived(searchedOrder.id || searchedOrder.orderNumber)}
+                    className="px-5 py-2.5 rounded-lg bg-[#0A6847] hover:bg-[#075238] text-white font-bold text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow-sm shrink-0 cursor-pointer"
+                  >
+                    <CheckCircle className="w-4 h-4 text-[#F8C519]" />
+                    <span>Confirm Call Received</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Stage 4 Action: Customer "Confirm Parcel Received" Button */}
+              {searchedOrder.status === 'ON_THE_WAY' && onConfirmReceived && (
+                <div className="p-4 rounded-xl border border-[#15875D] bg-[#F0FAF3] dark:bg-[#0E2E20] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs mt-3">
+                  <div className="flex items-center gap-3">
+                    <PackageCheck className="w-5 h-5 text-[#0A6847] dark:text-[#80F6C7] shrink-0" />
+                    <div>
+                      <h5 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                        Parcel is on the way! Received your groceries?
+                      </h5>
+                      <p className="text-xs text-slate-600 dark:text-zinc-300">
+                        Confirm once our courier has handed over your package and you have checked your items.
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
                     onClick={() => onConfirmReceived(searchedOrder.id || searchedOrder.orderNumber)}
                     className="px-5 py-2.5 rounded-lg bg-[#0A6847] hover:bg-[#075238] text-white font-semibold text-xs flex items-center justify-center gap-2 transition active:scale-95 shadow-sm shrink-0 cursor-pointer"
                   >

@@ -10,7 +10,8 @@ import {
   ShoppingCart,
   Banknote,
   Lock,
-  AlertCircle
+  AlertCircle,
+  CreditCard
 } from 'lucide-react';
 import { CartItem, CustomerUser, DeliveryZone } from '../types';
 import { TranslationDictionary } from '../translations';
@@ -32,6 +33,7 @@ interface CartViewProps {
   effectiveDeliveryFee: number;
   isFreeDeliveryQualified: boolean;
   currentUser: CustomerUser | null;
+  onOpenAuth?: () => void;
   onOpenCheckoutModal: (orderPayload: { address: string; phone: string; note: string; paymentMethod: string }) => void;
   onNavigateCheckout?: () => void;
   onNavigateShop: () => void;
@@ -57,6 +59,7 @@ export const CartView: React.FC<CartViewProps> = ({
   effectiveDeliveryFee,
   isFreeDeliveryQualified,
   currentUser,
+  onOpenAuth,
   onOpenCheckoutModal,
   onNavigateCheckout,
   onNavigateShop,
@@ -71,7 +74,7 @@ export const CartView: React.FC<CartViewProps> = ({
   const [buildingDetails, setBuildingDetails] = useState(currentUser?.buildingDetails || 'Bloc 12, Scara A, Ap. 14, Interfon 14');
   const [customerPhone, setCustomerPhone] = useState(currentUser?.phone || '+40 722 456 789');
   const [deliveryNote, setDeliveryNote] = useState('Am pregătit suma exactă în numerar. Vă rog sunați la interfon când ajungeți.');
-  const [paymentMethod, setPaymentMethod] = useState<'CASH_ON_DELIVERY' | 'CARD_ONLINE' | 'POS_AT_DELIVERY'>('CASH_ON_DELIVERY');
+  const [paymentMethod, setPaymentMethod] = useState<'CASH_ON_DELIVERY' | 'CARD_ON_DELIVERY'>('CASH_ON_DELIVERY');
   const [formError, setFormError] = useState('');
 
   const handleApply = (e: React.FormEvent) => {
@@ -82,6 +85,10 @@ export const CartView: React.FC<CartViewProps> = ({
   };
 
   const handleProceedCheckout = () => {
+    if (!currentUser) {
+      if (onOpenAuth) onOpenAuth();
+      return;
+    }
     if (onNavigateCheckout) {
       onNavigateCheckout();
       return;
@@ -91,7 +98,7 @@ export const CartView: React.FC<CartViewProps> = ({
       return;
     }
     setFormError('');
-    const fullAddress = `${streetAddress}, ${buildingDetails ? buildingDetails + ', ' : ''}${selectedZone.name}`;
+    const fullAddress = `${streetAddress}${buildingDetails ? ', ' + buildingDetails : ''}`;
     onOpenCheckoutModal({
       address: fullAddress,
       phone: customerPhone,
@@ -111,18 +118,31 @@ export const CartView: React.FC<CartViewProps> = ({
                 {t.breadcrumbHome}
               </button>
               <ChevronRight className="w-3.5 h-3.5 text-[#1B8057]" />
+              <button onClick={onNavigateShop} className="hover:underline">
+                {t.breadcrumbShop}
+              </button>
+              <ChevronRight className="w-3.5 h-3.5 text-[#1B8057]" />
               <span className="text-[#F96D26] font-bold">{t.cartBreadcrumb}</span>
             </div>
-            <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight">
-              <span className="text-[#0A6847] dark:text-white">Shopping </span>
-              <span className="text-[#F96D26]">Cart</span>
-            </h1>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={onNavigateShop}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#15875D]/40 bg-white dark:bg-zinc-800 text-xs font-bold text-[#0A6847] dark:text-[#80F6C7] hover:bg-[#E8F5EE] transition cursor-pointer"
+              >
+                ← Back to Shopping
+              </button>
+              <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight">
+                <span className="text-[#0A6847] dark:text-white">Shopping </span>
+                <span className="text-[#F96D26]">Cart</span>
+              </h1>
+            </div>
           </div>
 
           <div className="bg-[#F0FAF3] dark:bg-zinc-900 border border-[#15875D] rounded-lg px-4 py-2.5 flex items-center gap-3">
             <img src="/figma_icon_cod.png" alt="" className="w-8 h-8 object-contain shrink-0" />
             <div className="text-xs">
-              <span className="font-bold text-[#1B8057] block">Cash on Delivery Available</span>
+              <span className="font-bold text-[#1B8057] block">Cash & Card on Delivery</span>
               <span className="text-[#003D25] dark:text-zinc-300 text-[11px]">{t.cartSubtitle}</span>
             </div>
           </div>
@@ -376,67 +396,29 @@ export const CartView: React.FC<CartViewProps> = ({
                   </div>
                 </div>
 
-                {/* Sector / Zone Selector */}
-                <div className="space-y-2 pt-2 border-t border-[#15875D]/20">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B8057]">
-                      {t.selectZoneTitle}
-                    </span>
-                    <span className="text-[10px] font-bold text-[#0A6847] dark:text-[#80F6C7]">
-                      {isFreeDeliveryQualified ? t.freeLabel : t.courierRates}
-                    </span>
-                  </div>
-
-                  <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
-                    {deliveryZones.map(zone => (
-                      <label
-                        key={zone.name}
-                        onClick={() => setSelectedZone(zone)}
-                        className={`flex items-center justify-between p-2.5 rounded-lg border text-xs cursor-pointer transition ${
-                          selectedZone.name === zone.name
-                            ? 'border-[#0A6847] bg-white dark:bg-zinc-900 font-bold shadow-2xs'
-                            : 'border-[#15875D]/25 bg-white/70 dark:bg-zinc-900/50 hover:bg-white'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            name="deliveryZone"
-                            readOnly
-                            checked={selectedZone.name === zone.name}
-                            className="accent-[#0A6847] cursor-pointer"
-                          />
-                          <div>
-                            <p className="font-bold text-black dark:text-white text-[11px]">{zone.name}</p>
-                            <p className="text-[10px] text-[#1B8057]">{zone.coverage}</p>
-                          </div>
-                        </div>
-                        <span className="text-xs font-bold text-[#0A6847] dark:text-[#80F6C7]">
-                          {isFreeDeliveryQualified ? t.freeLabel : `${zone.fee} lei`}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* PAYMENT METHOD SELECTION: CASH ON DELIVERY PRIMARY */}
-                <div className="space-y-2 pt-2 border-t border-[#15875D]/20">
+                {/* PAYMENT METHOD SELECTION: ONLY 2 OPTIONS (CASH ON DELIVERY & CARD ON DELIVERY) */}
+                <div className="space-y-2.5 pt-2 border-t border-[#15875D]/20">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-[#1B8057] block">
                     {t.paymentMethodTitle}
                   </span>
 
+                  {/* Option 1: Cash on Delivery */}
                   <label
                     onClick={() => setPaymentMethod('CASH_ON_DELIVERY')}
-                    className="flex items-start gap-3 p-3.5 rounded-lg border border-[#0A6847] bg-white dark:bg-zinc-900 cursor-pointer shadow-2xs"
+                    className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition ${
+                      paymentMethod === 'CASH_ON_DELIVERY'
+                        ? 'border-[#0A6847] bg-white dark:bg-zinc-900 shadow-2xs ring-1 ring-[#0A6847]'
+                        : 'border-[#15875D]/30 bg-white/70 dark:bg-zinc-900/50 hover:bg-white'
+                    }`}
                   >
                     <input
                       type="radio"
                       name="paymentMethod"
                       readOnly
                       checked={paymentMethod === 'CASH_ON_DELIVERY'}
-                      className="accent-[#0A6847] mt-0.5"
+                      className="accent-[#0A6847] mt-0.5 cursor-pointer"
                     />
-                    <div className="space-y-0.5">
+                    <div className="space-y-0.5 flex-1">
                       <div className="flex items-center gap-1.5 font-bold text-xs text-[#0A6847] dark:text-[#80F6C7]">
                         <Banknote className="w-4 h-4 text-[#0A6847]" />
                         <span>{t.codOptionTitle}</span>
@@ -446,6 +428,33 @@ export const CartView: React.FC<CartViewProps> = ({
                       </div>
                       <p className="text-[11px] text-[#003D25] dark:text-zinc-300 font-medium">
                         {t.codOptionDesc}
+                      </p>
+                    </div>
+                  </label>
+
+                  {/* Option 2: Card on Delivery */}
+                  <label
+                    onClick={() => setPaymentMethod('CARD_ON_DELIVERY')}
+                    className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition ${
+                      paymentMethod === 'CARD_ON_DELIVERY'
+                        ? 'border-[#0A6847] bg-white dark:bg-zinc-900 shadow-2xs ring-1 ring-[#0A6847]'
+                        : 'border-[#15875D]/30 bg-white/70 dark:bg-zinc-900/50 hover:bg-white'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      readOnly
+                      checked={paymentMethod === 'CARD_ON_DELIVERY'}
+                      className="accent-[#0A6847] mt-0.5 cursor-pointer"
+                    />
+                    <div className="space-y-0.5 flex-1">
+                      <div className="flex items-center gap-1.5 font-bold text-xs text-[#0A6847] dark:text-[#80F6C7]">
+                        <CreditCard className="w-4 h-4 text-[#0A6847]" />
+                        <span>Card on Delivery (POS Mobil Curier)</span>
+                      </div>
+                      <p className="text-[11px] text-[#003D25] dark:text-zinc-300 font-medium">
+                        Pay with contactless card or phone on courier's mobile POS terminal at your door.
                       </p>
                     </div>
                   </label>
@@ -460,9 +469,7 @@ export const CartView: React.FC<CartViewProps> = ({
                     </span>
                   </div>
                   <div className="flex justify-between text-[#003D25] dark:text-zinc-300">
-                    <span>
-                      {t.deliveryFeeLabel} ({selectedZone.coverage})
-                    </span>
+                    <span>{t.deliveryFeeLabel}</span>
                     <span className="font-bold text-black dark:text-white">
                       {effectiveDeliveryFee === 0 ? (
                         <strong className="text-[#0A6847]">{t.freeLabel}</strong>

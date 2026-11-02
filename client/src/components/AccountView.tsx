@@ -18,6 +18,7 @@ interface AccountViewProps {
   currentUser: CustomerUser | null;
   onUpdateUser: (updated: Partial<CustomerUser>) => void;
   onNavigateDeliveries: () => void;
+  onNavigateShop?: () => void;
   onLogout: () => void;
   onNavigateHome: () => void;
   isDarkMode: boolean;
@@ -28,6 +29,7 @@ export const AccountView: React.FC<AccountViewProps> = ({
   currentUser,
   onUpdateUser,
   onNavigateDeliveries,
+  onNavigateShop,
   onLogout,
   onNavigateHome,
   t
@@ -68,14 +70,25 @@ export const AccountView: React.FC<AccountViewProps> = ({
               <ChevronRight className="w-3.5 h-3.5" />
               <span className="text-[#F96D26] font-bold">{t.accountTitle}</span>
             </nav>
-            <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight">
-              <span className="text-[#0A6847] dark:text-white">
-                {t.accountTitle.split(' ')[0]}{' '}
-              </span>
-              <span className="text-[#F96D26]">
-                {t.accountTitle.split(' ').slice(1).join(' ') || 'Account'}
-              </span>
-            </h1>
+            <div className="flex items-center gap-3">
+              {onNavigateShop && (
+                <button
+                  type="button"
+                  onClick={onNavigateShop}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#15875D]/40 bg-white dark:bg-zinc-800 text-xs font-bold text-[#0A6847] dark:text-[#80F6C7] hover:bg-[#E8F5EE] transition cursor-pointer"
+                >
+                  ← Back to Shopping
+                </button>
+              )}
+              <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight">
+                <span className="text-[#0A6847] dark:text-white">
+                  {t.accountTitle.split(' ')[0]}{' '}
+                </span>
+                <span className="text-[#F96D26]">
+                  {t.accountTitle.split(' ').slice(1).join(' ') || 'Account'}
+                </span>
+              </h1>
+            </div>
           </div>
 
           <div className="bg-[#F0FAF3] dark:bg-zinc-900 border border-[#15875D] rounded-lg px-4 py-2.5 flex items-center gap-3">

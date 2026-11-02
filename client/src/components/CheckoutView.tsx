@@ -77,8 +77,6 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationError, setValidationError] = useState('');
 
-  const calculatedChange = Math.max(0, cashAmountGiven - totalAmount);
-
   const handlePlaceOrder = () => {
     if (!streetAddress.trim() || !phone.trim()) {
       setValidationError('Please enter your complete delivery address and mobile phone number for the rider.');
@@ -87,7 +85,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
     setValidationError('');
     setIsSubmitting(true);
-    const combinedAddress = `${streetAddress}, ${buildingDetails}, ${selectedZone.coverage}`;
+    const combinedAddress = `${streetAddress}${buildingDetails ? ', ' + buildingDetails : ''}`;
 
     setTimeout(() => {
       onSubmitOrder({
@@ -95,7 +93,6 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
         phone,
         note: deliveryNote,
         paymentMethod,
-        cashGiven: paymentMethod === 'CASH_ON_DELIVERY' ? cashAmountGiven : undefined,
         preferredTime: preferredSlot
       });
       setIsSubmitting(false);
@@ -123,10 +120,19 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
               <ChevronRight className="w-3.5 h-3.5" />
               <span className="text-[#F96D26] font-bold">{t.checkoutBreadcrumb}</span>
             </nav>
-            <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight">
-              <span className="text-[#0A6847] dark:text-white">Secure </span>
-              <span className="text-[#F96D26]">Checkout</span>
-            </h1>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={onNavigateCart}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#15875D]/40 bg-white dark:bg-zinc-800 text-xs font-bold text-[#0A6847] dark:text-[#80F6C7] hover:bg-[#E8F5EE] transition cursor-pointer"
+              >
+                ← Back to Cart
+              </button>
+              <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight">
+                <span className="text-[#0A6847] dark:text-white">Secure </span>
+                <span className="text-[#F96D26]">Checkout</span>
+              </h1>
+            </div>
           </div>
 
           {/* 4-Step Progress Stepper in Figma Palette */}
@@ -212,26 +218,6 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                 </div>
                 <span className="text-[10px] text-[#1B8057] mt-1 block">{t.checkoutPhoneHint}</span>
               </div>
-            </div>
-
-            <div>
-              <label className="text-[11px] font-bold uppercase text-[#003D25] dark:text-zinc-300 block mb-1">
-                {t.checkoutDeliveryZone} *
-              </label>
-              <select
-                value={selectedZone.name}
-                onChange={(e) => {
-                  const z = deliveryZones.find(dz => dz.name === e.target.value);
-                  if (z) setSelectedZone(z);
-                }}
-                className="w-full p-2.5 rounded-lg border border-[#15875D]/40 bg-white dark:bg-zinc-800 text-xs font-bold focus:outline-none focus:border-[#0A6847]"
-              >
-                {deliveryZones.map(z => (
-                  <option key={z.name} value={z.name}>
-                    {z.name} ({z.fee} lei • {z.eta})
-                  </option>
-                ))}
-              </select>
             </div>
 
             <div>
@@ -330,7 +316,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             {/* Option 1: Cash on Delivery */}
             <div
               onClick={() => setPaymentMethod('CASH_ON_DELIVERY')}
-              className={`p-4 rounded-xl border cursor-pointer transition space-y-3 ${
+              className={`p-4 rounded-xl border cursor-pointer transition ${
                 paymentMethod === 'CASH_ON_DELIVERY'
                   ? 'border-[#0A6847] bg-[#F0FAF3] dark:bg-emerald-950/40 ring-1 ring-[#0A6847]'
                   : 'border-[#15875D]/30'
@@ -358,41 +344,6 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   className="accent-[#0A6847]"
                 />
               </div>
-
-              {/* Exact Change Calculator Feature */}
-              {paymentMethod === 'CASH_ON_DELIVERY' && (
-                <div className="p-3.5 rounded-lg bg-white dark:bg-zinc-900 border border-[#15875D]/40 space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-[#003D25] dark:text-zinc-200">
-                      {t.checkoutCodCashChangeTitle}
-                    </span>
-                    <span className="text-[11px] text-[#1B8057]">
-                      Total: <strong>{totalAmount.toFixed(2)} lei</strong>
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="relative flex-1">
-                      <input
-                        type="number"
-                        min={totalAmount}
-                        step={5}
-                        value={cashAmountGiven}
-                        onChange={(e) => setCashAmountGiven(Number(e.target.value) || totalAmount)}
-                        className="w-full px-3 py-2 rounded-md border border-[#15875D]/40 text-xs font-bold font-mono focus:outline-none focus:border-[#0A6847]"
-                      />
-                      <span className="absolute right-3 top-2 text-xs font-bold text-slate-400">lei</span>
-                    </div>
-
-                    <div className="px-3 py-2 rounded-md bg-[#F8C519] text-[#664E00] text-xs font-bold shrink-0">
-                      <span>{t.checkoutCodChangeLabel}: </span>
-                      <strong className="font-extrabold text-sm">{calculatedChange.toFixed(2)} lei</strong>
-                    </div>
-                  </div>
-
-                  <p className="text-[10px] text-[#1B8057]">{t.checkoutCodCashChangeHint}</p>
-                </div>
-              )}
             </div>
 
             {/* Option 2: Card on Delivery */}
@@ -545,7 +496,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             <button
               onClick={handlePlaceOrder}
               disabled={isSubmitting}
-              className="w-full py-4 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-semibold text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-98 disabled:opacity-50"
+              className="w-full py-4 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-semibold text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-98 disabled:opacity-50 cursor-pointer"
             >
               <Lock className="w-4 h-4 text-[#F8C519]" />
               <span>
@@ -553,6 +504,14 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                   ? t.checkoutPlacingOrderBtn
                   : `${t.checkoutPlaceOrderBtn} (${totalAmount.toFixed(2)} lei)`}
               </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={onNavigateCart}
+              className="w-full py-2.5 rounded-md border border-[#15875D]/40 bg-white dark:bg-zinc-800 text-xs font-bold text-[#0A6847] dark:text-[#80F6C7] hover:bg-[#E8F5EE] transition flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              ← Back to Shopping Cart
             </button>
 
             {/* Guarantees Strip */}

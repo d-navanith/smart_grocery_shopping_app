@@ -338,23 +338,36 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               )}
             </button>
 
-            {/* Golden User Pill ("Brie" / User Profile) */}
-            <div className="relative">
+            {/* User Profile or Sign In Button */}
+            {!currentUser ? (
               <button
                 type="button"
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="h-[50px] sm:h-[60px] px-3.5 sm:px-4 rounded-full bg-[#F8C519] hover:bg-[#EEAB1E] text-[#664E00] flex items-center gap-2.5 sm:gap-3 shadow-xs transition cursor-pointer"
-                title={t.accountTitle}
+                onClick={onOpenAuth}
+                className="h-[50px] sm:h-[60px] px-4 sm:px-5 rounded-full bg-[#F8C519] hover:bg-[#EEAB1E] text-[#664E00] flex items-center gap-2 sm:gap-2.5 shadow-xs transition cursor-pointer font-bold text-sm sm:text-base active:scale-95 shrink-0"
+                title="Sign In / Register"
               >
-                <div className="w-8 h-8 rounded-full border-2 border-[#664E00] flex items-center justify-center shrink-0">
-                  <UserIcon className="w-4 h-4 text-[#664E00] stroke-[2.2]" />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-[#664E00] flex items-center justify-center shrink-0">
+                  <UserIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#664E00] stroke-[2.2]" />
                 </div>
-                <div className="hidden sm:block h-9 w-[1px] bg-[#AA870F]" />
-                <span className="hidden sm:inline font-semibold text-base sm:text-lg text-[#664E00] tracking-tight">
-                  {displayUserName}
-                </span>
-                <ChevronDown className="w-4 h-4 text-[#664E00]" />
+                <span>Sign In</span>
               </button>
+            ) : (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="h-[50px] sm:h-[60px] px-3.5 sm:px-4 rounded-full bg-[#F8C519] hover:bg-[#EEAB1E] text-[#664E00] flex items-center gap-2.5 sm:gap-3 shadow-xs transition cursor-pointer"
+                  title={t.accountTitle}
+                >
+                  <div className="w-8 h-8 rounded-full border-2 border-[#664E00] flex items-center justify-center shrink-0">
+                    <UserIcon className="w-4 h-4 text-[#664E00] stroke-[2.2]" />
+                  </div>
+                  <div className="hidden sm:block h-9 w-[1px] bg-[#AA870F]" />
+                  <span className="hidden sm:inline font-semibold text-base sm:text-lg text-[#664E00] tracking-tight">
+                    {displayUserName}
+                  </span>
+                  <ChevronDown className="w-4 h-4 text-[#664E00]" />
+                </button>
 
               {isUserMenuOpen && (
                 <div className="absolute right-0 top-full mt-2 w-60 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl py-2 z-50 text-slate-800 dark:text-zinc-100">
@@ -464,6 +477,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 </div>
               )}
             </div>
+            )}
 
             {/* Mobile Hamburger Button */}
             <button

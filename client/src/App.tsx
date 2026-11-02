@@ -171,16 +171,7 @@ export default function ClientWebSupermarket() {
 
   const [currentUser, setCurrentUser] = useState<CustomerUser | null>(() => {
     const saved = localStorage.getItem('ceylonfoods_customer_user');
-    return saved ? JSON.parse(saved) : {
-      id: 'cust-1',
-      name: 'Mihai Enache',
-      email: 'mihai@example.ro',
-      phone: '+40 722 456 789',
-      address: 'Strada Mihai Eminescu nr. 42',
-      buildingDetails: 'Bloc 12, Scara A, Ap. 14, Interfon 14',
-      sectorCity: 'București Sector 1',
-      role: 'CUSTOMER'
-    };
+    return saved ? JSON.parse(saved) : null;
   });
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
@@ -358,11 +349,6 @@ export default function ClientWebSupermarket() {
   const totalAmount = Math.max(0, subtotal + effectiveDeliveryFee - promoDiscountAmount);
 
   const handleAddToCart = (product: Product, qty: number = 1, weight: string = '1kg') => {
-    if (!currentUser) {
-      setIsAuthModalOpen(true);
-      return;
-    }
-
     const multiplier = weight === '250g' ? 0.25 : weight === '500g' ? 0.5 : weight === '2kg' ? 2 : weight === '5kg' ? 5 : 1;
     const effectivePrice = product.price * multiplier;
 
@@ -575,6 +561,44 @@ export default function ClientWebSupermarket() {
     );
   };
 
+  const handleConfirmCallReceived = (orderIdOrNumber: string) => {
+    setCustomerOrders(prev =>
+      prev.map(ord => {
+        if (ord.id === orderIdOrNumber || ord.orderNumber === orderIdOrNumber) {
+          return {
+            ...ord,
+            status: 'ON_THE_WAY',
+            callConfirmed: true
+          };
+        }
+        return ord;
+      })
+    );
+
+    setActiveOrder((prev: any) => {
+      if (prev && (prev.id === orderIdOrNumber || prev.orderNumber === orderIdOrNumber)) {
+        return {
+          ...prev,
+          status: 'ON_THE_WAY',
+          callConfirmed: true
+        };
+      }
+      return prev;
+    });
+
+    fetch(`/api/orders/${orderIdOrNumber}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'ON_THE_WAY' })
+    }).catch(() => {});
+
+    showPopupMessage(
+      'Admin Call Confirmed',
+      'Thank you! Your order is now On the Way with our delivery courier.',
+      'success'
+    );
+  };
+
   const handleReorder = (order: ClientOrder) => {
     order.items.forEach(it => {
       const title = typeof it === 'string' ? it : it.productTitle;
@@ -675,8 +699,21 @@ export default function ClientWebSupermarket() {
             effectiveDeliveryFee={effectiveDeliveryFee}
             isFreeDeliveryQualified={isFreeDeliveryQualified}
             currentUser={currentUser}
-            onOpenCheckoutModal={handleCheckoutWithCod}
-            onNavigateCheckout={() => setCurrentPage('CHECKOUT')}
+            onOpenAuth={() => setIsAuthModalOpen(true)}
+            onOpenCheckoutModal={(payload) => {
+              if (!currentUser) {
+                setIsAuthModalOpen(true);
+                return;
+              }
+              handleCheckoutWithCod(payload);
+            }}
+            onNavigateCheckout={() => {
+              if (!currentUser) {
+                setIsAuthModalOpen(true);
+                return;
+              }
+              setCurrentPage('CHECKOUT');
+            }}
             onNavigateShop={() => setCurrentPage('SHOP')}
             onNavigateHome={() => setCurrentPage('HOME')}
             isDarkMode={isDarkMode}
@@ -745,6 +782,8 @@ export default function ClientWebSupermarket() {
             orders={customerOrders}
             initialOrderNumber={initialTrackNumber}
             onConfirmReceived={handleConfirmParcelReceived}
+            onConfirmCallReceived={handleConfirmCallReceived}
+            onNavigateDeliveries={() => setCurrentPage('DELIVERIES')}
             onNavigateShop={() => setCurrentPage('SHOP')}
             onNavigateHome={() => setCurrentPage('HOME')}
             isDarkMode={isDarkMode}
@@ -757,6 +796,7 @@ export default function ClientWebSupermarket() {
             currentUser={currentUser}
             onUpdateUser={handleUpdateUser}
             onNavigateDeliveries={() => setCurrentPage('DELIVERIES')}
+            onNavigateShop={() => setCurrentPage('SHOP')}
             onLogout={() => {
               setCurrentUser(null);
               localStorage.removeItem('ceylonfoods_customer_user');
@@ -794,7 +834,9 @@ export default function ClientWebSupermarket() {
             orders={customerOrders}
             onReorder={handleReorder}
             onConfirmReceived={handleConfirmParcelReceived}
+            onConfirmCallReceived={handleConfirmCallReceived}
             onNavigateShop={() => setCurrentPage('SHOP')}
+            onNavigateHome={() => setCurrentPage('HOME')}
             isDarkMode={isDarkMode}
             t={t}
           />
