@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Search,
   Heart,
@@ -81,6 +81,15 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 35);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const selectedLangOption = LANGUAGE_OPTIONS.find(l => l.code === currentLanguage) || LANGUAGE_OPTIONS[0];
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -179,7 +188,13 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
       </div>
 
       {/* 2. MAIN HEADER & SUB-NAVBAR WRAPPER (FIGMA EXACT #1B8057) */}
-      <div className="bg-[#1B8057] text-white px-4 sm:px-8">
+      <div
+        className={`w-full bg-[#1B8057] text-white px-4 sm:px-8 sticky top-0 z-40 transition-all duration-300 ${
+          isScrolled
+            ? 'sticky-nav-shadow py-0.5 border-b border-[#0f603f]'
+            : ''
+        }`}
+      >
         {/* Top Row: Logo Card + Pill Search Bar + Circle Actions + Golden User Pill */}
         <div className="max-w-[1240px] mx-auto pt-3 pb-4 flex items-center justify-between gap-4 lg:gap-6">
           {/* Left: White Rounded Logo Box (Figma 251x141 style scaled responsively) */}

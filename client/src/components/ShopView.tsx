@@ -444,7 +444,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
           {/* Product Cards Grid — Exact Figma Popular Products Card Style */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {paginatedProducts.map(product => {
+            {paginatedProducts.map((product, idx) => {
               const inCartItem = cart.find(i => i.product.id === product.id);
               const isWishlisted = wishlist.includes(product.id);
               const discountPercent =
@@ -456,7 +456,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 <div
                   key={product.id}
                   onClick={() => onSelectProduct(product)}
-                  className={`group rounded-lg p-5 cursor-pointer transition-all duration-200 flex flex-col justify-between border ${
+                  style={{ animationDelay: `${(idx % 9) * 45}ms` }}
+                  className={`group rounded-lg p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl flex flex-col justify-between border animate-fade-in-up ${
                     isDarkMode
                       ? 'bg-[#141816] border-zinc-800 hover:border-[#15875D]'
                       : 'bg-white border-transparent hover:border-[#15875D] shadow-[0_4px_14px_rgba(0,0,0,0.08)]'
@@ -471,7 +472,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = '/figma_prod_rice_sack.png';
                         }}
-                        className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+                        className="w-full h-full object-contain transition-transform duration-500 ease-out group-hover:scale-108 select-none"
                       />
                     </div>
 
