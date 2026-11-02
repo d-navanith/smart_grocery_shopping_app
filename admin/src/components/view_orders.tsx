@@ -18,7 +18,8 @@ import {
   Phone,
   LayoutGrid,
   List,
-  ArrowRight
+  ArrowRight,
+  Calendar
 } from 'lucide-react';
 import { Order } from './part1_imports_types';
 
@@ -55,6 +56,8 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'CARDS' | 'TABLE'>('CARDS'); // Bitepoint Cards default!
   const [quickFilter, setQuickFilter] = useState<'ALL' | 'ON_PROCESS' | 'COMPLETED'>('ALL');
+  const [orderDateFilter, setOrderDateFilter] = useState<'ALL' | 'TODAY' | 'YESTERDAY' | 'THIS_WEEK' | 'CUSTOM'>('ALL');
+  const [customDateValue, setCustomDateValue] = useState<string>('');
 
   // Filter logic
   const filteredOrders = orders.filter(o => {
@@ -75,6 +78,17 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
     // Payment filter
     if (orderPaymentFilter === 'PAID' && o.paymentStatus !== 'PAID') return false;
     if (orderPaymentFilter === 'PENDING' && o.paymentStatus !== 'PENDING') return false;
+
+    // Date filter
+    if (orderDateFilter === 'TODAY') {
+      const isToday = o.placedAt.toLowerCase().includes('astăzi') || o.placedAt.toLowerCase().includes('today');
+      if (!isToday) return false;
+    } else if (orderDateFilter === 'YESTERDAY') {
+      const isYesterday = o.placedAt.toLowerCase().includes('ieri') || o.placedAt.toLowerCase().includes('yesterday');
+      if (!isYesterday) return false;
+    } else if (orderDateFilter === 'CUSTOM' && customDateValue) {
+      if (!o.placedAt.includes(customDateValue)) return false;
+    }
 
     // Search filter
     if (localSearch) {
@@ -205,6 +219,58 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         </div>
       </div>
 
+      {/* Date Filtering Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5 pl-1">
+            <Calendar className="w-3.5 h-3.5 text-[#1B8057]" /> Filter by Date:
+          </span>
+          {(['ALL', 'TODAY', 'YESTERDAY', 'THIS_WEEK'] as const).map((filterId) => (
+            <button
+              key={filterId}
+              onClick={() => {
+                setOrderDateFilter(filterId);
+                setCustomDateValue('');
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                orderDateFilter === filterId && !customDateValue
+                  ? 'bg-[#0B3B2C] text-white shadow-xs font-black'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+              }`}
+            >
+              {filterId === 'ALL' ? 'All Dates' : filterId === 'TODAY' ? 'Today' : filterId === 'YESTERDAY' ? 'Yesterday' : 'This Week'}
+            </button>
+          ))}
+        </div>
+
+        {/* Custom Date Input */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 shadow-2xs">
+            <span className="text-[10px] text-slate-400 font-bold uppercase">Custom Date:</span>
+            <input
+              type="date"
+              value={customDateValue}
+              onChange={(e) => {
+                setCustomDateValue(e.target.value);
+                setOrderDateFilter('CUSTOM');
+              }}
+              className="bg-transparent text-xs font-bold text-slate-800 outline-none cursor-pointer"
+            />
+          </div>
+          {customDateValue && (
+            <button
+              onClick={() => {
+                setCustomDateValue('');
+                setOrderDateFilter('ALL');
+              }}
+              className="text-xs font-bold text-rose-600 hover:underline"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* 2. BITEPOINT TICKET CARDS GRID (Reference Image 2) */}
       {viewMode === 'CARDS' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -250,10 +316,16 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                     </div>
                   </div>
 
-                  {/* Timestamp */}
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-medium pt-3 border-b border-slate-100 pb-2.5">
-                    <span>Wed, 30 Oct 2026</span>
-                    <span>06:12 PM</span>
+                  {/* Order Placement Date & Time */}
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium pt-3 border-b border-slate-100 pb-2.5">
+                    <span className="font-bold flex items-center gap-1 text-slate-700">
+                      <Calendar className="w-3.5 h-3.5 text-[#1B8057]" />
+                      {order.placedAt.includes('•') ? order.placedAt.split('•')[0].trim() : 'Today'}
+                    </span>
+                    <span className="font-extrabold flex items-center gap-1 text-[#0B3B2C] bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-100/80">
+                      <Clock className="w-3.5 h-3.5 text-emerald-600" />
+                      {order.placedAt.includes('•') ? order.placedAt.split('•')[1].trim() : order.placedAt}
+                    </span>
                   </div>
 
                   {/* Itemized list matching Image 2 */}

@@ -16,11 +16,23 @@ interface AiRecipeViewProps {
   isDarkMode: boolean;
 }
 
+interface ChatMessage {
+  sender: 'user' | 'bot';
+  text: string;
+  time: string;
+  recipe?: any;
+}
+
 export const AiRecipeView: React.FC<AiRecipeViewProps> = ({ products, onAddToCart, isDarkMode }) => {
-  const [messages, setMessages] = useState<Array<{ sender: 'user' | 'bot'; text: string; recipe?: any }>>([
+  const formatCurrentTime = () => {
+    return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  };
+
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       sender: 'bot',
-      text: 'ආයුබෝවන්! 👋 I am CeylonBot, your Sri Lankan supermarket AI chef. Ask me for any meal idea (e.g. "Ceylon Black Pepper Chicken Curry", "Fresh Dambulla Vegetable Chop Suey", "Highland Milk Porridge") and I will prepare the complete grocery ingredient kit for you!'
+      text: 'ආයුබෝවන්! 👋 I am CeylonBot, your Sri Lankan supermarket AI chef. Ask me for any meal idea (e.g. "Ceylon Black Pepper Chicken Curry", "Fresh Dambulla Vegetable Chop Suey", "Highland Milk Porridge") and I will prepare the complete grocery ingredient kit for you!',
+      time: formatCurrentTime()
     }
   ]);
   const [input, setInput] = useState('');
@@ -37,7 +49,8 @@ export const AiRecipeView: React.FC<AiRecipeViewProps> = ({ products, onAddToCar
     const q = textToSend || input;
     if (!q.trim()) return;
 
-    setMessages(prev => [...prev, { sender: 'user', text: q }]);
+    const userTime = formatCurrentTime();
+    setMessages(prev => [...prev, { sender: 'user', text: q, time: userTime }]);
     if (!textToSend) setInput('');
     setLoading(true);
 
@@ -53,7 +66,8 @@ export const AiRecipeView: React.FC<AiRecipeViewProps> = ({ products, onAddToCar
         {
           sender: 'bot',
           text: data.message || 'Here is your recipe with fresh ingredients from our supermarket.',
-          recipe: data.recipe
+          recipe: data.recipe,
+          time: formatCurrentTime()
         }
       ]);
     } catch {
@@ -68,7 +82,8 @@ export const AiRecipeView: React.FC<AiRecipeViewProps> = ({ products, onAddToCar
             calories: '420 kcal',
             servings: '3-4 persons',
             items: ['Araliya Keeri Samba Rice', 'Purple Brinjal / Eggplant', 'Mysore Red Lentils (Dhal)']
-          }
+          },
+          time: formatCurrentTime()
         }
       ]);
     } finally {
@@ -173,6 +188,12 @@ export const AiRecipeView: React.FC<AiRecipeViewProps> = ({ products, onAddToCar
                     </button>
                   </div>
                 )}
+                <div className={`mt-2 flex items-center gap-1 text-[10px] ${
+                  m.sender === 'user' ? 'text-white/80 justify-end' : 'text-slate-400 dark:text-zinc-400 justify-start'
+                }`}>
+                  <Clock className="w-2.5 h-2.5" />
+                  <span>{m.time}</span>
+                </div>
               </div>
             </div>
           ))}

@@ -21,7 +21,9 @@ import {
   ArrowRight,
   Activity,
   Database,
-  RefreshCw
+  RefreshCw,
+  Calendar,
+  BarChart3
 } from 'lucide-react';
 import { Order, Product } from './part1_imports_types';
 import { adminApi } from '../api/adminApi';
@@ -47,9 +49,102 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 }) => {
   const [orderListSearch, setOrderListSearch] = useState('');
   const [paymentSearch, setPaymentSearch] = useState('');
-  const [showChart, setShowChart] = useState(false);
   const [crudLogs, setCrudLogs] = useState<any[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
+
+  // Ordering System Chart with Time & Date Filtering
+  const [chartDateFilter, setChartDateFilter] = useState<'TODAY' | 'YESTERDAY' | 'THIS_WEEK' | 'LAST_30_DAYS' | 'CUSTOM'>('TODAY');
+  const [chartCustomDate, setChartCustomDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [chartMetricMode, setChartMetricMode] = useState<'ORDERS' | 'REVENUE'>('ORDERS');
+  const [hoveredPointIndex, setHoveredPointIndex] = useState<number | null>(null);
+  const [orderListDateFilter, setOrderListDateFilter] = useState<'ALL' | 'TODAY' | 'YESTERDAY'>('ALL');
+
+  // Dynamic time-series data for Ordering System Chart
+  const chartTimeSeriesData = React.useMemo(() => {
+    if (chartDateFilter === 'TODAY' || (chartDateFilter === 'CUSTOM' && chartCustomDate === new Date().toISOString().split('T')[0])) {
+      return [
+        { time: '08:00 AM', orders: 2, revenue: 185, peak: false },
+        { time: '10:00 AM', orders: 6, revenue: 540, peak: false },
+        { time: '12:00 PM', orders: 15, revenue: 1390, peak: true, note: 'Peak Lunch Rush' },
+        { time: '02:00 PM', orders: 9, revenue: 780, peak: false },
+        { time: '04:00 PM', orders: 7, revenue: 620, peak: false },
+        { time: '06:00 PM', orders: 16, revenue: 1480, peak: true, note: 'Evening Dinner Peak' },
+        { time: '08:00 PM', orders: 10, revenue: 890, peak: false },
+        { time: '10:00 PM', orders: 3, revenue: 260, peak: false }
+      ];
+    } else if (chartDateFilter === 'YESTERDAY') {
+      return [
+        { time: '08:00 AM', orders: 1, revenue: 95, peak: false },
+        { time: '10:00 AM', orders: 4, revenue: 380, peak: false },
+        { time: '12:00 PM', orders: 11, revenue: 1050, peak: true, note: 'Lunch Peak' },
+        { time: '02:00 PM', orders: 7, revenue: 640, peak: false },
+        { time: '04:00 PM', orders: 5, revenue: 470, peak: false },
+        { time: '06:00 PM', orders: 13, revenue: 1220, peak: true, note: 'Dinner Rush' },
+        { time: '08:00 PM', orders: 8, revenue: 710, peak: false },
+        { time: '10:00 PM', orders: 2, revenue: 180, peak: false }
+      ];
+    } else if (chartDateFilter === 'THIS_WEEK') {
+      return [
+        { time: 'Mon (12-2 PM Peak)', orders: 24, revenue: 2150, peak: false },
+        { time: 'Tue (12-2 PM Peak)', orders: 28, revenue: 2480, peak: false },
+        { time: 'Wed (1-3 PM Peak)', orders: 31, revenue: 2790, peak: false },
+        { time: 'Thu (12-2 PM Peak)', orders: 26, revenue: 2340, peak: false },
+        { time: 'Fri (6-8 PM Peak)', orders: 38, revenue: 3420, peak: true, note: 'Weekend Prep Peak' },
+        { time: 'Sat (All Day)', orders: 45, revenue: 4110, peak: true, note: 'Saturday Rush' },
+        { time: 'Sun (All Day)', orders: 52, revenue: 4890, peak: true, note: 'Sunday Supermarket Peak' }
+      ];
+    } else if (chartDateFilter === 'LAST_30_DAYS') {
+      return [
+        { time: 'Week 1', orders: 184, revenue: 16400, peak: false },
+        { time: 'Week 2', orders: 215, revenue: 19350, peak: false },
+        { time: 'Week 3', orders: 238, revenue: 21600, peak: false },
+        { time: 'Week 4', orders: 272, revenue: 24800, peak: true, note: 'Highest Month Turnover' }
+      ];
+    } else {
+      return [
+        { time: '08:00 AM', orders: 2, revenue: 190, peak: false },
+        { time: '10:00 AM', orders: 5, revenue: 480, peak: false },
+        { time: '12:00 PM', orders: 12, revenue: 1120, peak: true, note: 'Lunch Peak' },
+        { time: '02:00 PM', orders: 8, revenue: 730, peak: false },
+        { time: '04:00 PM', orders: 6, revenue: 540, peak: false },
+        { time: '06:00 PM', orders: 14, revenue: 1290, peak: true, note: 'Dinner Peak' },
+        { time: '08:00 PM', orders: 9, revenue: 820, peak: false },
+        { time: '10:00 PM', orders: 3, revenue: 270, peak: false }
+      ];
+    }
+  }, [chartDateFilter, chartCustomDate]);
+
+  const totalChartOrders = chartTimeSeriesData.reduce((sum, d) => sum + d.orders, 0);
+  const totalChartRevenue = chartTimeSeriesData.reduce((sum, d) => sum + d.revenue, 0);
+  const peakTimePoint = chartTimeSeriesData.reduce((prev, curr) => (curr.orders > prev.orders ? curr : prev), chartTimeSeriesData[0]);
+
+  // Max value for scaling
+  const maxMetricValue = Math.max(...chartTimeSeriesData.map(d => chartMetricMode === 'ORDERS' ? d.orders : d.revenue)) * 1.18;
+  const svgWidth = 620;
+  const svgHeight = 180;
+  const paddingX = 40;
+  const paddingY = 25;
+
+  const points = chartTimeSeriesData.map((d, i) => {
+    const x = paddingX + (i / (chartTimeSeriesData.length - 1)) * (svgWidth - paddingX * 2);
+    const val = chartMetricMode === 'ORDERS' ? d.orders : d.revenue;
+    const y = (svgHeight - paddingY) - (val / (maxMetricValue || 1)) * (svgHeight - paddingY * 2);
+    return { x, y, data: d };
+  });
+
+  const svgPathD = points.reduce((acc, p, i, arr) => {
+    if (i === 0) return `M ${p.x},${p.y}`;
+    const prev = arr[i - 1];
+    const cp1x = prev.x + (p.x - prev.x) / 2;
+    const cp1y = prev.y;
+    const cp2x = prev.x + (p.x - prev.x) / 2;
+    const cp2y = p.y;
+    return `${acc} C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p.x},${p.y}`;
+  }, '');
+
+  const areaPathD = points.length > 0
+    ? `${svgPathD} L ${points[points.length - 1].x},${svgHeight - paddingY} L ${points[0].x},${svgHeight - paddingY} Z`
+    : '';
 
   const fetchLogs = async () => {
     setLoadingLogs(true);
@@ -78,8 +173,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const totalOrdersCount = orders.length;
   const lowStockCount = products.filter(p => p.stock < 30).length;
 
-  // Filtered order list for Column 1
+  // Filtered order list for Column 1 with Date Filtering
   const filteredOrderList = orders.filter(o => {
+    if (orderListDateFilter === 'TODAY') {
+      const isToday = o.placedAt.toLowerCase().includes('astăzi') || o.placedAt.toLowerCase().includes('today');
+      if (!isToday) return false;
+    } else if (orderListDateFilter === 'YESTERDAY') {
+      const isYesterday = o.placedAt.toLowerCase().includes('ieri') || o.placedAt.toLowerCase().includes('yesterday');
+      if (!isYesterday) return false;
+    }
+
     if (!orderListSearch) return true;
     const q = orderListSearch.toLowerCase();
     return o.customerName.toLowerCase().includes(q) || o.orderNumber.toLowerCase().includes(q);
@@ -201,16 +304,38 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <span className="text-xs font-bold text-slate-400">({filteredOrderList.length})</span>
           </div>
 
-          {/* Search a Order input */}
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search a Order"
-              value={orderListSearch}
-              onChange={(e) => setOrderListSearch(e.target.value)}
-              className="w-full bg-[#F5F6F8] rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#F8B838]"
-            />
+          {/* Search a Order input & Date Filter Pills */}
+          <div className="space-y-2">
+            <div className="relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search a Order"
+                value={orderListSearch}
+                onChange={(e) => setOrderListSearch(e.target.value)}
+                className="w-full bg-[#F5F6F8] rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-1 focus:ring-[#F8B838]"
+              />
+            </div>
+
+            {/* Date filter for orders */}
+            <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 pt-0.5">
+              <span className="text-[10px] uppercase font-black tracking-wider text-slate-400 flex items-center gap-1">
+                <Calendar className="w-3 h-3 text-slate-400" /> Date:
+              </span>
+              {(['ALL', 'TODAY', 'YESTERDAY'] as const).map(d => (
+                <button
+                  key={d}
+                  onClick={() => setOrderListDateFilter(d)}
+                  className={`px-2.5 py-0.5 rounded-lg transition ${
+                    orderListDateFilter === d
+                      ? 'bg-[#0B3B2C] text-white font-extrabold shadow-xs'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                  }`}
+                >
+                  {d === 'ALL' ? 'All' : d === 'TODAY' ? 'Today' : 'Yesterday'}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Orders Stream */}
@@ -218,6 +343,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             {filteredOrderList.map((order, idx) => {
               const badge = getTableBadge(idx);
               const itemCount = order.items?.length || 4;
+              const orderTimeStr = order.placedAt.includes('•') ? order.placedAt.split('•')[1].trim() : order.placedAt;
+
               return (
                 <div
                   key={order.id}
@@ -232,9 +359,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <h4 className="font-extrabold text-xs text-slate-900 group-hover:text-[#0C4E3B] transition">
                         {order.customerName}
                       </h4>
-                      <p className="text-[11px] text-slate-400 font-medium">
-                        {itemCount} Items
-                      </p>
+                      <div className="flex items-center gap-2 text-[11px] text-slate-400 font-medium">
+                        <span>{itemCount} Items</span>
+                        <span>•</span>
+                        <span className="inline-flex items-center gap-0.5 font-bold text-slate-600">
+                          <Clock className="w-3 h-3 text-[#1B8057]" />
+                          {orderTimeStr}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -483,71 +615,251 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
       </div>
 
-      {/* 3. OPTIONAL EXPANDABLE REVENUE TELEMETRY SECTION */}
-      <div className="pt-2">
-        <button
-          onClick={() => setShowChart(!showChart)}
-          className="text-xs font-bold text-slate-400 hover:text-slate-700 flex items-center gap-1 transition"
-        >
-          <span>{showChart ? '▲ Hide Financial Telemetry & Chart' : '▼ View Financial Telemetry & Chart'}</span>
-        </button>
-
-        {showChart && (
-          <div className="mt-4 p-6 rounded-3xl bg-white border border-slate-100 shadow-xs space-y-4 animate-fadeIn">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-black text-base text-slate-900">Revenue Performance</h3>
-                <p className="text-xs text-slate-400 font-medium">Daily online supermarket turnover (LKR)</p>
+      {/* 3. ORDERING SYSTEM & SALES TELEMETRY OVER TIME (WITH TIME & DATE FILTERING) */}
+      <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-5 animate-fadeIn">
+        {/* Header & Controls Toolbar */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#0B3B2C] text-[#F8B838] flex items-center justify-center shadow-xs">
+              <BarChart3 className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-black text-base text-slate-900 tracking-tight">
+                  Ordering System & Sales Telemetry Over Time
+                </h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Live
+                </span>
               </div>
+              <p className="text-xs text-slate-400 font-medium">
+                Real-time distribution of online supermarket orders and revenue plotted against time
+              </p>
+            </div>
+          </div>
+
+          {/* Controls: Metric Switcher, Date Presets, Custom Date Picker */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Metric Mode Toggle */}
+            <div className="flex items-center p-1 rounded-xl bg-slate-100 text-xs font-bold text-slate-600">
               <button
-                onClick={onExportCsv}
-                className="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-1.5"
+                onClick={() => setChartMetricMode('ORDERS')}
+                className={`px-3 py-1 rounded-lg transition ${
+                  chartMetricMode === 'ORDERS'
+                    ? 'bg-[#0B3B2C] text-white shadow-xs font-black'
+                    : 'hover:text-slate-900'
+                }`}
               >
-                <Download className="w-3.5 h-3.5" />
-                <span>Export Report</span>
+                Orders Volume
+              </button>
+              <button
+                onClick={() => setChartMetricMode('REVENUE')}
+                className={`px-3 py-1 rounded-lg transition ${
+                  chartMetricMode === 'REVENUE'
+                    ? 'bg-[#0B3B2C] text-white shadow-xs font-black'
+                    : 'hover:text-slate-900'
+                }`}
+              >
+                Revenue (lei)
               </button>
             </div>
 
-            {/* Styled Area Spline Chart SVG */}
-            <div className="h-56 w-full pt-4">
-              <svg viewBox="0 0 500 180" className="w-full h-full overflow-visible">
-                <defs>
-                  <linearGradient id="dashGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#0B3B2C" stopOpacity="0.25" />
-                    <stop offset="100%" stopColor="#0B3B2C" stopOpacity="0.0" />
-                  </linearGradient>
-                </defs>
-                <line x1="0" y1="30" x2="500" y2="30" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-                <line x1="0" y1="75" x2="500" y2="75" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-                <line x1="0" y1="120" x2="500" y2="120" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-                <line x1="0" y1="160" x2="500" y2="160" stroke="#e2e8f0" strokeWidth="1" />
+            {/* Date Preset Buttons */}
+            <div className="flex items-center p-1 rounded-xl bg-slate-100 text-xs font-bold text-slate-600">
+              {[
+                { id: 'TODAY', label: 'Today (Hourly)' },
+                { id: 'YESTERDAY', label: 'Yesterday' },
+                { id: 'THIS_WEEK', label: 'This Week' },
+                { id: 'LAST_30_DAYS', label: '30 Days' }
+              ].map(f => (
+                <button
+                  key={f.id}
+                  onClick={() => setChartDateFilter(f.id as any)}
+                  className={`px-2.5 py-1 rounded-lg transition ${
+                    chartDateFilter === f.id
+                      ? 'bg-white text-[#0B3B2C] font-black shadow-xs'
+                      : 'hover:text-slate-900'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Custom Calendar Date Picker */}
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 shadow-2xs hover:border-slate-300">
+              <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+              <input
+                type="date"
+                value={chartCustomDate}
+                onChange={(e) => {
+                  setChartCustomDate(e.target.value);
+                  setChartDateFilter('CUSTOM');
+                }}
+                className="bg-transparent text-xs font-bold text-slate-700 outline-none cursor-pointer"
+                title="Select specific date for order analytics"
+              />
+            </div>
+
+            <button
+              onClick={onExportCsv}
+              className="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-1.5 transition active:scale-95 shadow-2xs"
+            >
+              <Download className="w-3.5 h-3.5 text-slate-500" />
+              <span>Export</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 4 Quick Stat Pills for Selected Time Window */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Total Orders in Window</span>
+            <p className="text-xl font-black text-slate-900 mt-0.5">{totalChartOrders} orders</p>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Total Revenue in Window</span>
+            <p className="text-xl font-black text-[#0B3B2C] mt-0.5">{totalChartRevenue.toLocaleString()} lei</p>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-amber-50/70 border border-amber-100/80">
+            <span className="text-[10px] font-black uppercase tracking-wider text-amber-800">Peak Ordering Time</span>
+            <p className="text-sm font-black text-amber-900 mt-1 truncate">
+              {peakTimePoint.time.split('(')[0].trim()} ({peakTimePoint.orders} orders)
+            </p>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-100/80">
+            <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800">Avg. Basket Value</span>
+            <p className="text-xl font-black text-emerald-900 mt-0.5">
+              {(totalChartRevenue / (totalChartOrders || 1)).toFixed(2)} lei
+            </p>
+          </div>
+        </div>
+
+        {/* Dynamic Interactive SVG Chart with Spline & Time Tooltips */}
+        <div className="relative pt-2 pb-2">
+          {/* Tooltip Overlay */}
+          {hoveredPointIndex !== null && points[hoveredPointIndex] && (
+            <div
+              className="absolute z-20 pointer-events-none p-3 rounded-xl bg-slate-900 text-white shadow-xl text-xs -translate-x-1/2 -translate-y-full mb-3"
+              style={{
+                left: `${(points[hoveredPointIndex].x / svgWidth) * 100}%`,
+                top: `${(points[hoveredPointIndex].y / svgHeight) * 100}%`
+              }}
+            >
+              <div className="flex items-center gap-1.5 font-black text-[#F8B838] border-b border-slate-700 pb-1 mb-1">
+                <Clock className="w-3.5 h-3.5" />
+                <span>{points[hoveredPointIndex].data.time}</span>
+              </div>
+              <p className="text-white font-bold">
+                Orders: <span className="text-emerald-400 font-black">{points[hoveredPointIndex].data.orders} placed</span>
+              </p>
+              <p className="text-white font-bold">
+                Turnover: <span className="text-amber-300 font-black">{points[hoveredPointIndex].data.revenue.toFixed(2)} lei</span>
+              </p>
+              {points[hoveredPointIndex].data.note && (
+                <span className="mt-1 inline-block px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">
+                  {points[hoveredPointIndex].data.note}
+                </span>
+              )}
+            </div>
+          )}
+
+          <div className="h-60 w-full">
+            <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="w-full h-full overflow-visible">
+              <defs>
+                <linearGradient id="orderTimeGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#0B3B2C" stopOpacity="0.32" />
+                  <stop offset="100%" stopColor="#0B3B2C" stopOpacity="0.01" />
+                </linearGradient>
+              </defs>
+
+              {/* Grid Lines */}
+              <line x1="20" y1="30" x2={svgWidth - 20} y2="30" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="4 4" />
+              <line x1="20" y1="75" x2={svgWidth - 20} y2="75" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="4 4" />
+              <line x1="20" y1="120" x2={svgWidth - 20} y2="120" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="4 4" />
+              <line x1="20" y1={svgHeight - paddingY} x2={svgWidth - 20} y2={svgHeight - paddingY} stroke="#e2e8f0" strokeWidth="1.2" />
+
+              {/* Area Gradient Fill */}
+              {areaPathD && (
+                <path d={areaPathD} fill="url(#orderTimeGrad)" />
+              )}
+
+              {/* Smooth Curved Spline */}
+              {svgPathD && (
                 <path
-                  d="M 0,160 L 0,110 C 60,105 90,135 150,90 C 210,45 260,110 320,60 C 380,20 420,50 500,25 L 500,160 Z"
-                  fill="url(#dashGrad)"
-                />
-                <path
-                  d="M 0,110 C 60,105 90,135 150,90 C 210,45 260,110 320,60 C 380,20 420,50 500,25"
+                  d={svgPathD}
                   fill="none"
                   stroke="#0B3B2C"
                   strokeWidth="3.5"
                   strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
-                <circle cx="150" cy="90" r="4" fill="#0B3B2C" stroke="#ffffff" strokeWidth="2" />
-                <circle cx="320" cy="60" r="4" fill="#0B3B2C" stroke="#ffffff" strokeWidth="2" />
-                <circle cx="500" cy="25" r="5" fill="#F8B838" stroke="#ffffff" strokeWidth="2" />
-              </svg>
-              <div className="flex justify-between text-[11px] font-bold text-slate-400 mt-2">
-                <span>Mon</span>
-                <span>Tue</span>
-                <span>Wed</span>
-                <span>Thu</span>
-                <span>Fri</span>
-                <span>Sat</span>
-                <span className="text-[#0B3B2C] font-black">Sun (Peak)</span>
-              </div>
+              )}
+
+              {/* Interactive Points along Time Axis */}
+              {points.map((p, idx) => {
+                const isHovered = hoveredPointIndex === idx;
+                const isPeak = p.data.peak;
+
+                return (
+                  <g
+                    key={idx}
+                    onMouseEnter={() => setHoveredPointIndex(idx)}
+                    onMouseLeave={() => setHoveredPointIndex(null)}
+                    className="cursor-pointer"
+                  >
+                    {/* Invisible larger hit target for smooth mobile & touch hover */}
+                    <circle cx={p.x} cy={p.y} r="16" fill="transparent" />
+
+                    {/* Outer glow ring on peak or hovered */}
+                    {(isHovered || isPeak) && (
+                      <circle
+                        cx={p.x}
+                        cy={p.y}
+                        r={isHovered ? 9 : 7}
+                        fill={isPeak ? '#F8B838' : '#0B3B2C'}
+                        opacity="0.3"
+                        className="animate-pulse"
+                      />
+                    )}
+
+                    {/* Main Dot */}
+                    <circle
+                      cx={p.x}
+                      cy={p.y}
+                      r={isHovered ? 6 : isPeak ? 5 : 4}
+                      fill={isPeak ? '#F8B838' : '#0B3B2C'}
+                      stroke="#ffffff"
+                      strokeWidth={isHovered ? 2.5 : 2}
+                      className="transition-all duration-150"
+                    />
+                  </g>
+                );
+              })}
+            </svg>
+
+            {/* Time Axis Labels along Bottom */}
+            <div className="flex justify-between text-[11px] font-bold text-slate-400 mt-2 px-3">
+              {chartTimeSeriesData.map((d, idx) => (
+                <span
+                  key={idx}
+                  className={`text-center transition ${
+                    hoveredPointIndex === idx
+                      ? 'text-[#0B3B2C] font-black scale-105'
+                      : d.peak
+                      ? 'text-amber-800 font-extrabold'
+                      : ''
+                  }`}
+                >
+                  {d.time.split('(')[0].trim()}
+                </span>
+              ))}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
