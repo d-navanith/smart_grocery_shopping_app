@@ -662,6 +662,7 @@ export default function ClientWebSupermarket() {
       />
 
       <main className="flex-1 flex flex-col">
+        <div key={currentPage} className="animate-fade-in-up flex-1 flex flex-col">
         {currentPage === 'SHOP' && (
           <ShopView
             products={products}
@@ -841,6 +842,7 @@ export default function ClientWebSupermarket() {
             t={t}
           />
         )}
+        </div>
       </main>
 
       <Footer

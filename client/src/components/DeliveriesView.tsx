@@ -605,7 +605,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
       {/* INVOICE POP-UP MODAL FOR DELIVERY HISTORY (FIGMA THEME) */}
       {selectedInvoiceOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border-2 border-[#15875D] text-xs font-sans text-[#003D25]">
+          <div className="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border-2 border-[#15875D] text-xs font-sans text-[#003D25] animate-modal-pop">
             <div className="bg-[#1B8057] px-5 py-3.5 flex items-center justify-between text-white">
               <div className="flex items-center gap-2.5">
                 <div className="bg-white rounded px-2 py-1">

@@ -327,12 +327,12 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             <button
               type="button"
               onClick={() => setCurrentPage('CART')}
-              className="relative w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] rounded-full bg-[#39906D] hover:bg-[#2e7d5e] border border-white/80 flex items-center justify-center text-white transition cursor-pointer shadow-xs"
+              className="relative w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] rounded-full bg-[#39906D] hover:bg-[#2e7d5e] active:scale-95 border border-white/80 flex items-center justify-center text-white transition-all duration-200 cursor-pointer shadow-xs"
               title={t.myCart}
             >
               <ShoppingCart className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2]" />
               {totalCartCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#F8C519] text-[#664E00] text-[11px] font-black flex items-center justify-center shadow">
+                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#F8C519] text-[#664E00] text-[11px] font-black flex items-center justify-center shadow animate-badge-pop">
                   {totalCartCount}
                 </span>
               )}

@@ -152,7 +152,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <img
               src="/figma_starburst.png"
               alt="Fresh picks this week"
-              className="w-28 sm:w-32 lg:w-[132px] h-auto object-contain absolute top-2 right-2 sm:right-0 lg:-right-6 z-20 drop-shadow-sm select-none pointer-events-none"
+              className="w-28 sm:w-32 lg:w-[132px] h-auto object-contain absolute top-2 right-2 sm:right-0 lg:-right-6 z-20 drop-shadow-sm select-none pointer-events-none animate-float"
             />
 
             {/* Main Hero Woman Image */}
@@ -163,7 +163,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             />
 
             {/* Floating Card ("The taste of Sri Lanka, delivered to your home.") */}
-            <div className="absolute bottom-6 sm:bottom-11 left-2 sm:-left-6 lg:-left-16 z-20 bg-white dark:bg-[#0E2E20] rounded-2xl px-6 py-3.5 shadow-[0_6px_20px_rgba(0,0,0,0.18)] border border-slate-100 dark:border-[#15875D] text-center">
+            <div className="absolute bottom-6 sm:bottom-11 left-2 sm:-left-6 lg:-left-16 z-20 bg-white dark:bg-[#0E2E20] rounded-2xl px-6 py-3.5 shadow-[0_6px_20px_rgba(0,0,0,0.18)] border border-slate-100 dark:border-[#15875D] text-center animate-float-delayed">
               <p className="text-[#1B8057] dark:text-[#80F6C7] font-bold text-sm sm:text-[17px] leading-snug">
                 The taste of Sri Lanka,
                 <br />
@@ -215,14 +215,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {/* Card 1: Fastest Delivery */}
           <div
-            className={`rounded-xl border border-[#15875D] px-7 py-7 min-h-[155px] flex items-center gap-6 shadow-[0_3px_10px_rgba(0,0,0,0.06)] transition ${
+            className={`group rounded-xl border border-[#15875D] px-7 py-7 min-h-[155px] flex items-center gap-6 shadow-[0_3px_10px_rgba(0,0,0,0.06)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 ${
               isDarkMode ? 'bg-[#0E2E20]/90 border-[#15875D]' : 'bg-[#F0FAF3]'
             }`}
           >
             <img
               src="/figma_icon_delivery.png"
               alt="Fastest Delivery"
-              className="w-[68px] h-[46px] object-contain shrink-0"
+              className="w-[68px] h-[46px] object-contain shrink-0 group-hover:scale-105 transition-transform duration-300"
             />
             <div>
               <h3 className="text-[#0A6847] dark:text-[#80F6C7] font-bold text-xl sm:text-[22px] leading-tight">
@@ -238,14 +238,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
           {/* Card 2: Freshness you can trust */}
           <div
-            className={`rounded-xl border border-[#15875D] px-7 py-7 min-h-[155px] flex items-center gap-6 shadow-[0_3px_10px_rgba(0,0,0,0.06)] transition ${
+            className={`group rounded-xl border border-[#15875D] px-7 py-7 min-h-[155px] flex items-center gap-6 shadow-[0_3px_10px_rgba(0,0,0,0.06)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 ${
               isDarkMode ? 'bg-[#0E2E20]/90 border-[#15875D]' : 'bg-[#F0FAF3]'
             }`}
           >
             <img
               src="/figma_icon_freshness.png"
               alt="Freshness you can trust"
-              className="w-[50px] h-[48px] object-contain shrink-0"
+              className="w-[50px] h-[48px] object-contain shrink-0 group-hover:scale-105 transition-transform duration-300"
             />
             <div>
               <h3 className="text-[#0A6847] dark:text-[#80F6C7] font-bold text-xl sm:text-[22px] leading-tight">
@@ -261,14 +261,14 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
           {/* Card 3: Cash on delivery */}
           <div
-            className={`rounded-xl border border-[#15875D] px-7 py-7 min-h-[155px] flex items-center gap-6 shadow-[0_3px_10px_rgba(0,0,0,0.06)] transition ${
+            className={`group rounded-xl border border-[#15875D] px-7 py-7 min-h-[155px] flex items-center gap-6 shadow-[0_3px_10px_rgba(0,0,0,0.06)] hover:-translate-y-1 hover:shadow-xl transition-all duration-300 ${
               isDarkMode ? 'bg-[#0E2E20]/90 border-[#15875D]' : 'bg-[#F0FAF3]'
             }`}
           >
             <img
               src="/figma_icon_cod.png"
               alt="Cash on delivery"
-              className="w-[52px] h-[48px] object-contain shrink-0"
+              className="w-[52px] h-[48px] object-contain shrink-0 group-hover:scale-105 transition-transform duration-300"
             />
             <div>
               <h3 className="text-[#0A6847] dark:text-[#80F6C7] font-bold text-xl sm:text-[22px] leading-tight">

@@ -163,7 +163,7 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
       {/* Pop-up message for Accepted status: Admin confirmation call */}
       {isAcceptedModalOpen && searchedOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-white dark:bg-[#141C18] rounded-2xl max-w-md w-full border-2 border-[#15875D] shadow-2xl overflow-hidden p-6 text-center space-y-4">
+          <div className="bg-white dark:bg-[#141C18] rounded-2xl max-w-md w-full border-2 border-[#15875D] shadow-2xl overflow-hidden p-6 text-center space-y-4 animate-modal-pop">
             <div className="w-16 h-16 rounded-full bg-[#E8F5EE] dark:bg-[#0E2E20] border-2 border-[#0A6847] flex items-center justify-center mx-auto text-[#0A6847] dark:text-[#80F6C7]">
               <Phone className="w-8 h-8 animate-pulse text-[#0A6847]" />
             </div>
