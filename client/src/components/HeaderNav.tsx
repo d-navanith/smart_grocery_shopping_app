@@ -736,35 +736,37 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             </nav>
           </div>
 
-          {/* Right Quick Links for Track Order & My Deliveries */}
-          <div className="hidden xl:flex items-center gap-5 text-xs font-semibold text-white/95 uppercase tracking-wide">
-            <button
-              type="button"
-              onClick={() => setCurrentPage('TRACK_ORDER')}
-              className={`hover:text-[#F8C519] transition cursor-pointer ${
-                currentPage === 'TRACK_ORDER' ? 'text-[#F8C519] font-bold' : ''
-              }`}
-            >
-              {t.trackOrderTitle}
-            </button>
+          {/* Right Quick Links for Track Order & My Deliveries (ONLY SHOWN WHEN SIGNED IN) */}
+          {currentUser && (
+            <div className="hidden xl:flex items-center gap-5 text-xs font-semibold text-white/95 uppercase tracking-wide">
+              <button
+                type="button"
+                onClick={() => setCurrentPage('TRACK_ORDER')}
+                className={`hover:text-[#F8C519] transition cursor-pointer ${
+                  currentPage === 'TRACK_ORDER' ? 'text-[#F8C519] font-bold' : ''
+                }`}
+              >
+                {t.trackOrderTitle}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setCurrentPage('DELIVERIES')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${
-                currentPage === 'DELIVERIES'
-                  ? 'bg-[#F8C519] text-[#664E00] font-bold'
-                  : 'bg-[#39906D] hover:bg-[#2e7d5e] text-white'
-              }`}
-            >
-              <span>{t.tabDeliveries}</span>
-              {ongoingDeliveriesCount > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full bg-[#F8C519] text-[#664E00] text-[10px] font-black">
-                  {ongoingDeliveriesCount}
-                </span>
-              )}
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={() => setCurrentPage('DELIVERIES')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${
+                  currentPage === 'DELIVERIES'
+                    ? 'bg-[#F8C519] text-[#664E00] font-bold'
+                    : 'bg-[#39906D] hover:bg-[#2e7d5e] text-white'
+                }`}
+              >
+                <span>{t.tabDeliveries}</span>
+                {ongoingDeliveriesCount > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full bg-[#F8C519] text-[#664E00] text-[10px] font-black">
+                    {ongoingDeliveriesCount}
+                  </span>
+                )}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Mobile Navigation Drawer */}
@@ -819,24 +821,28 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             >
               CEYLON SPICES
             </button>
-            <button
-              onClick={() => {
-                setCurrentPage('TRACK_ORDER');
-                setMobileMenuOpen(false);
-              }}
-              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
-            >
-              TRACK YOUR ORDER
-            </button>
-            <button
-              onClick={() => {
-                setCurrentPage('DELIVERIES');
-                setMobileMenuOpen(false);
-              }}
-              className="block w-full text-left py-1.5 text-[#F8C519] font-bold"
-            >
-              MY DELIVERIES ({ongoingDeliveriesCount})
-            </button>
+            {currentUser && (
+              <>
+                <button
+                  onClick={() => {
+                    setCurrentPage('TRACK_ORDER');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="block w-full text-left py-1.5 hover:text-[#F8C519]"
+                >
+                  TRACK YOUR ORDER
+                </button>
+                <button
+                  onClick={() => {
+                    setCurrentPage('DELIVERIES');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="block w-full text-left py-1.5 text-[#F8C519] font-bold"
+                >
+                  MY DELIVERIES ({ongoingDeliveriesCount})
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>

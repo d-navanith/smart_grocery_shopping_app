@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Lock } from 'lucide-react';
 import { Product, CartItem, CustomerUser, DeliveryZone, ClientOrder } from './types';
 import { INITIAL_PRODUCTS } from './initialProducts';
 import { AppPage, HeaderNav } from './components/HeaderNav';
@@ -78,85 +79,7 @@ export default function ClientWebSupermarket() {
     if (saved) {
       try { return JSON.parse(saved); } catch {}
     }
-    return [
-      {
-        id: 'ord-101',
-        orderNumber: 'CF-8921',
-        placedAt: 'Astăzi • 10:15',
-        status: 'PROCESSING',
-        items: [
-          { productTitle: 'Araliya Keeri Samba & White Raw Rice (5kg)', quantity: 1, price: 38.50 },
-          { productTitle: 'Sri Lankan Purple Brinjal / Eggplant (1kg)', quantity: 2, price: 14.50 },
-          { productTitle: 'Mysore Red Split Lentils / Dhal (1kg)', quantity: 1, price: 12.50 }
-        ],
-        subtotal: 80.00,
-        deliveryFee: 15.00,
-        totalAmount: 95.00,
-        paymentMethod: 'CASH_ON_DELIVERY',
-        paymentStatus: 'PENDING',
-        customerName: 'Mihai Enache',
-        customerPhone: '+40 722 456 789',
-        address: 'Strada Mihai Eminescu nr. 42, Bl. 12, Sc. A, Ap. 14, București Sector 1',
-        deliveryZone: 'București Sector 1',
-        courierCompany: 'Glovo Express Bucharest',
-        courierPhone: '+40 21 9988',
-        riderName: 'Andrei Popescu (Glovo Rider)',
-        riderPhone: '', // Not verified yet! Client CANNOT call rider!
-        riderVerifiedByAdmin: false,
-        pickupMinutes: 10,
-        deliveryMinutes: 30,
-        notes: 'Sunați la interfon 14. Am pregătit 95 lei numerar (Cash on Delivery).'
-      },
-      {
-        id: 'ord-102',
-        orderNumber: 'CF-8919',
-        placedAt: 'Astăzi • 08:30',
-        status: 'ON_THE_WAY',
-        items: [
-          { productTitle: 'Dilmah Pure Ceylon Single Origin BOPF Tea (400g)', quantity: 2, price: 22.50 },
-          { productTitle: 'Woodfired Traditional Roast Paan (1 Loaf)', quantity: 2, price: 7.50 },
-          { productTitle: 'Munchee Super Cream Crackers (500g)', quantity: 2, price: 12.00 }
-        ],
-        subtotal: 84.00,
-        deliveryFee: 15.00,
-        totalAmount: 99.00,
-        paymentMethod: 'CASH_ON_DELIVERY',
-        paymentStatus: 'PENDING',
-        customerName: 'Mihai Enache',
-        customerPhone: '+40 722 456 789',
-        address: 'Strada Mihai Eminescu nr. 42, București Sector 1',
-        deliveryZone: 'București Sector 1',
-        courierCompany: 'Bolt Delivery Riders',
-        courierPhone: '+40 31 229 5555',
-        riderName: 'Alexandru Radu (Bolt Rider)',
-        riderPhone: '+40 731 992 481', // VERIFIED BY ADMIN! Client CAN call!
-        riderVerifiedByAdmin: true,
-        pickupMinutes: 5,
-        deliveryMinutes: 20
-      },
-      {
-        id: 'ord-104',
-        orderNumber: 'CF-8918',
-        placedAt: 'Ieri • 16:20',
-        status: 'DELIVERED',
-        items: [
-          { productTitle: 'Araliya Keeri Samba & White Raw Rice (5kg)', quantity: 2, price: 38.50 },
-          { productTitle: 'Sri Lankan Purple Brinjal / Eggplant (1kg)', quantity: 2, price: 14.50 }
-        ],
-        subtotal: 106.00,
-        deliveryFee: 15.00,
-        totalAmount: 121.00,
-        paymentMethod: 'CASH_ON_DELIVERY',
-        paymentStatus: 'PAID',
-        customerName: 'Mihai Enache',
-        customerPhone: '+40 722 456 789',
-        address: 'Strada Liviu Rebreanu nr. 15, București Sector 3',
-        courierCompany: 'Glovo Express Bucharest',
-        riderName: 'Ion Ionescu',
-        riderPhone: '+40 732 441 902',
-        riderVerifiedByAdmin: true
-      }
-    ];
+    return [];
   });
 
   // Save client orders to localStorage whenever changed
@@ -164,15 +87,40 @@ export default function ClientWebSupermarket() {
     localStorage.setItem('ceylonfoods_client_orders', JSON.stringify(customerOrders));
   }, [customerOrders]);
 
-  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [wishlist, setWishlist] = useState<string[]>(['prod-white-rice', 'prod-brinjal']);
-
   const [currentUser, setCurrentUser] = useState<CustomerUser | null>(() => {
     const saved = localStorage.getItem('ceylonfoods_customer_user');
     return saved ? JSON.parse(saved) : null;
   });
+
+  // Automatically restrict unauthenticated visitors from accessing internal order/account views
+  useEffect(() => {
+    if (!currentUser && (currentPage === 'DELIVERIES' || currentPage === 'TRACK_ORDER' || currentPage === 'ACCOUNT')) {
+      setCurrentPage('HOME');
+      setIsAuthModalOpen(true);
+    }
+  }, [currentUser, currentPage]);
+
+  // Authenticated user's orders (EMPTY for unauthenticated guests)
+  const userOrders = currentUser
+    ? customerOrders.filter(
+        o =>
+          (currentUser.id && o.customerId === currentUser.id) ||
+          (currentUser.email && o.customerEmail === currentUser.email) ||
+          (currentUser.phone && o.customerPhone === currentUser.phone) ||
+          (currentUser.name && o.customerName === currentUser.name)
+      )
+    : [];
+
+  const ongoingDeliveriesCount = currentUser
+    ? userOrders.filter(
+        o => o.status === 'PROCESSING' || o.status === 'ON_THE_WAY' || o.status === 'PENDING'
+      ).length
+    : 0;
+
+  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [wishlist, setWishlist] = useState<string[]>(['prod-white-rice', 'prod-brinjal']);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Cart with Authentic Sri Lankan staples in Lei (Image 2 Theme)
@@ -637,7 +585,13 @@ export default function ClientWebSupermarket() {
     <div className={`min-h-screen ${isDarkMode ? 'dark bg-[#0A0D0B] text-white' : 'bg-white text-slate-900'} font-sans flex flex-col transition-colors duration-200`}>
       <HeaderNav
         currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
+        setCurrentPage={(page) => {
+          if (!currentUser && (page === 'DELIVERIES' || page === 'TRACK_ORDER' || page === 'ACCOUNT')) {
+            setIsAuthModalOpen(true);
+            return;
+          }
+          setCurrentPage(page);
+        }}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         searchQuery={searchQuery}
@@ -658,7 +612,7 @@ export default function ClientWebSupermarket() {
         currentLanguage={currentLanguage}
         onLanguageChange={handleLanguageChange}
         t={t}
-        ongoingDeliveriesCount={customerOrders.filter(o => o.status === 'PROCESSING' || o.status === 'ON_THE_WAY' || o.status === 'PENDING').length}
+        ongoingDeliveriesCount={ongoingDeliveriesCount}
       />
 
       <main className="flex-1 flex flex-col">
@@ -779,17 +733,38 @@ export default function ClientWebSupermarket() {
         )}
 
         {currentPage === 'TRACK_ORDER' && (
-          <TrackOrderView
-            orders={customerOrders}
-            initialOrderNumber={initialTrackNumber}
-            onConfirmReceived={handleConfirmParcelReceived}
-            onConfirmCallReceived={handleConfirmCallReceived}
-            onNavigateDeliveries={() => setCurrentPage('DELIVERIES')}
-            onNavigateShop={() => setCurrentPage('SHOP')}
-            onNavigateHome={() => setCurrentPage('HOME')}
-            isDarkMode={isDarkMode}
-            t={t}
-          />
+          !currentUser ? (
+            <div className="w-full flex-1 bg-white dark:bg-[#0D1210] py-16 px-4">
+              <div className="max-w-md mx-auto p-8 rounded-2xl bg-[#F0FAF3] dark:bg-[#141C18] border-2 border-[#15875D] shadow-xl text-center space-y-4 animate-modal-pop">
+                <div className="w-16 h-16 rounded-full bg-white dark:bg-[#0E2E20] border-2 border-[#0A6847] flex items-center justify-center mx-auto text-[#0A6847]">
+                  <Lock className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-bold text-[#003D25] dark:text-white">Sign In Required</h3>
+                <p className="text-xs text-[#1B8057] dark:text-zinc-300 leading-relaxed">
+                  Please sign in to your customer account to track your orders and view real-time delivery status.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="w-full py-3 rounded-xl bg-[#0A6847] hover:bg-[#075238] text-white font-bold text-sm shadow-md transition active:scale-95 cursor-pointer"
+                >
+                  Sign In / Register
+                </button>
+              </div>
+            </div>
+          ) : (
+            <TrackOrderView
+              orders={userOrders}
+              initialOrderNumber={initialTrackNumber}
+              onConfirmReceived={handleConfirmParcelReceived}
+              onConfirmCallReceived={handleConfirmCallReceived}
+              onNavigateDeliveries={() => setCurrentPage('DELIVERIES')}
+              onNavigateShop={() => setCurrentPage('SHOP')}
+              onNavigateHome={() => setCurrentPage('HOME')}
+              isDarkMode={isDarkMode}
+              t={t}
+            />
+          )
         )}
 
         {currentPage === 'ACCOUNT' && (
@@ -831,16 +806,37 @@ export default function ClientWebSupermarket() {
         )}
 
         {currentPage === 'DELIVERIES' && (
-          <DeliveriesView
-            orders={customerOrders}
-            onReorder={handleReorder}
-            onConfirmReceived={handleConfirmParcelReceived}
-            onConfirmCallReceived={handleConfirmCallReceived}
-            onNavigateShop={() => setCurrentPage('SHOP')}
-            onNavigateHome={() => setCurrentPage('HOME')}
-            isDarkMode={isDarkMode}
-            t={t}
-          />
+          !currentUser ? (
+            <div className="w-full flex-1 bg-white dark:bg-[#0D1210] py-16 px-4">
+              <div className="max-w-md mx-auto p-8 rounded-2xl bg-[#F0FAF3] dark:bg-[#141C18] border-2 border-[#15875D] shadow-xl text-center space-y-4 animate-modal-pop">
+                <div className="w-16 h-16 rounded-full bg-white dark:bg-[#0E2E20] border-2 border-[#0A6847] flex items-center justify-center mx-auto text-[#0A6847]">
+                  <Lock className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-bold text-[#003D25] dark:text-white">Sign In Required</h3>
+                <p className="text-xs text-[#1B8057] dark:text-zinc-300 leading-relaxed">
+                  Please sign in to view your ongoing deliveries and past order history.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="w-full py-3 rounded-xl bg-[#0A6847] hover:bg-[#075238] text-white font-bold text-sm shadow-md transition active:scale-95 cursor-pointer"
+                >
+                  Sign In / Register
+                </button>
+              </div>
+            </div>
+          ) : (
+            <DeliveriesView
+              orders={userOrders}
+              onReorder={handleReorder}
+              onConfirmReceived={handleConfirmParcelReceived}
+              onConfirmCallReceived={handleConfirmCallReceived}
+              onNavigateShop={() => setCurrentPage('SHOP')}
+              onNavigateHome={() => setCurrentPage('HOME')}
+              isDarkMode={isDarkMode}
+              t={t}
+            />
+          )
         )}
         </div>
       </main>

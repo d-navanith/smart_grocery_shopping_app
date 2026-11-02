@@ -85,6 +85,8 @@ export interface ClientOrder {
   totalAmount: number;
   paymentMethod: string;
   paymentStatus: 'PAID' | 'PENDING' | 'FAILED';
+  customerId?: string;
+  customerEmail?: string;
   customerName: string;
   customerPhone: string;
   address: string;
