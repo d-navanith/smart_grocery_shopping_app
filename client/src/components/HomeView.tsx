@@ -51,6 +51,18 @@ export const HomeView: React.FC<HomeViewProps> = ({
     }
   ];
 
+  // Authentic Brand Logos matching Figma home design for Nonstop Marquee
+  const BRAND_LOGOS = [
+    { name: 'NESTEA', logo: '/brands/brand_nestea.png', category: 'Pantry' },
+    { name: 'CBL Munchee', logo: '/brands/brand_munchee.png', category: 'Pantry' },
+    { name: 'Araliya Group', logo: '/brands/brand_araliya.png', category: 'Staples & Grains' },
+    { name: 'Nestlé', logo: '/brands/brand_nestle.png', category: 'Dairy & Chilled' },
+    { name: 'Maliban', logo: '/brands/brand_maliban.png', category: 'Pantry' },
+    { name: 'Lipton', logo: '/brands/brand_lipton.png', category: 'Pantry' },
+    { name: 'Dilmah Ceylon Tea', logo: '/brands/brand_dilmah.png', category: 'Pantry' },
+    { name: 'MD Foods', logo: '/brands/brand_md.png', category: 'Pantry' }
+  ];
+
   // Find backing store products so clicking "Add" or the card works seamlessly with Cart & Modals
   const coconutProduct = products.find(p => p.id.includes('coconut')) || products[0];
   const papayaProduct = products.find(p => p.id.includes('papaya')) || products[1] || products[0];
@@ -162,7 +174,43 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </section>
 
-      {/* 2. THREE FEATURE HIGHLIGHTS STRIP (FIGMA EXACT #F0FAF3 CARDS WITH #15875D BORDER) */}
+      {/* 2. NONSTOP CONTINUOUS BRAND LOGO CAROUSEL */}
+      <section className="w-full max-w-[1240px] mx-auto px-4 sm:px-8 lg:px-0 pt-6 sm:pt-8 pb-2">
+        <div
+          className={`relative rounded-2xl border border-slate-200/80 dark:border-zinc-800 py-3.5 sm:py-5 overflow-hidden shadow-xs ${
+            isDarkMode ? 'bg-[#121A16]/95' : 'bg-white'
+          }`}
+        >
+          {/* Subtle Left & Right Gradient Fade Masks for Infinite Edge Transition */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-10 sm:w-24 bg-gradient-to-r from-white dark:from-[#121A16] to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 sm:w-24 bg-gradient-to-l from-white dark:from-[#121A16] to-transparent z-10" />
+
+          {/* Continuous Nonstop Marquee Track */}
+          <div className="animate-marquee flex items-center gap-5 sm:gap-8">
+            {/* Duplicated list creates completely seamless infinite loop */}
+            {[...BRAND_LOGOS, ...BRAND_LOGOS].map((brand, idx) => (
+              <div
+                key={`${brand.name}-${idx}`}
+                onClick={() => {
+                  onSelectCategory(brand.category);
+                  onNavigateShop();
+                }}
+                className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-700/60 shadow-2xs hover:shadow-md hover:scale-105 transition-all duration-300 min-w-[130px] sm:min-w-[165px] h-[64px] sm:h-[78px] shrink-0 cursor-pointer group"
+                title={`Shop ${brand.name}`}
+              >
+                <img
+                  src={brand.logo}
+                  alt={brand.name}
+                  className="max-h-[38px] sm:max-h-[48px] max-w-[110px] sm:max-w-[135px] w-auto h-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. THREE FEATURE HIGHLIGHTS STRIP (FIGMA EXACT #F0FAF3 CARDS WITH #15875D BORDER) */}
       <section className="w-full max-w-[1240px] mx-auto px-4 sm:px-8 lg:px-0 pt-8 pb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {/* Card 1: Fastest Delivery */}
