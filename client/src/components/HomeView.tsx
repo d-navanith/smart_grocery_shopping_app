@@ -244,22 +244,18 @@ export const HomeView: React.FC<HomeViewProps> = ({
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 sm:w-24 bg-gradient-to-l from-white dark:from-[#121A16] to-transparent z-10" />
 
           {/* Continuous Nonstop Marquee Track */}
-          <div className="animate-marquee flex items-center gap-5 sm:gap-8">
+          <div className="animate-marquee flex items-center gap-5 sm:gap-8 select-none">
             {[...BRAND_LOGOS, ...BRAND_LOGOS].map((brand, idx) => (
               <div
                 key={`${brand.name}-${idx}`}
-                onClick={() => {
-                  onSelectCategory(brand.category);
-                  onNavigateShop();
-                }}
-                className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-700/60 shadow-2xs hover:shadow-md hover:scale-105 transition-all duration-300 min-w-[130px] sm:min-w-[165px] h-[64px] sm:h-[78px] shrink-0 cursor-pointer group"
-                title={`Shop ${brand.name}`}
+                className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-700/60 shadow-2xs min-w-[130px] sm:min-w-[165px] h-[64px] sm:h-[78px] shrink-0 cursor-default pointer-events-none"
               >
                 <img
                   src={brand.logo}
                   alt={brand.name}
-                  className="max-h-[38px] sm:max-h-[48px] max-w-[110px] sm:max-w-[135px] w-auto h-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                  className="max-h-[38px] sm:max-h-[48px] max-w-[110px] sm:max-w-[135px] w-auto h-auto object-contain"
                   loading="lazy"
+                  draggable={false}
                 />
               </div>
             ))}
