@@ -129,9 +129,9 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
     },
     {
       id: 'in_progress',
-      title: 'In Progress',
+      title: 'Packing in Store',
       Icon: Package,
-      time: searchedOrder?.status === 'PENDING' ? 'Expected today' : 'Packing in Store'
+      time: searchedOrder?.status === 'PENDING' ? 'Expected today' : 'Ceylon items packed'
     },
     {
       id: 'on_the_way',
@@ -200,24 +200,35 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
               <span className="text-slate-500 dark:text-zinc-400 font-semibold text-[11px]">
                 {t.trackOrderQuickTrack}:
               </span>
-              {orders.slice(0, 3).map((o) => (
-                <button
-                  key={o.id}
-                  type="button"
-                  onClick={() => {
-                    setSearchInput(o.orderNumber);
-                    setSearchedOrder(o);
-                    setHasSearched(true);
-                  }}
-                  className={`px-3 py-1 rounded-md text-xs font-mono font-bold transition border ${
-                    searchedOrder?.orderNumber === o.orderNumber
-                      ? 'bg-[#0A6847] text-white border-[#0A6847]'
-                      : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-700 hover:bg-slate-200'
-                  }`}
-                >
-                  #{o.orderNumber} ({o.status.replace('_', ' ')})
-                </button>
-              ))}
+              {orders.slice(0, 3).map((o) => {
+                const statusLabel =
+                  o.status === 'PROCESSING'
+                    ? 'Packing in Store'
+                    : o.status === 'ON_THE_WAY'
+                    ? 'On the Way'
+                    : o.status === 'DELIVERED'
+                    ? 'Delivered'
+                    : o.status;
+
+                return (
+                  <button
+                    key={o.id}
+                    type="button"
+                    onClick={() => {
+                      setSearchInput(o.orderNumber);
+                      setSearchedOrder(o);
+                      setHasSearched(true);
+                    }}
+                    className={`px-3 py-1 rounded-md text-xs font-mono font-bold transition border ${
+                      searchedOrder?.orderNumber === o.orderNumber
+                        ? 'bg-[#0A6847] text-white border-[#0A6847]'
+                        : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-700 hover:bg-slate-200'
+                    }`}
+                  >
+                    #{o.orderNumber} ({statusLabel})
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
@@ -249,8 +260,14 @@ export const TrackOrderView: React.FC<TrackOrderViewProps> = ({
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#E8F5EE] dark:bg-[#0E2E20] text-[#0A6847] dark:text-[#80F6C7] border border-[#15875D]/30">
-                  {searchedOrder.status.replace('_', ' ')}
+                <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#F0FAF3] dark:bg-[#0E2E20] text-[#0A6847] dark:text-[#80F6C7] border border-[#15875D] shadow-xs inline-flex items-center gap-1.5">
+                  {searchedOrder.status === 'PROCESSING'
+                    ? t.statusPackingBadge
+                    : searchedOrder.status === 'ON_THE_WAY'
+                    ? t.statusOutForDeliveryBadge
+                    : searchedOrder.status === 'DELIVERED'
+                    ? '✓ Delivered'
+                    : '📋 Order Placed'}
                 </span>
                 <span className="text-xs font-medium text-slate-400 dark:text-zinc-500">
                   • {searchedOrder.placedAt}

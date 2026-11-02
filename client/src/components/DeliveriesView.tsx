@@ -193,7 +193,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                             ? t.paymentCodBadge
                             : t.paymentOnlineBadge}
                         </span>
-                        <span className="px-3 py-1 rounded-md bg-[#0A6847] text-white font-bold text-xs border border-white/30">
+                        <span className="px-3 py-1 rounded-md bg-[#F0FAF3] dark:bg-[#0E2E20] text-[#0A6847] dark:text-[#80F6C7] font-bold text-xs border border-[#15875D] shadow-xs">
                           {order.status === 'ON_THE_WAY' ? t.statusOutForDeliveryBadge : t.statusPackingBadge}
                         </span>
                       </div>
@@ -233,7 +233,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
                                 {t.stepNumberPrefix} 2
                               </span>
                             </div>
-                            <p className="text-xs font-bold text-black dark:text-white">📦 {t.step2Packing}</p>
+                            <p className="text-xs font-bold text-black dark:text-white">📦 {t.statusPackingBadge.replace('📦 ', '') || t.step2Packing}</p>
                             <span className="text-[10px] text-[#003D25] dark:text-zinc-300 font-normal block mt-0.5">
                               {t.step2PackingSub}
                             </span>
