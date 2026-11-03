@@ -119,7 +119,14 @@ export default function ClientWebSupermarket() {
     : 0;
 
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      const cat = p.get('category') || p.get('cat');
+      if (cat) return cat;
+    }
+    return 'All';
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [wishlist, setWishlist] = useState<string[]>(['prod-white-rice', 'prod-brinjal']);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
