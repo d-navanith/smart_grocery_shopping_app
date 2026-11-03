@@ -5,15 +5,15 @@ if (-not (Test-Path $chrome)) {
 
 $artDir = "C:\Users\USER\.gemini\antigravity\brain\2240ee31-5164-4177-87cb-6d9a31b80e4d"
 
-$outFooter = "$artDir\verify_final_footer.png"
+$outFooter = "$artDir\verify_clean_footer_band.png"
 if (Test-Path $outFooter) { Remove-Item $outFooter }
 Start-Process -FilePath $chrome -ArgumentList @(
   "--headless=new",
   "--disable-gpu",
   "--hide-scrollbars",
-  "--window-size=1280,1100",
+  "--window-size=1280,3200",
   "--screenshot=$outFooter",
   "http://localhost:3000/?splash=false&page=contact"
 ) -Wait
 
-Write-Host "Footer screenshot:" (Test-Path $outFooter)
+Write-Host "Footer:" (Test-Path $outFooter)

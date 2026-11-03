@@ -152,7 +152,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
             </ul>
           </div>
 
-          {/* Column 3: Contact (Grounded in ceylonfoodonline.com) */}
+          {/* Column 3: Contact */}
           <div className="md:col-span-4 space-y-4 md:pt-8">
             <h4 className="text-lg sm:text-xl font-bold text-white mb-3">
               Contact & Hub
@@ -176,8 +176,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
                   <Mail className="w-4 h-4 text-white" />
                 </div>
                 <div className="text-xs space-y-0.5">
-                  <a href="mailto:ceylonfoodonline@gmail.com" className="hover:text-[#F8C519] block transition">ceylonfoodonline@gmail.com</a>
-                  <a href="mailto:orders@ceylonfoods.ro" className="hover:text-[#F8C519] block text-white/80 transition">orders@ceylonfoods.ro</a>
+                  <a href="mailto:orders@ceylonfoods.ro" className="hover:text-[#F8C519] block transition">orders@ceylonfoods.ro</a>
+                  <a href="mailto:contact@ceylonfoods.ro" className="hover:text-[#F8C519] block text-white/80 transition">contact@ceylonfoods.ro</a>
                 </div>
               </div>
 
@@ -186,21 +186,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
                 <div className="w-[35px] h-[31px] rounded-md bg-[#32A778] border border-white/50 flex items-center justify-center shrink-0">
                   <PhoneCall className="w-4 h-4 text-white" />
                 </div>
-                <div className="text-xs space-y-0.5">
-                  <div className="font-medium">+40 722 456 789 <span className="text-[10px] text-emerald-200">(Bucharest)</span></div>
-                  <div className="text-white/80">+81 070 4710 5533 <span className="text-[10px] text-emerald-200">(International)</span></div>
+                <div className="text-xs">
+                  <div className="font-medium">+40 722 456 789 <span className="text-[10px] text-emerald-200">(Bucharest Hotline)</span></div>
                 </div>
               </div>
 
-              {/* Working Hours & Global Reference */}
-              <div className="pt-2 border-t border-white/20 text-xs text-white/90 space-y-1">
+              {/* Working Hours */}
+              <div className="pt-2 border-t border-white/20 text-xs text-white/90">
                 <div className="flex items-center gap-1.5 text-emerald-100">
                   <span>🕒</span>
                   <span>Monday – Sunday: <strong>09:00 – 20:00</strong></span>
-                </div>
-                <div className="flex items-center gap-1.5 text-emerald-100">
-                  <Globe className="w-3.5 h-3.5 text-[#F8C519]" />
-                  <span>Global network: <a href="https://www.ceylonfoodonline.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#F8C519]">ceylonfoodonline.com</a></span>
                 </div>
               </div>
             </div>

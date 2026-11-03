@@ -107,10 +107,10 @@ export const ContactView: React.FC<ContactViewProps> = ({ isDarkMode }) => {
                   </div>
                   <div>
                     <span className="text-[11px] uppercase font-bold text-slate-400 block">Email Us</span>
-                    <a href="mailto:ceylonfoodonline@gmail.com" className="text-sm font-bold text-[#064F41] dark:text-[#78F9B8] hover:underline">
-                      ceylonfoodonline@gmail.com
+                    <a href="mailto:orders@ceylonfoods.ro" className="text-sm font-bold text-[#064F41] dark:text-[#78F9B8] hover:underline">
+                      orders@ceylonfoods.ro
                     </a>
-                    <span className="text-xs text-slate-400 block">orders@ceylonfoods.ro</span>
+                    <span className="text-xs text-slate-400 block">contact@ceylonfoods.ro</span>
                   </div>
                 </div>
 
@@ -138,19 +138,6 @@ export const ContactView: React.FC<ContactViewProps> = ({ isDarkMode }) => {
                       Monday – Sunday: 09:00 – 20:00
                     </p>
                     <span className="text-[11px] text-[#15875D] font-bold">Courier dispatches 7 days a week</span>
-                  </div>
-                </div>
-
-                {/* Global Network Reference */}
-                <div className="flex items-start gap-3.5 pt-2 border-t border-slate-100 dark:border-zinc-800">
-                  <div className="w-9 h-9 rounded-lg bg-purple-50 dark:bg-purple-950/50 text-purple-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <Globe className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="text-[11px] uppercase font-bold text-slate-400 block">Global Parent Network</span>
-                    <a href="https://www.ceylonfoodonline.com" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#15875D] hover:underline">
-                      www.ceylonfoodonline.com
-                    </a>
                   </div>
                 </div>
               </div>

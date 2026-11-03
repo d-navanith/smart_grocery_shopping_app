@@ -181,10 +181,6 @@ export const AboutUsView: React.FC<AboutUsViewProps> = ({ onNavigatePage, isDark
 
                 <div className="space-y-3 text-xs sm:text-sm text-emerald-100/90 leading-relaxed">
                   <p className="flex items-center gap-2">
-                    <Globe2 className="w-4 h-4 text-[#F8C519] shrink-0" />
-                    <span>Global Network: <strong>ceylonfoodonline.com</strong></span>
-                  </p>
-                  <p className="flex items-center gap-2">
                     <img src="/sri_lanka_flag.svg" alt="Flag" className="w-4 h-3 rounded-xs shrink-0" />
                     <span>Direct Island Sourcing: Colombo, Jaffna, Kandy & Galle</span>
                   </p>
