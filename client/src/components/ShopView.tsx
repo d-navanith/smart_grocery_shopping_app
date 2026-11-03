@@ -89,9 +89,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
       if (selectedCategory !== 'All' && selectedCategory !== 'All Categories') {
         const catLower = selectedCategory.toLowerCase();
         if (catLower.includes('rice') || catLower.includes('grain') || catLower.includes('staple')) {
-          matchCat = p.category.toLowerCase().includes('staple') || p.category.toLowerCase().includes('grain') || p.title.toLowerCase().includes('rice');
-        } else if (catLower.includes('veg') || catLower.includes('fruit')) {
-          matchCat = p.category.toLowerCase().includes('veg') || p.category.toLowerCase().includes('fruit') || p.title.toLowerCase().includes('wambatu') || p.title.toLowerCase().includes('brinjal');
+          matchCat = p.category.toLowerCase().includes('staple') || p.category.toLowerCase().includes('grain') || p.title.toLowerCase().includes('rice') || p.id.includes('rice') || p.id.includes('dhal');
+        } else if (catLower === 'fruits' || catLower === 'fruit' || catLower.includes('fruit')) {
+          // Strictly fruits only
+          matchCat = p.category.toLowerCase() === 'fruits' || p.category.toLowerCase() === 'fruit' || p.sku.startsWith('FRU') || p.id.includes('papaya') || p.id.includes('mango') || p.id.includes('avocado') || p.id.includes('orange');
+        } else if (catLower === 'vegetables' || catLower === 'veggies' || catLower.includes('veg')) {
+          // Strictly veggies only
+          matchCat = (p.category.toLowerCase() === 'vegetables' || (p.category.toLowerCase().includes('veg') && !p.category.toLowerCase().includes('fruit'))) ||
+            p.sku.startsWith('VEG') ||
+            p.id.includes('brinjal') ||
+            p.id.includes('okra') ||
+            p.id.includes('pumpkin') ||
+            p.id.includes('tomato') ||
+            p.id.includes('onion') ||
+            p.id.includes('chilli');
         } else if (catLower.includes('spice') || catLower.includes('pantry')) {
           matchCat = p.category.toLowerCase().includes('pantry') || p.category.toLowerCase().includes('spice') || p.title.toLowerCase().includes('curry') || p.title.toLowerCase().includes('cinnamon');
         } else {
@@ -237,7 +248,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
               {[
                 { key: 'Staples & Grains', label: t.catRice },
-                { key: 'Fruits & Veg', label: t.catVeg },
+                { key: 'Vegetables', label: t.catVeg },
+                { key: 'Fruits', label: t.catFruits },
                 { key: 'Pantry', label: t.catSpices },
                 { key: 'Beverages', label: t.catTea },
                 { key: 'Bakery', label: t.catBakery },

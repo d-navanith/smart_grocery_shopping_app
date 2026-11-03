@@ -1,0 +1,9 @@
+# Robots.txt for Ceylon Foods Supermarket Romania
+User-agent: *
+Allow: /
+Allow: /shop
+Allow: /recipes
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: https://ceylonfoods.runasp.net/sitemap.xml

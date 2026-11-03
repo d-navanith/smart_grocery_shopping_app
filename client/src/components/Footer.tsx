@@ -12,10 +12,11 @@ import { AppPage } from './HeaderNav';
 interface FooterProps {
   onNavigatePage: (page: AppPage) => void;
   onSelectCategory: (cat: string) => void;
+  onOpenSplash?: () => void;
   t: TranslationDictionary;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigatePage }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) => {
   return (
     <footer className="w-full mt-auto flex flex-col select-none">
       {/* 1. MAIN FOOTER BAND (FIGMA EXACT #1B8057) */}
@@ -128,6 +129,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage }) => {
                   My Deliveries
                 </button>
               </li>
+              {onOpenSplash && (
+                <li>
+                  <button
+                    type="button"
+                    onClick={onOpenSplash}
+                    className="hover:text-[#F8C519] text-[#F8C519]/90 font-semibold transition cursor-pointer flex items-center gap-1.5"
+                  >
+                    <span>✨ Supermarket Welcome Tour</span>
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 

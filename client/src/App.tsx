@@ -15,6 +15,7 @@ import { TrackOrderView } from './components/TrackOrderView';
 import { AccountView } from './components/AccountView';
 import { Footer } from './components/Footer';
 import { Modals, PopupNotification } from './components/Modals';
+import { SplashScreen } from './components/SplashScreen';
 import { Language, TranslationDictionary, TRANSLATIONS } from './translations';
 
 const CEYLON_DELIVERY_ZONES: DeliveryZone[] = [
@@ -159,7 +160,7 @@ export default function ClientWebSupermarket() {
         sku: 'VEG-BRIN-004',
         title: 'Sri Lankan Purple Brinjal / Eggplant (1kg)',
         description: 'Glossy, tender violet eggplants. Essential for classic Wambatu Moju & curries.',
-        category: 'Fruits & Veg',
+        category: 'Vegetables',
         brand: 'Ceylon Fresh Greens',
         price: 14.50,
         originalPrice: 18.00,
@@ -220,6 +221,24 @@ export default function ClientWebSupermarket() {
   const [promoError, setPromoError] = useState('');
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [showSplash, setShowSplash] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      if (p.get('splash') === 'true') return true;
+      if (p.get('splash') === 'false') return false;
+      return !sessionStorage.getItem('ceylonfoods_splash_dismissed');
+    }
+    return false;
+  });
+
+  const handleEnterStoreFromSplash = (selectedSector?: string) => {
+    setShowSplash(false);
+    sessionStorage.setItem('ceylonfoods_splash_dismissed', 'true');
+    if (selectedSector) {
+      localStorage.setItem('ceylonfoods_selected_sector', selectedSector);
+    }
+  };
+
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isTrackingModalOpen, setIsTrackingModalOpen] = useState(false);
@@ -844,6 +863,7 @@ export default function ClientWebSupermarket() {
       <Footer
         onNavigatePage={setCurrentPage}
         onSelectCategory={(cat) => setSelectedCategory(cat)}
+        onOpenSplash={() => setShowSplash(true)}
         t={t}
       />
 
@@ -877,6 +897,14 @@ export default function ClientWebSupermarket() {
         isDarkMode={isDarkMode}
         t={t}
       />
+
+      {/* Keells Super-Style Welcome & Location Splash Screen */}
+      {showSplash && (
+        <SplashScreen
+          onEnterStore={handleEnterStoreFromSplash}
+          isDarkMode={isDarkMode}
+        />
+      )}
     </div>
   );
 }

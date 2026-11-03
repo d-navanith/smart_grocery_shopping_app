@@ -48,13 +48,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
       id: 'veggies',
       title: 'Veggies',
       image: '/figma_cat_veggies.png',
-      filterKey: 'Fruits & Veg'
+      filterKey: 'Vegetables'
     },
     {
       id: 'fruits',
       title: 'Fruits',
       image: '/figma_cat_fruits.png',
-      filterKey: 'Fruits & Veg'
+      filterKey: 'Fruits'
     },
     {
       id: 'rice-grains',

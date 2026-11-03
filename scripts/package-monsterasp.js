@@ -60,7 +60,7 @@ require('./dist/index.js');
 // Ensure logs directory exists for stdout/stderr logs
 fs.mkdirSync(path.join(DEPLOY_DIR, 'logs'), { recursive: true });
 
-// 5. Create MonsterASP.NET web.config (Clean Native httpPlatformHandler for Node.js)
+// 5. Create MonsterASP.NET web.config (Clean Native httpPlatformHandler for Node.js + Hardened Security)
 const webConfigContent = `<?xml version="1.0" encoding="utf-8"?>
 <!-- MonsterASP.NET IIS Configuration for Ceylon Foods Full-Stack Node.js Application -->
 <configuration>
@@ -74,6 +74,19 @@ const webConfigContent = `<?xml version="1.0" encoding="utf-8"?>
         <environmentVariable name="NODE_ENV" value="production" />
       </environmentVariables>
     </httpPlatform>
+    <httpProtocol>
+      <customHeaders>
+        <remove name="X-Powered-By" />
+        <add name="X-Content-Type-Options" value="nosniff" />
+        <add name="X-Frame-Options" value="SAMEORIGIN" />
+        <add name="X-XSS-Protection" value="1; mode=block" />
+        <add name="Referrer-Policy" value="strict-origin-when-cross-origin" />
+        <add name="Permissions-Policy" value="camera=(), microphone=(), geolocation=()" />
+      </customHeaders>
+    </httpProtocol>
+    <security>
+      <requestFiltering removeServerHeader="true" />
+    </security>
   </system.webServer>
 </configuration>
 `;

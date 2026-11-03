@@ -228,7 +228,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 >
                   <option value="All Categories">All Categories</option>
                   <option value="Staples & Grains">Rice & Grains</option>
-                  <option value="Fruits & Veg">Veggies & Fruits</option>
+                  <option value="Vegetables">Veggies</option>
+                  <option value="Fruits">Fruits</option>
                   <option value="Pantry">Ceylon Spices</option>
                   <option value="Beverages">Ceylon Tea</option>
                   <option value="Bakery">Bakery</option>
@@ -296,10 +297,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   {[
                     { label: 'Keeri Samba (5kg)', cat: 'Staples & Grains', icon: '🌾' },
                     { label: 'White Raw Rice', cat: 'Staples & Grains', icon: '🌾' },
-                    { label: 'Purple Brinjal (Wambatu)', cat: 'Fruits & Veg', icon: '🍆' },
+                    { label: 'Purple Brinjal (Wambatu)', cat: 'Vegetables', icon: '🍆' },
+                    { label: 'Sweet Mango & Papaya', cat: 'Fruits', icon: '🥭' },
                     { label: 'Mysore Red Dhal', cat: 'Staples & Grains', icon: '🍲' },
-                    { label: 'Roasted Curry Powder', cat: 'Pantry', icon: '🌶️' },
-                    { label: 'Fresh Coconut', cat: 'Fruits & Veg', icon: '🥥' }
+                    { label: 'Roasted Curry Powder', cat: 'Pantry', icon: '🌶️' }
                   ].map(item => (
                     <button
                       key={item.label}
@@ -563,7 +564,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                     <div className="space-y-3">
                       <div
                         onClick={() => {
-                          setSelectedCategory('Fruits & Veg');
+                          setSelectedCategory('Vegetables');
                           setCurrentPage('SHOP');
                           setIsCategoryMenuOpen(false);
                         }}
@@ -574,23 +575,23 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                       </div>
                       <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
                         {[
-                          'Sri Lankan Purple Brinjal (Wambatu)',
-                          "Fresh Lady's Finger (Bandakka)",
-                          'Bitter Gourd (Karavila)',
-                          'Fresh Ceylon Papaya & Coconut',
-                          'Fresh Green Hot Chillies'
+                          { name: 'Sri Lankan Purple Brinjal (Wambatu)', cat: 'Vegetables' },
+                          { name: "Fresh Lady's Finger (Bandakka)", cat: 'Vegetables' },
+                          { name: 'Golden Yellow Pumpkin (Wattakka)', cat: 'Vegetables' },
+                          { name: 'Ceylon Red Lady Sweet Papaya', cat: 'Fruits' },
+                          { name: 'Karthakolomban Sweet Mangoes', cat: 'Fruits' }
                         ].map(item => (
                           <li
-                            key={item}
+                            key={item.name}
                             onClick={() => {
-                              setSelectedCategory('Fruits & Veg');
+                              setSelectedCategory(item.cat);
                               setCurrentPage('SHOP');
                               setIsCategoryMenuOpen(false);
                             }}
                             className="hover:text-[#1B8057] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
                           >
                             <span className="text-[10px] text-[#F8C519]">•</span>
-                            <span>{item}</span>
+                            <span>{item.name}</span>
                           </li>
                         ))}
                       </ul>
@@ -711,11 +712,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  setSelectedCategory('Fruits & Veg');
+                  setSelectedCategory('Vegetables');
                   setCurrentPage('SHOP');
                 }}
                 className={`hover:text-[#F8C519] transition cursor-pointer ${
-                  currentPage === 'SHOP' && selectedCategory === 'Fruits & Veg'
+                  currentPage === 'SHOP' && (selectedCategory === 'Vegetables' || selectedCategory === 'Veggies')
                     ? 'text-[#F8C519] font-bold underline underline-offset-8'
                     : ''
                 }`}
@@ -726,12 +727,16 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  setSelectedCategory('Fruits & Veg');
+                  setSelectedCategory('Fruits');
                   setCurrentPage('SHOP');
                 }}
-                className="hover:text-[#F8C519] transition cursor-pointer"
+                className={`hover:text-[#F8C519] transition cursor-pointer ${
+                  currentPage === 'SHOP' && selectedCategory === 'Fruits'
+                    ? 'text-[#F8C519] font-bold underline underline-offset-8'
+                    : ''
+                }`}
               >
-                FRUITS
+                {currentLanguage === 'en' ? 'FRUITS' : t.tabFruits}
               </button>
 
               <button
@@ -818,13 +823,23 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             </button>
             <button
               onClick={() => {
-                setSelectedCategory('Fruits & Veg');
+                setSelectedCategory('Vegetables');
                 setCurrentPage('SHOP');
                 setMobileMenuOpen(false);
               }}
               className="block w-full text-left py-1.5 hover:text-[#F8C519]"
             >
-              VEGGIES & FRUITS
+              VEGGIES
+            </button>
+            <button
+              onClick={() => {
+                setSelectedCategory('Fruits');
+                setCurrentPage('SHOP');
+                setMobileMenuOpen(false);
+              }}
+              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
+            >
+              FRUITS
             </button>
             <button
               onClick={() => {

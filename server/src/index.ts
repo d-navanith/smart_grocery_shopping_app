@@ -32,6 +32,17 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Best-in-class Security Headers & Google Performance Headers
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.removeHeader('X-Powered-By');
+  next();
+});
+
 // In-memory data store
 let products: Product[] = [...INITIAL_PRODUCTS];
 let orders: Order[] = [
@@ -1102,7 +1113,7 @@ const adminStaticPath = possibleAdminPaths.find(p => fs.existsSync(p));
 
 if (adminStaticPath) {
   console.log(`[Production] Serving Admin Dashboard from: ${adminStaticPath}`);
-  app.use('/admin', express.static(adminStaticPath));
+  app.use('/admin', express.static(adminStaticPath, { maxAge: '3d', etag: true }));
   app.get('/admin*', (_req: Request, res: Response) => {
     res.sendFile(path.join(adminStaticPath, 'index.html'));
   });
@@ -1118,7 +1129,7 @@ const clientStaticPath = possibleClientPaths.find(p => fs.existsSync(p));
 
 if (clientStaticPath) {
   console.log(`[Production] Serving Client Storefront from: ${clientStaticPath}`);
-  app.use(express.static(clientStaticPath));
+  app.use(express.static(clientStaticPath, { maxAge: '7d', etag: true }));
   app.get('*', (req: Request, res: Response, next) => {
     if (req.path.startsWith('/api')) return next();
     res.sendFile(path.join(clientStaticPath, 'index.html'));

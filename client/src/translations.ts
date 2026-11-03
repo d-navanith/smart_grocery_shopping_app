@@ -24,6 +24,7 @@ export interface TranslationDictionary {
   tabShop: string;
   tabRice: string;
   tabVegetables: string;
+  tabFruits: string;
   tabSpices: string;
   tabCart: string;
   tabRecipes: string;
@@ -120,6 +121,7 @@ export interface TranslationDictionary {
   catAll: string;
   catRice: string;
   catVeg: string;
+  catFruits: string;
   catSpices: string;
   catDairy: string;
   catBakery: string;
@@ -413,7 +415,8 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     tabHome: 'Home',
     tabShop: 'Grocery Shop',
     tabRice: 'Rice & Grains',
-    tabVegetables: 'Veggies & Brinjal',
+    tabVegetables: 'VEGGIES',
+    tabFruits: 'FRUITS',
     tabSpices: 'Ceylon Spices',
     tabCart: 'Shopping Cart',
     tabRecipes: 'AI Chef Recipes',
@@ -510,6 +513,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     catAll: 'All Products',
     catRice: 'White Rice, Red Rice & Dhal',
     catVeg: 'Brinjal & Fresh Vegetables',
+    catFruits: 'Tropical Fruits (Papaya & Mango)',
     catSpices: 'Ceylon Spices & Coconut',
     catDairy: 'Dairy & Fresh Eggs',
     catBakery: 'Bakery & Roast Paan',
@@ -802,7 +806,8 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     tabHome: 'මුල් පිටුව',
     tabShop: 'වෙළඳසැල',
     tabRice: 'සහල් සහ ධාන්‍ය',
-    tabVegetables: 'එළවළු සහ වම්බටු',
+    tabVegetables: 'එළවළු',
+    tabFruits: 'පළතුරු',
     tabSpices: 'ලංකා තුනපහ',
     tabCart: 'සාප්පු සවාරි කරත්තය',
     tabRecipes: 'AI කෝකි වට්ටෝරු',
@@ -899,6 +904,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     catAll: 'සියලුම නිෂ්පාදන',
     catRice: 'සුදු කැකුළු, රතු සහල් සහ පරිප්පු',
     catVeg: 'නැවුම් වම්බටු සහ එළවළු',
+    catFruits: 'නැවුම් නිවර්තන පළතුරු (ගස්ලබු සහ අඹ)',
     catSpices: 'ලංකා කුළුබඩු සහ පොල් කිරි',
     catDairy: 'කිරි සහ බිත්තර',
     catBakery: 'බේකරි සහ රෝස් පාන්',
@@ -1191,7 +1197,8 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     tabHome: 'Acasă',
     tabShop: 'Magazin Alimentar',
     tabRice: 'Orez & Cereale',
-    tabVegetables: 'Legume & Wambatu',
+    tabVegetables: 'LEGUME',
+    tabFruits: 'FRUCTE',
     tabSpices: 'Condimente Ceylon',
     tabCart: 'Coș de Cumpărături',
     tabRecipes: 'Rețete AI Chef',
@@ -1288,6 +1295,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     catAll: 'Toate Produsele',
     catRice: 'Orez Alb, Orez Roșu & Dhal',
     catVeg: 'Wambatu & Legume Proaspete',
+    catFruits: 'Fructe Tropicale (Papaya & Mango)',
     catSpices: 'Condimente de Ceylon & Pol',
     catDairy: 'Lactate & Ouă Proaspete',
     catBakery: 'Brutărie & Roast Paan',
