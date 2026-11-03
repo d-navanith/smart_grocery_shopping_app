@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Search,
   Heart,
@@ -29,7 +29,9 @@ export type AppPage =
   | 'TRACK_ORDER'
   | 'DELIVERIES'
   | 'RECIPES'
-  | 'ACCOUNT';
+  | 'ACCOUNT'
+  | 'ABOUT_US'
+  | 'CONTACT';
 
 interface HeaderNavProps {
   currentPage: AppPage;
@@ -68,6 +70,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   onLogout,
   cart,
   wishlistCount,
+  onOpenCartDrawer,
   onOpenAppTour,
   currentLanguage,
   onLanguageChange,
@@ -82,6 +85,32 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const categoryMenuRef = useRef<HTMLDivElement>(null);
+  const languageMenuRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Auto-close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (searchContainerRef.current && !searchContainerRef.current.contains(target)) {
+        setIsSearchFocused(false);
+      }
+      if (categoryMenuRef.current && !categoryMenuRef.current.contains(target)) {
+        setIsCategoryMenuOpen(false);
+      }
+      if (languageMenuRef.current && !languageMenuRef.current.contains(target)) {
+        setIsLanguageMenuOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -99,14 +128,22 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
   return (
     <header className="w-full flex flex-col z-30 select-none">
-      {/* 1. TOP ANNOUNCEMENT BAR (FIGMA EXACT #F8C519) */}
+      {/* 1. TOP ANNOUNCEMENT BAR (FIGMA EXACT #F8C519) WITH SRI LANKAN FLAG TRUST BADGE */}
       <div className="bg-[#F8C519] text-[#664E00] min-h-[50px] px-4 sm:px-8 flex items-center">
         <div className="max-w-[1240px] w-full mx-auto flex items-center justify-between gap-4 py-1.5">
-          {/* Left spacer on desktop so greeting stays centered */}
-          <div className="hidden xl:block w-[180px]" />
+          {/* Left: Official Sri Lankan Flag Trust Badge */}
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-amber-900/10 text-xs font-bold text-[#664E00] border border-amber-900/10">
+            <img src="/sri_lanka_flag.svg" alt="Sri Lanka Flag" className="w-5 h-auto rounded-xs shadow-xs" />
+            <span>100% Genuine Sri Lankan Imports</span>
+          </div>
 
           {/* Center Greeting: ආයුබෝවන් · வணக்கம் · Welcome | The taste of Sri Lanka, delivered to your home. */}
           <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-[#664E00] mx-auto text-center flex-wrap">
+            <img
+              src="/sri_lanka_flag.svg"
+              alt="Sri Lanka Flag"
+              className="lg:hidden w-4 h-auto rounded-xs shadow-xs inline-block"
+            />
             <img
               src="/figma_ayubowan.png"
               alt="ආයුබෝවන්"
@@ -125,7 +162,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           {/* Right Controls: Language Pill & Dark Mode Pill (#EEAB1E with #C08512 border) */}
           <div className="flex items-center gap-3 shrink-0">
             {/* Language Switcher */}
-            <div className="relative">
+            <div ref={languageMenuRef} className="relative">
               <button
                 type="button"
                 onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
@@ -213,7 +250,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           </div>
 
           {/* Center: Unified Translucent Green Search Pill (#39906D with white border) */}
-          <div className="flex-1 min-w-[240px] max-w-[532px] relative">
+          <div ref={searchContainerRef} className="flex-1 min-w-[240px] max-w-[532px] relative">
             <div className="h-[52px] sm:h-[60px] rounded-full bg-[#39906D] border border-white/80 flex items-center px-4 sm:px-6 shadow-xs focus-within:border-[#F8C519] transition">
               {/* All Categories Select Inside Pill */}
               <div className="hidden sm:flex items-center shrink-0 pr-3">
@@ -368,7 +405,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 <span>Sign In</span>
               </button>
             ) : (
-              <div className="relative">
+              <div ref={userMenuRef} className="relative">
                 <button
                   type="button"
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -509,171 +546,63 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
         {/* 3. SUB-NAVIGATION BAR (FIGMA EXACT #1B8057 WITH #39906D TOP BORDER & #F8C519 "All" BUTTON) */}
         <div className="max-w-[1240px] mx-auto border-t border-[#39906D] py-2.5 flex items-center justify-between gap-6">
           <div className="flex items-center gap-6 sm:gap-9">
-            {/* Golden "All" Button with Mega Menu */}
-            <div className="relative">
+            {/* Golden "All Categories" Button with Sleek Dropdown */}
+            <div ref={categoryMenuRef} className="relative">
               <button
                 type="button"
                 onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
-                className="h-[41px] min-w-[117px] px-5 rounded-lg bg-[#F8C519] hover:bg-[#EEAB1E] text-[#664E00] font-semibold text-sm flex items-center justify-center gap-3 shadow-xs transition cursor-pointer"
+                className="h-[41px] min-w-[125px] px-4 sm:px-5 rounded-lg bg-[#F8C519] hover:bg-[#EEAB1E] text-[#664E00] font-semibold text-sm flex items-center justify-center gap-2.5 shadow-xs transition cursor-pointer"
               >
                 <Menu className="w-5 h-5 text-[#664E00] stroke-[2.2]" />
-                <span>All</span>
+                <span>All Categories</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isCategoryMenuOpen ? 'rotate-180' : ''}`} />
               </button>
 
+              {/* Clean, compact categories dropdown - removing old 4-column mega menu */}
               {isCategoryMenuOpen && (
-                <div className="absolute top-full left-0 mt-3 w-[840px] max-w-[95vw] rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl p-6 z-50 text-slate-800 dark:text-zinc-100">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    {/* Column 1: Rice, Grains & Dhal */}
-                    <div className="space-y-3">
-                      <div
+                <div className="absolute top-full left-0 mt-2 w-64 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl p-2 z-50 text-slate-800 dark:text-zinc-100 animate-fadeIn">
+                  <div className="px-3 py-1.5 text-[10px] uppercase font-black tracking-wider text-slate-400 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between">
+                    <span>Ceylon Categories</span>
+                    <button onClick={() => setIsCategoryMenuOpen(false)} className="hover:text-slate-600 text-xs">✕</button>
+                  </div>
+                  <div className="py-1 space-y-0.5">
+                    {[
+                      { name: 'All Sri Lankan Products', cat: 'All', icon: '🛒' },
+                      { name: 'Rice, Grains & Dhal', cat: 'Staples & Grains', icon: '🌾' },
+                      { name: 'Fresh Vegetables (Wambatu)', cat: 'Vegetables', icon: '🍆' },
+                      { name: 'Tropical Fruits (Papaya)', cat: 'Fruits', icon: '🥭' },
+                      { name: 'Ceylon Spices & Tea', cat: 'Pantry', icon: '🌶️' }
+                    ].map(item => (
+                      <button
+                        key={item.cat}
+                        type="button"
                         onClick={() => {
-                          setSelectedCategory('Staples & Grains');
+                          setSelectedCategory(item.cat);
                           setCurrentPage('SHOP');
                           setIsCategoryMenuOpen(false);
                         }}
-                        className="font-black text-xs uppercase tracking-wider text-[#1B8057] dark:text-[#78F9B8] pb-1 border-b border-slate-100 dark:border-zinc-800 cursor-pointer flex items-center justify-between hover:underline"
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl transition text-left cursor-pointer ${
+                          selectedCategory === item.cat && currentPage === 'SHOP'
+                            ? 'bg-[#15875D]/15 text-[#15875D] dark:text-[#78F9B8]'
+                            : 'text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800'
+                        }`}
                       >
-                        <span>🌾 {t.catRice}</span>
-                        <span className="text-[10px]">→</span>
-                      </div>
-                      <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
-                        {[
-                          'Araliya Keeri Samba (5kg)',
-                          'White Raw Kakulu Rice',
-                          'Traditional Red Raw Rice',
-                          'Mysore Red Split Dhal (1kg)',
-                          'Pol Roti & String Hopper Flour'
-                        ].map(item => (
-                          <li
-                            key={item}
-                            onClick={() => {
-                              setSelectedCategory('Staples & Grains');
-                              setCurrentPage('SHOP');
-                              setIsCategoryMenuOpen(false);
-                            }}
-                            className="hover:text-[#1B8057] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
-                          >
-                            <span className="text-[10px] text-[#F8C519]">•</span>
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Column 2: Ceylon Fresh Vegetables */}
-                    <div className="space-y-3">
-                      <div
-                        onClick={() => {
-                          setSelectedCategory('Vegetables');
-                          setCurrentPage('SHOP');
-                          setIsCategoryMenuOpen(false);
-                        }}
-                        className="font-black text-xs uppercase tracking-wider text-[#1B8057] dark:text-[#78F9B8] pb-1 border-b border-slate-100 dark:border-zinc-800 cursor-pointer flex items-center justify-between hover:underline"
-                      >
-                        <span>🍆 {t.catVeg}</span>
-                        <span className="text-[10px]">→</span>
-                      </div>
-                      <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
-                        {[
-                          { name: 'Sri Lankan Purple Brinjal (Wambatu)', cat: 'Vegetables' },
-                          { name: "Fresh Lady's Finger (Bandakka)", cat: 'Vegetables' },
-                          { name: 'Golden Yellow Pumpkin (Wattakka)', cat: 'Vegetables' },
-                          { name: 'Ceylon Red Lady Sweet Papaya', cat: 'Fruits' },
-                          { name: 'Karthakolomban Sweet Mangoes', cat: 'Fruits' }
-                        ].map(item => (
-                          <li
-                            key={item.name}
-                            onClick={() => {
-                              setSelectedCategory(item.cat);
-                              setCurrentPage('SHOP');
-                              setIsCategoryMenuOpen(false);
-                            }}
-                            className="hover:text-[#1B8057] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
-                          >
-                            <span className="text-[10px] text-[#F8C519]">•</span>
-                            <span>{item.name}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Column 3: Spices, Coconut & Tea */}
-                    <div className="space-y-3">
-                      <div
-                        onClick={() => {
-                          setSelectedCategory('Pantry');
-                          setCurrentPage('SHOP');
-                          setIsCategoryMenuOpen(false);
-                        }}
-                        className="font-black text-xs uppercase tracking-wider text-[#1B8057] dark:text-[#78F9B8] pb-1 border-b border-slate-100 dark:border-zinc-800 cursor-pointer flex items-center justify-between hover:underline"
-                      >
-                        <span>🌶️ {t.catSpices}</span>
-                        <span className="text-[10px]">→</span>
-                      </div>
-                      <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-zinc-400">
-                        {[
-                          'Roasted Ceylon Curry Powder',
-                          'Jaffna Hot Curry Powder',
-                          'Pure Ceylon Cinnamon Quills',
-                          'Dilmah Single Origin BOPF Tea',
-                          'Rich Coconut Milk & Cream'
-                        ].map(item => (
-                          <li
-                            key={item}
-                            onClick={() => {
-                              setSelectedCategory('Pantry');
-                              setCurrentPage('SHOP');
-                              setIsCategoryMenuOpen(false);
-                            }}
-                            className="hover:text-[#1B8057] dark:hover:text-white cursor-pointer transition flex items-center gap-1.5"
-                          >
-                            <span className="text-[10px] text-[#F8C519]">•</span>
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Column 4: Promotional Banner Card */}
-                    <div className="rounded-2xl bg-gradient-to-br from-[#F8C519] via-amber-400 to-amber-500 p-5 text-[#664E00] flex flex-col justify-between shadow-lg relative overflow-hidden">
-                      <div className="space-y-1 relative z-10">
-                        <span className="px-2 py-0.5 rounded-full bg-amber-900/20 text-[#664E00] text-[10px] font-black uppercase tracking-wider">
-                          Weekly Deals
-                        </span>
-                        <h4 className="font-black text-base leading-tight mt-1">
-                          20% Off on Fresh Ceylon Veggies
-                        </h4>
-                        <p className="text-[11px] font-medium opacity-90">
-                          Cash on Delivery in Bucharest & Ilfov.
-                        </p>
-                      </div>
-
-                      <div className="mt-4 pt-2 relative z-10">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedCategory('Fruits & Veg');
-                            setCurrentPage('SHOP');
-                            setIsCategoryMenuOpen(false);
-                          }}
-                          className="w-full py-2.5 rounded-xl bg-[#0A6847] hover:bg-[#085237] text-white text-xs font-black shadow transition"
-                        >
-                          Shop Vegetables Now →
-                        </button>
-                      </div>
-                    </div>
+                        <span className="text-base">{item.icon}</span>
+                        <span>{item.name}</span>
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Primary Uppercase Navigation Links Matching Figma */}
-            <nav className="hidden lg:flex items-center gap-7 xl:gap-9 text-sm font-medium text-white tracking-wide uppercase">
+            {/* Primary Uppercase Navigation Links: Home, Shop, About Us, Contact */}
+            <nav className="hidden lg:flex items-center gap-7 xl:gap-9 text-sm font-bold text-white tracking-wide uppercase">
               <button
                 type="button"
                 onClick={() => setCurrentPage('HOME')}
                 className={`hover:text-[#F8C519] transition cursor-pointer ${
-                  currentPage === 'HOME' ? 'text-[#F8C519] font-bold underline underline-offset-8' : ''
+                  currentPage === 'HOME' ? 'text-[#F8C519] underline underline-offset-8 decoration-2' : ''
                 }`}
               >
                 {currentLanguage === 'en' ? 'HOME' : t.tabHome}
@@ -686,8 +615,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   setCurrentPage('SHOP');
                 }}
                 className={`hover:text-[#F8C519] transition cursor-pointer ${
-                  currentPage === 'SHOP' && selectedCategory === 'All'
-                    ? 'text-[#F8C519] font-bold underline underline-offset-8'
+                  currentPage === 'SHOP'
+                    ? 'text-[#F8C519] underline underline-offset-8 decoration-2'
                     : ''
                 }`}
               >
@@ -696,64 +625,31 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
               <button
                 type="button"
-                onClick={() => {
-                  setSelectedCategory('Staples & Grains');
-                  setCurrentPage('SHOP');
-                }}
+                onClick={() => setCurrentPage('ABOUT_US')}
                 className={`hover:text-[#F8C519] transition cursor-pointer ${
-                  currentPage === 'SHOP' && selectedCategory === 'Staples & Grains'
-                    ? 'text-[#F8C519] font-bold underline underline-offset-8'
-                    : ''
+                  currentPage === 'ABOUT_US' ? 'text-[#F8C519] underline underline-offset-8 decoration-2' : ''
                 }`}
               >
-                {currentLanguage === 'en' ? 'RICE & GRAINS' : t.tabRice}
+                ABOUT US
               </button>
 
               <button
                 type="button"
-                onClick={() => {
-                  setSelectedCategory('Vegetables');
-                  setCurrentPage('SHOP');
-                }}
+                onClick={() => setCurrentPage('CONTACT')}
                 className={`hover:text-[#F8C519] transition cursor-pointer ${
-                  currentPage === 'SHOP' && (selectedCategory === 'Vegetables' || selectedCategory === 'Veggies')
-                    ? 'text-[#F8C519] font-bold underline underline-offset-8'
-                    : ''
+                  currentPage === 'CONTACT' ? 'text-[#F8C519] underline underline-offset-8 decoration-2' : ''
                 }`}
               >
-                {currentLanguage === 'en' ? 'VEGGIES' : t.tabVegetables}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedCategory('Fruits');
-                  setCurrentPage('SHOP');
-                }}
-                className={`hover:text-[#F8C519] transition cursor-pointer ${
-                  currentPage === 'SHOP' && selectedCategory === 'Fruits'
-                    ? 'text-[#F8C519] font-bold underline underline-offset-8'
-                    : ''
-                }`}
-              >
-                {currentLanguage === 'en' ? 'FRUITS' : t.tabFruits}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedCategory('Pantry');
-                  setCurrentPage('SHOP');
-                }}
-                className={`hover:text-[#F8C519] transition cursor-pointer ${
-                  currentPage === 'SHOP' && selectedCategory === 'Pantry'
-                    ? 'text-[#F8C519] font-bold underline underline-offset-8'
-                    : ''
-                }`}
-              >
-                {currentLanguage === 'en' ? 'CEYLON SPICES' : t.tabSpices}
+                CONTACT
               </button>
             </nav>
+          </div>
+
+          {/* Right Trust Badge in Sub-Navbar with Sri Lankan Flag */}
+          <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-bold text-white shadow-xs">
+            <img src="/sri_lanka_flag.svg" alt="Sri Lanka Flag" className="w-5 h-auto rounded-xs shadow-xs" />
+            <span className="text-[#F8C519]">100% Genuine</span>
+            <span className="opacity-90">• Ceylon Imported</span>
           </div>
 
           {/* Right Quick Links for Track Order & My Deliveries (ONLY SHOWN WHEN SIGNED IN) */}
@@ -791,13 +687,21 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-[#39906D] py-3 space-y-2 text-sm font-semibold text-white">
+          <div className="lg:hidden border-t border-[#39906D] py-3 space-y-2 text-sm font-semibold text-white animate-fadeIn">
+            {/* Sri Lankan Trust Strip for Mobile */}
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/10 text-xs font-bold text-[#F8C519] mb-2">
+              <img src="/sri_lanka_flag.svg" alt="Sri Lanka Flag" className="w-5 h-auto rounded-xs shadow-xs" />
+              <span>100% Genuine Sri Lankan Imports</span>
+            </div>
+
             <button
               onClick={() => {
                 setCurrentPage('HOME');
                 setMobileMenuOpen(false);
               }}
-              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
+              className={`block w-full text-left py-2 px-2.5 rounded-lg transition ${
+                currentPage === 'HOME' ? 'bg-white/15 text-[#F8C519] font-bold' : 'hover:text-[#F8C519]'
+              }`}
             >
               HOME
             </button>
@@ -807,50 +711,83 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 setCurrentPage('SHOP');
                 setMobileMenuOpen(false);
               }}
-              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
+              className={`block w-full text-left py-2 px-2.5 rounded-lg transition ${
+                currentPage === 'SHOP' ? 'bg-white/15 text-[#F8C519] font-bold' : 'hover:text-[#F8C519]'
+              }`}
             >
               SHOP
             </button>
             <button
               onClick={() => {
-                setSelectedCategory('Staples & Grains');
-                setCurrentPage('SHOP');
+                setCurrentPage('ABOUT_US');
                 setMobileMenuOpen(false);
               }}
-              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
+              className={`block w-full text-left py-2 px-2.5 rounded-lg transition ${
+                currentPage === 'ABOUT_US' ? 'bg-white/15 text-[#F8C519] font-bold' : 'hover:text-[#F8C519]'
+              }`}
             >
-              RICE & GRAINS
+              ABOUT US
             </button>
             <button
               onClick={() => {
-                setSelectedCategory('Vegetables');
-                setCurrentPage('SHOP');
+                setCurrentPage('CONTACT');
                 setMobileMenuOpen(false);
               }}
-              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
+              className={`block w-full text-left py-2 px-2.5 rounded-lg transition ${
+                currentPage === 'CONTACT' ? 'bg-white/15 text-[#F8C519] font-bold' : 'hover:text-[#F8C519]'
+              }`}
             >
-              VEGGIES
+              CONTACT
             </button>
-            <button
-              onClick={() => {
-                setSelectedCategory('Fruits');
-                setCurrentPage('SHOP');
-                setMobileMenuOpen(false);
-              }}
-              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
-            >
-              FRUITS
-            </button>
-            <button
-              onClick={() => {
-                setSelectedCategory('Pantry');
-                setCurrentPage('SHOP');
-                setMobileMenuOpen(false);
-              }}
-              className="block w-full text-left py-1.5 hover:text-[#F8C519]"
-            >
-              CEYLON SPICES
-            </button>
+
+            {/* Quick Categories Header */}
+            <div className="pt-2 border-t border-[#39906D]/60">
+              <span className="text-[11px] uppercase font-bold text-[#80F6C7] tracking-wider block px-2.5 mb-1">
+                Shop By Category
+              </span>
+              <div className="grid grid-cols-2 gap-1.5 pt-1">
+                <button
+                  onClick={() => {
+                    setSelectedCategory('Staples & Grains');
+                    setCurrentPage('SHOP');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="text-left text-xs py-1.5 px-2.5 rounded-md bg-[#0F603F] text-white hover:bg-[#0c4e33]"
+                >
+                  🌾 Rice & Dhal
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedCategory('Vegetables');
+                    setCurrentPage('SHOP');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="text-left text-xs py-1.5 px-2.5 rounded-md bg-[#0F603F] text-white hover:bg-[#0c4e33]"
+                >
+                  🍆 Fresh Veggies
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedCategory('Fruits');
+                    setCurrentPage('SHOP');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="text-left text-xs py-1.5 px-2.5 rounded-md bg-[#0F603F] text-white hover:bg-[#0c4e33]"
+                >
+                  🥭 Island Fruits
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedCategory('Pantry');
+                    setCurrentPage('SHOP');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="text-left text-xs py-1.5 px-2.5 rounded-md bg-[#0F603F] text-white hover:bg-[#0c4e33]"
+                >
+                  🌶️ Ceylon Spices
+                </button>
+              </div>
+            </div>
             {currentUser && (
               <>
                 <button

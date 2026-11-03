@@ -512,6 +512,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
                   {/* Figma Card Details: Title + Price Row, Unit Pill + Old Price Row, Bottom-Right Add Button */}
                   <div className="mt-4 pt-2 space-y-2.5">
+                    {/* Ceylon Origin Badge */}
+                    <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#0A6847] dark:text-emerald-400">
+                      <img src="/sri_lanka_flag.svg" alt="Sri Lanka" className="w-3.5 h-2.5 object-cover rounded-xs" />
+                      <span>Ceylon Sourced</span>
+                    </div>
+
                     <div className="flex items-start justify-between gap-2">
                       <h4
                         className="text-base font-bold text-black dark:text-white line-clamp-1 group-hover:text-[#0A6847] transition"

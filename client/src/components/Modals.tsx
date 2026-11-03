@@ -366,8 +366,14 @@ export const Modals: React.FC<ModalsProps> = ({
 
       {/* 1. PRODUCT DETAIL & WEIGHT SELECTOR POP-UP MODAL (FIGMA THEME) */}
       {selectedProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white dark:bg-[#141A17] rounded-2xl max-w-xl w-full overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-2 border-[#15875D] animate-modal-pop">
+        <div 
+          onClick={onCloseProductModal}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn cursor-pointer"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white dark:bg-[#141A17] rounded-2xl max-w-xl w-full overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-2 border-[#15875D] animate-modal-pop cursor-default"
+          >
             {/* Figma Top Header Bar */}
             <div className="bg-[#1B8057] px-5 py-3.5 flex items-center justify-between text-white">
               <div className="flex items-center gap-2.5">
@@ -528,8 +534,14 @@ export const Modals: React.FC<ModalsProps> = ({
 
       {/* 2. AUTHENTICATION POP-UP MODAL (FIGMA THEME) */}
       {isAuthOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white dark:bg-[#141A17] rounded-2xl max-w-md w-full overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-2 border-[#15875D] animate-modal-pop">
+        <div 
+          onClick={onCloseAuth}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn cursor-pointer"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white dark:bg-[#141A17] rounded-2xl max-w-md w-full overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-2 border-[#15875D] animate-modal-pop cursor-default"
+          >
             {/* Figma Header */}
             <div className="bg-[#1B8057] px-6 py-4 flex items-center justify-between text-white">
               <div className="flex items-center gap-3">
@@ -810,8 +822,14 @@ export const Modals: React.FC<ModalsProps> = ({
 
       {/* 3. WELCOME / APP TOUR MODAL ("ආයුබෝවන්" — EXACT FIGMA THEME) */}
       {isOnboardingOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
-          <div className="relative max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl border-2 border-[#15875D] bg-[#F2F7F4] text-[#003D25] animate-modal-pop">
+        <div 
+          onClick={onCloseOnboarding}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn cursor-pointer"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-lg w-full rounded-2xl overflow-hidden shadow-2xl border-2 border-[#15875D] bg-[#F2F7F4] text-[#003D25] animate-modal-pop cursor-default"
+          >
             {/* Top gold bar matching Figma header */}
             <div className="bg-[#F8C519] px-5 py-2 flex items-center justify-between text-[#664E00] text-xs font-semibold">
               <span>✨ Authentic Sri Lankan Grocery Store in Romania</span>
@@ -895,8 +913,14 @@ export const Modals: React.FC<ModalsProps> = ({
 
       {/* 4. REAL-TIME ORDER TRACKING POP-UP MODAL (RIDER DISPATCH & COD FLOW - FIGMA THEME) */}
       {isTrackingOpen && activeOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white dark:bg-[#141A17] rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl border-2 border-[#15875D] animate-modal-pop">
+        <div 
+          onClick={onCloseTracking}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn cursor-pointer"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white dark:bg-[#141A17] rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl border-2 border-[#15875D] animate-modal-pop cursor-default"
+          >
             {/* Header */}
             <div className="bg-[#1B8057] px-6 py-4 flex items-center justify-between text-white">
               <div>

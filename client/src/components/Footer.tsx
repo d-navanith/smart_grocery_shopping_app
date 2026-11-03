@@ -72,34 +72,43 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
           {/* Column 2: All Categories / Quick Links */}
           <div className="md:col-span-3 space-y-3 md:pt-8">
             <h4 className="text-lg sm:text-xl font-bold text-white mb-3">
-              All Categories
+              Quick Navigation
             </h4>
             <ul className="space-y-2.5 text-sm font-normal text-white/95">
               <li>
                 <button
                   type="button"
                   onClick={() => onNavigatePage('HOME')}
-                  className="hover:text-[#F8C519] transition cursor-pointer"
+                  className="hover:text-[#F8C519] transition cursor-pointer flex items-center gap-1.5"
                 >
-                  Home
+                  <span>Home</span>
                 </button>
               </li>
               <li>
                 <button
                   type="button"
                   onClick={() => onNavigatePage('SHOP')}
-                  className="hover:text-[#F8C519] transition cursor-pointer"
+                  className="hover:text-[#F8C519] transition cursor-pointer flex items-center gap-1.5"
                 >
-                  Grocery Shop
+                  <span>Grocery Shop</span>
                 </button>
               </li>
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigatePage('WISHLIST')}
-                  className="hover:text-[#F8C519] transition cursor-pointer"
+                  onClick={() => onNavigatePage('ABOUT_US')}
+                  className="hover:text-[#F8C519] font-medium text-[#F8C519] transition cursor-pointer flex items-center gap-1.5"
                 >
-                  My Wishlist
+                  <span>🇱🇰 About Us</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onNavigatePage('CONTACT')}
+                  className="hover:text-[#F8C519] font-medium text-[#F8C519] transition cursor-pointer flex items-center gap-1.5"
+                >
+                  <span>📞 Contact Us</span>
                 </button>
               </li>
               <li>
@@ -114,19 +123,19 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigatePage('ACCOUNT')}
+                  onClick={() => onNavigatePage('DELIVERIES')}
                   className="hover:text-[#F8C519] transition cursor-pointer"
                 >
-                  My Account
+                  My Deliveries
                 </button>
               </li>
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigatePage('DELIVERIES')}
+                  onClick={() => onNavigatePage('WISHLIST')}
                   className="hover:text-[#F8C519] transition cursor-pointer"
                 >
-                  My Deliveries
+                  My Wishlist
                 </button>
               </li>
               {onOpenSplash && (
@@ -134,7 +143,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
                   <button
                     type="button"
                     onClick={onOpenSplash}
-                    className="hover:text-[#F8C519] text-[#F8C519]/90 font-semibold transition cursor-pointer flex items-center gap-1.5"
+                    className="hover:text-[#F8C519] text-[#F8C519]/90 font-semibold transition cursor-pointer flex items-center gap-1.5 pt-1"
                   >
                     <span>✨ Supermarket Welcome Tour</span>
                   </button>
@@ -143,29 +152,73 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
             </ul>
           </div>
 
-          {/* Column 3: Contact */}
+          {/* Column 3: Contact (Grounded in ceylonfoodonline.com) */}
           <div className="md:col-span-4 space-y-4 md:pt-8">
             <h4 className="text-lg sm:text-xl font-bold text-white mb-3">
-              Contact
+              Contact & Hub
             </h4>
 
             <div className="space-y-3 text-sm font-normal text-white">
+              {/* Address */}
+              <div className="flex items-start gap-3">
+                <div className="w-[35px] h-[31px] rounded-md bg-[#32A778] border border-white/50 flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-base">📍</span>
+                </div>
+                <div className="leading-snug">
+                  <span className="font-semibold block text-[#F8C519]">Bucharest Hub & Store</span>
+                  <span className="text-white/90 text-xs">Strada Mihai Eminescu nr. 42, Sector 1, București</span>
+                </div>
+              </div>
+
               {/* Email */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-start gap-3">
                 <div className="w-[35px] h-[31px] rounded-md bg-[#32A778] border border-white/50 flex items-center justify-center shrink-0">
                   <Mail className="w-4 h-4 text-white" />
                 </div>
-                <span>ceylon@gmail.com</span>
+                <div className="text-xs space-y-0.5">
+                  <a href="mailto:ceylonfoodonline@gmail.com" className="hover:text-[#F8C519] block transition">ceylonfoodonline@gmail.com</a>
+                  <a href="mailto:orders@ceylonfoods.ro" className="hover:text-[#F8C519] block text-white/80 transition">orders@ceylonfoods.ro</a>
+                </div>
               </div>
 
               {/* Phone */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-start gap-3">
                 <div className="w-[35px] h-[31px] rounded-md bg-[#32A778] border border-white/50 flex items-center justify-center shrink-0">
                   <PhoneCall className="w-4 h-4 text-white" />
                 </div>
-                <span>011 222 6558</span>
+                <div className="text-xs space-y-0.5">
+                  <div className="font-medium">+40 722 456 789 <span className="text-[10px] text-emerald-200">(Bucharest)</span></div>
+                  <div className="text-white/80">+81 070 4710 5533 <span className="text-[10px] text-emerald-200">(International)</span></div>
+                </div>
+              </div>
+
+              {/* Working Hours & Global Reference */}
+              <div className="pt-2 border-t border-white/20 text-xs text-white/90 space-y-1">
+                <div className="flex items-center gap-1.5 text-emerald-100">
+                  <span>🕒</span>
+                  <span>Monday – Sunday: <strong>09:00 – 20:00</strong></span>
+                </div>
+                <div className="flex items-center gap-1.5 text-emerald-100">
+                  <Globe className="w-3.5 h-3.5 text-[#F8C519]" />
+                  <span>Global network: <a href="https://www.ceylonfoodonline.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#F8C519]">ceylonfoodonline.com</a></span>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SRI LANKAN AUTHENTICITY TRUST STRIP */}
+      <div className="bg-[#0c402b] text-white py-3 px-4 border-t border-emerald-800/60">
+        <div className="max-w-[1140px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left text-xs sm:text-sm">
+          <div className="flex items-center gap-2 font-medium">
+            <img src="/sri_lanka_flag.svg" alt="Sri Lanka Flag" className="w-6 h-4 object-cover rounded shadow-xs" />
+            <span>100% Genuine Sri Lankan Imports Direct to Romania</span>
+          </div>
+          <div className="flex items-center gap-4 text-xs text-emerald-200">
+            <span>✨ Authentic Sourcing</span>
+            <span>⚡ Express Dispatch</span>
+            <span>💵 Cash on Delivery</span>
           </div>
         </div>
       </div>

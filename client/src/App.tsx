@@ -13,6 +13,8 @@ import { CheckoutView } from './components/CheckoutView';
 import { OrderCompletedView } from './components/OrderCompletedView';
 import { TrackOrderView } from './components/TrackOrderView';
 import { AccountView } from './components/AccountView';
+import { AboutUsView } from './components/AboutUsView';
+import { ContactView } from './components/ContactView';
 import { Footer } from './components/Footer';
 import { Modals, PopupNotification } from './components/Modals';
 import { SplashScreen } from './components/SplashScreen';
@@ -67,6 +69,8 @@ export default function ClientWebSupermarket() {
       if (p === 'completed') return 'ORDER_COMPLETED';
       if (p === 'track' || p === 'track-order') return 'TRACK_ORDER';
       if (p === 'account') return 'ACCOUNT';
+      if (p === 'about' || p === 'about-us') return 'ABOUT_US';
+      if (p === 'contact' || p === 'contact-us') return 'CONTACT';
       if (p === 'shop') return 'SHOP';
     }
     return 'HOME';
@@ -863,6 +867,21 @@ export default function ClientWebSupermarket() {
               t={t}
             />
           )
+        )}
+        {currentPage === 'ABOUT_US' && (
+          <AboutUsView
+            onNavigatePage={(p) => setCurrentPage(p)}
+            isDarkMode={isDarkMode}
+            t={t}
+          />
+        )}
+
+        {currentPage === 'CONTACT' && (
+          <ContactView
+            onNavigatePage={(p) => setCurrentPage(p)}
+            isDarkMode={isDarkMode}
+            t={t}
+          />
         )}
         </div>
       </main>

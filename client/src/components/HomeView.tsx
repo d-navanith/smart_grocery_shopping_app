@@ -172,6 +172,16 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="max-w-[1240px] mx-auto px-4 sm:px-8 pt-6 lg:pt-4 pb-0 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative min-h-[500px] lg:min-h-[552px]">
           {/* Left Column: Text & CTA with Staggered Entrance Animations */}
           <div className="lg:col-span-7 py-8 lg:py-12 space-y-5 z-10">
+            {/* Sri Lankan Authenticity Trust Badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-100/90 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-700/60 text-emerald-900 dark:text-emerald-300 text-xs sm:text-sm font-semibold shadow-xs">
+              <img
+                src="/sri_lanka_flag.svg"
+                alt="Sri Lanka Flag"
+                className="w-5 h-3.5 object-cover rounded shadow-xs"
+              />
+              <span>100% Genuine Sri Lankan Imports Direct to Romania</span>
+            </div>
+
             <div className="space-y-2">
               <h2 className="hero-animate-title text-3xl sm:text-[42px] font-bold text-black dark:text-white leading-tight tracking-tight">
                 Taste of Home:
@@ -430,6 +440,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
                   {/* Product Metadata & Add Button */}
                   <div className="pt-3 flex flex-col">
+                    {/* Authentic Origin Badge */}
+                    <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#0A6847] dark:text-emerald-400 mb-1.5">
+                      <img src="/sri_lanka_flag.svg" alt="Sri Lanka" className="w-3.5 h-2.5 object-cover rounded-xs" />
+                      <span>Direct Ceylon Import</span>
+                    </div>
+
                     {/* Row 1: Title & Price */}
                     <div className="flex items-baseline justify-between gap-2">
                       <h4 className="font-bold text-xl text-black dark:text-white line-clamp-1 group-hover:text-[#0A6847] transition">
