@@ -608,7 +608,7 @@ export default function ClientWebSupermarket() {
   };
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'dark bg-[#0A0D0B] text-white' : 'bg-white text-slate-900'} font-sans flex flex-col transition-colors duration-200`}>
+    <div className={`min-h-screen overflow-x-hidden max-w-full ${showSplash ? 'h-screen overflow-hidden' : ''} ${isDarkMode ? 'dark bg-[#0A0D0B] text-white' : 'bg-white text-slate-900'} font-sans flex flex-col transition-colors duration-200`}>
       <HeaderNav
         currentPage={currentPage}
         setCurrentPage={(page) => {
