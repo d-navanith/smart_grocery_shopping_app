@@ -1,75 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import {
-  MapPin,
-  Truck,
-  CheckCircle2,
-  Sparkles,
-  ShoppingBag,
-  ArrowRight,
-  ShieldCheck,
-  X
-} from 'lucide-react';
+import { X, ShoppingBag, Sparkles } from 'lucide-react';
 
 interface SplashScreenProps {
-  onEnterStore: (selectedSector?: string) => void;
+  onEnterStore: () => void;
   isDarkMode?: boolean;
 }
 
-const DELIVERY_AREAS = [
-  'București Sector 1 (Nord, Băneasa, Pipera)',
-  'București Sector 2 (Colentina, Pantelimon, Tei)',
-  'București Sector 3 (Centru Vechi, Titan, Dristor)',
-  'București Sector 4 (Berceni, Olteniței)',
-  'București Sector 5 (Rahova, 13 Septembrie)',
-  'București Sector 6 (Militari, Drumul Taberei)',
-  'Județul Ilfov (Otopeni, Voluntari, Chiajna, Mogoșoaia)',
-  'Restul României (Livrare Rapidă Curier Național)'
-];
-
-const LOADING_MILESTONES = [
-  { at: 15, text: 'Connecting to Bucharest Central Fresh Depot...' },
-  { at: 40, text: 'Stocking Farm-Fresh Purple Brinjal, Okra & Ceylon Spices...' },
-  { at: 75, text: 'Inspecting Keeri Samba Rice & Tropical Fruits Quality...' },
-  { at: 95, text: 'Store Ready! Cash & Card on Delivery Doorstep Dispatch.' }
-];
-
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnterStore }) => {
   const [progress, setProgress] = useState(0);
-  const [currentMessage, setCurrentMessage] = useState('Opening Ceylon Foods Supermarket...');
-  const [selectedArea, setSelectedArea] = useState(DELIVERY_AREAS[0]);
   const [isFadingOut, setIsFadingOut] = useState(false);
-  const [autoEnterCountdown, setAutoEnterCountdown] = useState<number | null>(null);
 
   useEffect(() => {
-    // Smooth progress simulation resembling Keells Super online loading
+    // Smooth progress simulation matching high-end grocery mobile apps
     const interval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
           clearInterval(interval);
           return 100;
         }
-        const delta = Math.floor(Math.random() * 8) + 6;
-        const next = Math.min(prev + delta, 100);
-
-        // Update message based on milestone
-        const matched = [...LOADING_MILESTONES].reverse().find(m => next >= m.at);
-        if (matched) {
-          setCurrentMessage(matched.text);
-        }
-
-        return next;
+        const delta = Math.floor(Math.random() * 8) + 7;
+        return Math.min(prev + delta, 100);
       });
-    }, 110);
+    }, 85);
 
     return () => clearInterval(interval);
   }, []);
 
-  // When progress reaches 100%, trigger short auto-dismiss countdown
+  // When progress reaches 100%, smoothly auto-dismiss and enter supermarket
   useEffect(() => {
     if (progress === 100) {
       const timer = setTimeout(() => {
         handleEnter();
-      }, 1400);
+      }, 750);
       return () => clearTimeout(timer);
     }
   }, [progress]);
@@ -77,145 +39,148 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnterStore }) => {
   const handleEnter = () => {
     setIsFadingOut(true);
     setTimeout(() => {
-      onEnterStore(selectedArea);
+      onEnterStore();
     }, 450);
   };
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-[#05352A] text-white overflow-hidden transition-all duration-500 ${
+      onClick={handleEnter}
+      className={`fixed inset-0 z-[9999] flex items-center justify-center bg-[#064F41]/35 backdrop-blur-md cursor-pointer transition-all duration-500 select-none ${
         isFadingOut ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
-      style={{
-        backgroundImage: 'radial-gradient(circle at 50% 30%, #0A6847 0%, #064F41 45%, #03281F 100%)'
-      }}
     >
-      {/* Ambient background glow & soft botanical pattern */}
-      <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#80F6C7_1px,transparent_1px)] [background-size:24px_24px]" />
-
       {/* Top Quick Skip Button */}
       <button
         type="button"
-        onClick={handleEnter}
-        className="absolute top-5 right-5 sm:top-7 sm:right-8 z-20 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white/90 text-xs font-semibold backdrop-blur-md transition flex items-center gap-1.5 cursor-pointer active:scale-95"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleEnter();
+        }}
+        className="absolute top-4 right-4 sm:top-7 sm:right-8 z-30 px-3.5 py-1.5 rounded-full bg-white/95 hover:bg-white text-[#064F41] border border-[#15875D]/30 shadow-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer active:scale-95"
       >
-        <span>Skip Intro</span>
+        <span>Skip</span>
         <X className="w-3.5 h-3.5" />
       </button>
 
-      {/* Main Splash Card Container */}
-      <div className="relative z-10 w-full max-w-lg mx-4 px-6 py-8 sm:px-10 sm:py-10 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_20px_60px_rgba(0,0,0,0.5)] text-center flex flex-col items-center animate-modal-pop">
-        
-        {/* Multilingual Welcome Greeting Ribbon */}
-        <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#F8C519]/20 border border-[#F8C519]/40 text-[#F8C519] text-[11px] sm:text-xs font-bold tracking-wide mb-5">
-          <Sparkles className="w-3.5 h-3.5 animate-spin" />
-          <span>ආයුබෝවන් • வணக்கம் • Welcome</span>
+      {/* Main Splash Phone/Screen Container (Exact Reference Theme & Layout) */}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full h-full sm:h-[92vh] sm:max-h-[740px] sm:max-w-[390px] sm:rounded-[40px] bg-[#FAFBFB] shadow-[0_25px_80px_rgba(6,79,65,0.35)] sm:border-[7px] sm:border-white overflow-hidden flex flex-col justify-between items-center text-center animate-modal-pop"
+        style={{
+          boxShadow: '0 30px 90px -20px rgba(6, 79, 65, 0.4), 0 0 0 1px rgba(21, 135, 93, 0.12)'
+        }}
+      >
+        {/* Subtle background ambient glow */}
+        <div className="absolute top-28 left-1/2 -translate-x-1/2 w-72 h-72 bg-[#15875D]/5 rounded-full blur-3xl pointer-events-none" />
+
+        {/* 1. TOP HANGING BOTANICAL SPICE / BERRIES ACCENT (Reference Image 1) */}
+        <div className="w-full flex justify-center pt-0 pointer-events-none z-10">
+          <img
+            src="/splash_top_berries.png"
+            alt="Ceylon Fresh Botanicals"
+            className="w-32 sm:w-36 h-auto object-contain drop-shadow-sm -mt-0.5 animate-pulse"
+            style={{ animationDuration: '3.5s' }}
+          />
         </div>
 
-        {/* Keells-Style Supermarket Fresh Cart Icon & Glow */}
-        <div className="relative mb-4">
-          <div className="absolute -inset-4 bg-[#80F6C7]/20 rounded-full blur-xl animate-pulse" />
-          <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-white p-3.5 shadow-2xl border-2 border-[#15875D] flex items-center justify-center transform hover:scale-105 transition duration-300">
-            <img
-              src="/ceylon_cart_icon.png"
-              alt="Ceylon Foods Supermarket"
-              className="w-full h-full object-contain"
-            />
-          </div>
-        </div>
-
-        {/* Brand Title & Tagline */}
-        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center justify-center gap-2">
-          <span>Ceylon</span>
-          <span className="text-[#FF632B]">Foods</span>
-        </h1>
-        <p className="text-xs sm:text-sm font-semibold text-[#80F6C7] mt-1">
-          Sri Lanka's Fresh Produce in Romania • Supermarket Online
-        </p>
-
-        {/* Keells-style Animated Delivery Road & Progress Bar */}
-        <div className="w-full mt-6 space-y-2">
-          {/* Animated cart driving on track */}
-          <div className="relative w-full h-8 overflow-hidden">
-            <div
-              className="absolute top-0 flex items-center gap-1.5 transition-all duration-300 ease-out"
-              style={{ left: `calc(${Math.min(progress, 90)}% - 20px)` }}
+        {/* 2. CENTER BRAND EMBLEM & TYPOGRAPHY (Harmonized with Ceylon Foods Theme) */}
+        <div className="px-6 py-1 flex flex-col items-center justify-center my-auto z-10">
+          {/* Fresh Sprouting Green Leaves */}
+          <div className="relative mb-0.5 flex items-center justify-center">
+            {/* Left Leaf */}
+            <svg
+              className="w-10 h-10 text-[#0F634A] transform -rotate-12 -mr-2 drop-shadow-xs"
+              viewBox="0 0 24 24"
+              fill="currentColor"
             >
-              <div className="p-1 rounded-md bg-[#F8C519] text-[#664E00] shadow-md animate-bounce">
-                <Truck className="w-4 h-4" />
+              <path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z" />
+            </svg>
+            {/* Right Leaf */}
+            <svg
+              className="w-12 h-12 text-[#559B28] transform rotate-12 drop-shadow-xs"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z" />
+            </svg>
+          </div>
+
+          {/* Typography matching "Fresh and READY FOODS" aesthetic */}
+          <div className="space-y-0.5">
+            <h1
+              className="text-5xl sm:text-6xl font-black italic tracking-tight text-[#064F41]"
+              style={{
+                fontFamily: "'Plus Jakarta Sans', 'Inter', cursive, sans-serif",
+                textShadow: '0 2px 4px rgba(6,79,65,0.06)'
+              }}
+            >
+              Fresh
+            </h1>
+
+            <div className="flex items-center justify-center gap-1.5 text-xl sm:text-2xl font-black tracking-wider text-[#15875D]">
+              <span className="text-sm font-semibold lowercase italic text-[#15875D]/80">and</span>
+              <span className="uppercase">READY</span>
+            </div>
+
+            {/* Dark Green Banner Badge */}
+            <div className="pt-2 flex justify-center">
+              <div
+                className="px-6 py-1.5 rounded-md bg-[#064F41] text-white text-xs sm:text-sm font-black tracking-widest uppercase shadow-md"
+                style={{ clipPath: 'polygon(0% 0%, 100% 0%, 96% 100%, 4% 100%)' }}
+              >
+                <span>CEYLON FOODS</span>
               </div>
             </div>
-            {/* Dashed Road line */}
-            <div className="absolute bottom-1 left-0 right-0 h-[2px] border-b-2 border-dashed border-white/30" />
           </div>
 
-          {/* Progress Bar Track */}
-          <div className="w-full h-2.5 rounded-full bg-black/40 overflow-hidden border border-white/10 p-[1px]">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-[#15875D] via-[#F8C519] to-[#FF632B] transition-all duration-200 shadow-sm"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-
-          {/* Milestone Status Text */}
-          <div className="flex items-center justify-between text-[11px] text-white/80 font-medium px-1">
-            <span className="truncate pr-2">{currentMessage}</span>
-            <span className="font-bold text-[#F8C519] shrink-0">{progress}%</span>
-          </div>
-        </div>
-
-        {/* Keells Super Signature Feature: Delivery Location Confirmation */}
-        <div className="w-full mt-6 p-4 rounded-2xl bg-black/25 border border-white/15 text-left space-y-2.5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-[#80F6C7]">
-              <MapPin className="w-3.5 h-3.5 text-[#F8C519]" />
-              <span>Select Your Delivery Area:</span>
+          {/* Multilingual Subtitle (Reference Image 2 style) */}
+          <div className="mt-4 space-y-1">
+            <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#F8C519] bg-[#064F41] px-3 py-0.5 rounded-full shadow-xs">
+              <Sparkles className="w-3 h-3" />
+              <span>ආයුබෝවන් • வணக்கம் • Welcome</span>
             </div>
-            <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-[#15875D] text-white">
-              Bucharest Hub
-            </span>
+            <p className="text-[10px] font-bold tracking-widest text-[#6B7280] uppercase mt-1">
+              AUTHENTIC SRI LANKAN PRODUCE
+            </p>
+            <p className="text-[10px] font-semibold text-[#15875D]">
+              Delivered Fresh Across Bucharest & Ilfov
+            </p>
           </div>
 
-          <select
-            value={selectedArea}
-            onChange={(e) => setSelectedArea(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl bg-white text-[#064F41] text-xs font-bold outline-none border border-slate-200 cursor-pointer shadow-inner"
+          {/* Minimalist App Loading Line */}
+          <div className="w-48 sm:w-56 mt-4 space-y-1">
+            <div className="w-full h-1.5 rounded-full bg-slate-200 overflow-hidden p-[1px]">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-[#15875D] via-[#F8C519] to-[#FF632B] transition-all duration-150"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <div className="flex items-center justify-between text-[10px] font-bold text-[#064F41]/75 px-0.5">
+              <span>Loading Fresh Store...</span>
+              <span>{progress}%</span>
+            </div>
+          </div>
+
+          {/* Enter Button */}
+          <button
+            type="button"
+            onClick={handleEnter}
+            className="mt-3.5 px-6 py-2 rounded-full bg-[#F8C519] hover:bg-[#EEAB1E] active:scale-95 text-[#664E00] font-black text-xs shadow-md transition flex items-center gap-2 cursor-pointer"
           >
-            {DELIVERY_AREAS.map(area => (
-              <option key={area} value={area} className="text-slate-900 font-semibold py-1">
-                {area}
-              </option>
-            ))}
-          </select>
-
-          {/* Trust Guarantee Badges */}
-          <div className="pt-1 flex items-center justify-between text-[10px] text-white/85 font-medium border-t border-white/10">
-            <span className="flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-[#F8C519]" />
-              <span>Cash / Card on Delivery</span>
-            </span>
-            <span className="flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3 text-[#80F6C7]" />
-              <span>Free Delivery &gt; 250 lei</span>
-            </span>
-          </div>
+            <ShoppingBag className="w-3.5 h-3.5" />
+            <span>Enter Supermarket</span>
+          </button>
         </div>
 
-        {/* Primary CTA Button */}
-        <button
-          type="button"
-          onClick={handleEnter}
-          className="w-full mt-6 py-3.5 px-6 rounded-2xl bg-[#F8C519] hover:bg-[#EEAB1E] active:scale-98 text-[#664E00] font-black text-sm tracking-wide shadow-xl flex items-center justify-center gap-2 transition cursor-pointer group"
-        >
-          <ShoppingBag className="w-4 h-4" />
-          <span>Enter Supermarket (Start Shopping)</span>
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </button>
-
-        {/* Subtle footer credit */}
-        <p className="text-[10px] text-white/60 mt-4">
-          Bucharest Depot • Same-day Dispatch with Glovo, Bolt & Sameday
-        </p>
+        {/* 3. BOTTOM FRESH FRUITS & VEGETABLES HARVEST MOUND (Reference Image 1) */}
+        <div className="w-full relative pointer-events-none -mb-1 z-10 flex justify-center">
+          <img
+            src="/splash_bottom_produce.png"
+            alt="Fresh Sri Lankan Produce"
+            className="w-full h-auto object-cover transform scale-105"
+          />
+        </div>
       </div>
     </div>
   );
