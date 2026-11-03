@@ -43,7 +43,7 @@ export const AboutUsView: React.FC<AboutUsViewProps> = ({ onNavigatePage, isDark
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight max-w-4xl mx-auto">
-            Bringing the Authentic Taste of <span className="text-[#F8C519] underline decoration-[#FF632B] decoration-wavy decoration-2">Sri Lanka</span> to Romania
+            Bringing the Authentic Taste of <span className="text-[#F8C519]">Sri Lanka</span> to Romania
           </h1>
 
           <p className="text-base sm:text-xl text-emerald-100/90 max-w-2xl mx-auto font-normal leading-relaxed">

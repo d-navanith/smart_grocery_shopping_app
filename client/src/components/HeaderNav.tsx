@@ -645,13 +645,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             </nav>
           </div>
 
-          {/* Right Trust Badge in Sub-Navbar with Sri Lankan Flag */}
-          <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-bold text-white shadow-xs">
-            <img src="/sri_lanka_flag.svg" alt="Sri Lanka Flag" className="w-5 h-auto rounded-xs shadow-xs" />
-            <span className="text-[#F8C519]">100% Genuine</span>
-            <span className="opacity-90">• Ceylon Imported</span>
-          </div>
-
           {/* Right Quick Links for Track Order & My Deliveries (ONLY SHOWN WHEN SIGNED IN) */}
           {currentUser && (
             <div className="hidden xl:flex items-center gap-5 text-xs font-semibold text-white/95 uppercase tracking-wide">

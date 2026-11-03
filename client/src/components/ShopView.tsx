@@ -88,12 +88,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
       let matchCat = true;
       if (selectedCategory !== 'All' && selectedCategory !== 'All Categories') {
         const catLower = selectedCategory.toLowerCase();
-        if (catLower.includes('rice') || catLower.includes('grain') || catLower.includes('staple')) {
+        if (catLower.includes('rice') || catLower.includes('grain') || catLower.includes('staple') || catLower.includes('dhal')) {
           matchCat = p.category.toLowerCase().includes('staple') || p.category.toLowerCase().includes('grain') || p.title.toLowerCase().includes('rice') || p.id.includes('rice') || p.id.includes('dhal');
-        } else if (catLower === 'fruits' || catLower === 'fruit' || catLower.includes('fruit')) {
+        } else if (catLower === 'fruits' || catLower === 'fruit' || catLower.includes('fruit') || catLower.includes('tropical')) {
           // Strictly fruits only
           matchCat = p.category.toLowerCase() === 'fruits' || p.category.toLowerCase() === 'fruit' || p.sku.startsWith('FRU') || p.id.includes('papaya') || p.id.includes('mango') || p.id.includes('avocado') || p.id.includes('orange');
-        } else if (catLower === 'vegetables' || catLower === 'veggies' || catLower.includes('veg')) {
+        } else if (catLower === 'vegetables' || catLower === 'veggies' || catLower.includes('veg') || catLower.includes('brinjal')) {
           // Strictly veggies only
           matchCat = (p.category.toLowerCase() === 'vegetables' || (p.category.toLowerCase().includes('veg') && !p.category.toLowerCase().includes('fruit'))) ||
             p.sku.startsWith('VEG') ||
@@ -102,9 +102,12 @@ export const ShopView: React.FC<ShopViewProps> = ({
             p.id.includes('pumpkin') ||
             p.id.includes('tomato') ||
             p.id.includes('onion') ||
+            p.id.includes('chillies') ||
             p.id.includes('chilli');
-        } else if (catLower.includes('spice') || catLower.includes('pantry')) {
-          matchCat = p.category.toLowerCase().includes('pantry') || p.category.toLowerCase().includes('spice') || p.title.toLowerCase().includes('curry') || p.title.toLowerCase().includes('cinnamon');
+        } else if (catLower.includes('spice') || catLower.includes('pantry') || catLower.includes('coconut')) {
+          matchCat = p.category.toLowerCase().includes('pantry') || p.category.toLowerCase().includes('spice') || p.title.toLowerCase().includes('curry') || p.title.toLowerCase().includes('cinnamon') || p.id.includes('coconut');
+        } else if (catLower === 'others') {
+          matchCat = p.category.toLowerCase().includes('beverage') || p.category.toLowerCase().includes('bakery') || p.category.toLowerCase().includes('snack') || p.category.toLowerCase().includes('tea');
         } else {
           matchCat = p.category.toLowerCase().includes(catLower);
         }
@@ -141,11 +144,32 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const paginatedProducts = sortedProducts.slice((currentPageNum - 1) * itemsPerPage, currentPageNum * itemsPerPage);
 
   const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = { 'All': products.length };
+    let riceCount = 0;
+    let vegCount = 0;
+    let fruitCount = 0;
+    let spiceCount = 0;
+
     products.forEach(p => {
-      counts[p.category] = (counts[p.category] || 0) + 1;
+      const catLower = p.category.toLowerCase();
+      const id = p.id.toLowerCase();
+      if (catLower.includes('staple') || catLower.includes('grain') || id.includes('rice') || id.includes('dhal')) {
+        riceCount++;
+      } else if (catLower === 'vegetables' || catLower.includes('veg') || id.includes('brinjal') || id.includes('okra') || id.includes('pumpkin') || id.includes('tomato') || id.includes('onion') || id.includes('chilli')) {
+        vegCount++;
+      } else if (catLower === 'fruits' || catLower.includes('fruit') || id.includes('papaya') || id.includes('mango')) {
+        fruitCount++;
+      } else if (catLower.includes('pantry') || catLower.includes('spice') || id.includes('spice') || id.includes('cinnamon') || id.includes('coconut')) {
+        spiceCount++;
+      }
     });
-    return counts;
+
+    return {
+      all: products.length,
+      rice: riceCount,
+      veg: vegCount,
+      fruit: fruitCount,
+      spice: spiceCount
+    };
   }, [products]);
 
   const hasActiveFilters = selectedCategory !== 'All' || maxPrice < 200 || minRating > 0 || selectedBrands.length > 0 || selectedProductTypes.length > 0 || onlyInStock || searchQuery;
@@ -212,78 +236,51 @@ export const ShopView: React.FC<ShopViewProps> = ({
             )}
           </div>
 
-          {/* 1. Category Filter */}
+          {/* 1. Category Filter (Attachment 3 Exact) */}
           <div className="space-y-2.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7]">
-              {t.filterCategories}
+              FOOD CATEGORIES
             </h4>
-            <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1 text-xs">
-              <label
-                onClick={() => setSelectedCategory('All')}
-                className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition ${
-                  selectedCategory === 'All'
-                    ? 'bg-[#0A6847] text-white font-bold shadow-xs'
-                    : 'bg-white/80 dark:bg-zinc-800 hover:bg-white dark:hover:bg-zinc-700 font-semibold text-[#003D25] dark:text-zinc-200'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    readOnly
-                    checked={selectedCategory === 'All'}
-                    className="accent-[#F8C519] rounded cursor-pointer"
-                  />
-                  <span>{t.catAll}</span>
-                </div>
-                <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                    selectedCategory === 'All'
-                      ? 'bg-[#F8C519] text-[#664E00]'
-                      : 'bg-[#F2F7F4] dark:bg-zinc-700 text-[#1B8057] dark:text-emerald-300'
-                  }`}
-                >
-                  {products.length}
-                </span>
-              </label>
-
+            <div className="space-y-1.5 text-xs">
               {[
-                { key: 'Staples & Grains', label: t.catRice },
-                { key: 'Vegetables', label: t.catVeg },
-                { key: 'Fruits', label: t.catFruits },
-                { key: 'Pantry', label: t.catSpices },
-                { key: 'Beverages', label: t.catTea },
-                { key: 'Bakery', label: t.catBakery },
-                { key: 'Snacks', label: t.catSnacks }
-              ].map(cat => (
-                <label
-                  key={cat.key}
-                  onClick={() => setSelectedCategory(cat.key)}
-                  className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition ${
-                    selectedCategory === cat.key
-                      ? 'bg-[#0A6847] text-white font-bold shadow-xs'
-                    : 'bg-white/80 dark:bg-zinc-800 hover:bg-white dark:hover:bg-zinc-700 font-semibold text-[#003D25] dark:text-zinc-200'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      readOnly
-                      checked={selectedCategory === cat.key}
-                      className="accent-[#F8C519] rounded cursor-pointer"
-                    />
-                    <span>{cat.label}</span>
-                  </div>
-                  <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                      selectedCategory === cat.key
-                        ? 'bg-[#F8C519] text-[#664E00]'
-                        : 'bg-[#F2F7F4] dark:bg-zinc-700 text-[#1B8057] dark:text-emerald-300'
+                { key: 'All', label: 'All Products', count: categoryCounts.all },
+                { key: 'Staples & Grains', label: 'White Rice, Red Rice & Dhal', count: categoryCounts.rice },
+                { key: 'Vegetables', label: 'Brinjal & Fresh Vegetables', count: categoryCounts.veg },
+                { key: 'Fruits', label: 'Tropical Fruits (Papaya & Mango)', count: categoryCounts.fruit },
+                { key: 'Pantry', label: 'Ceylon Spices & Coconut', count: categoryCounts.spice }
+              ].map(cat => {
+                const isSelected = selectedCategory === cat.key;
+                return (
+                  <label
+                    key={cat.key}
+                    onClick={() => setSelectedCategory(cat.key)}
+                    className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition ${
+                      isSelected
+                        ? 'bg-[#0A6847] text-white font-bold shadow-xs'
+                        : 'bg-white/80 dark:bg-zinc-800 hover:bg-white dark:hover:bg-zinc-700 font-semibold text-[#003D25] dark:text-zinc-200'
                     }`}
                   >
-                    {categoryCounts[cat.key] || 3}
-                  </span>
-                </label>
-              ))}
+                    <div className="flex items-center gap-2.5">
+                      <input
+                        type="checkbox"
+                        readOnly
+                        checked={isSelected}
+                        className="accent-[#F8C519] rounded cursor-pointer"
+                      />
+                      <span>{cat.label}</span>
+                    </div>
+                    <span
+                      className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                        isSelected
+                          ? 'bg-[#F8C519] text-[#664E00]'
+                          : 'bg-[#F2F7F4] dark:bg-zinc-700 text-[#1B8057] dark:text-emerald-300'
+                      }`}
+                    >
+                      {cat.count}
+                    </span>
+                  </label>
+                );
+              })}
             </div>
           </div>
 
@@ -397,11 +394,47 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </div>
         </aside>
 
-        {/* RIGHT MAIN COLUMN: CATALOG & GRID (EXACT FIGMA PRODUCT CARD DESIGN) */}
-        <section className="lg:col-span-9 space-y-6">
+        {/* RIGHT MAIN COLUMN: CATALOG & GRID (ATTACHMENT 3 EXACT) */}
+        <section className="lg:col-span-9 space-y-4">
+          {/* HORIZONTAL CATEGORY TABS (ATTACHMENT 3 EXACT) */}
+          <div className="flex items-center gap-6 sm:gap-9 text-xs sm:text-sm font-bold tracking-wider uppercase overflow-x-auto select-none pt-1 pb-1">
+            {[
+              { label: 'RICE & GRAINS', key: 'Staples & Grains' },
+              { label: 'VEGGIES', key: 'Vegetables' },
+              { label: 'FRUITS', key: 'Fruits' },
+              { label: 'CEYLON SPICES', key: 'Pantry' },
+              { label: 'OTHERS', key: 'Others' }
+            ].map(tab => {
+              const isActive =
+                tab.key === 'Others'
+                  ? selectedCategory === 'Others' || selectedCategory === 'Beverages' || selectedCategory === 'Bakery' || selectedCategory === 'Snacks'
+                  : selectedCategory === tab.key;
+              return (
+                <button
+                  key={tab.label}
+                  type="button"
+                  onClick={() => {
+                    if (isActive) {
+                      setSelectedCategory('All');
+                    } else {
+                      setSelectedCategory(tab.key);
+                    }
+                  }}
+                  className={`pb-1 transition whitespace-nowrap cursor-pointer ${
+                    isActive
+                      ? 'text-[#0A6847] dark:text-[#80F6C7] underline underline-offset-8 decoration-2 font-black'
+                      : 'text-[#475467] dark:text-zinc-400 hover:text-[#0A6847] dark:hover:text-white'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
           {/* Top Bar: Results Count, Active Filter Chips, Sort Dropdown */}
           <div
-            className={`p-4 rounded-xl border flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+            className={`p-3.5 sm:p-4 rounded-xl border flex flex-col md:flex-row md:items-center justify-between gap-3 ${
               isDarkMode
                 ? 'bg-[#141816] border-zinc-800 text-zinc-300'
                 : 'bg-[#F2F7F4] border-[#15875D]/30 text-[#003D25]'
@@ -409,12 +442,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
           >
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <span className="font-bold text-[#1B8057]">
-                {t.showingCount.replace('{count}', String(sortedProducts.length))}
+                Showing: {sortedProducts.length} {sortedProducts.length === 1 ? 'product' : 'products'}
               </span>
 
               {selectedCategory !== 'All' && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#0A6847] text-white text-[11px] font-semibold">
-                  {selectedCategory}
+                  {selectedCategory === 'Staples & Grains'
+                    ? 'Rice & Grains'
+                    : selectedCategory === 'Vegetables'
+                    ? 'Veggies'
+                    : selectedCategory === 'Fruits'
+                    ? 'Fruits'
+                    : selectedCategory === 'Pantry'
+                    ? 'Ceylon Spices'
+                    : selectedCategory}
                   <button onClick={() => setSelectedCategory('All')}>
                     <X className="w-3 h-3" />
                   </button>
@@ -544,43 +585,45 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     </div>
 
                     <div className="pt-2 flex items-center justify-between">
-                      <div className="flex items-center gap-1 text-xs font-semibold text-[#1B8057]">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#0A6847] dark:text-[#80F6C7]">
                         <Star className="w-3.5 h-3.5 fill-[#F8C519] text-[#F8C519]" />
-                        <span>{product.rating}</span>
+                        <span>{product.rating % 1 === 0 ? product.rating.toFixed(0) : product.rating}</span>
                       </div>
 
                       {inCartItem ? (
                         <div
                           onClick={(e) => e.stopPropagation()}
-                          className="flex items-center gap-2.5 bg-[#0A6847] text-white h-[40px] px-3.5 rounded-md shadow-sm"
+                          className="flex items-center gap-2.5 bg-[#0A6847] text-white h-[38px] px-3 rounded-lg shadow-xs"
                         >
                           <button
                             onClick={() => onUpdateCartQty(product.id, inCartItem.selectedWeight, -1)}
-                            className="text-white hover:text-[#F8C519] font-bold"
+                            className="text-white hover:text-[#F8C519] font-bold p-0.5 cursor-pointer"
+                            aria-label="Decrease quantity"
                           >
-                            <Minus className="w-3.5 h-3.5" />
+                            <Minus className="w-3.5 h-3.5 stroke-[2.5]" />
                           </button>
                           <span className="text-xs font-bold min-w-[16px] text-center">
                             {inCartItem.quantity}
                           </span>
                           <button
                             onClick={() => onUpdateCartQty(product.id, inCartItem.selectedWeight, 1)}
-                            className="text-white hover:text-[#F8C519] font-bold"
+                            className="text-white hover:text-[#F8C519] font-bold p-0.5 cursor-pointer"
+                            aria-label="Increase quantity"
                           >
-                            <Plus className="w-3.5 h-3.5" />
+                            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
                           </button>
                         </div>
                       ) : (
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            onAddToCart(product, 1, '1kg');
+                            onAddToCart(product, 1, product.availableWeights?.[0] || '1kg');
                           }}
-                          className="h-[40px] px-5 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-medium text-sm inline-flex items-center gap-2 shadow-sm transition active:scale-95"
+                          className="h-[38px] px-4 rounded-lg bg-[#0A6847] hover:bg-[#075238] text-white font-bold text-xs inline-flex items-center gap-1.5 shadow-xs transition active:scale-95 cursor-pointer"
                           title={t.addToCart}
                         >
                           <span>Add</span>
-                          <ShoppingCart className="w-4 h-4" />
+                          <ShoppingCart className="w-3.5 h-3.5 stroke-[2.2]" />
                         </button>
                       )}
                     </div>
