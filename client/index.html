@@ -11,10 +11,16 @@
     
     <!-- Primary Meta & Google Search Optimization -->
     <meta name="description" content="Authentic Sri Lankan grocery shopping in Romania. Fresh Purple Brinjal (Wambatu), Okra, Keeri Samba & Red Raw Rice, Ceylon Spices, Roast Paan, and Dilmah Tea. Fast door delivery in Bucharest & Ilfov with Cash & Card on Delivery." />
-    <meta name="keywords" content="Sri Lankan grocery Romania, Ceylon foods Bucharest, Sri Lankan vegetables Bucharest, Keeri Samba rice Romania, Wambatu Moju Romania, Dilmah tea Bucharest, cash on delivery groceries Romania, Sri Lanka online supermarket" />
+    <meta name="keywords" content="Sri Lankan grocery Romania, Ceylon foods Bucharest, Sri Lankan vegetables Bucharest, Keeri Samba rice Romania, Wambatu Moju Romania, Dilmah tea Bucharest, cash on delivery groceries Romania, Sri Lanka online supermarket, magazin produse sri lanka romania, alimente sri lanka bucuresti, condimente ceylon romania, orez keeri samba bucuresti, vanata purpurie wambatu, ceai ceylon dilmah romania, magazin alimentar asiatic bucuresti" />
     <meta name="author" content="Ceylon Foods Supermarket" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://ceylonfoods.runasp.net/" />
+
+    <!-- Multilingual Alternate Links (hreflang) -->
+    <link rel="alternate" hreflang="en" href="https://ceylonfoods.runasp.net/?lang=en" />
+    <link rel="alternate" hreflang="ro" href="https://ceylonfoods.runasp.net/?lang=ro" />
+    <link rel="alternate" hreflang="si" href="https://ceylonfoods.runasp.net/?lang=si" />
+    <link rel="alternate" hreflang="x-default" href="https://ceylonfoods.runasp.net/" />
 
     <!-- Local SEO (Bucharest, Romania) -->
     <meta name="geo.region" content="RO-B" />
@@ -51,10 +57,16 @@
           "logo": "https://ceylonfoods.runasp.net/ceylon_cart_icon.png",
           "image": "https://ceylonfoods.runasp.net/ceylon_foods_logo.png",
           "description": "Authentic Sri Lankan supermarket delivering fresh tropical vegetables, Keeri Samba rice, Ceylon spices, and tea across Bucharest and Romania.",
-          "telephone": "+40 21 9988",
+          "telephone": "+40 722 456 789",
+          "email": "orders@ceylonfoods.ro",
           "priceRange": "$$",
           "currenciesAccepted": "RON",
           "paymentAccepted": "Cash on Delivery, Card on Delivery",
+          "areaServed": [
+            { "@type": "City", "name": "Bucharest" },
+            { "@type": "AdministrativeArea", "name": "Ilfov" },
+            { "@type": "Country", "name": "Romania" }
+          ],
           "address": {
             "@type": "PostalAddress",
             "streetAddress": "Strada Mihai Eminescu nr. 42",
@@ -72,8 +84,8 @@
             {
               "@type": "OpeningHoursSpecification",
               "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-              "opens": "08:00",
-              "closes": "22:00"
+              "opens": "09:00",
+              "closes": "20:00"
             }
           ]
         },
@@ -81,7 +93,7 @@
           "@type": "WebSite",
           "@id": "https://ceylonfoods.runasp.net/#website",
           "url": "https://ceylonfoods.runasp.net/",
-          "name": "Ceylon Foods",
+          "name": "Ceylon Foods Romania",
           "publisher": { "@id": "https://ceylonfoods.runasp.net/#store" },
           "potentialAction": {
             "@type": "SearchAction",
@@ -91,6 +103,74 @@
             },
             "query-input": "required name=search_term_string"
           }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://ceylonfoods.runasp.net/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://ceylonfoods.runasp.net/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Grocery Shop",
+              "item": "https://ceylonfoods.runasp.net/?page=shop"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "About Us",
+              "item": "https://ceylonfoods.runasp.net/?page=about-us"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Contact",
+              "item": "https://ceylonfoods.runasp.net/?page=contact"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://ceylonfoods.runasp.net/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Where can I buy authentic Sri Lankan groceries in Romania?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ceylon Foods is the premier online supermarket in Romania delivering authentic Sri Lankan groceries, including Keeri Samba white rice, Rathu Kekulu red rice, fresh wambatu (purple brinjal), roasted curry powder, and Dilmah tea with express door-to-door delivery."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How fast is grocery delivery in Bucharest and Ilfov?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "We offer same-day express delivery across Bucharest Sectors 1 through 6 (typically 25-45 minutes) and Ilfov County. National shipping across Romania takes 24-48 hours via courier."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What payment methods are supported?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "We accept Cash on Delivery (COD) and contactless Mobile Card on Delivery upon courier arrival at your doorstep."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are the vegetables and spices imported directly from Sri Lanka?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, 100% of our products are directly imported from Sri Lankan producers in Colombo, Jaffna, Kandy, and Galle to ensure true island freshness and authenticity."
+              }
+            }
+          ]
         }
       ]
     }

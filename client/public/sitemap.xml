@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Homepage -->
   <url>
     <loc>https://ceylonfoods.runasp.net/</loc>
     <lastmod>2026-11-03</lastmod>
@@ -10,40 +11,76 @@
     <xhtml:link rel="alternate" hreflang="ro" href="https://ceylonfoods.runasp.net/?lang=ro" />
     <xhtml:link rel="alternate" hreflang="si" href="https://ceylonfoods.runasp.net/?lang=si" />
   </url>
+
+  <!-- Grocery Shop Main -->
   <url>
     <loc>https://ceylonfoods.runasp.net/?page=shop</loc>
     <lastmod>2026-11-03</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
   </url>
+
+  <!-- Shop by Category: Vegetables -->
   <url>
     <loc>https://ceylonfoods.runasp.net/?page=shop&amp;category=Vegetables</loc>
     <lastmod>2026-11-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
+
+  <!-- Shop by Category: Fruits -->
   <url>
     <loc>https://ceylonfoods.runasp.net/?page=shop&amp;category=Fruits</loc>
     <lastmod>2026-11-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
+
+  <!-- Shop by Category: Rice & Grains -->
   <url>
     <loc>https://ceylonfoods.runasp.net/?page=shop&amp;category=Staples%20%26%20Grains</loc>
     <lastmod>2026-11-03</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.85</priority>
+    <priority>0.9</priority>
   </url>
+
+  <!-- Shop by Category: Spices & Pantry -->
   <url>
     <loc>https://ceylonfoods.runasp.net/?page=shop&amp;category=Pantry</loc>
     <lastmod>2026-11-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
+
+  <!-- About Us Page -->
+  <url>
+    <loc>https://ceylonfoods.runasp.net/?page=about-us</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Contact Us Page -->
+  <url>
+    <loc>https://ceylonfoods.runasp.net/?page=contact</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- AI Recipes Page -->
   <url>
     <loc>https://ceylonfoods.runasp.net/?page=recipes</loc>
     <lastmod>2026-11-03</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- Order Tracking -->
+  <url>
+    <loc>https://ceylonfoods.runasp.net/?page=track</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

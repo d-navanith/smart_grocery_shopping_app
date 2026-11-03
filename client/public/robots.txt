@@ -1,8 +1,11 @@
 # Robots.txt for Ceylon Foods Supermarket Romania
 User-agent: *
 Allow: /
-Allow: /shop
-Allow: /recipes
+Allow: /?page=shop
+Allow: /?page=about-us
+Allow: /?page=contact
+Allow: /?page=recipes
+Allow: /?page=track
 Disallow: /admin
 Disallow: /api/
 

@@ -135,6 +135,81 @@ export default function ClientWebSupermarket() {
   const [wishlist, setWishlist] = useState<string[]>(['prod-white-rice', 'prod-brinjal']);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+  // Dynamic SEO Title, Description, Canonical & Social Graph Management for Search Engines
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    let pageTitle = 'Ceylon Foods — Sri Lanka Online Supermarket Romania | Fresh Groceries & Spices';
+    let metaDesc = 'Authentic Sri Lankan grocery shopping in Romania. Fresh Purple Brinjal (Wambatu), Okra, Keeri Samba & Red Raw Rice, Ceylon Spices, Roast Paan, and Dilmah Tea. Fast door delivery in Bucharest & Ilfov with Cash & Card on Delivery.';
+    let canonicalQuery = '';
+
+    if (currentPage === 'SHOP') {
+      if (selectedCategory && selectedCategory !== 'All') {
+        const catName =
+          selectedCategory === 'Staples & Grains'
+            ? 'Rice & Grains'
+            : selectedCategory === 'Vegetables'
+            ? 'Fresh Ceylon Vegetables'
+            : selectedCategory === 'Fruits'
+            ? 'Tropical Ceylon Fruits'
+            : selectedCategory === 'Pantry'
+            ? 'Ceylon Spices & Curry Powders'
+            : selectedCategory;
+        pageTitle = `${catName} | Buy Online in Romania — Ceylon Foods`;
+        metaDesc = `Buy authentic Sri Lankan ${catName.toLowerCase()} in Bucharest & Romania. Fresh imports, direct island sourcing, and cash on delivery.`;
+        canonicalQuery = `?page=shop&category=${encodeURIComponent(selectedCategory)}`;
+      } else {
+        pageTitle = 'Shop Sri Lankan Groceries, Rice & Ceylon Spices | Ceylon Foods Romania';
+        metaDesc = 'Browse authentic Araliya Keeri Samba rice, red raw rice, Ceylon spices, curry powders, coconut milk, and fresh vegetables in Bucharest. Fast door delivery.';
+        canonicalQuery = '?page=shop';
+      }
+    } else if (currentPage === 'ABOUT_US') {
+      pageTitle = 'About Us — Bringing Authentic Taste of Sri Lanka to Romania | Ceylon Foods';
+      metaDesc = 'Discover Ceylon Foods Supermarket Romania. Direct sourcing from Colombo, Jaffna, Kandy & Galle. 100% genuine Ceylon staples, heirloom rice, and spices in Bucharest.';
+      canonicalQuery = '?page=about-us';
+    } else if (currentPage === 'CONTACT') {
+      pageTitle = 'Contact Ceylon Foods Supermarket Bucharest | Hotline +40 722 456 789';
+      metaDesc = 'Visit our Bucharest distribution store at Strada Mihai Eminescu nr. 42 or contact our customer support team for orders, inquiries, and wholesale.';
+      canonicalQuery = '?page=contact';
+    } else if (currentPage === 'TRACK_ORDER') {
+      pageTitle = 'Track Your Grocery Delivery in Real-Time | Ceylon Foods Romania';
+      metaDesc = 'Live 4-stage GPS fulfillment tracking for your Ceylon Foods grocery delivery across Bucharest and Romania.';
+      canonicalQuery = '?page=track';
+    } else if (currentPage === 'RECIPES') {
+      pageTitle = 'Authentic Sri Lankan AI Recipes & Cooking Bundles | Ceylon Foods';
+      metaDesc = 'Explore traditional Sri Lankan recipes with instant 1-click grocery cart bundling. Keeri Samba, Parippu, Pol Sambol, and Ceylon curries.';
+      canonicalQuery = '?page=recipes';
+    }
+
+    document.title = pageTitle;
+
+    const descElem = document.querySelector('meta[name="description"]');
+    if (descElem) descElem.setAttribute('content', metaDesc);
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', pageTitle);
+
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', metaDesc);
+
+    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twitterTitle) twitterTitle.setAttribute('content', pageTitle);
+
+    const twitterDesc = document.querySelector('meta[name="twitter:description"]');
+    if (twitterDesc) twitterDesc.setAttribute('content', metaDesc);
+
+    const canonicalElem = document.querySelector('link[rel="canonical"]');
+    if (canonicalElem) {
+      canonicalElem.setAttribute('href', `https://ceylonfoods.runasp.net/${canonicalQuery}`);
+    }
+
+    // Reflect clean deep link in browser address bar without reload
+    if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
+      const newUrl = canonicalQuery ? `${window.location.pathname}${canonicalQuery}` : window.location.pathname;
+      window.history.replaceState({ page: currentPage, category: selectedCategory }, pageTitle, newUrl);
+    }
+  }, [currentPage, selectedCategory, currentLanguage]);
+
   // Cart with Authentic Sri Lankan staples in Lei (Image 2 Theme)
   const [cart, setCart] = useState<CartItem[]>([
     {
