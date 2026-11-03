@@ -23,27 +23,28 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnterStore, isDark
   }, []);
 
   useEffect(() => {
-    // Smooth progress simulation over ~1.8 - 2.0 seconds
+    // Calm, steady progress pacing (~3.6s total to reach 100%)
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           return 100;
         }
-        const delta = Math.floor(Math.random() * 8) + 6;
+        // Smooth, gentle increments of 1-3% every 70ms
+        const delta = Math.floor(Math.random() * 3) + 1;
         return Math.min(prev + delta, 100);
       });
-    }, 80);
+    }, 70);
 
     return () => clearInterval(interval);
   }, []);
 
-  // When progress reaches 100%, smoothly auto-dismiss and enter supermarket
+  // When progress reaches 100%, hold briefly so the user sees completion, then smoothly fade out
   useEffect(() => {
     if (progress === 100) {
       const timer = setTimeout(() => {
         handleEnter();
-      }, 550);
+      }, 950);
       return () => clearTimeout(timer);
     }
   }, [progress]);
@@ -64,7 +65,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnterStore, isDark
     setIsFadingOut(true);
     setTimeout(() => {
       onEnterStore();
-    }, 450);
+    }, 600);
   };
 
   return (
@@ -73,7 +74,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnterStore, isDark
       aria-modal="true"
       aria-label="Ceylon Foods Welcome Screen"
       onClick={handleEnter}
-      className={`fixed inset-0 select-none overflow-hidden cursor-pointer transition-opacity duration-500 ${
+      className={`fixed inset-0 select-none overflow-hidden cursor-pointer transition-opacity duration-700 ease-in-out ${
         isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
       style={{
@@ -209,16 +210,24 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onEnterStore, isDark
             }}
           >
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <span
-                style={{
-                  display: 'inline-block',
-                  width: '6px',
-                  height: '6px',
-                  borderRadius: '50%',
-                  backgroundColor: '#15875D',
-                }}
-              />
-              Loading Store...
+              {progress < 100 ? (
+                <>
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      width: '6px',
+                      height: '6px',
+                      borderRadius: '50%',
+                      backgroundColor: '#15875D',
+                    }}
+                  />
+                  Loading Store...
+                </>
+              ) : (
+                <span style={{ color: '#15875D', fontWeight: 700 }}>
+                  ✓ Welcome to Ceylon Foods
+                </span>
+              )}
             </span>
             <span style={{ fontWeight: 800 }}>{progress}%</span>
           </div>
