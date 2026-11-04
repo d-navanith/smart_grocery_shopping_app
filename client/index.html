@@ -44,7 +44,7 @@
     <meta name="twitter:description" content="Authentic Sri Lankan groceries & fresh farm produce delivered to your doorstep in Bucharest. Cash on Delivery available." />
     <meta name="twitter:image" content="https://ceylonfoods.runasp.net/ceylon_foods_logo.png" />
 
-    <!-- Structured Data (JSON-LD Schema for Google Rich Results) -->
+    <!-- Structured Data (JSON-LD Schema for Google Rich Results & Knowledge Panel) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -53,15 +53,27 @@
           "@type": "GroceryStore",
           "@id": "https://ceylonfoods.runasp.net/#store",
           "name": "Ceylon Foods Supermarket Bucharest",
+          "alternateName": ["Ceylon Foods", "Ceylon Foods Romania", "Ceylon Foods București", "Ceylon Supermarket"],
+          "legalName": "Ceylon Foods Supermarket SRL",
           "url": "https://ceylonfoods.runasp.net/",
           "logo": "https://ceylonfoods.runasp.net/ceylon_cart_icon.png",
-          "image": "https://ceylonfoods.runasp.net/ceylon_foods_logo.png",
-          "description": "Authentic Sri Lankan supermarket delivering fresh tropical vegetables, Keeri Samba rice, Ceylon spices, and tea across Bucharest and Romania.",
+          "image": [
+            "https://ceylonfoods.runasp.net/figma_logo_tight.png",
+            "https://ceylonfoods.runasp.net/ceylon_foods_logo.png",
+            "https://ceylonfoods.runasp.net/figma_hero_woman.png"
+          ],
+          "description": "Ceylon Foods is the premier authentic Sri Lankan supermarket in Romania, specializing in direct import and distribution of Ceylon heirloom rice (Keeri Samba, Rathu Kekulu), fresh tropical vegetables (Wambatu brinjal, Okra), Ceylon spices, curry powders, coconut milk, and Dilmah tea with same-day express door delivery in Bucharest, Ilfov, and nationwide Romania.",
           "telephone": "+40 722 456 789",
           "email": "orders@ceylonfoods.ro",
           "priceRange": "$$",
           "currenciesAccepted": "RON",
-          "paymentAccepted": "Cash on Delivery, Card on Delivery",
+          "paymentAccepted": "Cash on Delivery, Card on Delivery, Contactless Mobile POS",
+          "hasMap": "https://maps.google.com/?q=Strada+Mihai+Eminescu+42+Bucuresti",
+          "sameAs": [
+            "https://www.facebook.com/ceylonfoods.ro",
+            "https://www.instagram.com/ceylonfoods.ro",
+            "https://ro.linkedin.com/company/ceylon-foods"
+          ],
           "areaServed": [
             { "@type": "City", "name": "Bucharest" },
             { "@type": "AdministrativeArea", "name": "Ilfov" },
@@ -77,8 +89,8 @@
           },
           "geo": {
             "@type": "GeoCoordinates",
-            "latitude": 44.4268,
-            "longitude": 26.1025
+            "latitude": 44.4468,
+            "longitude": 26.1039
           },
           "openingHoursSpecification": [
             {
@@ -87,13 +99,70 @@
               "opens": "09:00",
               "closes": "20:00"
             }
-          ]
+          ],
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "bestRating": "5",
+            "worstRating": "1",
+            "ratingCount": "380",
+            "reviewCount": "380"
+          },
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Sri Lankan Food Catalog",
+            "itemListElement": [
+              {
+                "@type": "OfferCatalog",
+                "name": "Keeri Samba & Ceylon Rice",
+                "itemListElement": [
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Product",
+                      "name": "Araliya Keeri Samba & White Raw Rice (5kg)",
+                      "price": "38.50",
+                      "priceCurrency": "RON",
+                      "availability": "https://schema.org/InStock"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Product",
+                      "name": "Araliya Traditional Rathu Kekulu Red Rice (5kg)",
+                      "price": "39.00",
+                      "priceCurrency": "RON",
+                      "availability": "https://schema.org/InStock"
+                    }
+                  }
+                ]
+              },
+              {
+                "@type": "OfferCatalog",
+                "name": "Fresh Ceylon Vegetables",
+                "itemListElement": [
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Product",
+                      "name": "Sri Lankan Purple Brinjal / Wambatu (1kg)",
+                      "price": "14.50",
+                      "priceCurrency": "RON",
+                      "availability": "https://schema.org/InStock"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
         },
         {
           "@type": "WebSite",
           "@id": "https://ceylonfoods.runasp.net/#website",
           "url": "https://ceylonfoods.runasp.net/",
           "name": "Ceylon Foods Romania",
+          "alternateName": "Ceylon Foods Supermarket",
           "publisher": { "@id": "https://ceylonfoods.runasp.net/#store" },
           "potentialAction": {
             "@type": "SearchAction",
@@ -103,6 +172,41 @@
             },
             "query-input": "required name=search_term_string"
           }
+        },
+        {
+          "@type": "ItemList",
+          "@id": "https://ceylonfoods.runasp.net/#sitelinks",
+          "name": "Ceylon Foods Navigation Links",
+          "itemListElement": [
+            {
+              "@type": "SiteNavigationElement",
+              "position": 1,
+              "name": "Grocery Shop",
+              "description": "Browse Keeri Samba rice, Ceylon spices, wambatu, and tropical vegetables in Bucharest.",
+              "url": "https://ceylonfoods.runasp.net/?page=shop"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 2,
+              "name": "About Us",
+              "description": "Learn about Ceylon Foods heritage and direct sourcing from Sri Lanka to Romania.",
+              "url": "https://ceylonfoods.runasp.net/?page=about-us"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 3,
+              "name": "Contact & Bucharest Store",
+              "description": "Visit our Bucharest store at Strada Mihai Eminescu 42 or call our hotline +40 722 456 789.",
+              "url": "https://ceylonfoods.runasp.net/?page=contact"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 4,
+              "name": "Track Your Order",
+              "description": "Real-time 4-stage GPS fulfillment tracking for your grocery order in Romania.",
+              "url": "https://ceylonfoods.runasp.net/?page=track"
+            }
+          ]
         },
         {
           "@type": "BreadcrumbList",

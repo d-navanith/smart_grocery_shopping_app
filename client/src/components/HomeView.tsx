@@ -761,6 +761,106 @@ export const HomeView: React.FC<HomeViewProps> = ({
           })}
         </div>
       </section>
+
+      {/* 9. GOOGLE KNOWLEDGE & LOCAL OVERVIEW SECTION (SEO KNOWLEDGE GRAPH ACCELERATOR) */}
+      <section className="w-full bg-[#F2F7F4] dark:bg-[#121A16] border-t border-[#15875D]/20 py-14">
+        <div className="max-w-[1240px] mx-auto px-4 sm:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div className="lg:col-span-7 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider">
+                <img src="/sri_lanka_flag.svg" alt="Sri Lanka" className="w-4 h-2.5 rounded-xs object-cover" />
+                <span>About Ceylon Foods Romania</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#064F41] dark:text-white tracking-tight">
+                Romania's Dedicated Sri Lankan Online Supermarket & Direct Food Distributor
+              </h2>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-zinc-300 leading-relaxed font-normal">
+                <strong>Ceylon Foods</strong> is the premier authentic Sri Lankan supermarket in Romania, specializing in direct import and distribution of genuine island groceries, heirloom rice varieties, and fresh tropical produce based in Bucharest.
+              </p>
+              
+              <div className="space-y-3 pt-2">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#15875D] dark:text-[#80F6C7]">
+                  Core Business & Store Operations
+                </h3>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-zinc-300">
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#FF632B] font-bold">•</span>
+                    <span><strong>Heirloom Ceylon Rice & Grains:</strong> Araliya Keeri Samba, Rathu Kekulu red raw rice, Mysore red dhal.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#FF632B] font-bold">•</span>
+                    <span><strong>Fresh Tropical Produce:</strong> Purple brinjal (wambatu), fresh lady's finger (okra), yellow pumpkin.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#FF632B] font-bold">•</span>
+                    <span><strong>Authentic Spices & Tea:</strong> Roasted curry powder, Jaffna curry, Ceylon cinnamon quills, Dilmah BOPF tea.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#FF632B] font-bold">•</span>
+                    <span><strong>Express Door-to-Door Delivery:</strong> 25–45 min dispatch in Bucharest Sectors 1–6, Ilfov, and Cash on Delivery.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Right Card: Google Knowledge Card Style Info Box */}
+            <div className="lg:col-span-5 bg-white dark:bg-zinc-900 rounded-2xl p-6 border border-slate-200/80 dark:border-zinc-800 shadow-md space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800">
+                <div>
+                  <h3 className="font-bold text-base text-[#064F41] dark:text-white">Ceylon Foods Supermarket</h3>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400">Asian & Sri Lankan Grocery Store • Bucharest</p>
+                </div>
+                <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-950/60 px-2.5 py-1 rounded-lg border border-amber-200/60 text-amber-900 dark:text-amber-300 text-xs font-bold">
+                  <span>★</span>
+                  <span>4.9</span>
+                  <span className="text-[10px] font-normal text-slate-500">(380)</span>
+                </div>
+              </div>
+
+              <div className="space-y-2.5 text-xs text-slate-600 dark:text-zinc-300">
+                <div className="flex items-start gap-2">
+                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">Address:</span>
+                  <span>Strada Mihai Eminescu nr. 42, Sector 1, București 010515, Romania</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">Phone:</span>
+                  <a href="tel:+40722456789" className="text-[#15875D] font-bold hover:underline">+40 722 456 789</a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">Hours:</span>
+                  <span>Open Daily • 09:00 – 20:00 (Monday – Sunday)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">Payment:</span>
+                  <span>Cash on Delivery (COD) & Mobile POS Card on Delivery</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">Coverage:</span>
+                  <span>Bucharest (Sectors 1–6), Ilfov County & Nationwide Courier</span>
+                </div>
+              </div>
+
+              <div className="pt-2 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={onNavigateShop}
+                  className="flex-1 py-2 px-3 rounded-xl bg-[#064F41] hover:bg-[#043d32] text-white font-bold text-xs text-center transition cursor-pointer"
+                >
+                  Order Groceries Online
+                </button>
+                <a
+                  href="https://maps.google.com/?q=Strada+Mihai+Eminescu+42+Bucuresti"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2 px-3 rounded-xl border border-slate-200 dark:border-zinc-700 hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-200 font-bold text-xs text-center transition"
+                >
+                  📍 View on Map
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
