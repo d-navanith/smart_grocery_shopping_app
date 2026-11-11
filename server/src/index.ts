@@ -54,24 +54,24 @@ let orders: Order[] = [
     customerPhone: '+40 722 456 789',
     items: [
       {
-        productId: 'prod-white-rice',
-        productTitle: 'Araliya Keeri Samba & White Raw Rice (5kg)',
+        productId: 'prod-supiri-keeri-rice',
+        productTitle: 'Araliya Supiri Keeri Samba Rice (5kg)',
         productImageUrl: '/prod_white_rice.jpg',
-        price: 38.50,
+        price: 44.50,
         unit: '5kg Bag',
         quantity: 1
       },
       {
-        productId: 'prod-brinjal',
-        productTitle: 'Sri Lankan Purple Brinjal / Eggplant (1kg)',
-        productImageUrl: '/prod_brinjal.jpg',
-        price: 14.50,
-        unit: 'kg',
+        productId: 'prod-wijaya-roasted-curry-powder',
+        productTitle: 'Wijaya Roasted Curry Powder (250g)',
+        productImageUrl: '/prod_spices.jpg',
+        price: 12.50,
+        unit: '250g Pack',
         quantity: 2
       },
       {
-        productId: 'prod-dhal',
-        productTitle: 'Mysore Red Split Lentils / Dhal (1kg)',
+        productId: 'prod-masoor-daal',
+        productTitle: 'Mysore Red Split Lentils / Masoor Daal (1kg)',
         productImageUrl: '/prod_dhal.jpg',
         price: 12.50,
         unit: 'kg',
@@ -179,19 +179,19 @@ let orders: Order[] = [
     customerPhone: '+40 722 456 789',
     items: [
       {
-        productId: 'prod-white-rice',
-        productTitle: 'Araliya Keeri Samba & White Raw Rice (5kg)',
+        productId: 'prod-supiri-keeri-rice',
+        productTitle: 'Araliya Supiri Keeri Samba Rice (5kg)',
         productImageUrl: '/prod_white_rice.jpg',
-        price: 38.50,
+        price: 44.50,
         unit: '5kg Bag',
         quantity: 2
       },
       {
-        productId: 'prod-brinjal',
-        productTitle: 'Sri Lankan Purple Brinjal / Eggplant (1kg)',
-        productImageUrl: '/prod_brinjal.jpg',
-        price: 14.50,
-        unit: 'kg',
+        productId: 'prod-wijaya-meat-curry-powder',
+        productTitle: 'Wijaya Meat Curry Powder (250g)',
+        productImageUrl: '/prod_spices.jpg',
+        price: 12.50,
+        unit: '250g Pack',
         quantity: 2
       }
     ],

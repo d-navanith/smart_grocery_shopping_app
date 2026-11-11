@@ -42,88 +42,88 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const aboutReveal = useScrollReveal<HTMLDivElement>({ threshold: 0.12 });
   const testimonialsReveal = useScrollReveal<HTMLDivElement>({ threshold: 0.12 });
 
-  // 4 Categories matching Figma "Shop by Categories"
+  // 4 Categories matching real grocery catalog
   const FIGMA_CATEGORIES = [
-    {
-      id: 'veggies',
-      title: 'Veggies',
-      image: '/figma_cat_veggies.png',
-      filterKey: 'Vegetables'
-    },
-    {
-      id: 'fruits',
-      title: 'Fruits',
-      image: '/figma_cat_fruits.png',
-      filterKey: 'Fruits'
-    },
     {
       id: 'rice-grains',
       title: 'Rice & Grains',
       image: '/figma_cat_rice.png',
-      filterKey: 'Staples & Grains'
+      filterKey: 'Rice & Grains'
     },
     {
       id: 'spices',
-      title: 'Spices',
+      title: 'Ceylon Spices',
       image: '/figma_cat_spices.png',
-      filterKey: 'Pantry'
+      filterKey: 'Spices & Curry'
+    },
+    {
+      id: 'dried-fish',
+      title: 'Dried Fish & Sambals',
+      image: '/cat_meat.jpg',
+      filterKey: 'Dried Fish & Sambals'
+    },
+    {
+      id: 'biscuits-tea',
+      title: 'Tea & Biscuits',
+      image: '/prod_biscuits.jpg',
+      filterKey: 'Biscuits & Snacks'
     }
   ];
 
-  // Authentic Brand Logos matching Figma home design for Nonstop Marquee
+  // Authentic Brand Logos matching real Ceylon brands for Nonstop Marquee
   const BRAND_LOGOS = [
-    { name: 'NESTEA', logo: '/brands/brand_nestea.png', category: 'Pantry' },
-    { name: 'CBL Munchee', logo: '/brands/brand_munchee.png', category: 'Pantry' },
-    { name: 'Araliya Group', logo: '/brands/brand_araliya.png', category: 'Staples & Grains' },
-    { name: 'Nestlé', logo: '/brands/brand_nestle.png', category: 'Dairy & Chilled' },
-    { name: 'Maliban', logo: '/brands/brand_maliban.png', category: 'Pantry' },
-    { name: 'Lipton', logo: '/brands/brand_lipton.png', category: 'Pantry' },
-    { name: 'Dilmah Ceylon Tea', logo: '/brands/brand_dilmah.png', category: 'Pantry' },
-    { name: 'MD Foods', logo: '/brands/brand_md.png', category: 'Pantry' }
+    { name: 'Wijaya Products', logo: '/prod_spices.jpg', category: 'Spices & Curry' },
+    { name: 'Maliban Biscuits', logo: '/brands/brand_maliban.png', category: 'Biscuits & Snacks' },
+    { name: 'Araliya Lanka', logo: '/brands/brand_araliya.png', category: 'Rice & Grains' },
+    { name: 'Nestlé / Milo / Maggi', logo: '/brands/brand_nestle.png', category: 'Coconut & Beverages' },
+    { name: 'Dilmah Ceylon Tea', logo: '/brands/brand_dilmah.png', category: 'Tea & Beverages' },
+    { name: 'MD Foods Pickles & Jam', logo: '/brands/brand_md.png', category: 'Sambals & Jams' },
+    { name: 'Harischandra', logo: '/prod_tea.jpg', category: 'Coffee & Flour' },
+    { name: 'Watawala Tea', logo: '/brands/brand_lipton.png', category: 'Tea & Beverages' }
   ];
 
   // Find backing store products so clicking "Add" or the card works seamlessly with Cart & Modals
-  const coconutProduct = products.find(p => p.id.includes('coconut')) || products[0];
-  const papayaProduct = products.find(p => p.id.includes('papaya')) || products[1] || products[0];
-  const riceProduct = products.find(p => p.id.includes('white-rice')) || products[0];
-  const onionProduct = products.find(p => p.id.includes('onion')) || products[2] || products[0];
+  const riceProduct = products.find(p => p.id === 'prod-supiri-keeri-rice') || products[0];
+  const curryProduct = products.find(p => p.id === 'prod-wijaya-roasted-curry-powder') || products[1];
+  const coconutProduct = products.find(p => p.id === 'prod-maggi-coconut-powder') || products[2];
+  const biscuitProduct = products.find(p => p.id === 'prod-maliban-lemon-puff') || products[3];
 
   const FIGMA_POPULAR_CARDS = [
-    {
-      id: 'pop-coconut',
-      displayTitle: 'Fresh Coconut',
-      unitLabel: 'Unit : 3 pcs',
-      displayPrice: 'RS. 546.00',
-      oldPrice: 'RS. 600.00',
-      image: '/figma_prod_coconut.png',
-      product: coconutProduct
-    },
-    {
-      id: 'pop-papaya',
-      displayTitle: 'Ceylon Papaya',
-      unitLabel: 'Unit : 1 kg',
-      displayPrice: 'RS. 145.00',
-      oldPrice: '',
-      image: '/figma_prod_papaya.png',
-      product: papayaProduct
-    },
     {
       id: 'pop-rice',
       displayTitle: 'Keeri Samba Rice',
       unitLabel: 'Bag : 5 kg',
-      displayPrice: 'RS. 242.00',
-      oldPrice: 'RS. 250.00',
+      displayPrice: '44.50 lei',
+      oldPrice: '52.00 lei',
       image: '/figma_prod_rice_sack.png',
       product: riceProduct
     },
     {
-      id: 'pop-onions',
-      displayTitle: 'Red Baby Shallots',
-      unitLabel: 'Pack : 500g',
-      displayPrice: 'RS. 185.00',
-      oldPrice: 'RS. 210.00',
-      image: '/figma_prod_onions.png',
-      product: onionProduct
+      id: 'pop-curry',
+      displayTitle: 'Wijaya Roasted Curry',
+      unitLabel: 'Pack : 250g',
+      displayPrice: '12.50 lei',
+      oldPrice: '15.00 lei',
+      image: '/prod_spices.jpg',
+      product: curryProduct
+    },
+    {
+      id: 'pop-coconut',
+      displayTitle: 'Maggi Coconut Powder',
+      unitLabel: 'Pack : 300g',
+      displayPrice: '19.50 lei',
+      oldPrice: '23.00 lei',
+      image: '/figma_prod_coconut.png',
+      product: coconutProduct
+    },
+    {
+      id: 'pop-biscuit',
+      displayTitle: 'Maliban Lemon Puff',
+      unitLabel: 'Pack : 200g',
+      displayPrice: '9.50 lei',
+      oldPrice: '12.00 lei',
+      image: '/brands/brand_maliban.png',
+      product: biscuitProduct
     }
   ];
 

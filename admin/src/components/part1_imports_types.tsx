@@ -73,16 +73,24 @@ export interface Product {
   id: string;
   sku: string;
   title: string;
+  description?: string;
   category: string;
   brand: string;
   price: number;
+  originalPrice?: number;
   stock: number;
   store: string;
   status: 'Active' | 'Inactive';
   imageUrl: string;
   aiFreshnessScore?: number;
   isOrganic?: boolean;
+  isFarmSourced?: boolean;
   unit?: string;
+  unitWeight?: string;
+  rating?: number;
+  reviewsCount?: number;
+  availableWeights?: string[];
+  productType?: string;
 }
 
 export interface OrderItem {

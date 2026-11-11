@@ -57,14 +57,21 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const itemsPerPage = 24;
 
   const ALL_BRANDS = [
+    'Wijaya Products',
+    'Hiruni Products',
+    'Annam',
+    'Maliban',
+    'MD Foods',
+    'Harischandra',
     'Araliya Lanka',
-    'Ceylon Fresh Greens',
     'Pure Ceylon Spices',
+    'Ceylon Harvest',
+    'Ceylon Seafood Hub',
     'Maggi Lanka',
-    'Dilmah',
-    'Munchee / Maliban',
-    'Ceylon Bakery Bucharest',
-    'Ceylon Orchard'
+    'Nestlé',
+    'Watawala',
+    'Dilmah Ceylon Tea',
+    'Traditional Ceylon Crafts'
   ];
 
   const handleToggleBrand = (brand: string) => {
@@ -86,28 +93,28 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
       let matchCat = true;
-      if (selectedCategory !== 'All' && selectedCategory !== 'All Categories') {
+      if (selectedCategory !== 'All' && selectedCategory !== 'All Categories' && selectedCategory !== 'All Products') {
         const catLower = selectedCategory.toLowerCase();
-        if (catLower.includes('rice') || catLower.includes('grain') || catLower.includes('staple') || catLower.includes('dhal')) {
-          matchCat = p.category.toLowerCase().includes('staple') || p.category.toLowerCase().includes('grain') || p.title.toLowerCase().includes('rice') || p.id.includes('rice') || p.id.includes('dhal');
-        } else if (catLower === 'fruits' || catLower === 'fruit' || catLower.includes('fruit') || catLower.includes('tropical')) {
-          // Strictly fruits only
-          matchCat = p.category.toLowerCase() === 'fruits' || p.category.toLowerCase() === 'fruit' || p.sku.startsWith('FRU') || p.id.includes('papaya') || p.id.includes('mango') || p.id.includes('avocado') || p.id.includes('orange');
-        } else if (catLower === 'vegetables' || catLower === 'veggies' || catLower.includes('veg') || catLower.includes('brinjal')) {
-          // Strictly veggies only
-          matchCat = (p.category.toLowerCase() === 'vegetables' || (p.category.toLowerCase().includes('veg') && !p.category.toLowerCase().includes('fruit'))) ||
-            p.sku.startsWith('VEG') ||
-            p.id.includes('brinjal') ||
-            p.id.includes('okra') ||
-            p.id.includes('pumpkin') ||
-            p.id.includes('tomato') ||
-            p.id.includes('onion') ||
-            p.id.includes('chillies') ||
-            p.id.includes('chilli');
-        } else if (catLower.includes('spice') || catLower.includes('pantry') || catLower.includes('coconut')) {
-          matchCat = p.category.toLowerCase().includes('pantry') || p.category.toLowerCase().includes('spice') || p.title.toLowerCase().includes('curry') || p.title.toLowerCase().includes('cinnamon') || p.id.includes('coconut');
-        } else if (catLower === 'others') {
-          matchCat = p.category.toLowerCase().includes('beverage') || p.category.toLowerCase().includes('bakery') || p.category.toLowerCase().includes('snack') || p.category.toLowerCase().includes('tea');
+        if (catLower.includes('spice') || catLower.includes('curry')) {
+          matchCat = p.category === 'Spices & Curry' || p.category.includes('Spice');
+        } else if (catLower.includes('rice') && (catLower.includes('dhal') || catLower.includes('flour') || catLower.includes('grain'))) {
+          matchCat = p.category === 'Rice & Grains' || p.category === 'Flour & Grains';
+        } else if (catLower.includes('rice') || catLower.includes('grain')) {
+          matchCat = p.category === 'Rice & Grains';
+        } else if (catLower.includes('flour')) {
+          matchCat = p.category === 'Flour & Grains';
+        } else if (catLower.includes('fish') || catLower.includes('sambal') || catLower.includes('pickle')) {
+          matchCat = p.category === 'Dried Fish & Sambals' || p.category === 'Jams & Sweet Preserves';
+        } else if (catLower.includes('jam')) {
+          matchCat = p.category === 'Jams & Sweet Preserves';
+        } else if (catLower.includes('tea') || catLower.includes('coffee') || catLower.includes('drink') || catLower.includes('beverage')) {
+          matchCat = p.category === 'Tea, Coffee & Beverages';
+        } else if (catLower.includes('biscuit') || catLower.includes('snack') || catLower.includes('noodle')) {
+          matchCat = p.category === 'Biscuits & Snacks';
+        } else if (catLower.includes('kitchen') || catLower.includes('utensil') || catLower.includes('pot') || catLower.includes('pan')) {
+          matchCat = p.category === 'Kitchenware & Utensils';
+        } else if (catLower.includes('coconut')) {
+          matchCat = p.category === 'Coconut Products';
         } else {
           matchCat = p.category.toLowerCase().includes(catLower);
         }
@@ -144,31 +151,34 @@ export const ShopView: React.FC<ShopViewProps> = ({
   const paginatedProducts = sortedProducts.slice((currentPageNum - 1) * itemsPerPage, currentPageNum * itemsPerPage);
 
   const categoryCounts = useMemo(() => {
-    let riceCount = 0;
-    let vegCount = 0;
-    let fruitCount = 0;
-    let spiceCount = 0;
+    let spicesCount = 0;
+    let riceDhalCount = 0;
+    let flourCount = 0;
+    let driedFishCount = 0;
+    let teaCoffeeCount = 0;
+    let biscuitsNoodlesCount = 0;
+    let kitchenwareCount = 0;
 
     products.forEach(p => {
-      const catLower = p.category.toLowerCase();
-      const id = p.id.toLowerCase();
-      if (catLower.includes('staple') || catLower.includes('grain') || id.includes('rice') || id.includes('dhal')) {
-        riceCount++;
-      } else if (catLower === 'vegetables' || catLower.includes('veg') || id.includes('brinjal') || id.includes('okra') || id.includes('pumpkin') || id.includes('tomato') || id.includes('onion') || id.includes('chilli')) {
-        vegCount++;
-      } else if (catLower === 'fruits' || catLower.includes('fruit') || id.includes('papaya') || id.includes('mango')) {
-        fruitCount++;
-      } else if (catLower.includes('pantry') || catLower.includes('spice') || id.includes('spice') || id.includes('cinnamon') || id.includes('coconut')) {
-        spiceCount++;
-      }
+      const cat = p.category;
+      if (cat === 'Spices & Curry') spicesCount++;
+      else if (cat === 'Rice & Grains') riceDhalCount++;
+      else if (cat === 'Flour & Grains') flourCount++;
+      else if (cat === 'Dried Fish & Sambals' || cat === 'Jams & Sweet Preserves' || cat === 'Coconut Products') driedFishCount++;
+      else if (cat === 'Tea, Coffee & Beverages') teaCoffeeCount++;
+      else if (cat === 'Biscuits & Snacks') biscuitsNoodlesCount++;
+      else if (cat === 'Kitchenware & Utensils') kitchenwareCount++;
     });
 
     return {
       all: products.length,
-      rice: riceCount,
-      veg: vegCount,
-      fruit: fruitCount,
-      spice: spiceCount
+      spices: spicesCount,
+      riceDhal: riceDhalCount,
+      flour: flourCount,
+      driedFish: driedFishCount,
+      teaCoffee: teaCoffeeCount,
+      biscuitsNoodles: biscuitsNoodlesCount,
+      kitchenware: kitchenwareCount
     };
   }, [products]);
 
@@ -236,7 +246,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             )}
           </div>
 
-          {/* 1. Category Filter (Attachment 3 Exact) */}
+          {/* 1. Category Filter (Real Groceries) */}
           <div className="space-y-2.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7]">
               FOOD CATEGORIES
@@ -244,10 +254,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
             <div className="space-y-1.5 text-xs">
               {[
                 { key: 'All', label: 'All Products', count: categoryCounts.all },
-                { key: 'Staples & Grains', label: 'White Rice, Red Rice & Dhal', count: categoryCounts.rice },
-                { key: 'Vegetables', label: 'Brinjal & Fresh Vegetables', count: categoryCounts.veg },
-                { key: 'Fruits', label: 'Tropical Fruits (Papaya & Mango)', count: categoryCounts.fruit },
-                { key: 'Pantry', label: 'Ceylon Spices & Coconut', count: categoryCounts.spice }
+                { key: 'Spices & Curry', label: 'Ceylon Spices & Curry Powders', count: categoryCounts.spices },
+                { key: 'Rice & Grains', label: 'Rice, Dhal & Grains', count: categoryCounts.riceDhal },
+                { key: 'Flour & Grains', label: 'Flour & Traditional Mixes', count: categoryCounts.flour },
+                { key: 'Dried Fish & Sambals', label: 'Dried Fish, Sambals & Pickles', count: categoryCounts.driedFish },
+                { key: 'Tea, Coffee & Beverages', label: 'Tea, Coffee & Malt Drinks', count: categoryCounts.teaCoffee },
+                { key: 'Biscuits & Snacks', label: 'Maliban Biscuits & Noodles', count: categoryCounts.biscuitsNoodles },
+                { key: 'Kitchenware & Utensils', label: 'Traditional Kitchenware', count: categoryCounts.kitchenware }
               ].map(cat => {
                 const isSelected = selectedCategory === cat.key;
                 return (
@@ -396,29 +409,24 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
         {/* RIGHT MAIN COLUMN: CATALOG & GRID (ATTACHMENT 3 EXACT) */}
         <section className="lg:col-span-9 space-y-4">
-          {/* HORIZONTAL CATEGORY TABS (ATTACHMENT 3 EXACT) */}
-          <div className="flex items-center gap-6 sm:gap-9 text-xs sm:text-sm font-bold tracking-wider uppercase overflow-x-auto select-none pt-1 pb-1">
+          {/* HORIZONTAL CATEGORY TABS (REAL GROCERIES) */}
+          <div className="flex items-center gap-6 sm:gap-8 text-xs sm:text-sm font-bold tracking-wider uppercase overflow-x-auto select-none pt-1 pb-1">
             {[
-              { label: 'RICE & GRAINS', key: 'Staples & Grains' },
-              { label: 'VEGGIES', key: 'Vegetables' },
-              { label: 'FRUITS', key: 'Fruits' },
-              { label: 'CEYLON SPICES', key: 'Pantry' },
-              { label: 'OTHERS', key: 'Others' }
+              { label: 'ALL PRODUCTS', key: 'All' },
+              { label: 'SPICES & CURRY', key: 'Spices & Curry' },
+              { label: 'RICE, DHAL & FLOUR', key: 'Rice & Grains' },
+              { label: 'DRIED FISH & SAMBALS', key: 'Dried Fish & Sambals' },
+              { label: 'TEA, COFFEE & DRINKS', key: 'Tea, Coffee & Beverages' },
+              { label: 'BISCUITS & NOODLES', key: 'Biscuits & Snacks' },
+              { label: 'KITCHENWARE', key: 'Kitchenware & Utensils' }
             ].map(tab => {
-              const isActive =
-                tab.key === 'Others'
-                  ? selectedCategory === 'Others' || selectedCategory === 'Beverages' || selectedCategory === 'Bakery' || selectedCategory === 'Snacks'
-                  : selectedCategory === tab.key;
+              const isActive = selectedCategory === tab.key;
               return (
                 <button
                   key={tab.label}
                   type="button"
                   onClick={() => {
-                    if (isActive) {
-                      setSelectedCategory('All');
-                    } else {
-                      setSelectedCategory(tab.key);
-                    }
+                    setSelectedCategory(tab.key);
                   }}
                   className={`pb-1 transition whitespace-nowrap cursor-pointer ${
                     isActive

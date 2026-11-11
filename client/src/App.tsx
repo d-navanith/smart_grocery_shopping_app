@@ -132,15 +132,15 @@ export default function ClientWebSupermarket() {
     return 'All';
   });
   const [searchQuery, setSearchQuery] = useState('');
-  const [wishlist, setWishlist] = useState<string[]>(['prod-white-rice', 'prod-brinjal']);
+  const [wishlist, setWishlist] = useState<string[]>(['prod-supiri-keeri-rice', 'prod-wijaya-roasted-curry-powder']);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Dynamic SEO Title, Description, Canonical & Social Graph Management for Search Engines
   useEffect(() => {
     if (typeof document === 'undefined') return;
 
-    let pageTitle = 'Ceylon Foods — Sri Lanka Online Supermarket Romania | Fresh Groceries & Spices';
-    let metaDesc = 'Authentic Sri Lankan grocery shopping in Romania. Fresh Purple Brinjal (Wambatu), Okra, Keeri Samba & Red Raw Rice, Ceylon Spices, Roast Paan, and Dilmah Tea. Fast door delivery in Bucharest & Ilfov with Cash & Card on Delivery.';
+    let pageTitle = 'Ceylon Foods — Sri Lanka Online Supermarket Romania | Authentic Groceries & Spices';
+    let metaDesc = 'Authentic Sri Lankan grocery shopping in Romania. Buy Wijaya & Hiruni curry powders, Araliya Keeri Samba rice, red raw rice, Maldive fish, Ceylon spices, Maliban biscuits, and traditional kitchenware in Bucharest & Ilfov with Cash on Delivery.';
     let canonicalQuery = '';
 
     if (currentPage === 'SHOP') {
@@ -213,85 +213,19 @@ export default function ClientWebSupermarket() {
   // Cart with Authentic Sri Lankan staples in Lei (Image 2 Theme)
   const [cart, setCart] = useState<CartItem[]>([
     {
-      product: {
-        id: 'prod-white-rice',
-        sku: 'RIC-WHITE-001',
-        title: 'Araliya Keeri Samba & White Raw Rice (5kg)',
-        description: 'Authentic Sri Lankan white raw rice & premium aromatic Keeri Samba in traditional burlap sack.',
-        category: 'Staples & Grains',
-        brand: 'Araliya Lanka',
-        price: 38.50,
-        originalPrice: 45.00,
-        unit: '5kg Bag',
-        unitWeight: '5 kg',
-        imageUrl: '/prod_white_rice.jpg', // User uploaded burlap sack of rice!
-        stock: 95,
-        store: 'Ceylon Foods Supermarket Bucharest',
-        status: 'Active',
-        aiFreshnessScore: 99,
-        isOrganic: true,
-        isFarmSourced: true,
-        rating: 4.9,
-        reviewsCount: 380,
-        availableWeights: ['5kg', '10kg'],
-        productType: 'Packaged Goods'
-      },
+      product: INITIAL_PRODUCTS.find(p => p.id === 'prod-supiri-keeri-rice') || INITIAL_PRODUCTS[0],
       quantity: 1,
       selectedWeight: '5kg',
-      effectivePrice: 38.50
+      effectivePrice: 44.50
     },
     {
-      product: {
-        id: 'prod-brinjal',
-        sku: 'VEG-BRIN-004',
-        title: 'Sri Lankan Purple Brinjal / Eggplant (1kg)',
-        description: 'Glossy, tender violet eggplants. Essential for classic Wambatu Moju & curries.',
-        category: 'Vegetables',
-        brand: 'Ceylon Fresh Greens',
-        price: 14.50,
-        originalPrice: 18.00,
-        unit: 'kg',
-        unitWeight: '1 kg',
-        imageUrl: '/prod_brinjal.jpg',
-        stock: 75,
-        store: 'Ceylon Foods Supermarket Bucharest',
-        status: 'Active',
-        aiFreshnessScore: 97,
-        isOrganic: true,
-        isFarmSourced: true,
-        rating: 4.8,
-        reviewsCount: 310,
-        availableWeights: ['500g', '1kg', '2kg'],
-        productType: 'Fresh Produce'
-      },
+      product: INITIAL_PRODUCTS.find(p => p.id === 'prod-wijaya-roasted-curry-powder') || INITIAL_PRODUCTS[1],
       quantity: 2,
-      selectedWeight: '1kg',
-      effectivePrice: 14.50
+      selectedWeight: '250g',
+      effectivePrice: 12.50
     },
     {
-      product: {
-        id: 'prod-dhal',
-        sku: 'GRN-DHAL-003',
-        title: 'Mysore Red Split Lentils / Dhal (1kg)',
-        description: 'Premium red split lentils for daily creamy parippu curry.',
-        category: 'Staples & Grains',
-        brand: 'Ceylon Harvest',
-        price: 12.50,
-        originalPrice: 15.00,
-        unit: 'kg',
-        unitWeight: '1 kg',
-        imageUrl: '/prod_dhal.jpg',
-        stock: 150,
-        store: 'Ceylon Foods Supermarket Bucharest',
-        status: 'Active',
-        aiFreshnessScore: 99,
-        isOrganic: true,
-        isFarmSourced: true,
-        rating: 5.0,
-        reviewsCount: 650,
-        availableWeights: ['500g', '1kg', '2kg'],
-        productType: 'Packaged Goods'
-      },
+      product: INITIAL_PRODUCTS.find(p => p.id === 'prod-masoor-daal') || INITIAL_PRODUCTS[2],
       quantity: 1,
       selectedWeight: '1kg',
       effectivePrice: 12.50
