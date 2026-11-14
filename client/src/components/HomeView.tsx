@@ -72,14 +72,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
   // Authentic Brand Logos matching real Ceylon brands for Nonstop Marquee
   const BRAND_LOGOS = [
-    { name: 'Wijaya Products', logo: '/products/prod-wijaya-chilli-powder.jpg', category: 'Spices & Curry' },
+    { name: 'Wijaya Products', logo: '/brands/brand_wijaya.png', category: 'Spices & Curry' },
     { name: 'Maliban Biscuits', logo: '/brands/brand_maliban.png', category: 'Biscuits & Snacks' },
     { name: 'Araliya Lanka', logo: '/brands/brand_araliya.png', category: 'Rice & Grains' },
     { name: 'Nestlé / Milo / Maggi', logo: '/brands/brand_nestle.png', category: 'Coconut & Beverages' },
     { name: 'Dilmah Ceylon Tea', logo: '/brands/brand_dilmah.png', category: 'Tea & Beverages' },
     { name: 'MD Foods Pickles & Jam', logo: '/brands/brand_md.png', category: 'Sambals & Jams' },
-    { name: 'Harischandra', logo: '/products/prod-harischandra-coffee.jpg', category: 'Coffee & Flour' },
-    { name: 'Watawala Tea', logo: '/products/prod-watawala-tea-powder.jpg', category: 'Tea & Beverages' }
+    { name: 'Harischandra', logo: '/brands/brand_harischandra.png', category: 'Coffee & Flour' },
+    { name: 'Watawala Tea', logo: '/brands/brand_watawala.png', category: 'Tea & Beverages' },
+    { name: 'Annam', logo: '/brands/brand_annam.png', category: 'Spices & Coffee' }
   ];
 
   // Find backing store products so clicking "Add" or the card works seamlessly with Cart & Modals
