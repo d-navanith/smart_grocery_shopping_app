@@ -47,39 +47,39 @@ export const HomeView: React.FC<HomeViewProps> = ({
     {
       id: 'rice-grains',
       title: 'Rice & Grains',
-      image: '/figma_cat_rice.png',
+      image: '/products/prod-supiri-keeri-rice.jpg',
       filterKey: 'Rice & Grains'
     },
     {
       id: 'spices',
       title: 'Ceylon Spices',
-      image: '/figma_cat_spices.png',
+      image: '/products/prod-wijaya-chilli-powder.jpg',
       filterKey: 'Spices & Curry'
     },
     {
       id: 'dried-fish',
       title: 'Dried Fish & Sambals',
-      image: '/cat_meat.jpg',
+      image: '/products/prod-dried-katta-fish.jpg',
       filterKey: 'Dried Fish & Sambals'
     },
     {
       id: 'biscuits-tea',
       title: 'Tea & Biscuits',
-      image: '/prod_biscuits.jpg',
+      image: '/products/prod-maliban-lemon-puff.jpg',
       filterKey: 'Biscuits & Snacks'
     }
   ];
 
   // Authentic Brand Logos matching real Ceylon brands for Nonstop Marquee
   const BRAND_LOGOS = [
-    { name: 'Wijaya Products', logo: '/prod_spices.jpg', category: 'Spices & Curry' },
+    { name: 'Wijaya Products', logo: '/products/prod-wijaya-chilli-powder.jpg', category: 'Spices & Curry' },
     { name: 'Maliban Biscuits', logo: '/brands/brand_maliban.png', category: 'Biscuits & Snacks' },
     { name: 'Araliya Lanka', logo: '/brands/brand_araliya.png', category: 'Rice & Grains' },
     { name: 'Nestlé / Milo / Maggi', logo: '/brands/brand_nestle.png', category: 'Coconut & Beverages' },
     { name: 'Dilmah Ceylon Tea', logo: '/brands/brand_dilmah.png', category: 'Tea & Beverages' },
     { name: 'MD Foods Pickles & Jam', logo: '/brands/brand_md.png', category: 'Sambals & Jams' },
-    { name: 'Harischandra', logo: '/prod_tea.jpg', category: 'Coffee & Flour' },
-    { name: 'Watawala Tea', logo: '/brands/brand_lipton.png', category: 'Tea & Beverages' }
+    { name: 'Harischandra', logo: '/products/prod-harischandra-coffee.jpg', category: 'Coffee & Flour' },
+    { name: 'Watawala Tea', logo: '/products/prod-watawala-tea-powder.jpg', category: 'Tea & Beverages' }
   ];
 
   // Find backing store products so clicking "Add" or the card works seamlessly with Cart & Modals
@@ -95,7 +95,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       unitLabel: 'Bag : 5 kg',
       displayPrice: '44.50 lei',
       oldPrice: '52.00 lei',
-      image: '/figma_prod_rice_sack.png',
+      image: riceProduct?.imageUrl || '/products/prod-supiri-keeri-rice.jpg',
       product: riceProduct
     },
     {
@@ -104,7 +104,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       unitLabel: 'Pack : 250g',
       displayPrice: '12.50 lei',
       oldPrice: '15.00 lei',
-      image: '/prod_spices.jpg',
+      image: curryProduct?.imageUrl || '/products/prod-wijaya-roasted-curry-powder.jpg',
       product: curryProduct
     },
     {
@@ -113,7 +113,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       unitLabel: 'Pack : 300g',
       displayPrice: '19.50 lei',
       oldPrice: '23.00 lei',
-      image: '/figma_prod_coconut.png',
+      image: coconutProduct?.imageUrl || '/products/prod-maggi-coconut-powder.jpg',
       product: coconutProduct
     },
     {
@@ -122,7 +122,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       unitLabel: 'Pack : 200g',
       displayPrice: '9.50 lei',
       oldPrice: '12.00 lei',
-      image: '/brands/brand_maliban.png',
+      image: biscuitProduct?.imageUrl || '/products/prod-maliban-lemon-puff.jpg',
       product: biscuitProduct
     }
   ];
@@ -432,8 +432,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   {/* Product Image Container with Smooth Hover Zoom */}
                   <div className="w-full h-[290px] flex items-center justify-center p-2 overflow-hidden rounded-md bg-white dark:bg-zinc-800/40">
                     <img
-                      src={card.image}
-                      alt={card.product.title}
+                      src={card.product?.imageUrl || card.image}
+                      alt={card.product?.title || card.displayTitle}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = card.image;
+                      }}
                       className="max-w-full max-h-full object-contain group-hover:scale-108 transition-transform duration-500 ease-out select-none"
                     />
                   </div>
