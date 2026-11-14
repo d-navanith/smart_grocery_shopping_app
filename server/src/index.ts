@@ -323,10 +323,14 @@ app.post('/api/auth/admin-login', (req: Request, res: Response) => {
 
 app.post('/api/auth/customer-login', (req: Request, res: Response) => {
   const { email, password } = req.body;
-  const user = customers.find(c => c.email.toLowerCase() === (email || '').toLowerCase().trim());
+  if (!email || !password) {
+    return res.status(400).json({ success: false, message: 'Email and password are required.' });
+  }
+  const cleanEmail = (email || '').toLowerCase().trim();
+  const user = customers.find(c => c.email.toLowerCase() === cleanEmail);
   if (user) {
     if (user.password && password && user.password !== password) {
-      return res.status(401).json({ success: false, message: 'Incorrect password.' });
+      return res.status(401).json({ success: false, message: 'Incorrect password. Please try again.' });
     }
     return res.json({
       success: true,
@@ -341,20 +345,7 @@ app.post('/api/auth/customer-login', (req: Request, res: Response) => {
       }
     });
   }
-  // Auto login demo user
-  const demo = customers[0];
-  return res.json({
-    success: true,
-    token: `jwt-token-${demo.id}`,
-    user: {
-      id: demo.id,
-      name: demo.name,
-      email: demo.email,
-      phone: demo.phone,
-      address: demo.address,
-      role: 'CUSTOMER'
-    }
-  });
+  return res.status(401).json({ success: false, message: 'No account found with this email. Please check your credentials or register.' });
 });
 
 app.post('/api/auth/customer-register', (req: Request, res: Response) => {

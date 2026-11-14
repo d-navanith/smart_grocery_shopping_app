@@ -132,7 +132,28 @@ export default function ClientWebSupermarket() {
     return 'All';
   });
   const [searchQuery, setSearchQuery] = useState('');
-  const [wishlist, setWishlist] = useState<string[]>(['prod-supiri-keeri-rice', 'prod-wijaya-roasted-curry-powder']);
+  const [wishlist, setWishlist] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      if (!localStorage.getItem('ceylonfoods_clean_v1')) {
+        localStorage.removeItem('ceylonfoods_wishlist');
+        localStorage.removeItem('ceylonfoods_cart');
+        localStorage.setItem('ceylonfoods_clean_v1', 'true');
+        return [];
+      }
+      const saved = localStorage.getItem('ceylonfoods_wishlist');
+      try {
+        return saved ? JSON.parse(saved) : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('ceylonfoods_wishlist', JSON.stringify(wishlist));
+  }, [wishlist]);
+
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Dynamic SEO Title, Description, Canonical & Social Graph Management for Search Engines
@@ -210,34 +231,25 @@ export default function ClientWebSupermarket() {
     }
   }, [currentPage, selectedCategory, currentLanguage]);
 
-  // Cart with Authentic Sri Lankan staples in Lei (Image 2 Theme)
-  const [cart, setCart] = useState<CartItem[]>([
-    {
-      product: INITIAL_PRODUCTS.find(p => p.id === 'prod-supiri-keeri-rice') || INITIAL_PRODUCTS[0],
-      quantity: 1,
-      selectedWeight: '5kg',
-      effectivePrice: 44.50
-    },
-    {
-      product: INITIAL_PRODUCTS.find(p => p.id === 'prod-wijaya-roasted-curry-powder') || INITIAL_PRODUCTS[1],
-      quantity: 2,
-      selectedWeight: '250g',
-      effectivePrice: 12.50
-    },
-    {
-      product: INITIAL_PRODUCTS.find(p => p.id === 'prod-masoor-daal') || INITIAL_PRODUCTS[2],
-      quantity: 1,
-      selectedWeight: '1kg',
-      effectivePrice: 12.50
+  // Clean Cart — Empty for fresh visitor, persisted to localStorage
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('ceylonfoods_cart');
+      try {
+        return saved ? JSON.parse(saved) : [];
+      } catch {
+        return [];
+      }
     }
-  ]);
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('ceylonfoods_cart', JSON.stringify(cart));
+  }, [cart]);
 
   const [selectedZone, setSelectedZone] = useState<DeliveryZone>(CEYLON_DELIVERY_ZONES[0]);
-  const [appliedPromo, setAppliedPromo] = useState<{ code: string; title: string; discount: number; freeDelivery?: boolean } | null>({
-    code: 'CEYLON10',
-    title: '10% Reducere la prima comandă',
-    discount: 8.00
-  });
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; title: string; discount: number; freeDelivery?: boolean } | null>(null);
   const [promoError, setPromoError] = useState('');
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);

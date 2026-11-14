@@ -137,13 +137,6 @@ export default function AdminApp() {
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          <div className="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-200/60 text-center text-xs">
-            <p className="font-bold text-[#0C6237]">Default Credentials</p>
-            <p className="text-[11px] text-slate-600 font-mono mt-0.5">
-              admin@ceylonfoods.lk / admin123
-            </p>
-          </div>
         </div>
       </div>
     );

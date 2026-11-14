@@ -36,8 +36,8 @@ export function useAdminCockpitState() {
     if (params?.get('auth') === 'true') return true;
     return localStorage.getItem('ceylonfoods_admin_auth') === 'true';
   });
-  const [loginEmail, setLoginEmail] = useState('admin@ceylonfoods.lk');
-  const [loginPassword, setLoginPassword] = useState('admin123');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
 

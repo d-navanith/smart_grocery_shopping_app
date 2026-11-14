@@ -149,17 +149,7 @@ export const Modals: React.FC<ModalsProps> = ({
         setAuthError(data.message || 'Login failed. Please check your email or password.');
       }
     } catch {
-      // Local fallback
-      const fallbackUser: CustomerUser = {
-        id: 'cust-demo',
-        name: 'Mihai Enache',
-        email: loginForm.email || 'customer@ceylonfoods.ro',
-        phone: '+40 722 456 789',
-        address: 'Strada Mihai Eminescu nr. 42, București Sector 1',
-        role: 'CUSTOMER'
-      };
-      onAuthSuccess(fallbackUser);
-      onCloseAuth();
+      setAuthError('Connection error. Please check your internet connection and try again.');
     } finally {
       setAuthLoading(false);
     }
