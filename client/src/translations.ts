@@ -462,6 +462,7 @@ export interface TranslationDictionary {
   shopCatTeaCoffee: string;
   shopCatBiscuitsSnacks: string;
   shopCatKitchenware: string;
+  shopCatBabyCare: string;
   shopFilterPriceTitle: string;
   shopFilterRatingTitle: string;
   shopFilterBrandsTitle: string;
@@ -937,6 +938,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     shopCatTeaCoffee: 'Tea, Coffee & Malt Drinks',
     shopCatBiscuitsSnacks: 'Maliban Biscuits & Noodles',
     shopCatKitchenware: 'Traditional Kitchenware',
+    shopCatBabyCare: 'Baby & Personal Care',
     shopFilterPriceTitle: 'PRICE RANGE (LEI)',
     shopFilterRatingTitle: 'MINIMUM CUSTOMER RATING',
     shopFilterBrandsTitle: 'BRANDS & PRODUCERS',
@@ -1411,6 +1413,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     shopCatTeaCoffee: 'තේ, කෝපි සහ බීම වර්ග',
     shopCatBiscuitsSnacks: 'මැලිබන් බිස්කට් සහ නූඩ්ල්ස්',
     shopCatKitchenware: 'සාම්ප්‍රදායික මුළුතැන්ගෙයි උපකරණ',
+    shopCatBabyCare: 'ළදරු සහ පුද්ගලික සත්කාර (Baby Care)',
     shopFilterPriceTitle: 'මිල පරාසය (LEI)',
     shopFilterRatingTitle: 'අවම පාරිභෝගික ඇගයීම',
     shopFilterBrandsTitle: 'සන්නාම සහ නිෂ්පාදකයින්',
@@ -1885,6 +1888,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     shopCatTeaCoffee: 'Ceai, Cafea & Băuturi',
     shopCatBiscuitsSnacks: 'Biscuiți Maliban & Fidea',
     shopCatKitchenware: 'Ustensile Tradiționale de Bucătărie',
+    shopCatBabyCare: 'Îngrijire Bebeluși & Personală',
     shopFilterPriceTitle: 'INTERVAL DE PREȚ (LEI)',
     shopFilterRatingTitle: 'RATING MINIM CLIENȚI',
     shopFilterBrandsTitle: 'BRANDURI & PRODUCĂTORI',

@@ -113,6 +113,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
           matchCat = p.category === 'Biscuits & Snacks';
         } else if (catLower.includes('kitchen') || catLower.includes('utensil') || catLower.includes('pot') || catLower.includes('pan')) {
           matchCat = p.category === 'Kitchenware & Utensils';
+        } else if (catLower.includes('baby') || catLower.includes('care')) {
+          matchCat = p.category === 'Baby Care & Household' || p.category.includes('Baby');
         } else if (catLower.includes('coconut')) {
           matchCat = p.category === 'Coconut Products';
         } else {
@@ -158,6 +160,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
     let teaCoffeeCount = 0;
     let biscuitsNoodlesCount = 0;
     let kitchenwareCount = 0;
+    let babyCareCount = 0;
 
     products.forEach(p => {
       const cat = p.category;
@@ -168,6 +171,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       else if (cat === 'Tea, Coffee & Beverages') teaCoffeeCount++;
       else if (cat === 'Biscuits & Snacks') biscuitsNoodlesCount++;
       else if (cat === 'Kitchenware & Utensils') kitchenwareCount++;
+      else if (cat === 'Baby Care & Household' || cat.includes('Baby')) babyCareCount++;
     });
 
     return {
@@ -178,7 +182,8 @@ export const ShopView: React.FC<ShopViewProps> = ({
       driedFish: driedFishCount,
       teaCoffee: teaCoffeeCount,
       biscuitsNoodles: biscuitsNoodlesCount,
-      kitchenware: kitchenwareCount
+      kitchenware: kitchenwareCount,
+      babyCare: babyCareCount
     };
   }, [products]);
 
@@ -260,6 +265,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 { key: 'Dried Fish & Sambals', label: t.shopCatDriedFishSambals, count: categoryCounts.driedFish },
                 { key: 'Tea, Coffee & Beverages', label: t.shopCatTeaCoffee, count: categoryCounts.teaCoffee },
                 { key: 'Biscuits & Snacks', label: t.shopCatBiscuitsSnacks, count: categoryCounts.biscuitsNoodles },
+                { key: 'Baby Care & Household', label: t.shopCatBabyCare, count: categoryCounts.babyCare },
                 { key: 'Kitchenware & Utensils', label: t.shopCatKitchenware, count: categoryCounts.kitchenware }
               ].map(cat => {
                 const isSelected = selectedCategory === cat.key;

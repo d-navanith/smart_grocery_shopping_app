@@ -131,7 +131,13 @@ export default function ClientWebSupermarket() {
     }
     return 'All';
   });
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      return p.get('q') || p.get('search') || '';
+    }
+    return '';
+  });
   const [wishlist, setWishlist] = useState<string[]>(() => {
     if (typeof window !== 'undefined') {
       if (!localStorage.getItem('ceylonfoods_clean_v1')) {
