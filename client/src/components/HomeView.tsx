@@ -31,7 +31,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onSelectProduct,
   onNavigateShop,
   onSelectCategory,
-  isDarkMode
+  isDarkMode,
+  t
 }) => {
   // Intersection Observer Scroll-Triggered Animation Hooks
   const brandsReveal = useScrollReveal<HTMLDivElement>({ threshold: 0.1 });
@@ -46,25 +47,25 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const FIGMA_CATEGORIES = [
     {
       id: 'rice-grains',
-      title: 'Rice & Grains',
+      title: t.catRiceGrains,
       image: '/products/prod-supiri-keeri-rice.jpg',
       filterKey: 'Rice & Grains'
     },
     {
       id: 'spices',
-      title: 'Ceylon Spices',
+      title: t.catSpicesCurry,
       image: '/products/prod-wijaya-chilli-powder.jpg',
       filterKey: 'Spices & Curry'
     },
     {
       id: 'dried-fish',
-      title: 'Dried Fish & Sambals',
+      title: t.shopCatDriedFishSambals,
       image: '/products/prod-dried-katta-fish.jpg',
       filterKey: 'Dried Fish & Sambals'
     },
     {
       id: 'biscuits-tea',
-      title: 'Tea & Biscuits',
+      title: t.catTeaBiscuits,
       image: '/products/prod-maliban-lemon-puff.jpg',
       filterKey: 'Biscuits & Snacks'
     }
@@ -180,22 +181,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 alt="Sri Lanka Flag"
                 className="w-5 h-3.5 object-cover rounded shadow-xs"
               />
-              <span>100% Genuine Sri Lankan Imports Direct to Romania</span>
+              <span>{t.heroBadge}</span>
             </div>
 
             <div className="space-y-2">
               <h2 className="hero-animate-title text-3xl sm:text-[42px] font-bold text-black dark:text-white leading-tight tracking-tight">
-                Taste of Home:
+                {t.heroTitle1}
               </h2>
               <h1 className="hero-animate-title text-4xl sm:text-[54px] font-bold text-[#1B8057] dark:text-[#6EE7B7] leading-[1.12] tracking-tight">
-                Daily Ceylon Groceries
-                <br />
-                in Bucharest
+                {t.heroTitle2}
               </h1>
             </div>
 
             <p className="hero-animate-desc text-[#003D25] dark:text-emerald-100/85 text-base sm:text-[18px] leading-[1.58] max-w-[540px] font-normal">
-              Authentic Araliya Keeri Samba white rice, Rathu Kekulu red rice, fresh wambatu (purple brinjal), roasted curry powder, Mysore dhal, and Dilmah Ceylon tea delivered to your doorstep with Cash on Delivery.
+              {t.heroDescription}
             </p>
 
             <div className="hero-animate-cta pt-2">
@@ -205,7 +204,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 className="h-[44px] px-5 rounded-lg bg-[#0A6847] hover:bg-[#075238] text-white font-semibold text-sm sm:text-base inline-flex items-center gap-2.5 shadow-sm hover:shadow-md transition active:scale-95 cursor-pointer"
               >
                 <ShoppingCart className="w-5 h-5 stroke-[2]" />
-                <span>Shop Groceries</span>
+                <span>{t.heroShopBtn}</span>
               </button>
             </div>
           </div>
@@ -229,9 +228,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             {/* Floating Card ("The taste of Sri Lanka, delivered to your home.") */}
             <div className="absolute bottom-6 sm:bottom-11 left-2 sm:-left-6 lg:-left-16 z-20 bg-white dark:bg-[#0E2E20] rounded-2xl px-6 py-3.5 shadow-[0_6px_20px_rgba(0,0,0,0.18)] border border-slate-100 dark:border-[#15875D] text-center animate-float-delayed">
               <p className="text-[#1B8057] dark:text-[#80F6C7] font-bold text-sm sm:text-[17px] leading-snug">
-                The taste of Sri Lanka,
-                <br />
-                delivered to your home.
+                {t.heroFloatingPill}
               </p>
             </div>
           </div>
@@ -259,7 +256,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             {[...BRAND_LOGOS, ...BRAND_LOGOS].map((brand, idx) => (
               <div
                 key={`${brand.name}-${idx}`}
-                className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-700/60 shadow-2xs min-w-[130px] sm:min-w-[165px] h-[64px] sm:h-[78px] shrink-0 cursor-default pointer-events-none"
+                className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-white border border-slate-200/90 shadow-2xs min-w-[130px] sm:min-w-[165px] h-[64px] sm:h-[78px] shrink-0 cursor-default pointer-events-none"
               >
                 <img
                   src={brand.logo}
@@ -288,17 +285,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
           >
             <img
               src="/figma_icon_delivery.png"
-              alt="Fastest Delivery"
+              alt={t.featureDeliveryHeader}
               className="w-[68px] h-[46px] object-contain shrink-0 group-hover:scale-110 transition-transform duration-300"
             />
             <div>
               <h3 className="text-[#0A6847] dark:text-[#80F6C7] font-bold text-xl sm:text-[22px] leading-tight">
-                Fastest Delivery
+                {t.featureDeliveryHeader}
               </h3>
               <p className={`text-sm sm:text-base leading-snug mt-1.5 ${isDarkMode ? 'text-zinc-200' : 'text-[#003D25]'}`}>
-                Glovo, Bolt & Sameday
-                <br />
-                door delivery.
+                {t.featureDeliverySub}
               </p>
             </div>
           </div>
@@ -311,17 +306,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
           >
             <img
               src="/figma_icon_freshness.png"
-              alt="Freshness you can trust"
+              alt={t.featureFreshnessHeader}
               className="w-[50px] h-[48px] object-contain shrink-0 group-hover:scale-110 transition-transform duration-300"
             />
             <div>
               <h3 className="text-[#0A6847] dark:text-[#80F6C7] font-bold text-xl sm:text-[22px] leading-tight">
-                Freshness you can trust
+                {t.featureFreshnessHeader}
               </h3>
               <p className={`text-sm sm:text-base leading-snug mt-1.5 ${isDarkMode ? 'text-zinc-200' : 'text-[#003D25]'}`}>
-                Quality produce, carefully
-                <br />
-                selected.
+                {t.featureFreshnessSub}
               </p>
             </div>
           </div>
@@ -334,15 +327,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
           >
             <img
               src="/figma_icon_cod.png"
-              alt="Cash on delivery"
+              alt={t.featureCodHeader}
               className="w-[52px] h-[48px] object-contain shrink-0 group-hover:scale-110 transition-transform duration-300"
             />
             <div>
               <h3 className="text-[#0A6847] dark:text-[#80F6C7] font-bold text-xl sm:text-[22px] leading-tight">
-                Cash on delivery
+                {t.featureCodHeader}
               </h3>
               <p className={`text-sm sm:text-base leading-snug mt-1.5 ${isDarkMode ? 'text-zinc-200' : 'text-[#003D25]'}`}>
-                Shop with confident
+                {t.featureCodSub}
               </p>
             </div>
           </div>
@@ -359,8 +352,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             categoriesReveal.isVisible ? 'is-revealed' : ''
           }`}
         >
-          <span className="text-[#0A6847] dark:text-emerald-400">Shop by </span>
-          <span className="text-[#F96D26]">Categories</span>
+          <span className="text-[#0A6847] dark:text-emerald-400">{t.shopByCategoriesTitle}</span>
         </h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
@@ -409,8 +401,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             popularReveal.isVisible ? 'is-revealed' : ''
           }`}
         >
-          <span className="text-[#0A6847] dark:text-emerald-400">Popular </span>
-          <span className="text-[#F96D26]">This week</span>
+          <span className="text-[#0A6847] dark:text-emerald-400">{t.popularThisWeekTitle}</span>
         </h2>
 
         {/* Full-Width Grey Band */}
@@ -447,7 +438,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     {/* Authentic Origin Badge */}
                     <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#0A6847] dark:text-emerald-400 mb-1.5">
                       <img src="/sri_lanka_flag.svg" alt="Sri Lanka" className="w-3.5 h-2.5 object-cover rounded-xs" />
-                      <span>Direct Ceylon Import</span>
+                      <span>{t.directCeylonImportBadge}</span>
                     </div>
 
                     {/* Row 1: Title & Price */}
@@ -492,7 +483,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                         className="h-[42px] px-5 rounded-md bg-[#0A6847] hover:bg-[#075238] text-white font-medium text-sm inline-flex items-center gap-2 shadow-xs hover:shadow-md transition active:scale-95 cursor-pointer"
                       >
                         <ShoppingCart className="w-4 h-4 stroke-[2]" />
-                        <span>Add</span>
+                        <span>{t.addBtn}</span>
                       </button>
                     </div>
                   </div>
@@ -517,20 +508,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F8C519]/20 text-[#F8C519] text-xs font-bold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Weekly Deals</span>
+              <span>{t.weeklyDealsBadge}</span>
             </div>
 
-            <h3 className="text-3xl sm:text-[42px] font-bold leading-[1.18] tracking-tight">
-              <span className="text-white">Unbeatable Offers: </span>
-              <span className="text-[#F8C519]">
-                Your
-                <br />
-                Weekly Grocery Specials
-              </span>
+            <h3 className="text-3xl sm:text-[42px] font-bold leading-[1.18] tracking-tight text-white">
+              {t.weeklyDealsHeading}
             </h3>
 
             <p className="text-white/95 text-base sm:text-[18px] leading-relaxed max-w-[530px] font-normal pt-1">
-              Keeri Samba white rice, Rathu Kekulu red rice, fresh brinjal, dhal, and Ceylon spices in stock in Bucharest
+              {t.weeklyDealsSub}
             </p>
 
             <div className="pt-2">
@@ -539,7 +525,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 onClick={onNavigateShop}
                 className="h-[42px] px-6 rounded-lg bg-[#F8C519] hover:bg-[#EEAB1E] text-[#664E00] font-bold text-sm inline-flex items-center gap-2 shadow-md transition active:scale-95 cursor-pointer"
               >
-                <span>Browse Specials</span>
+                <span>{t.browseSpecialsBtn}</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.2]" />
               </button>
             </div>
@@ -577,16 +563,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
             }`}
           >
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[#064F41]/10 dark:bg-emerald-950/60 text-[#064F41] dark:text-[#80F6C7] border border-[#15875D]/30">
-              <span>🌿 Authentic Sri Lankan Heritage in Romania</span>
+              <span>{t.homeAboutBadge}</span>
             </div>
 
             <h2 className="text-3xl sm:text-[40px] font-bold leading-tight tracking-tight">
-              <span className="text-[#064F41] dark:text-white">About </span>
-              <span className="text-[#FF632B]">Ceylon Foods</span>
+              <span className="text-[#064F41] dark:text-white">{t.homeAboutHeading}</span>
             </h2>
 
             <p className="text-base sm:text-[17px] leading-relaxed text-[#003D25]/90 dark:text-emerald-100/85 font-normal">
-              Founded to connect the vibrant Sri Lankan community and Romanian food lovers with 100% genuine Ceylon staples. We directly import certified Keeri Samba rice, traditional red raw rice, high-altitude Ceylon teas, and freshly sourced Asian vegetables right into our Bucharest fulfillment center.
+              {t.homeAboutBody}
             </p>
 
             {/* 3 Pillars List */}
@@ -596,34 +581,34 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   🌾
                 </div>
                 <h4 className="font-bold text-sm text-[#064F41] dark:text-white">
-                  100% Genuine
+                  {t.homePillar1Heading}
                 </h4>
                 <p className="text-xs text-slate-600 dark:text-zinc-300 leading-snug">
-                  Araliya, Dilmah, Munchee & MD direct imports.
+                  {t.homePillar1Body}
                 </p>
               </div>
 
               <div className="p-4 rounded-xl bg-white dark:bg-[#122A1E] border border-slate-200/80 dark:border-[#15875D]/40 shadow-xs space-y-1.5">
                 <div className="w-8 h-8 rounded-lg bg-[#064F41]/10 text-[#064F41] dark:text-[#80F6C7] flex items-center justify-center font-bold">
-                  ⚡
+                  🏪
                 </div>
                 <h4 className="font-bold text-sm text-[#064F41] dark:text-white">
-                  Fast Courier
+                  {t.homePillar2Heading}
                 </h4>
                 <p className="text-xs text-slate-600 dark:text-zinc-300 leading-snug">
-                  Glovo, Bolt & Sameday door delivery in Bucharest.
+                  {t.homePillar2Body}
                 </p>
               </div>
 
               <div className="p-4 rounded-xl bg-white dark:bg-[#122A1E] border border-slate-200/80 dark:border-[#15875D]/40 shadow-xs space-y-1.5">
                 <div className="w-8 h-8 rounded-lg bg-[#064F41]/10 text-[#064F41] dark:text-[#80F6C7] flex items-center justify-center font-bold">
-                  🤝
+                  💵
                 </div>
                 <h4 className="font-bold text-sm text-[#064F41] dark:text-white">
-                  Cash on Delivery
+                  {t.homePillar3Heading}
                 </h4>
                 <p className="text-xs text-slate-600 dark:text-zinc-300 leading-snug">
-                  Zero advance needed. Pay upon safe delivery.
+                  {t.homePillar3Body}
                 </p>
               </div>
             </div>
@@ -634,7 +619,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 onClick={onNavigateShop}
                 className="h-[42px] px-6 rounded-lg bg-[#064F41] hover:bg-[#043d32] text-white font-semibold text-sm inline-flex items-center gap-2 shadow-xs transition active:scale-95 cursor-pointer"
               >
-                <span>Explore All Products</span>
+                <span>{t.viewAllProducts}</span>
                 <ArrowRight className="w-4 h-4 stroke-[2]" />
               </button>
             </div>
@@ -654,24 +639,24 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
               <div className="space-y-2 relative z-10">
                 <span className="px-3 py-1 rounded-full bg-white/20 text-[#80F6C7] text-xs font-bold uppercase tracking-wider">
-                  Bucharest Store Guarantee
+                  {t.homeGuaranteePill}
                 </span>
                 <h3 className="text-2xl sm:text-3xl font-bold leading-snug">
-                  Taste of Home, Always Fresh.
+                  {t.homeGuaranteeHeading}
                 </h3>
                 <p className="text-sm text-white/90 leading-relaxed">
-                  Every grain of rice, whole spice quill, and fresh vegetable is inspected in our store before reaching courier dispatch.
+                  {t.homeGuaranteeBody}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4 pt-2 relative z-10 border-t border-white/20">
                 <div>
                   <p className="text-2xl sm:text-3xl font-extrabold text-[#F8C519]">4.9 / 5.0</p>
-                  <p className="text-xs text-white/80 font-medium">Customer Rating</p>
+                  <p className="text-xs text-white/80 font-medium">{t.homeCustomerRatingLabel}</p>
                 </div>
                 <div>
                   <p className="text-2xl sm:text-3xl font-extrabold text-[#F8C519]">1,500+ kg</p>
-                  <p className="text-xs text-white/80 font-medium">Ceylon Rice Delivered</p>
+                  <p className="text-xs text-white/80 font-medium">{t.homeRiceDeliveredLabel}</p>
                 </div>
               </div>
             </div>
@@ -691,7 +676,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
             }`}
           >
             <Star className="w-3.5 h-3.5 fill-[#FF632B]" />
-            <span>Customer Stories</span>
+            <span>{t.testimonialsBadge}</span>
           </div>
 
           <h2
@@ -699,8 +684,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               testimonialsReveal.isVisible ? 'is-revealed' : ''
             }`}
           >
-            <span className="text-[#064F41] dark:text-white">Loved by the </span>
-            <span className="text-[#FF632B]">Community</span>
+            <span className="text-[#064F41] dark:text-white">{t.testimonialsHeading}</span>
           </h2>
 
           <p
@@ -708,7 +692,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               testimonialsReveal.isVisible ? 'is-revealed' : ''
             }`}
           >
-            Real reviews from Sri Lankan families and Romanian home chefs in Bucharest.
+            {t.testimonialsSub}
           </p>
         </div>
 
@@ -749,7 +733,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     {item.verified && (
                       <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#15875D] dark:text-[#80F6C7]">
                         <CheckCircle2 className="w-3 h-3" />
-                        <span>Verified</span>
+                        <span>{t.verifiedCustomerBadge}</span>
                       </span>
                     )}
                   </div>
@@ -757,7 +741,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     {item.location}
                   </p>
                   <p className="text-[11px] font-medium text-[#FF632B] pt-0.5">
-                    Order staple: {item.favorite}
+                    {t.orderStapleLabel} {item.favorite}
                   </p>
                 </div>
               </div>
@@ -773,35 +757,35 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <div className="lg:col-span-7 space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider">
                 <img src="/sri_lanka_flag.svg" alt="Sri Lanka" className="w-4 h-2.5 rounded-xs object-cover" />
-                <span>About Ceylon Foods Romania</span>
+                <span>{t.seoKnowledgeBadge}</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-[#064F41] dark:text-white tracking-tight">
-                Romania's Dedicated Sri Lankan Online Supermarket & Direct Food Distributor
+                {t.seoKnowledgeHeading}
               </h2>
               <p className="text-sm sm:text-base text-slate-700 dark:text-zinc-300 leading-relaxed font-normal">
-                <strong>Ceylon Foods</strong> is the premier authentic Sri Lankan supermarket in Romania, specializing in direct import and distribution of genuine island groceries, heirloom rice varieties, and fresh tropical produce based in Bucharest.
+                {t.seoKnowledgeBody}
               </p>
               
               <div className="space-y-3 pt-2">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#15875D] dark:text-[#80F6C7]">
-                  Core Business & Store Operations
+                  {t.seoCoreOperationsHeading}
                 </h3>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-zinc-300">
                   <li className="flex items-start gap-2">
                     <span className="text-[#FF632B] font-bold">•</span>
-                    <span><strong>Heirloom Ceylon Rice & Grains:</strong> Araliya Keeri Samba, Rathu Kekulu red raw rice, Mysore red dhal.</span>
+                    <span>{t.seoOpRice}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-[#FF632B] font-bold">•</span>
-                    <span><strong>Fresh Tropical Produce:</strong> Purple brinjal (wambatu), fresh lady's finger (okra), yellow pumpkin.</span>
+                    <span>{t.seoOpVeg}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-[#FF632B] font-bold">•</span>
-                    <span><strong>Authentic Spices & Tea:</strong> Roasted curry powder, Jaffna curry, Ceylon cinnamon quills, Dilmah BOPF tea.</span>
+                    <span>{t.seoOpSpices}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-[#FF632B] font-bold">•</span>
-                    <span><strong>Express Door-to-Door Delivery:</strong> 25–45 min dispatch in Bucharest Sectors 1–6, Ilfov, and Cash on Delivery.</span>
+                    <span>{t.seoOpDelivery}</span>
                   </li>
                 </ul>
               </div>
@@ -823,24 +807,24 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
               <div className="space-y-2.5 text-xs text-slate-600 dark:text-zinc-300">
                 <div className="flex items-start gap-2">
-                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">Address:</span>
+                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">{t.seoCardAddressLabel}</span>
                   <span>Strada Mihai Eminescu nr. 42, Sector 1, București 010515, Romania</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">Phone:</span>
+                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">{t.seoCardPhoneLabel}</span>
                   <a href="tel:+40722456789" className="text-[#15875D] font-bold hover:underline">+40 722 456 789</a>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">Hours:</span>
-                  <span>Open Daily • 09:00 – 20:00 (Monday – Sunday)</span>
+                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">{t.seoCardHoursLabel}</span>
+                  <span>{t.seoCardHoursVal}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">Payment:</span>
-                  <span>Cash on Delivery (COD) & Mobile POS Card on Delivery</span>
+                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">{t.seoCardPaymentLabel}</span>
+                  <span>{t.seoCardPaymentVal}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">Coverage:</span>
-                  <span>Bucharest (Sectors 1–6), Ilfov County & Nationwide Courier</span>
+                  <span className="font-bold text-[#064F41] dark:text-emerald-400 min-w-[70px]">{t.seoCardCoverageLabel}</span>
+                  <span>{t.seoCardCoverageVal}</span>
                 </div>
               </div>
 
@@ -850,7 +834,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   onClick={onNavigateShop}
                   className="flex-1 py-2 px-3 rounded-xl bg-[#064F41] hover:bg-[#043d32] text-white font-bold text-xs text-center transition cursor-pointer"
                 >
-                  Order Groceries Online
+                  {t.seoOrderOnlineBtn}
                 </button>
                 <a
                   href="https://maps.google.com/?q=Strada+Mihai+Eminescu+42+Bucuresti"
@@ -858,7 +842,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   rel="noopener noreferrer"
                   className="py-2 px-3 rounded-xl border border-slate-200 dark:border-zinc-700 hover:bg-slate-50 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-200 font-bold text-xs text-center transition"
                 >
-                  📍 View on Map
+                  {t.seoViewMapBtn}
                 </a>
               </div>
             </div>

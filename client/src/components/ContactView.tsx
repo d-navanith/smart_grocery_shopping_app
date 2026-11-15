@@ -20,7 +20,7 @@ interface ContactViewProps {
   t: TranslationDictionary;
 }
 
-export const ContactView: React.FC<ContactViewProps> = ({ isDarkMode }) => {
+export const ContactView: React.FC<ContactViewProps> = ({ isDarkMode, t }) => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',

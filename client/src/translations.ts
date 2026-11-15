@@ -389,6 +389,89 @@ export interface TranslationDictionary {
   accountChangesSaved: string;
   accountCodPreferenceTitle: string;
   accountCodPreferenceDesc: string;
+
+  // Navigation Extras
+  tabAboutUs: string;
+  tabContact: string;
+
+  // Home Page Extended
+  heroFloatingPill: string;
+  featureDeliveryHeader: string;
+  featureDeliverySub: string;
+  featureFreshnessHeader: string;
+  featureFreshnessSub: string;
+  featureCodHeader: string;
+  featureCodSub: string;
+  shopByCategoriesTitle: string;
+  catRiceGrains: string;
+  catSpicesCurry: string;
+  catCoconutProducts: string;
+  catTeaBiscuits: string;
+  popularThisWeekTitle: string;
+  directCeylonImportBadge: string;
+  addBtn: string;
+  weeklyDealsBadge: string;
+  weeklyDealsHeading: string;
+  weeklyDealsSub: string;
+  browseSpecialsBtn: string;
+  homeAboutBadge: string;
+  homeAboutHeading: string;
+  homeAboutBody: string;
+  homePillar1Heading: string;
+  homePillar1Body: string;
+  homePillar2Heading: string;
+  homePillar2Body: string;
+  homePillar3Heading: string;
+  homePillar3Body: string;
+  homeGuaranteePill: string;
+  homeGuaranteeHeading: string;
+  homeGuaranteeBody: string;
+  homeCustomerRatingLabel: string;
+  homeRiceDeliveredLabel: string;
+  testimonialsBadge: string;
+  testimonialsHeading: string;
+  testimonialsSub: string;
+  verifiedCustomerBadge: string;
+  orderStapleLabel: string;
+  seoKnowledgeBadge: string;
+  seoKnowledgeHeading: string;
+  seoKnowledgeBody: string;
+  seoCoreOperationsHeading: string;
+  seoOpRice: string;
+  seoOpVeg: string;
+  seoOpSpices: string;
+  seoOpDelivery: string;
+  seoCardAddressLabel: string;
+  seoCardPhoneLabel: string;
+  seoCardHoursLabel: string;
+  seoCardHoursVal: string;
+  seoCardPaymentLabel: string;
+  seoCardPaymentVal: string;
+  seoCardCoverageLabel: string;
+  seoCardCoverageVal: string;
+  seoOrderOnlineBtn: string;
+  seoViewMapBtn: string;
+
+  // Shop View Sidebar & Filters
+  shopFoodCategoriesTitle: string;
+  shopCatAllProducts: string;
+  shopCatSpicesCurry: string;
+  shopCatRiceGrains: string;
+  shopCatFlourGrains: string;
+  shopCatDriedFishSambals: string;
+  shopCatTeaCoffee: string;
+  shopCatBiscuitsSnacks: string;
+  shopCatKitchenware: string;
+  shopFilterPriceTitle: string;
+  shopFilterRatingTitle: string;
+  shopFilterBrandsTitle: string;
+  shopFilterStockTitle: string;
+
+  // Footer Extended
+  footerQuickNavTitle: string;
+  footerCustomerSupportTitle: string;
+  footerHoursVal: string;
+  footerAllRightsReserved: string;
 }
 
 export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
@@ -780,7 +863,90 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     accountUpdateChangesBtn: 'Update Changes',
     accountChangesSaved: 'Changes updated successfully!',
     accountCodPreferenceTitle: 'Payment Preferences',
-    accountCodPreferenceDesc: 'Cash on Delivery (Plata la Livrare) is set as your default payment option for all orders in Romania.'
+    accountCodPreferenceDesc: 'Cash on Delivery (Plata la Livrare) is set as your default payment option for all orders in Romania.',
+
+    // Navigation Extras
+    tabAboutUs: 'About Us',
+    tabContact: 'Contact',
+
+    // Home Page Extended
+    heroFloatingPill: 'The taste of Sri Lanka, delivered to your home.',
+    featureDeliveryHeader: 'Fastest Delivery',
+    featureDeliverySub: 'In Bucharest, fresh right to your door delivery.',
+    featureFreshnessHeader: 'Freshness you can trust',
+    featureFreshnessSub: 'Quality produce, carefully selected.',
+    featureCodHeader: 'Cash on delivery',
+    featureCodSub: 'Shop with confidence',
+    shopByCategoriesTitle: 'Shop by Categories',
+    catRiceGrains: 'Rice & Grains',
+    catSpicesCurry: 'Spices & Curry',
+    catCoconutProducts: 'Coconut Products',
+    catTeaBiscuits: 'Tea & Biscuits',
+    popularThisWeekTitle: 'Popular This week',
+    directCeylonImportBadge: 'Direct Ceylon Import',
+    addBtn: 'Add',
+    weeklyDealsBadge: 'Weekly Deals',
+    weeklyDealsHeading: 'Unbeatable Offers: Your Weekly Grocery Specials',
+    weeklyDealsSub: 'Keeri Samba white rice, Rathu Kekulu red rice, fresh brinjal, dhal, and Ceylon spices in stock in Bucharest',
+    browseSpecialsBtn: 'Browse Specials',
+    homeAboutBadge: '🌿 Authentic Sri Lankan Heritage in Romania',
+    homeAboutHeading: 'About Ceylon Foods',
+    homeAboutBody: 'Founded to connect the vibrant Sri Lankan community and Romanian food lovers with 100% genuine Ceylon staples. We directly import certified Keeri Samba rice, traditional red raw rice, high-altitude Ceylon teas, and freshly sourced Asian vegetables right into our Bucharest fulfillment center.',
+    homePillar1Heading: '100% Genuine',
+    homePillar1Body: 'Certified direct Ceylon island import',
+    homePillar2Heading: 'Store in Bucharest',
+    homePillar2Body: 'Sector 1 stock fulfillment & walk-in orders',
+    homePillar3Heading: 'Cash on Delivery',
+    homePillar3Body: 'Pay safely when courier reaches your doorstep',
+    homeGuaranteePill: 'Bucharest Store Guarantee',
+    homeGuaranteeHeading: 'Taste of Home, Always Fresh.',
+    homeGuaranteeBody: 'Every grain of rice, whole spice quill, and fresh vegetable is inspected in our store before reaching courier dispatch.',
+    homeCustomerRatingLabel: 'Customer Rating',
+    homeRiceDeliveredLabel: 'Ceylon Rice Delivered',
+    testimonialsBadge: 'Customer Stories',
+    testimonialsHeading: 'Loved by the Community',
+    testimonialsSub: 'Real reviews from Sri Lankan families and Romanian home chefs in Bucharest.',
+    verifiedCustomerBadge: 'Verified',
+    orderStapleLabel: 'Order staple:',
+    seoKnowledgeBadge: 'About Ceylon Foods Romania',
+    seoKnowledgeHeading: "Romania's Dedicated Sri Lankan Online Supermarket & Direct Food Distributor",
+    seoKnowledgeBody: 'Ceylon Foods is the premier authentic Sri Lankan supermarket in Romania, specializing in direct import and distribution of genuine island groceries, heirloom rice varieties, and fresh tropical produce based in Bucharest.',
+    seoCoreOperationsHeading: 'Core Business & Store Operations',
+    seoOpRice: 'Heirloom Ceylon Rice & Grains: Araliya Keeri Samba, Rathu Kekulu red raw rice, Mysore red dhal.',
+    seoOpVeg: "Fresh Tropical Produce: Purple brinjal (wambatu), fresh lady's finger (okra), yellow pumpkin.",
+    seoOpSpices: 'Authentic Spices & Tea: Roasted curry powder, Jaffna curry, Ceylon cinnamon quills, Dilmah BOPF tea.',
+    seoOpDelivery: 'Express Door-to-Door Delivery: 25–45 min dispatch in Bucharest Sectors 1–6, Ilfov, and Cash on Delivery.',
+    seoCardAddressLabel: 'Address:',
+    seoCardPhoneLabel: 'Phone:',
+    seoCardHoursLabel: 'Hours:',
+    seoCardHoursVal: 'Open Daily • 09:00 – 20:00 (Monday – Sunday)',
+    seoCardPaymentLabel: 'Payment:',
+    seoCardPaymentVal: 'Cash on Delivery (COD) & Mobile POS Card on Delivery',
+    seoCardCoverageLabel: 'Coverage:',
+    seoCardCoverageVal: 'Bucharest (Sectors 1–6), Ilfov County & Nationwide Courier',
+    seoOrderOnlineBtn: 'Order Groceries Online',
+    seoViewMapBtn: '📍 View on Map',
+
+    // Shop View Sidebar & Filters
+    shopFoodCategoriesTitle: 'FOOD CATEGORIES',
+    shopCatAllProducts: 'All Products',
+    shopCatSpicesCurry: 'Ceylon Spices & Curry Powders',
+    shopCatRiceGrains: 'Rice, Dhal & Grains',
+    shopCatFlourGrains: 'Flour & Traditional Mixes',
+    shopCatDriedFishSambals: 'Dried Fish, Sambals & Pickles',
+    shopCatTeaCoffee: 'Tea, Coffee & Malt Drinks',
+    shopCatBiscuitsSnacks: 'Maliban Biscuits & Noodles',
+    shopCatKitchenware: 'Traditional Kitchenware',
+    shopFilterPriceTitle: 'PRICE RANGE (LEI)',
+    shopFilterRatingTitle: 'MINIMUM CUSTOMER RATING',
+    shopFilterBrandsTitle: 'BRANDS & PRODUCERS',
+    shopFilterStockTitle: 'Show In-Stock Only',
+
+    // Footer Extended
+    footerQuickNavTitle: 'Quick Navigation',
+    footerCustomerSupportTitle: 'Customer Support',
+    footerHoursVal: 'Daily 09:00 – 20:00 (Monday – Sunday)',
+    footerAllRightsReserved: 'All rights reserved.'
   },
 
   si: {
@@ -1171,7 +1337,90 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     accountUpdateChangesBtn: 'වෙනස්කම් සුරකින්න',
     accountChangesSaved: 'වෙනස්කම් සාර්ථකව සුරකින ලදී!',
     accountCodPreferenceTitle: 'ගෙවීම් මනාපයන්',
-    accountCodPreferenceDesc: 'රුමේනියාවේ සියලුම ඇණවුම් සඳහා Cash on Delivery ප්‍රධාන ගෙවීම් ක්‍රමය ලෙස සකසා ඇත.'
+    accountCodPreferenceDesc: 'රුමේනියාවේ සියලුම ඇණවුම් සඳහා Cash on Delivery ප්‍රධාන ගෙවීම් ක්‍රමය ලෙස සකසා ඇත.',
+
+    // Navigation Extras
+    tabAboutUs: 'අප ගැන',
+    tabContact: 'අප අමතන්න',
+
+    // Home Page Extended
+    heroFloatingPill: 'ශ්‍රී ලංකාවේ අව්‍යාජ රසය, ඔබගේ නිවසටම.',
+    featureDeliveryHeader: 'වේගවත්ම බෙදාහැරීම',
+    featureDeliverySub: 'බුකාරෙස්ට් තුළ, නැවුම්ව ඔබගේ නිවසටම බෙදාහැරීම.',
+    featureFreshnessHeader: 'විශ්වාසනීය නැවුම්බව',
+    featureFreshnessSub: 'ප්‍රවේශමෙන් තෝරාගත් උසස් නිෂ්පාදන.',
+    featureCodHeader: 'භාණ්ඩ ලැබුණු පසු මුදල් ගෙවීම',
+    featureCodSub: 'විශ්වාසයෙන් මිලදී ගන්න',
+    shopByCategoriesTitle: 'කාණ්ඩ අනුව මිලදී ගන්න',
+    catRiceGrains: 'සහල් සහ ධාන්‍ය',
+    catSpicesCurry: 'කුළුබඩු සහ තුනපහ',
+    catCoconutProducts: 'පොල් නිෂ්පාදන',
+    catTeaBiscuits: 'තේ සහ බිස්කට්',
+    popularThisWeekTitle: 'මෙම සතියේ ජනප්‍රිය දෑ',
+    directCeylonImportBadge: 'සෘජු ලංකා ආනයනයක්',
+    addBtn: 'එක් කරන්න',
+    weeklyDealsBadge: 'සතිපතා විශේෂ දීමනා',
+    weeklyDealsHeading: 'විශේෂ මිල අඩුකිරීම්: සතිපතා ලංකා ආහාර දීමනා',
+    weeklyDealsSub: 'කීරි සම්බා සහල්, රතු කැකුළු, නැවුම් වම්බටු, පරිප්පු සහ ලංකා තුනපහ බුකාරෙස්ට් ගබඩාවේ ඇත',
+    browseSpecialsBtn: 'විශේෂ දීමනා බලන්න',
+    homeAboutBadge: '🌿 රුමේනියාවේ අව්‍යාජ ශ්‍රී ලාංකික අභිමානය',
+    homeAboutHeading: 'Ceylon Foods ගැන',
+    homeAboutBody: 'රුමේනියාවේ වෙසෙන ශ්‍රී ලාංකිකයින්ට සහ ලාංකීය ආහාර ප්‍රියකරන සැමට 100% ක්ම සැබෑ ලංකා ආහාර ලබාදීමට අපි කැපවී සිටිමු. අරලිය කීරි සම්බා, රතු කැකුළු සහල්, උසස් තත්ත්වයේ ලංකා තේ සහ නැවුම් ආසියානු එළවළු බුකාරෙස්ට් අපගේ ගබඩාවට සෘජුවම ආනයනය කෙරේ.',
+    homePillar1Heading: '100% අව්‍යාජයි',
+    homePillar1Body: 'ශ්‍රී ලංකාවෙන් සෘජුවම ගෙන්වන ලද සහතික කළ ආහාර',
+    homePillar2Heading: 'බුකාරෙස්ට් හි පිහිටි ගබඩාව',
+    homePillar2Body: 'සෙක්ටර් 1 බෙදාහැරීම් සහ සෘජු ඇණවුම් පහසුකම්',
+    homePillar3Heading: 'භාණ්ඩ ලැබුණු පසු මුදල් ගෙවීම (COD)',
+    homePillar3Body: 'පාර්සලය නිවසට ලැබුණු පසු ආරක්ෂිතව මුදල් ගෙවන්න',
+    homeGuaranteePill: 'බුකාරෙස්ට් වෙළඳසැල් සහතිකය',
+    homeGuaranteeHeading: 'මව්බිමේ රසය, නිරතුරුවම නැවුම්ව.',
+    homeGuaranteeBody: 'සෑම සහල් ඇටයක්ම, කුළුබඩුවක් සහ නැවුම් එළවළුවක්ම කුරියර් මඟින් බෙදාහැරීමට පෙර අප වෙළඳසැලෙන් පරීක්ෂා කරනු ලැබේ.',
+    homeCustomerRatingLabel: 'පාරිභෝගික ඇගයීම',
+    homeRiceDeliveredLabel: 'බෙදාහැර ඇති ලංකා සහල් ප්‍රමාණය',
+    testimonialsBadge: 'පාරිභෝගික අදහස්',
+    testimonialsHeading: 'පාරිභෝගිකයින්ගේ ආදරය දිනූ',
+    testimonialsSub: 'බුකාරෙස්ට් හි ජීවත්වන ශ්‍රී ලාංකික පවුල් සහ රුමේනියානු පාරිභෝගිකයින්ගේ සැබෑ අදහස්.',
+    verifiedCustomerBadge: 'තහවුරු කරන ලදී',
+    orderStapleLabel: 'නිතර ඇණවුම් කරන දෑ:',
+    seoKnowledgeBadge: 'Ceylon Foods රුමේනියාව ගැන',
+    seoKnowledgeHeading: 'රුමේනියාවේ ප්‍රමුඛතම ශ්‍රී ලාංකික අන්තර්ජාල සුපිරි වෙළඳසැල සහ සෘජු ආහාර බෙදාහරින්නා',
+    seoKnowledgeBody: 'Ceylon Foods යනු රුමේනියාවේ පිහිටි ප්‍රමුඛතම ශ්‍රී ලාංකික සුපිරි වෙළඳසැලයි. සාම්ප්‍රදායික සහල් වර්ග, නැවුම් එළවළු සහ අව්‍යාජ ලංකා ආහාර ද්‍රව්‍ය සෘජුවම ආනයනය කර බෙදාහැරීම අප විසින් සිදුකරනු ලබයි.',
+    seoCoreOperationsHeading: 'ප්‍රධාන නිෂ්පාදන සහ වෙළඳසැල් සේවා',
+    seoOpRice: 'සාම්ප්‍රදායික ලංකා සහල්: අරලිය කීරි සම්බා, රතු කැකුළු සහල්, මයිසූර් රතු පරිප්පු.',
+    seoOpVeg: 'නැවුම් එළවළු: දම් වම්බටු, නැවුම් බණ්ඩක්කා, වට්ටක්කා.',
+    seoOpSpices: 'අව්‍යාජ තුනපහ සහ තේ: විජය බැදපු තුනපහ, යාපනය කරි කුඩු, කුරුඳු පොතු, දිල්මා තේ.',
+    seoOpDelivery: 'ක්ෂණික බෙදාහැරීම: බුකාරෙස්ට් සෙක්ටර් 1-6 සහ ඉල්ෆොව් සඳහා විනාඩි 25–45 කින්, භාණ්ඩ ලැබුණු පසු මුදල් ගෙවීම.',
+    seoCardAddressLabel: 'ලිපිනය:',
+    seoCardPhoneLabel: 'දුරකථනය:',
+    seoCardHoursLabel: 'වේලාවන්:',
+    seoCardHoursVal: 'දිනපතා විවෘතයි • 09:00 – 20:00 (සඳුදා – ඉරිදා)',
+    seoCardPaymentLabel: 'ගෙවීම්:',
+    seoCardPaymentVal: 'භාණ්ඩ ලැබුණු පසු මුදල් (COD) සහ කාඩ්පත් මඟින් ගෙවීම්',
+    seoCardCoverageLabel: 'සේවා ප්‍රදේශ:',
+    seoCardCoverageVal: 'බුකාරෙස්ට් (සෙක්ටර් 1–6), ඉල්ෆොව් සහ මුළු රුමේනියාව පුරා කුරියර් සේවය',
+    seoOrderOnlineBtn: 'අන්තර්ජාලයෙන් ඇණවුම් කරන්න',
+    seoViewMapBtn: '📍 සිතියම බලන්න',
+
+    // Shop View Sidebar & Filters
+    shopFoodCategoriesTitle: 'ආහාර කාණ්ඩ',
+    shopCatAllProducts: 'සියලුම නිෂ්පාදන',
+    shopCatSpicesCurry: 'ලංකා තුනපහ සහ කුළුබඩු',
+    shopCatRiceGrains: 'සහල්, පරිප්පු සහ ධාන්‍ය',
+    shopCatFlourGrains: 'පිටි සහ සාම්ප්‍රදායික මිශ්‍රණ',
+    shopCatDriedFishSambals: 'කරවල, සම්බෝල සහ අච්චාරු',
+    shopCatTeaCoffee: 'තේ, කෝපි සහ බීම වර්ග',
+    shopCatBiscuitsSnacks: 'මැලිබන් බිස්කට් සහ නූඩ්ල්ස්',
+    shopCatKitchenware: 'සාම්ප්‍රදායික මුළුතැන්ගෙයි උපකරණ',
+    shopFilterPriceTitle: 'මිල පරාසය (LEI)',
+    shopFilterRatingTitle: 'අවම පාරිභෝගික ඇගයීම',
+    shopFilterBrandsTitle: 'සන්නාම සහ නිෂ්පාදකයින්',
+    shopFilterStockTitle: 'තොග ඇති දෑ පමණක් පෙන්වන්න',
+
+    // Footer Extended
+    footerQuickNavTitle: 'ක්ෂණික පිවිසුම්',
+    footerCustomerSupportTitle: 'පාරිභෝගික සේවය',
+    footerHoursVal: 'දිනපතා 09:00 – 20:00 (සඳුදා – ඉරිදා)',
+    footerAllRightsReserved: 'සියලුම හිමිකම් ඇවිරිණි.'
   },
 
   ro: {
@@ -1562,7 +1811,90 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     accountUpdateChangesBtn: 'Salvează Modificările',
     accountChangesSaved: 'Modificările au fost salvate cu succes!',
     accountCodPreferenceTitle: 'Preferințe de Plată',
-    accountCodPreferenceDesc: 'Plata la Livrare (Cash on Delivery) este setată ca metodă implicită pentru toate comenzile din România.'
+    accountCodPreferenceDesc: 'Plata la Livrare (Cash on Delivery) este setată ca metodă implicită pentru toate comenzile din România.',
+
+    // Navigation Extras
+    tabAboutUs: 'Despre Noi',
+    tabContact: 'Contact',
+
+    // Home Page Extended
+    heroFloatingPill: 'Gustul autentic din Sri Lanka, livrat la ușa ta.',
+    featureDeliveryHeader: 'Livrare Rapidă',
+    featureDeliverySub: 'În București, livrare proaspătă direct la ușa ta.',
+    featureFreshnessHeader: 'Prospețime Garantată',
+    featureFreshnessSub: 'Produse alimentare de calitate, atent selecționate.',
+    featureCodHeader: 'Plata la Livrare',
+    featureCodSub: 'Cumpărăturile tale în siguranță cu plata ramburs',
+    shopByCategoriesTitle: 'Cumpără după Categorii',
+    catRiceGrains: 'Orez & Cereale',
+    catSpicesCurry: 'Condimente & Curry',
+    catCoconutProducts: 'Produse din Nucă de Cocos',
+    catTeaBiscuits: 'Ceai & Biscuiți',
+    popularThisWeekTitle: 'Populare în Această Săptămână',
+    directCeylonImportBadge: 'Import Direct din Sri Lanka',
+    addBtn: 'Adaugă',
+    weeklyDealsBadge: 'Oferte Săptămânale',
+    weeklyDealsHeading: 'Oferte Imbatabile: Promoțiile Săptămânale la Alimente',
+    weeklyDealsSub: 'Orez Keeri Samba alb, orez roșu Rathu Kekulu, vinete proaspete wambatu, linte și condimente Ceylon pe stoc în București',
+    browseSpecialsBtn: 'Vezi Promoțiile',
+    homeAboutBadge: '🌿 Tradiție Autentică din Sri Lanka în România',
+    homeAboutHeading: 'Despre Ceylon Foods',
+    homeAboutBody: 'Fondat pentru a conecta comunitatea din Sri Lanka și iubitorii de gastronomie asiatică din România cu alimente 100% autentice de pe insula Ceylon. Importăm direct orez certificat Keeri Samba, orez roșu tradițional, ceaiuri Ceylon de altitudine și legume asiatice proaspete în depozitul nostru din București.',
+    homePillar1Heading: '100% Autentic',
+    homePillar1Body: 'Import direct certificat de pe insula Ceylon',
+    homePillar2Heading: 'Depozit în București',
+    homePillar2Body: 'Distribuție rapidă în Sector 1 și comenzi directe',
+    homePillar3Heading: 'Plata la Livrare (Ramburs)',
+    homePillar3Body: 'Plătiți în siguranță când curierul ajunge la ușa dumneavoastră',
+    homeGuaranteePill: 'Garanția Magazinului București',
+    homeGuaranteeHeading: 'Gustul de Acasă, Mereu Proaspăt.',
+    homeGuaranteeBody: 'Fiecare bob de orez, condiment aromat și legumă proaspătă este inspectată în depozitul nostru înainte de expediere.',
+    homeCustomerRatingLabel: 'Rating Clienți',
+    homeRiceDeliveredLabel: 'Orez din Ceylon Livrat',
+    testimonialsBadge: 'Părerile Clienților',
+    testimonialsHeading: 'Apreciat de Comunitate',
+    testimonialsSub: 'Recenzii reale de la familii din Sri Lanka și bucătari pasionați din București.',
+    verifiedCustomerBadge: 'Verificat',
+    orderStapleLabel: 'Comandă frecventă:',
+    seoKnowledgeBadge: 'Despre Ceylon Foods România',
+    seoKnowledgeHeading: 'Supermarketul Online din România Dedicat Produselor Autentice din Sri Lanka',
+    seoKnowledgeBody: 'Ceylon Foods este principalul supermarket cu produse autentice din Sri Lanka din România, specializat în importul direct și distribuția alimentelor tradiționale, orezului de patrimoniu și legumelor proaspete în București.',
+    seoCoreOperationsHeading: 'Activitate Principală & Operațiuni Magazin',
+    seoOpRice: 'Orez Tradițional din Ceylon & Cereale: Araliya Keeri Samba, orez roșu Rathu Kekulu, linte roșie Mysore.',
+    seoOpVeg: 'Legume Tropicale Proaspete: Vinete violet (wambatu), bame proaspete (okra), dovleac galben.',
+    seoOpSpices: 'Condimente Autentice & Ceai: Pudră de curry prăjită Wijaya, curry Jaffna, scorțișoară Ceylon, ceai Dilmah BOPF.',
+    seoOpDelivery: 'Livrare Express la Ușă: 25–45 min în București Sectoarele 1–6, Ilfov, cu Plata la Livrare (Cash sau Card).',
+    seoCardAddressLabel: 'Adresă:',
+    seoCardPhoneLabel: 'Telefon:',
+    seoCardHoursLabel: 'Program:',
+    seoCardHoursVal: 'Deschis Zilnic • 09:00 – 20:00 (Luni – Duminică)',
+    seoCardPaymentLabel: 'Plată:',
+    seoCardPaymentVal: 'Plata la Livrare (Cash/Ramburs) & Card la Livrare',
+    seoCardCoverageLabel: 'Acoperire:',
+    seoCardCoverageVal: 'București (Sectoarele 1–6), Județul Ilfov & Curier Național',
+    seoOrderOnlineBtn: 'Comandă Alimente Online',
+    seoViewMapBtn: '📍 Vezi pe Hartă',
+
+    // Shop View Sidebar & Filters
+    shopFoodCategoriesTitle: 'CATEGORII ALIMENTE',
+    shopCatAllProducts: 'Toate Produsele',
+    shopCatSpicesCurry: 'Condimente & Pudre de Curry Ceylon',
+    shopCatRiceGrains: 'Orez, Linte & Cereale',
+    shopCatFlourGrains: 'Făină & Mixuri Tradiționale',
+    shopCatDriedFishSambals: 'Pește Uscat, Sambal & Murături',
+    shopCatTeaCoffee: 'Ceai, Cafea & Băuturi',
+    shopCatBiscuitsSnacks: 'Biscuiți Maliban & Fidea',
+    shopCatKitchenware: 'Ustensile Tradiționale de Bucătărie',
+    shopFilterPriceTitle: 'INTERVAL DE PREȚ (LEI)',
+    shopFilterRatingTitle: 'RATING MINIM CLIENȚI',
+    shopFilterBrandsTitle: 'BRANDURI & PRODUCĂTORI',
+    shopFilterStockTitle: 'Arată Doar În Stoc',
+
+    // Footer Extended
+    footerQuickNavTitle: 'Navigare Rapidă',
+    footerCustomerSupportTitle: 'Suport Clienți',
+    footerHoursVal: 'Zilnic 09:00 – 20:00 (Luni – Duminică)',
+    footerAllRightsReserved: 'Toate drepturile rezervate.'
   }
 };
 

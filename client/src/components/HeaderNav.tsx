@@ -153,9 +153,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             <span className="text-[#D84315] font-bold">வணக்கம்</span>
             <span className="text-[#664E00] font-bold">·</span>
             <span className="text-[#664E00] font-medium">
-              {currentLanguage === 'en'
-                ? 'Welcome | The taste of Sri Lanka, delivered to your home.'
-                : t.announcement}
+              {t.announcement}
             </span>
           </div>
 
@@ -263,14 +261,14 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   }}
                   className="bg-transparent text-white text-xs sm:text-sm font-semibold outline-none cursor-pointer pr-1 [&>option]:text-slate-900"
                 >
-                  <option value="All Categories">All Categories</option>
-                  <option value="Staples & Grains">Rice & Grains</option>
-                  <option value="Vegetables">Veggies</option>
-                  <option value="Fruits">Fruits</option>
-                  <option value="Pantry">Ceylon Spices</option>
-                  <option value="Beverages">Ceylon Tea</option>
-                  <option value="Bakery">Bakery</option>
-                  <option value="Snacks">Snacks</option>
+                  <option value="All Categories">{t.allCategories}</option>
+                  <option value="Staples & Grains">{t.catRiceGrains}</option>
+                  <option value="Vegetables">{t.catVeg}</option>
+                  <option value="Fruits">{t.catFruits}</option>
+                  <option value="Pantry">{t.catSpicesCurry}</option>
+                  <option value="Beverages">{t.catTeaBiscuits}</option>
+                  <option value="Bakery">{t.catBakery}</option>
+                  <option value="Snacks">{t.catSnacks}</option>
                 </select>
               </div>
 
@@ -281,7 +279,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               <div className="flex-1 min-w-0 flex items-center relative">
                 <input
                   type="text"
-                  placeholder={currentLanguage === 'en' ? 'Search For Products' : t.searchPlaceholder}
+                  placeholder={t.searchPlaceholder}
                   value={searchQuery}
                   onFocus={() => setIsSearchFocused(true)}
                   onChange={(e) => {
@@ -402,7 +400,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-[#664E00] flex items-center justify-center shrink-0">
                   <UserIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#664E00] stroke-[2.2]" />
                 </div>
-                <span>Sign In</span>
+                <span>{t.tabSignIn || 'Sign In'}</span>
               </button>
             ) : (
               <div ref={userMenuRef} className="relative">
@@ -554,7 +552,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 className="h-[41px] min-w-[125px] px-4 sm:px-5 rounded-lg bg-[#F8C519] hover:bg-[#EEAB1E] text-[#664E00] font-semibold text-sm flex items-center justify-center gap-2.5 shadow-xs transition cursor-pointer"
               >
                 <Menu className="w-5 h-5 text-[#664E00] stroke-[2.2]" />
-                <span>All Categories</span>
+                <span>{t.allCategories}</span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isCategoryMenuOpen ? 'rotate-180' : ''}`} />
               </button>
 
@@ -562,16 +560,16 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
               {isCategoryMenuOpen && (
                 <div className="absolute top-full left-0 mt-2 w-64 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-2xl p-2 z-50 text-slate-800 dark:text-zinc-100 animate-fadeIn">
                   <div className="px-3 py-1.5 text-[10px] uppercase font-black tracking-wider text-slate-400 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between">
-                    <span>Ceylon Categories</span>
+                    <span>{t.allCategories}</span>
                     <button onClick={() => setIsCategoryMenuOpen(false)} className="hover:text-slate-600 text-xs">✕</button>
                   </div>
                   <div className="py-1 space-y-0.5">
                     {[
-                      { name: 'All Sri Lankan Products', cat: 'All', icon: '🛒' },
-                      { name: 'Rice, Grains & Dhal', cat: 'Staples & Grains', icon: '🌾' },
-                      { name: 'Fresh Vegetables (Wambatu)', cat: 'Vegetables', icon: '🍆' },
-                      { name: 'Tropical Fruits (Papaya)', cat: 'Fruits', icon: '🥭' },
-                      { name: 'Ceylon Spices & Tea', cat: 'Pantry', icon: '🌶️' }
+                      { name: t.shopCatAllProducts, cat: 'All', icon: '🛒' },
+                      { name: t.shopCatRiceGrains, cat: 'Staples & Grains', icon: '🌾' },
+                      { name: t.catVeg, cat: 'Vegetables', icon: '🍆' },
+                      { name: t.catFruits, cat: 'Fruits', icon: '🥭' },
+                      { name: t.shopCatSpicesCurry, cat: 'Pantry', icon: '🌶️' }
                     ].map(item => (
                       <button
                         key={item.cat}
@@ -605,7 +603,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   currentPage === 'HOME' ? 'text-[#F8C519] underline underline-offset-8 decoration-2' : ''
                 }`}
               >
-                {currentLanguage === 'en' ? 'HOME' : t.tabHome}
+                {t.tabHome}
               </button>
 
               <button
@@ -620,7 +618,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                     : ''
                 }`}
               >
-                {currentLanguage === 'en' ? 'SHOP' : t.tabShop}
+                {t.tabShop}
               </button>
 
               <button
@@ -630,7 +628,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   currentPage === 'ABOUT_US' ? 'text-[#F8C519] underline underline-offset-8 decoration-2' : ''
                 }`}
               >
-                ABOUT US
+                {t.tabAboutUs}
               </button>
 
               <button
@@ -640,7 +638,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                   currentPage === 'CONTACT' ? 'text-[#F8C519] underline underline-offset-8 decoration-2' : ''
                 }`}
               >
-                CONTACT
+                {t.tabContact}
               </button>
             </nav>
           </div>
@@ -696,7 +694,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 currentPage === 'HOME' ? 'bg-white/15 text-[#F8C519] font-bold' : 'hover:text-[#F8C519]'
               }`}
             >
-              HOME
+              {t.tabHome}
             </button>
             <button
               onClick={() => {
@@ -708,7 +706,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 currentPage === 'SHOP' ? 'bg-white/15 text-[#F8C519] font-bold' : 'hover:text-[#F8C519]'
               }`}
             >
-              SHOP
+              {t.tabShop}
             </button>
             <button
               onClick={() => {
@@ -719,7 +717,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 currentPage === 'ABOUT_US' ? 'bg-white/15 text-[#F8C519] font-bold' : 'hover:text-[#F8C519]'
               }`}
             >
-              ABOUT US
+              {t.tabAboutUs}
             </button>
             <button
               onClick={() => {
@@ -730,7 +728,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
                 currentPage === 'CONTACT' ? 'bg-white/15 text-[#F8C519] font-bold' : 'hover:text-[#F8C519]'
               }`}
             >
-              CONTACT
+              {t.tabContact}
             </button>
 
             {/* Quick Categories Header */}

@@ -249,18 +249,18 @@ export const ShopView: React.FC<ShopViewProps> = ({
           {/* 1. Category Filter (Real Groceries) */}
           <div className="space-y-2.5">
             <h4 className="text-xs font-bold uppercase tracking-wider text-[#1B8057] dark:text-[#80F6C7]">
-              FOOD CATEGORIES
+              {t.shopFoodCategoriesTitle}
             </h4>
             <div className="space-y-1.5 text-xs">
               {[
-                { key: 'All', label: 'All Products', count: categoryCounts.all },
-                { key: 'Spices & Curry', label: 'Ceylon Spices & Curry Powders', count: categoryCounts.spices },
-                { key: 'Rice & Grains', label: 'Rice, Dhal & Grains', count: categoryCounts.riceDhal },
-                { key: 'Flour & Grains', label: 'Flour & Traditional Mixes', count: categoryCounts.flour },
-                { key: 'Dried Fish & Sambals', label: 'Dried Fish, Sambals & Pickles', count: categoryCounts.driedFish },
-                { key: 'Tea, Coffee & Beverages', label: 'Tea, Coffee & Malt Drinks', count: categoryCounts.teaCoffee },
-                { key: 'Biscuits & Snacks', label: 'Maliban Biscuits & Noodles', count: categoryCounts.biscuitsNoodles },
-                { key: 'Kitchenware & Utensils', label: 'Traditional Kitchenware', count: categoryCounts.kitchenware }
+                { key: 'All', label: t.shopCatAllProducts, count: categoryCounts.all },
+                { key: 'Spices & Curry', label: t.shopCatSpicesCurry, count: categoryCounts.spices },
+                { key: 'Rice & Grains', label: t.shopCatRiceGrains, count: categoryCounts.riceDhal },
+                { key: 'Flour & Grains', label: t.shopCatFlourGrains, count: categoryCounts.flour },
+                { key: 'Dried Fish & Sambals', label: t.shopCatDriedFishSambals, count: categoryCounts.driedFish },
+                { key: 'Tea, Coffee & Beverages', label: t.shopCatTeaCoffee, count: categoryCounts.teaCoffee },
+                { key: 'Biscuits & Snacks', label: t.shopCatBiscuitsSnacks, count: categoryCounts.biscuitsNoodles },
+                { key: 'Kitchenware & Utensils', label: t.shopCatKitchenware, count: categoryCounts.kitchenware }
               ].map(cat => {
                 const isSelected = selectedCategory === cat.key;
                 return (
@@ -412,13 +412,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
           {/* HORIZONTAL CATEGORY TABS (REAL GROCERIES) */}
           <div className="flex items-center gap-6 sm:gap-8 text-xs sm:text-sm font-bold tracking-wider uppercase overflow-x-auto select-none pt-1 pb-1">
             {[
-              { label: 'ALL PRODUCTS', key: 'All' },
-              { label: 'SPICES & CURRY', key: 'Spices & Curry' },
-              { label: 'RICE, DHAL & FLOUR', key: 'Rice & Grains' },
-              { label: 'DRIED FISH & SAMBALS', key: 'Dried Fish & Sambals' },
-              { label: 'TEA, COFFEE & DRINKS', key: 'Tea, Coffee & Beverages' },
-              { label: 'BISCUITS & NOODLES', key: 'Biscuits & Snacks' },
-              { label: 'KITCHENWARE', key: 'Kitchenware & Utensils' }
+              { label: t.shopCatAllProducts, key: 'All' },
+              { label: t.shopCatSpicesCurry, key: 'Spices & Curry' },
+              { label: t.shopCatRiceGrains, key: 'Rice & Grains' },
+              { label: t.shopCatDriedFishSambals, key: 'Dried Fish & Sambals' },
+              { label: t.shopCatTeaCoffee, key: 'Tea, Coffee & Beverages' },
+              { label: t.shopCatBiscuitsSnacks, key: 'Biscuits & Snacks' },
+              { label: t.shopCatKitchenware, key: 'Kitchenware & Utensils' }
             ].map(tab => {
               const isActive = selectedCategory === tab.key;
               return (
@@ -564,7 +564,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                     {/* Ceylon Origin Badge */}
                     <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#0A6847] dark:text-emerald-400">
                       <img src="/sri_lanka_flag.svg" alt="Sri Lanka" className="w-3.5 h-2.5 object-cover rounded-xs" />
-                      <span>Ceylon Sourced</span>
+                      <span>{t.directCeylonImportBadge}</span>
                     </div>
 
                     <div className="flex items-start justify-between gap-2">
@@ -630,7 +630,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           className="h-[38px] px-4 rounded-lg bg-[#0A6847] hover:bg-[#075238] text-white font-bold text-xs inline-flex items-center gap-1.5 shadow-xs transition active:scale-95 cursor-pointer"
                           title={t.addToCart}
                         >
-                          <span>Add</span>
+                          <span>{t.addBtn}</span>
                           <ShoppingCart className="w-3.5 h-3.5 stroke-[2.2]" />
                         </button>
                       )}

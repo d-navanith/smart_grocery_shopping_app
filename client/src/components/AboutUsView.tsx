@@ -21,7 +21,7 @@ interface AboutUsViewProps {
   t: TranslationDictionary;
 }
 
-export const AboutUsView: React.FC<AboutUsViewProps> = ({ onNavigatePage, isDarkMode }) => {
+export const AboutUsView: React.FC<AboutUsViewProps> = ({ onNavigatePage, isDarkMode, t }) => {
   return (
     <div className={`w-full min-h-screen ${isDarkMode ? 'bg-[#0B0F0D] text-white' : 'bg-[#F6F8F7] text-slate-900'} select-none pb-20`}>
       {/* 1. HERO HEADER WITH SRI LANKAN HERITAGE & LION FLAG */}

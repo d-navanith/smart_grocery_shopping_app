@@ -16,7 +16,7 @@ interface FooterProps {
   t: TranslationDictionary;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash, t }) => {
   return (
     <footer className="w-full mt-auto flex flex-col select-none">
       {/* 1. MAIN FOOTER BAND (FIGMA EXACT #1B8057) */}
@@ -37,7 +37,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
             </div>
 
             <p className="text-white text-base sm:text-[17px] leading-relaxed max-w-[350px] font-normal">
-              Keeri Samba white rice, Rathu Kekulu red rice, fresh brinjal, dhal, and Ceylon spices in stock in Bucharest
+              {t.weeklyDealsSub}
             </p>
 
             {/* 3 Circular Social Icons (#32A778) */}
@@ -72,7 +72,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
           {/* Column 2: All Categories / Quick Links */}
           <div className="md:col-span-3 space-y-3 md:pt-8">
             <h4 className="text-lg sm:text-xl font-bold text-white mb-3">
-              Quick Navigation
+              {t.footerQuickNavTitle}
             </h4>
             <ul className="space-y-2.5 text-sm font-normal text-white/95">
               <li>
@@ -81,7 +81,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
                   onClick={() => onNavigatePage('HOME')}
                   className="hover:text-[#F8C519] transition cursor-pointer flex items-center gap-1.5"
                 >
-                  <span>Home</span>
+                  <span>{t.tabHome}</span>
                 </button>
               </li>
               <li>
@@ -90,7 +90,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
                   onClick={() => onNavigatePage('SHOP')}
                   className="hover:text-[#F8C519] transition cursor-pointer flex items-center gap-1.5"
                 >
-                  <span>Grocery Shop</span>
+                  <span>{t.tabShop}</span>
                 </button>
               </li>
               <li>
@@ -99,7 +99,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
                   onClick={() => onNavigatePage('ABOUT_US')}
                   className="hover:text-[#F8C519] font-medium text-[#F8C519] transition cursor-pointer flex items-center gap-1.5"
                 >
-                  <span>🇱🇰 About Us</span>
+                  <span>🇱🇰 {t.tabAboutUs}</span>
                 </button>
               </li>
               <li>
@@ -108,7 +108,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
                   onClick={() => onNavigatePage('CONTACT')}
                   className="hover:text-[#F8C519] font-medium text-[#F8C519] transition cursor-pointer flex items-center gap-1.5"
                 >
-                  <span>📞 Contact Us</span>
+                  <span>📞 {t.tabContact}</span>
                 </button>
               </li>
               <li>
@@ -117,7 +117,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
                   onClick={() => onNavigatePage('TRACK_ORDER')}
                   className="hover:text-[#F8C519] transition cursor-pointer"
                 >
-                  Track Your Order
+                  {t.trackOrderTitle}
                 </button>
               </li>
               <li>
@@ -126,7 +126,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
                   onClick={() => onNavigatePage('DELIVERIES')}
                   className="hover:text-[#F8C519] transition cursor-pointer"
                 >
-                  My Deliveries
+                  {t.tabDeliveries}
                 </button>
               </li>
               <li>
@@ -135,7 +135,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
                   onClick={() => onNavigatePage('WISHLIST')}
                   className="hover:text-[#F8C519] transition cursor-pointer"
                 >
-                  My Wishlist
+                  {t.wishlistTooltip || 'Wishlist'}
                 </button>
               </li>
               {onOpenSplash && (
@@ -155,7 +155,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
           {/* Column 3: Contact */}
           <div className="md:col-span-4 space-y-4 md:pt-8">
             <h4 className="text-lg sm:text-xl font-bold text-white mb-3">
-              Contact & Hub
+              {t.footerCustomerSupportTitle}
             </h4>
 
             <div className="space-y-3 text-sm font-normal text-white">
@@ -195,7 +195,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
               <div className="pt-2 border-t border-white/20 text-xs text-white/90">
                 <div className="flex items-center gap-1.5 text-emerald-100">
                   <span>🕒</span>
-                  <span>Monday – Sunday: <strong>09:00 – 20:00</strong></span>
+                  <span>{t.footerHoursVal}</span>
                 </div>
               </div>
             </div>
@@ -221,7 +221,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash }) 
       {/* 2. BOTTOM COPYRIGHT BAR (FIGMA EXACT WHITE BAR WITH #1B8057 TEXT) */}
       <div className="bg-white dark:bg-zinc-950 py-4 px-4 text-center border-t border-slate-100 dark:border-zinc-900">
         <p className="text-[#1B8057] dark:text-emerald-400 text-xs sm:text-sm font-medium">
-          © 2026 Ceylon Foods Supermarket Romania. All right reserved.
+          © 2026 Ceylon Foods Supermarket Romania. {t.footerAllRightsReserved}
         </p>
       </div>
     </footer>
