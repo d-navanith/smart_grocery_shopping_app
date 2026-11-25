@@ -17,6 +17,7 @@ import { AboutUsView } from './components/AboutUsView';
 import { ContactView } from './components/ContactView';
 import { Footer } from './components/Footer';
 import { Modals, PopupNotification } from './components/Modals';
+import { OrderConfirmationModal } from './components/OrderConfirmationModal';
 import { SplashScreen } from './components/SplashScreen';
 import { Language, TranslationDictionary, TRANSLATIONS } from './translations';
 
@@ -161,6 +162,58 @@ export default function ClientWebSupermarket() {
   }, [wishlist]);
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isOrderConfirmedModalOpen, setIsOrderConfirmedModalOpen] = useState(false);
+  const [confirmedOrderData, setConfirmedOrderData] = useState<ClientOrder | null>(null);
+
+  // Developer Platform License / System Lock Status Check
+  const [systemStatus, setSystemStatus] = useState<{
+    clientSiteActive: boolean;
+    adminPanelActive: boolean;
+    maintenanceNotice: string;
+  } | null>(() => {
+    if (typeof window !== 'undefined') {
+      const localClientActive = localStorage.getItem('ceylonfoods_sys_client_active');
+      if (localClientActive === 'false') {
+        return {
+          clientSiteActive: false,
+          adminPanelActive: true,
+          maintenanceNotice: localStorage.getItem('ceylonfoods_sys_maintenance_notice') || 'Platform under maintenance'
+        };
+      }
+    }
+    return null;
+  });
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const res = await fetch('/api/system/status');
+        const data = await res.json();
+        if (data?.data) {
+          setSystemStatus(data.data);
+          if (data.data.clientSiteActive === false) {
+            localStorage.setItem('ceylonfoods_sys_client_active', 'false');
+            localStorage.setItem('ceylonfoods_sys_maintenance_notice', data.data.maintenanceNotice || '');
+          } else {
+            localStorage.removeItem('ceylonfoods_sys_client_active');
+          }
+        }
+      } catch {
+        const local = localStorage.getItem('ceylonfoods_sys_client_active');
+        if (local === 'false') {
+          setSystemStatus({
+            clientSiteActive: false,
+            adminPanelActive: true,
+            maintenanceNotice: localStorage.getItem('ceylonfoods_sys_maintenance_notice') || 'Platform under maintenance'
+          });
+        }
+      }
+    };
+
+    checkStatus();
+    const interval = setInterval(checkStatus, 8000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Dynamic SEO Title, Description, Canonical & Social Graph Management for Search Engines
   useEffect(() => {
@@ -468,6 +521,9 @@ export default function ClientWebSupermarket() {
       riderName: 'Ion Popescu (Glovo Courier #4412)'
     };
 
+    const generated5DigitOrderNum = String(Math.floor(10000 + Math.random() * 90000));
+    let finalOrderNum = generated5DigitOrderNum;
+
     try {
       const res = await fetch('/api/orders', {
         method: 'POST',
@@ -475,12 +531,15 @@ export default function ClientWebSupermarket() {
         body: JSON.stringify(orderData)
       });
       const data = await res.json();
-      if (data.data) {
+      if (data?.data) {
         setActiveOrder(data.data);
+        if (data.data.orderNumber) {
+          finalOrderNum = data.data.orderNumber.replace(/[^0-9]/g, '') || data.data.orderNumber;
+        }
       }
     } catch {
       setActiveOrder({
-        orderNumber: 'CF-' + Math.floor(1000 + Math.random() * 9000),
+        orderNumber: finalOrderNum,
         status: 'PROCESSING',
         totalAmount,
         paymentMethod: 'CASH_ON_DELIVERY',
@@ -490,13 +549,13 @@ export default function ClientWebSupermarket() {
         address: payload.address,
         courierCompany: 'Glovo Express Bucharest',
         courierPhone: '+40 21 9988',
-        riderName: 'Ion Popescu (Glovo Courier #4412)'
+        riderName: 'Curier În Curs de Alocare'
       });
     }
 
     const newPlacedOrder: ClientOrder = {
       id: `ord-${Date.now()}`,
-      orderNumber: 'CF-' + Math.floor(1000 + Math.random() * 9000),
+      orderNumber: finalOrderNum,
       placedAt: 'Astăzi • ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       status: 'PROCESSING',
       items: cart.map(c => ({
@@ -518,7 +577,7 @@ export default function ClientWebSupermarket() {
       courierCompany: 'Glovo Express Bucharest',
       courierPhone: '+40 21 9988',
       riderName: 'Curier În Curs de Alocare',
-      riderPhone: '', // LOCKED UNTIL ADMIN VERIFIES
+      riderPhone: '',
       riderVerifiedByAdmin: false,
       pickupMinutes: 10,
       deliveryMinutes: 30,
@@ -528,6 +587,8 @@ export default function ClientWebSupermarket() {
     setCustomerOrders(prev => [newPlacedOrder, ...prev]);
     setActiveOrder(newPlacedOrder);
     setLastCompletedOrder(newPlacedOrder);
+    setConfirmedOrderData(newPlacedOrder);
+    setIsOrderConfirmedModalOpen(true);
 
     setCart([]);
     setCurrentPage('ORDER_COMPLETED');
@@ -643,6 +704,33 @@ export default function ClientWebSupermarket() {
     setCurrentUser(merged);
     localStorage.setItem('ceylonfoods_customer_user', JSON.stringify(merged));
   };
+
+  // Developer Platform Kill-Switch Screen for Client Website
+  if (systemStatus && systemStatus.clientSiteActive === false) {
+    return (
+      <div className="min-h-screen bg-[#070B09] text-white flex items-center justify-center p-6">
+        <div className="max-w-lg w-full text-center space-y-6 p-10 rounded-3xl bg-[#111915] border-2 border-red-500/40 shadow-2xl animate-fadeIn">
+          <div className="w-20 h-20 rounded-full bg-red-500/10 border-2 border-red-500 text-red-500 flex items-center justify-center mx-auto text-3xl font-bold animate-pulse">
+            🔒
+          </div>
+          <div className="space-y-2">
+            <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-xs font-bold uppercase tracking-wider inline-block">
+              Platform Maintenance Notice
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-white">Storefront Temporarily Locked</h2>
+            <p className="text-sm text-slate-300 leading-relaxed">
+              {systemStatus.maintenanceNotice || "Ceylon Foods online store operations and customer checkout are temporarily suspended by administration. We apologize for the inconvenience."}
+            </p>
+          </div>
+          <div className="p-4 rounded-xl bg-black/40 border border-slate-800 text-xs text-slate-400 space-y-1.5">
+            <div>Support Hotline: <strong className="text-white">+40 722 456 789</strong></div>
+            <div>Official Email: <strong className="text-white">support@ceylonfoods.ro</strong></div>
+            <div className="text-[11px] text-slate-500 pt-1">Developer License Verification • Code: SYS-CLIENT-SUSPEND</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`min-h-screen overflow-x-hidden max-w-full ${showSplash ? 'h-screen overflow-hidden' : ''} ${isDarkMode ? 'dark bg-[#0A0D0B] text-white' : 'bg-white text-slate-900'} font-sans flex flex-col transition-colors duration-200`}>
@@ -955,6 +1043,19 @@ export default function ClientWebSupermarket() {
         onClosePopupMessage={() => setPopupMessage(null)}
         isDarkMode={isDarkMode}
         t={t}
+      />
+
+      {/* Customer Unique Order Confirmation & Care Contact Popup */}
+      <OrderConfirmationModal
+        isOpen={isOrderConfirmedModalOpen}
+        order={confirmedOrderData}
+        onClose={() => setIsOrderConfirmedModalOpen(false)}
+        onNavigateTrackOrder={(orderNum) => {
+          setInitialTrackNumber(orderNum);
+          setCurrentPage('TRACK_ORDER');
+        }}
+        onNavigateShop={() => setCurrentPage('SHOP')}
+        isDarkMode={isDarkMode}
       />
 
       {/* Keells Super-Style Welcome & Location Splash Screen */}

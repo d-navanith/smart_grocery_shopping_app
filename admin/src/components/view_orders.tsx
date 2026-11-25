@@ -1,25 +1,14 @@
 import React, { useState } from 'react';
 import {
-  ShoppingBag,
-  Clock,
-  Package,
-  Truck,
-  CheckCircle,
-  XCircle,
   Search,
-  Filter,
-  Download,
-  Printer,
   ChevronDown,
-  Trash2,
+  UserPlus,
   Eye,
-  Check,
-  UserCheck,
+  CheckCircle,
+  Clock,
+  Truck,
   Phone,
-  LayoutGrid,
-  List,
-  ArrowRight,
-  Calendar
+  Plus
 } from 'lucide-react';
 import { Order } from './part1_imports_types';
 
@@ -33,418 +22,298 @@ interface OrdersViewProps {
   onOpenDispatchModal?: (order: Order) => void;
   onUpdateStatus: (orderId: string, status: Order['status']) => void;
   onUpdatePayment: (orderId: string, payment: 'PAID' | 'PENDING' | 'FAILED') => void;
-  onPrintInvoice: (order: Order) => void;
-  onDeleteOrder: (orderId: string) => void;
-  onExportCsv: () => void;
+  onPrintInvoice?: (order: Order) => void;
+  onDeleteOrder?: (orderId: string) => void;
+  onExportCsv?: () => void;
 }
 
 export const OrdersView: React.FC<OrdersViewProps> = ({
   orders,
-  ordersTab,
-  setOrdersTab,
-  orderPaymentFilter,
-  setOrderPaymentFilter,
   onOpenOrder,
-  onOpenDispatchModal,
   onUpdateStatus,
-  onUpdatePayment,
-  onPrintInvoice,
-  onDeleteOrder,
-  onExportCsv
+  onOpenDispatchModal
 }) => {
   const [localSearch, setLocalSearch] = useState('');
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [viewMode, setViewMode] = useState<'CARDS' | 'TABLE'>('CARDS'); // Bitepoint Cards default!
-  const [quickFilter, setQuickFilter] = useState<'ALL' | 'ON_PROCESS' | 'COMPLETED'>('ALL');
-  const [orderDateFilter, setOrderDateFilter] = useState<'ALL' | 'TODAY' | 'YESTERDAY' | 'THIS_WEEK' | 'CUSTOM'>('ALL');
-  const [customDateValue, setCustomDateValue] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'ON_PROCESS' | 'COMPLETED' | 'PENDING'>('ALL');
+  const [availableRiders, setAvailableRiders] = useState<string[]>(['Siva', 'Ion Popescu', 'Andrei Vasile', 'Glovo Express']);
+  const [newRiderName, setNewRiderName] = useState('');
+  const [isAddRiderModalOpen, setIsAddRiderModalOpen] = useState(false);
+  const [selectedOrderForRider, setSelectedOrderForRider] = useState<Order | null>(null);
 
-  // Filter logic
-  const filteredOrders = orders.filter(o => {
-    // Quick filter (Bitepoint Image 2: All / On Process / Completed)
-    if (quickFilter === 'ON_PROCESS') {
+  // Filter logic matching Screenshot 1
+  const filteredOrders = orders.filter((o) => {
+    // Status filter
+    if (statusFilter === 'ON_PROCESS') {
       if (o.status !== 'PROCESSING' && o.status !== 'ON_THE_WAY' && o.status !== 'PENDING') return false;
-    } else if (quickFilter === 'COMPLETED') {
+    } else if (statusFilter === 'COMPLETED') {
       if (o.status !== 'DELIVERED') return false;
+    } else if (statusFilter === 'PENDING') {
+      if (o.status !== 'PENDING') return false;
     }
 
-    // Tab filter
-    if (ordersTab === 'PENDING' && o.status !== 'PENDING') return false;
-    if (ordersTab === 'PROCESSING' && o.status !== 'PROCESSING') return false;
-    if (ordersTab === 'DISPATCHED' && o.status !== 'ON_THE_WAY') return false;
-    if (ordersTab === 'DELIVERED' && o.status !== 'DELIVERED') return false;
-    if (ordersTab === 'CANCELLED' && o.status !== 'CANCELLED') return false;
-
-    // Payment filter
-    if (orderPaymentFilter === 'PAID' && o.paymentStatus !== 'PAID') return false;
-    if (orderPaymentFilter === 'PENDING' && o.paymentStatus !== 'PENDING') return false;
-
-    // Date filter
-    if (orderDateFilter === 'TODAY') {
-      const isToday = o.placedAt.toLowerCase().includes('astăzi') || o.placedAt.toLowerCase().includes('today');
-      if (!isToday) return false;
-    } else if (orderDateFilter === 'YESTERDAY') {
-      const isYesterday = o.placedAt.toLowerCase().includes('ieri') || o.placedAt.toLowerCase().includes('yesterday');
-      if (!isYesterday) return false;
-    } else if (orderDateFilter === 'CUSTOM' && customDateValue) {
-      if (!o.placedAt.includes(customDateValue)) return false;
+    // Search query matching Order Number (e.g. 10567), Name, Phone, or Address
+    if (localSearch.trim()) {
+      const q = localSearch.trim().toLowerCase();
+      const num = (o.orderNumber || '').toLowerCase();
+      const name = (o.customerName || '').toLowerCase();
+      const phone = (o.customerPhone || '').toLowerCase();
+      const addr = (o.customerAddress || '').toLowerCase();
+      if (!num.includes(q) && !name.includes(q) && !phone.includes(q) && !addr.includes(q)) {
+        return false;
+      }
     }
 
-    // Search filter
-    if (localSearch) {
-      const q = localSearch.toLowerCase();
-      const matchNum = o.orderNumber.toLowerCase().includes(q);
-      const matchCust = o.customerName.toLowerCase().includes(q);
-      const matchPhone = o.customerPhone.toLowerCase().includes(q);
-      const matchAddr = o.customerAddress.toLowerCase().includes(q);
-      if (!matchNum && !matchCust && !matchPhone && !matchAddr) return false;
-    }
     return true;
   });
 
-  const toggleSelectAll = () => {
-    if (selectedIds.length === filteredOrders.length) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(filteredOrders.map(o => o.id));
+  const handleRiderChange = (order: Order, riderName: string) => {
+    if (riderName === '__ADD_NEW__') {
+      setSelectedOrderForRider(order);
+      setIsAddRiderModalOpen(true);
+      return;
+    }
+
+    order.assignedRider = riderName;
+    if (riderName !== 'Not Yet' && order.status === 'PENDING') {
+      onUpdateStatus(order.id, 'PROCESSING');
     }
   };
 
-  const pendingCount = orders.filter(o => o.status === 'PENDING').length;
-  const processingCount = orders.filter(o => o.status === 'PROCESSING').length;
-  const dispatchedCount = orders.filter(o => o.status === 'ON_THE_WAY').length;
-  const deliveredCount = orders.filter(o => o.status === 'DELIVERED').length;
-  const onProcessCount = pendingCount + processingCount + dispatchedCount;
-
-  // Bitepoint badge generator
-  const getBitepointBadge = (idx: number) => {
-    const badges = [
-      { code: 'A4', color: 'bg-emerald-600 text-white' },
-      { code: 'B2', color: 'bg-teal-600 text-white' },
-      { code: 'TA', color: 'bg-amber-500 text-white' },
-      { code: 'A9', color: 'bg-emerald-700 text-white' },
-      { code: 'C2', color: 'bg-cyan-700 text-white' },
-      { code: 'A2', color: 'bg-teal-700 text-white' }
-    ];
-    return badges[idx % badges.length];
+  const handleAddNewRiderSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newRiderName.trim()) return;
+    const name = newRiderName.trim();
+    if (!availableRiders.includes(name)) {
+      setAvailableRiders((prev) => [...prev, name]);
+    }
+    if (selectedOrderForRider) {
+      selectedOrderForRider.assignedRider = name;
+      if (selectedOrderForRider.status === 'PENDING') {
+        onUpdateStatus(selectedOrderForRider.id, 'PROCESSING');
+      }
+    }
+    setNewRiderName('');
+    setIsAddRiderModalOpen(false);
+    setSelectedOrderForRider(null);
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn select-none">
-      {/* 1. TOP HEADER & BITEPOINT SUB-FILTERS (Reference Image 2) */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-5">
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-            Orders
-          </h2>
+    <div className="w-full flex flex-col space-y-6">
+      {/* 1. Green Heading matching Screenshot 1 */}
+      <div>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#6DB33F] tracking-tight">
+          ORDERS
+        </h1>
+      </div>
 
-          {/* Bitepoint Filter Pills: All | On Process | Completed */}
-          <div className="flex items-center p-1 rounded-2xl bg-[#ECEEF2] text-xs font-bold gap-1">
-            <button
-              onClick={() => { setQuickFilter('ALL'); setOrdersTab('ALL'); }}
-              className={`px-4 py-1.5 rounded-xl transition ${
-                quickFilter === 'ALL'
-                  ? 'bg-white text-slate-900 shadow-xs font-black'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              All ({orders.length})
-            </button>
-            <button
-              onClick={() => { setQuickFilter('ON_PROCESS'); setOrdersTab('ALL'); }}
-              className={`px-4 py-1.5 rounded-xl transition flex items-center gap-1.5 ${
-                quickFilter === 'ON_PROCESS'
-                  ? 'bg-[#0B3B2C] text-white shadow-xs font-black'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <span>On Process</span>
-              <span className="text-[10px] bg-white/20 px-1.5 py-0.2 rounded-full font-bold">{onProcessCount}</span>
-            </button>
-            <button
-              onClick={() => { setQuickFilter('COMPLETED'); setOrdersTab('ALL'); }}
-              className={`px-4 py-1.5 rounded-xl transition ${
-                quickFilter === 'COMPLETED'
-                  ? 'bg-white text-slate-900 shadow-xs font-black'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Completed ({deliveredCount})
-            </button>
-          </div>
+      {/* 2. Search & Filter Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Search Input Pill */}
+        <div className="relative w-full sm:max-w-md">
+          <input
+            type="text"
+            placeholder="Search a name, order, or etc"
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+            className="w-full bg-[#EFEFEF] hover:bg-gray-200/70 focus:bg-white border border-transparent focus:border-[#6DB33F] rounded-xl px-5 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition shadow-2xs"
+          />
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Search bar matching Image 2 */}
-          <div className="relative w-64">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search a name, order, or etc"
-              value={localSearch}
-              onChange={(e) => setLocalSearch(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#F8B838] shadow-xs"
-            />
-          </div>
-
-          {/* View Mode Toggle: Cards vs Table */}
-          <div className="flex items-center p-1 rounded-2xl bg-white border border-slate-200 shadow-xs">
-            <button
-              onClick={() => setViewMode('CARDS')}
-              title="Bitepoint Ticket Cards"
-              className={`p-1.5 rounded-xl transition ${
-                viewMode === 'CARDS' ? 'bg-[#F8B838] text-slate-900 shadow-xs' : 'text-slate-400 hover:text-slate-700'
-              }`}
+        {/* Filter Dropdown Pill */}
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+          <div className="relative">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as any)}
+              className="appearance-none bg-[#EFEFEF] hover:bg-gray-200/70 border border-transparent rounded-xl px-6 py-3 pr-10 text-sm font-semibold text-gray-700 cursor-pointer focus:outline-none focus:border-[#6DB33F] transition shadow-2xs"
             >
-              <LayoutGrid className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setViewMode('TABLE')}
-              title="Table Register View"
-              className={`p-1.5 rounded-xl transition ${
-                viewMode === 'TABLE' ? 'bg-[#F8B838] text-slate-900 shadow-xs' : 'text-slate-400 hover:text-slate-700'
-              }`}
-            >
-              <List className="w-4 h-4" />
-            </button>
+              <option value="ALL">All</option>
+              <option value="ON_PROCESS">On Process</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="PENDING">Pending Confirmation</option>
+            </select>
+            <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
           </div>
 
           <button
-            onClick={onExportCsv}
-            className="px-3.5 py-2 rounded-2xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-xs flex items-center gap-1.5"
+            onClick={() => {
+              setSelectedOrderForRider(null);
+              setIsAddRiderModalOpen(true);
+            }}
+            className="px-4 py-3 rounded-xl bg-white border border-gray-300 hover:bg-gray-50 text-xs font-bold text-gray-700 inline-flex items-center gap-2 shadow-2xs transition"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Export CSV</span>
+            <UserPlus className="w-4 h-4 text-[#6DB33F]" />
+            <span>+ Add Delivery Guy</span>
           </button>
         </div>
       </div>
 
-      {/* Date Filtering Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5 pl-1">
-            <Calendar className="w-3.5 h-3.5 text-[#1B8057]" /> Filter by Date:
-          </span>
-          {(['ALL', 'TODAY', 'YESTERDAY', 'THIS_WEEK'] as const).map((filterId) => (
-            <button
-              key={filterId}
-              onClick={() => {
-                setOrderDateFilter(filterId);
-                setCustomDateValue('');
-              }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                orderDateFilter === filterId && !customDateValue
-                  ? 'bg-[#0B3B2C] text-white shadow-xs font-black'
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-              }`}
-            >
-              {filterId === 'ALL' ? 'All Dates' : filterId === 'TODAY' ? 'Today' : filterId === 'YESTERDAY' ? 'Yesterday' : 'This Week'}
-            </button>
-          ))}
-        </div>
+      {/* 3. Order List Card & Table matching Screenshot 1 */}
+      <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs p-6">
+        <h2 className="text-lg font-bold text-gray-900 mb-4">
+          Order List
+        </h2>
 
-        {/* Custom Date Input */}
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 shadow-2xs">
-            <span className="text-[10px] text-slate-400 font-bold uppercase">Custom Date:</span>
-            <input
-              type="date"
-              value={customDateValue}
-              onChange={(e) => {
-                setCustomDateValue(e.target.value);
-                setOrderDateFilter('CUSTOM');
-              }}
-              className="bg-transparent text-xs font-bold text-slate-800 outline-none cursor-pointer"
-            />
-          </div>
-          {customDateValue && (
-            <button
-              onClick={() => {
-                setCustomDateValue('');
-                setOrderDateFilter('ALL');
-              }}
-              className="text-xs font-bold text-rose-600 hover:underline"
-            >
-              Clear
-            </button>
-          )}
+        <div className="overflow-x-auto rounded-xl border border-gray-300">
+          <table className="w-full border-collapse text-left text-xs sm:text-sm">
+            {/* Header row with light gray background and thin borders */}
+            <thead>
+              <tr className="bg-[#E2E5E9] text-gray-900 font-bold border-b border-gray-300 divide-x divide-gray-300">
+                <th className="py-3 px-4 w-12 text-center">No.</th>
+                <th className="py-3 px-4 min-w-[160px]">Customer Name</th>
+                <th className="py-3 px-4 min-w-[240px]">Address</th>
+                <th className="py-3 px-4 min-w-[140px]">Contact Number</th>
+                <th className="py-3 px-4 min-w-[160px]">Assigned Rider</th>
+                <th className="py-3 px-4 min-w-[120px] text-center">Action</th>
+                <th className="py-3 px-4 w-20 text-center">View</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-300 bg-white">
+              {filteredOrders.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-12 text-gray-400">
+                    No matching orders found.
+                  </td>
+                </tr>
+              ) : (
+                filteredOrders.map((order, idx) => {
+                  const assigned = order.assignedRider || 'Not Yet';
+                  const isCompleted = order.status === 'DELIVERED';
+                  const actionLabel = isCompleted
+                    ? 'Completed'
+                    : order.status === 'ON_THE_WAY'
+                    ? 'On the way'
+                    : order.status === 'PROCESSING'
+                    ? 'On Process'
+                    : 'Pending';
+
+                  return (
+                    <tr
+                      key={order.id}
+                      className="hover:bg-gray-50/80 transition divide-x divide-gray-300 text-gray-800"
+                    >
+                      {/* No. */}
+                      <td className="py-3.5 px-4 text-center font-semibold text-gray-600">
+                        {idx + 1}.
+                      </td>
+
+                      {/* Customer Name + Order Number badge */}
+                      <td className="py-3.5 px-4 font-bold text-gray-900">
+                        <div className="flex flex-col">
+                          <span>{order.customerName}</span>
+                          <span className="text-[11px] font-mono text-gray-400 font-normal">
+                            #{order.orderNumber}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Address */}
+                      <td className="py-3.5 px-4 text-gray-700">
+                        {order.customerAddress}
+                      </td>
+
+                      {/* Contact Number */}
+                      <td className="py-3.5 px-4 font-mono font-medium text-gray-700">
+                        {order.customerPhone}
+                      </td>
+
+                      {/* Assigned Rider Dropdown */}
+                      <td className="py-3 px-3">
+                        <div className="relative">
+                          <select
+                            value={assigned}
+                            onChange={(e) => handleRiderChange(order, e.target.value)}
+                            className="w-full bg-[#EFEFEF] hover:bg-gray-200/80 border border-transparent rounded-lg py-1.5 pl-3 pr-7 text-xs font-semibold text-gray-800 cursor-pointer focus:outline-none focus:border-[#6DB33F] transition"
+                          >
+                            <option value="Not Yet">Not Yet</option>
+                            {availableRiders.map((r) => (
+                              <option key={r} value={r}>
+                                {r}
+                              </option>
+                            ))}
+                            <option value="__ADD_NEW__">+ New Rider...</option>
+                          </select>
+                          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
+                        </div>
+                      </td>
+
+                      {/* Action status pill */}
+                      <td className="py-3 px-3 text-center">
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
+                            isCompleted
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : order.status === 'ON_THE_WAY'
+                              ? 'bg-blue-100 text-blue-800'
+                              : order.status === 'PROCESSING'
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-gray-100 text-gray-700'
+                          }`}
+                        >
+                          {actionLabel}
+                        </span>
+                      </td>
+
+                      {/* View button */}
+                      <td className="py-3 px-3 text-center">
+                        <button
+                          onClick={() => onOpenOrder(order)}
+                          className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 text-xs font-bold px-3 py-1.5 rounded-lg shadow-2xs transition active:scale-95 cursor-pointer"
+                        >
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 
-      {/* 2. BITEPOINT TICKET CARDS GRID (Reference Image 2) */}
-      {viewMode === 'CARDS' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredOrders.map((order, idx) => {
-            const badge = getBitepointBadge(idx);
-            return (
-              <div
-                key={order.id}
-                className="p-5 rounded-3xl bg-white border border-slate-100 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between space-y-4"
-              >
-                {/* Card Header: Table Badge, Customer Name, Status */}
-                <div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-2xl ${badge.color} font-black text-xs flex items-center justify-center shrink-0 shadow-xs`}>
-                        {badge.code}
-                      </div>
-                      <div>
-                        <h4 className="font-black text-sm text-slate-900 leading-tight">
-                          {order.customerName}
-                        </h4>
-                        <p className="text-[11px] text-slate-400 font-medium mt-0.5">
-                          Order #{order.orderNumber} • Delivery
-                        </p>
-                      </div>
-                    </div>
+      {/* Add New Delivery Guy Modal */}
+      {isAddRiderModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-modal-pop">
+            <h3 className="text-lg font-bold text-gray-900">
+              Enter Delivery Guy Details
+            </h3>
+            <p className="text-xs text-gray-500">
+              When calling the courier center (Glovo, Bolt, Fan Courier, etc.), enter the assigned rider name to assign to the order.
+            </p>
 
-                    {/* Status badge pill */}
-                    <div>
-                      {order.status === 'DELIVERED' ? (
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 flex items-center gap-1">
-                          <CheckCircle className="w-3 h-3" /> Ready
-                        </span>
-                      ) : order.status === 'ON_THE_WAY' ? (
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-sky-100 text-sky-800 flex items-center gap-1">
-                          <Truck className="w-3 h-3" /> On Transit
-                        </span>
-                      ) : (
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-100 text-amber-800 flex items-center gap-1">
-                          <Clock className="w-3 h-3" /> In Progress
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Order Placement Date & Time */}
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium pt-3 border-b border-slate-100 pb-2.5">
-                    <span className="font-bold flex items-center gap-1 text-slate-700">
-                      <Calendar className="w-3.5 h-3.5 text-[#1B8057]" />
-                      {order.placedAt.includes('•') ? order.placedAt.split('•')[0].trim() : 'Today'}
-                    </span>
-                    <span className="font-extrabold flex items-center gap-1 text-[#0B3B2C] bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-100/80">
-                      <Clock className="w-3.5 h-3.5 text-emerald-600" />
-                      {order.placedAt.includes('•') ? order.placedAt.split('•')[1].trim() : order.placedAt}
-                    </span>
-                  </div>
-
-                  {/* Itemized list matching Image 2 */}
-                  <div className="pt-2 space-y-2 text-xs">
-                    {order.items.slice(0, 4).map((item, i) => (
-                      <div key={i} className="flex items-center justify-between text-slate-600">
-                        <span className="line-clamp-1 max-w-[180px] font-medium">{item.productTitle}</span>
-                        <div className="flex items-center gap-4 text-right shrink-0">
-                          <span className="text-slate-400 font-bold w-4">x{item.quantity}</span>
-                          <span className="font-bold text-slate-800 w-16">
-                            {(item.price * item.quantity).toFixed(2)} lei
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                    {order.items.length > 4 && (
-                      <p className="text-[10px] text-slate-400 italic">+{order.items.length - 4} more items</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Card Footer: Total & Bitepoint Buttons */}
-                <div className="pt-3 border-t border-slate-100 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-400">Total</span>
-                    <span className="text-base font-black text-slate-900">
-                      {order.totalAmount.toFixed(2)} lei
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => onOpenOrder(order)}
-                      className="w-full py-2.5 rounded-2xl bg-[#ECEEF2] hover:bg-slate-200 text-slate-700 text-xs font-black transition active:scale-95"
-                    >
-                      See Details
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (onOpenDispatchModal) onOpenDispatchModal(order);
-                        else onOpenOrder(order);
-                      }}
-                      className="w-full py-2.5 rounded-2xl bg-[#F8B838] hover:bg-[#E5A91A] text-slate-900 text-xs font-black shadow-xs transition active:scale-95"
-                    >
-                      Pay Bills
-                    </button>
-                  </div>
-                </div>
+            <form onSubmit={handleAddNewRiderSubmit} className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-gray-700 block mb-1">
+                  Delivery Guy Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Siva, Ion Popescu, Alex Dumitru"
+                  value={newRiderName}
+                  onChange={(e) => setNewRiderName(e.target.value)}
+                  className="w-full bg-[#EFEFEF] rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#6DB33F] border border-transparent"
+                  autoFocus
+                />
               </div>
-            );
-          })}
-        </div>
-      )}
 
-      {/* 3. TABLE REGISTER VIEW */}
-      {viewMode === 'TABLE' && (
-        <div className="p-6 rounded-3xl bg-white border border-slate-100 shadow-xs space-y-4">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-slate-100 text-slate-400 font-bold uppercase text-[10px]">
-                  <th className="py-2.5 px-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.length === filteredOrders.length && filteredOrders.length > 0}
-                      onChange={toggleSelectAll}
-                      className="rounded text-[#0C4E3B] focus:ring-[#0C4E3B]"
-                    />
-                  </th>
-                  <th className="py-2.5 px-3">Order ID</th>
-                  <th className="py-2.5 px-3">Customer</th>
-                  <th className="py-2.5 px-3">Date</th>
-                  <th className="py-2.5 px-3">Total</th>
-                  <th className="py-2.5 px-3">Payment</th>
-                  <th className="py-2.5 px-3">Status</th>
-                  <th className="py-2.5 px-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-medium">
-                {filteredOrders.map(o => (
-                  <tr key={o.id} className="hover:bg-slate-50 transition cursor-pointer" onClick={() => onOpenOrder(o)}>
-                    <td className="py-3 px-3">
-                      <input type="checkbox" checked={selectedIds.includes(o.id)} onChange={() => {}} />
-                    </td>
-                    <td className="py-3 px-3 font-mono font-bold text-slate-900">{o.orderNumber}</td>
-                    <td className="py-3 px-3">
-                      <p className="font-bold text-slate-900">{o.customerName}</p>
-                      <p className="text-[10px] text-slate-400">{o.customerPhone}</p>
-                    </td>
-                    <td className="py-3 px-3 text-slate-500 font-mono">{o.placedAt}</td>
-                    <td className="py-3 px-3 font-bold text-slate-900">{o.totalAmount.toFixed(2)} lei</td>
-                    <td className="py-3 px-3">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-black bg-amber-50 text-amber-700">
-                        {o.paymentStatus}
-                      </span>
-                    </td>
-                    <td className="py-3 px-3">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-800">
-                        {o.status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-3 text-right space-x-1.5" onClick={(e) => e.stopPropagation()}>
-                      <button
-                        onClick={() => onOpenOrder(o)}
-                        className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold"
-                      >
-                        Details
-                      </button>
-                      <button
-                        onClick={() => onOpenDispatchModal && onOpenDispatchModal(o)}
-                        className="px-2.5 py-1 rounded-xl bg-[#F8B838] hover:bg-[#E5A91A] text-slate-900 text-xs font-black"
-                      >
-                        Pay / Dispatch
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsAddRiderModalOpen(false)}
+                  className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-bold text-gray-700 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-[#6DB33F] hover:bg-[#5da033] text-xs font-bold text-white shadow-xs transition"
+                >
+                  Save & Assign
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

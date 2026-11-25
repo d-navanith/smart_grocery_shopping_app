@@ -43,11 +43,11 @@ export function useAdminCockpitState() {
 
   // Active navigation menu tab
   const [activeMenu, setActiveMenu] = useState<
-    'dashboard' | 'orders' | 'products' | 'categories' | 'inventory' | 'customers' | 'promotions' | 'deliveries' | 'reviews' | 'reports' | 'staff' | 'settings'
+    'dashboard' | 'orders' | 'products' | 'categories' | 'inventory' | 'customers' | 'promotions' | 'deliveries' | 'reviews' | 'reports' | 'staff' | 'settings' | 'super-admin'
   >(() => {
     const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const tab = params?.get('tab');
-    if (tab && ['dashboard', 'orders', 'products', 'categories', 'inventory', 'customers', 'promotions', 'deliveries', 'reviews', 'reports', 'staff', 'settings'].includes(tab)) {
+    if (tab && ['dashboard', 'orders', 'products', 'categories', 'inventory', 'customers', 'promotions', 'deliveries', 'reviews', 'reports', 'staff', 'settings', 'super-admin'].includes(tab)) {
       return tab as any;
     }
     return 'dashboard';

@@ -271,7 +271,32 @@ function logCrud(method: CrudLogEntry['method'], resource: string, summary: stri
   if (crudAuditLogs.length > 100) crudAuditLogs.pop();
 }
 
-// 1. Health check
+// 1. Health check & System Control (Developer Kill-Switch)
+let systemStatus = {
+  clientSiteActive: true,
+  adminPanelActive: true,
+  maintenanceNotice: 'Ceylon Foods online supermarket is temporarily offline for scheduled administrative maintenance. Please contact customer care at +40 722 456 789.',
+  adminLockNotice: 'Admin Portal Suspended. Platform licensing fee pending settlement. Please contact platform developer.',
+  lastUpdated: new Date().toISOString()
+};
+
+app.get('/api/system/status', (_req: Request, res: Response) => {
+  res.json({ success: true, data: systemStatus });
+});
+
+app.post('/api/system/control', (req: Request, res: Response) => {
+  const { clientSiteActive, adminPanelActive, maintenanceNotice, adminLockNotice, masterKey } = req.body;
+  if (masterKey !== 'developer123' && masterKey !== 'superadmin123' && masterKey !== 'developer_killswitch_2026') {
+    return res.status(403).json({ success: false, message: 'Unauthorized master key' });
+  }
+  if (typeof clientSiteActive === 'boolean') systemStatus.clientSiteActive = clientSiteActive;
+  if (typeof adminPanelActive === 'boolean') systemStatus.adminPanelActive = adminPanelActive;
+  if (maintenanceNotice) systemStatus.maintenanceNotice = maintenanceNotice;
+  if (adminLockNotice) systemStatus.adminLockNotice = adminLockNotice;
+  systemStatus.lastUpdated = new Date().toISOString();
+  res.json({ success: true, data: systemStatus });
+});
+
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({
     status: 'ok',
@@ -533,7 +558,7 @@ app.get('/api/orders/latest', (_req: Request, res: Response) => {
 });
 
 app.post('/api/orders', (req: Request, res: Response) => {
-  const orderNum = `CF-${Math.floor(1000 + Math.random() * 9000)}`;
+  const orderNum = req.body.orderNumber || `${Math.floor(10000 + Math.random() * 90000)}`;
   const newOrder: Order = {
     id: `ord-${Date.now()}`,
     orderNumber: orderNum,

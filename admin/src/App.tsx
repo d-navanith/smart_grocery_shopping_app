@@ -21,6 +21,7 @@ import { ReportsView } from './components/view_reports';
 import { StaffView } from './components/view_staff';
 import { SettingsView } from './components/view_settings';
 import { ReviewsView, CustomersView } from './components/view_reviews_and_customers';
+import { SuperAdminView } from './components/view_super_admin';
 import {
   OrderDetailDrawer,
   EditProductModal,
@@ -42,6 +43,12 @@ export default function AdminApp() {
   const state = useAdminCockpitState();
   const mut = createMutations(state);
 
+  const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(() => {
+    return typeof window !== 'undefined' && localStorage.getItem('ceylonfoods_is_superadmin') === 'true';
+  });
+
+  const isSystemAdminLocked = typeof window !== 'undefined' && localStorage.getItem('ceylonfoods_sys_admin_active') === 'false';
+
   // Authentication submission
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,12 +57,29 @@ export default function AdminApp() {
 
     setTimeout(() => {
       if (
-        (state.loginEmail === 'admin@ceylonfoods.lk' || state.loginEmail === 'admin@freshcart.lk' || state.loginEmail === 'admin@metrocery.lk') &&
-        state.loginPassword === 'admin123'
+        (state.loginEmail === 'superadmin@developer.com' || state.loginEmail === 'superadmin') &&
+        (state.loginPassword === 'developer123' || state.loginPassword === 'superadmin123' || state.loginPassword === 'developer_killswitch_2026')
       ) {
         state.setIsAuthenticated(true);
+        setIsSuperAdmin(true);
         localStorage.setItem('ceylonfoods_admin_auth', 'true');
-        state.showToast('Welcome back, Nimali! Signed in to Operations Portal.');
+        localStorage.setItem('ceylonfoods_is_superadmin', 'true');
+        state.setActiveMenu('super-admin');
+        state.showToast('Signed in as Super Administrator / Developer.', 'success');
+      } else if (
+        (state.loginEmail === 'admin@ceylonfoods.lk' || state.loginEmail === 'admin@freshcart.lk' || state.loginEmail === 'admin@metrocery.lk' || state.loginEmail === 'admin') &&
+        state.loginPassword === 'admin123'
+      ) {
+        if (isSystemAdminLocked) {
+          state.setLoginError('Administrative access suspended. License payment pending.');
+          state.setLoginLoading(false);
+          return;
+        }
+        state.setIsAuthenticated(true);
+        setIsSuperAdmin(false);
+        localStorage.setItem('ceylonfoods_admin_auth', 'true');
+        localStorage.removeItem('ceylonfoods_is_superadmin');
+        state.showToast('Welcome back, Jecob! Signed in to Operations Portal.');
       } else {
         state.setLoginError('Invalid credentials. Use admin@ceylonfoods.lk and password admin123');
       }
@@ -65,9 +89,48 @@ export default function AdminApp() {
 
   const handleLogout = () => {
     state.setIsAuthenticated(false);
+    setIsSuperAdmin(false);
     localStorage.removeItem('ceylonfoods_admin_auth');
+    localStorage.removeItem('ceylonfoods_is_superadmin');
     state.showToast('You have been signed out safely.', 'info');
   };
+
+  // If System is locked by Developer and user is not superadmin
+  if (isSystemAdminLocked && !isSuperAdmin) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-slate-800 rounded-3xl border border-red-500/40 p-8 shadow-2xl text-center space-y-6">
+          <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-400 flex items-center justify-center mx-auto">
+            <Lock className="w-8 h-8" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black text-white">Admin Operations Locked</h2>
+            <p className="text-xs text-slate-300">
+              Administrative access to Ceylon Foods portal has been suspended pending platform licensing fee settlement.
+            </p>
+            <p className="text-[11px] text-red-400 font-mono">
+              Status: PLATFORM_LICENSE_PENDING
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              const pass = prompt('Enter Developer / Super Admin Master Passkey (developer123):');
+              if (pass === 'developer123' || pass === 'superadmin123' || pass === 'developer_killswitch_2026') {
+                localStorage.setItem('ceylonfoods_sys_admin_active', 'true');
+                localStorage.setItem('ceylonfoods_is_superadmin', 'true');
+                window.location.reload();
+              } else if (pass) {
+                alert('Invalid master passkey.');
+              }
+            }}
+            className="w-full py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-md transition"
+          >
+            Developer Master Unlock
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // If unauthenticated, show official Ceylon Foods administrative sign in gate
   if (!state.isAuthenticated) {
@@ -355,6 +418,10 @@ export default function AdminApp() {
               onToggleStatus={mut.toggleCustomerStatus}
               onDeleteCustomer={mut.deleteCustomer}
             />
+          )}
+
+          {state.activeMenu === 'super-admin' && (
+            <SuperAdminView onShowToast={state.showToast} />
           )}
         </main>
       </div>

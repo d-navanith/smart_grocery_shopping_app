@@ -322,14 +322,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
               </h4>
             </div>
 
-            {/* Option 1: Cash on Delivery */}
+            {/* Option 1: Cash on Delivery / Direct Contact */}
             <div
-              onClick={() => setPaymentMethod('CASH_ON_DELIVERY')}
-              className={`p-4 rounded-xl border cursor-pointer transition ${
-                paymentMethod === 'CASH_ON_DELIVERY'
-                  ? 'border-[#0A6847] bg-[#F0FAF3] dark:bg-emerald-950/40 ring-1 ring-[#0A6847]'
-                  : 'border-[#15875D]/30'
-              }`}
+              className="p-4 rounded-xl border border-[#0A6847] bg-[#F0FAF3] dark:bg-emerald-950/40 ring-1 ring-[#0A6847]"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -338,50 +333,18 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
                     <span className="font-bold text-xs text-black dark:text-white flex items-center gap-2">
                       <span>{t.checkoutCodTitle}</span>
                       <span className="px-2 py-0.5 rounded bg-[#F8C519] text-[#664E00] text-[9px] font-bold">
-                        {t.recommendedTag}
+                        Direct Order
                       </span>
                     </span>
                     <p className="text-[11px] text-[#003D25] dark:text-zinc-300 mt-0.5">
-                      {t.checkoutCodDesc}
+                      Pay in cash upon doorstep delivery. Our customer care team will call or WhatsApp you to confirm your unique order number.
                     </p>
                   </div>
                 </div>
                 <input
                   type="radio"
-                  checked={paymentMethod === 'CASH_ON_DELIVERY'}
-                  onChange={() => setPaymentMethod('CASH_ON_DELIVERY')}
-                  className="accent-[#0A6847]"
-                />
-              </div>
-            </div>
-
-            {/* Option 2: Card on Delivery */}
-            <div
-              onClick={() => setPaymentMethod('CARD_ON_DELIVERY')}
-              className={`p-4 rounded-xl border cursor-pointer transition ${
-                paymentMethod === 'CARD_ON_DELIVERY'
-                  ? 'border-[#0A6847] bg-[#F0FAF3] dark:bg-emerald-950/40 ring-1 ring-[#0A6847]'
-                  : 'border-[#15875D]/30'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-[#F2F7F4] dark:bg-zinc-800 text-[#0A6847] flex items-center justify-center">
-                    <CreditCard className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h5 className="font-bold text-xs text-black dark:text-white">
-                      {t.checkoutCardOnDeliveryTitle}
-                    </h5>
-                    <p className="text-[11px] text-[#003D25] dark:text-zinc-300 mt-0.5">
-                      {t.checkoutCardOnDeliveryDesc}
-                    </p>
-                  </div>
-                </div>
-                <input
-                  type="radio"
-                  checked={paymentMethod === 'CARD_ON_DELIVERY'}
-                  onChange={() => setPaymentMethod('CARD_ON_DELIVERY')}
+                  checked={true}
+                  readOnly
                   className="accent-[#0A6847]"
                 />
               </div>

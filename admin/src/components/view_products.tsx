@@ -68,75 +68,65 @@ export const ProductsView: React.FC<ProductsViewProps> = ({
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span className="text-[10px] font-black uppercase tracking-wider text-[#0C6237]">
-            CATALOG COCKPIT
-          </span>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">
-            Products
-          </h2>
-          <p className="text-xs text-slate-500 font-medium">
-            Full editable catalog: add, edit prices, quick stock adjustments, and status toggles.
+      {/* Header matching Screenshot 2 */}
+      <div>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#6DB33F] tracking-tight">
+          PRODUCTS
+        </h1>
+      </div>
+
+      {/* 4 Metric Cards matching Screenshot 2 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="bg-[#E5E7EB] rounded-2xl p-6 flex flex-col justify-between min-h-[160px] shadow-2xs">
+          <div className="text-center space-y-1">
+            <h3 className="text-base font-bold text-gray-900">Total Products</h3>
+            <p className="text-4xl font-black text-gray-900">{products.length}</p>
+          </div>
+          <p className="text-[11px] text-gray-600 text-center font-medium">
+            {categories.length} grocery categories
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={onExportCsv}
-            className="px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-xs flex items-center gap-2 transition"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Export CSV</span>
-          </button>
-          <button
-            onClick={onOpenAddModal}
-            className="px-4 py-2 rounded-xl bg-[#0C4E3B] hover:bg-[#083b2d] text-white text-xs font-bold shadow-md flex items-center gap-2 transition active:scale-95"
-          >
-            <Plus className="w-4 h-4" />
-            <span>+ Add Product</span>
-          </button>
+        <div className="bg-[#E5E7EB] rounded-2xl p-6 flex flex-col justify-between min-h-[160px] shadow-2xs">
+          <div className="text-center space-y-1">
+            <h3 className="text-base font-bold text-gray-900">Available</h3>
+            <p className="text-4xl font-black text-gray-900">{availableCount}</p>
+          </div>
+          <p className="text-[11px] text-gray-600 text-center font-medium">
+            Visible on storefront
+          </p>
+        </div>
+
+        <div className="bg-[#E5E7EB] rounded-2xl p-6 flex flex-col justify-between min-h-[160px] shadow-2xs">
+          <div className="text-center space-y-1">
+            <h3 className="text-base font-bold text-gray-900">Drafts & Inactive</h3>
+            <p className="text-4xl font-black text-gray-900">{draftCount}</p>
+          </div>
+          <p className="text-[11px] text-gray-600 text-center font-medium">
+            Hidden from customers
+          </p>
+        </div>
+
+        <div className="bg-[#E5E7EB] rounded-2xl p-6 flex flex-col justify-between min-h-[160px] shadow-2xs">
+          <div className="text-center space-y-1">
+            <h3 className="text-base font-bold text-gray-900">Out of Stock</h3>
+            <p className="text-4xl font-black text-gray-900">{outOfStockCount}</p>
+          </div>
+          <p className="text-[11px] text-gray-600 text-center font-medium">
+            Requires urgent restock
+          </p>
         </div>
       </div>
 
-      {/* 4 Metric Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
-            <span>Total products</span>
-            <Package className="w-4 h-4 text-[#0C6237]" />
-          </div>
-          <h3 className="text-2xl font-black text-slate-900">{products.length}</h3>
-          <p className="text-[11px] text-slate-400 font-medium">{categories.length} grocery categories</p>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
-            <span>Available Online</span>
-            <CheckCircle className="w-4 h-4 text-emerald-600" />
-          </div>
-          <h3 className="text-2xl font-black text-slate-900">{availableCount}</h3>
-          <p className="text-[11px] text-emerald-600 font-bold">Visible on storefront</p>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
-            <span>Drafts & Inactive</span>
-            <Edit2 className="w-4 h-4 text-slate-400" />
-          </div>
-          <h3 className="text-2xl font-black text-slate-900">{draftCount}</h3>
-          <p className="text-[11px] text-slate-400 font-medium">Hidden from customers</p>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
-            <span>Out of Stock</span>
-            <ArrowUpDown className="w-4 h-4 text-red-500" />
-          </div>
-          <h3 className="text-2xl font-black text-slate-900">{outOfStockCount}</h3>
-          <p className="text-[11px] text-red-600 font-bold">Requires urgent restock</p>
-        </div>
+      {/* Action Row */}
+      <div className="flex items-center justify-end">
+        <button
+          onClick={onOpenAddModal}
+          className="px-6 py-2.5 rounded-xl bg-[#15875D] hover:bg-[#0e6343] text-white text-sm font-bold shadow-xs inline-flex items-center gap-2 transition active:scale-95 cursor-pointer"
+        >
+          <Plus className="w-4 h-4 stroke-[2.5]" />
+          <span>+ Add Product</span>
+        </button>
       </div>
 
       {/* Tabs */}

@@ -2739,31 +2739,50 @@ export const INITIAL_CATEGORIES: CategoryItem[] = [
 
 export const INITIAL_ORDERS: Order[] = [
   {
-    id: 'ord-1',
-    orderNumber: '#CF-8921',
-    customerName: 'Mihai Enache',
-    customerPhone: '+40 722 456 789',
-    customerAddress: 'Strada Mihai Eminescu nr. 42, Bl. 12, Sc. A, Ap. 14, București Sector 1',
+    id: 'ord-10567',
+    orderNumber: '10567',
+    customerName: 'Dinitha Navanith',
+    customerPhone: '071 0234 567',
+    customerAddress: '148/A Moratuwa , Colombo',
     items: [
-      { productTitle: 'Araliya Supiri Keeri Samba Rice (5kg)', quantity: 1, price: 44.50 },
-      { productTitle: 'Wijaya Roasted Curry Powder (250g)', quantity: 2, price: 12.50 },
-      { productTitle: 'Mysore Red Split Lentils / Masoor Daal (1kg)', quantity: 1, price: 12.50 }
+      { productTitle: 'Araliya Supiri Keeri Samba Rice (1kg)', quantity: 2, price: 14.50 },
+      { productTitle: 'Wijaya Roasted Curry Powder (250g)', quantity: 1, price: 21.50 },
+      { productTitle: 'Maggi Coconut Milk Powder (300g)', quantity: 1, price: 28.00 }
     ],
-    totalAmount: 95.00, // 80.00 + 15.00 livrare
-    status: 'PROCESSING',
-    deliveryType: 'Glovo Express 30-Min (Sector 1)',
+    totalAmount: 78.50,
+    status: 'DELIVERED',
+    deliveryType: 'Express Courier',
     placedAt: 'Astăzi • 10:15',
-    paymentMethod: 'Cash on Delivery (Plata la Livrare)',
+    paymentMethod: 'Cash on Delivery',
+    paymentStatus: 'PAID',
+    assignedRider: 'Siva',
+    riderPhone: '071 0234 567',
+    riderVerifiedByAdmin: true,
+    courierCompany: 'Express Delivery Colombo / Bucharest',
+    notes: 'Order confirmed and completed.'
+  },
+  {
+    id: 'ord-10568',
+    orderNumber: '10568',
+    customerName: 'Meeyar Naahid',
+    customerPhone: '077 1205 555',
+    customerAddress: '22 Batuwaththa Road , Kelaniya.',
+    items: [
+      { productTitle: 'Wijaya Chilli Powder (250g)', quantity: 2, price: 22.50 },
+      { productTitle: 'Basmati Rice (1kg)', quantity: 3, price: 16.00 },
+      { productTitle: 'Maliban Lemon Puff (200g)', quantity: 2, price: 9.00 }
+    ],
+    totalAmount: 111.00,
+    status: 'PROCESSING',
+    deliveryType: 'Express Courier',
+    placedAt: 'Astăzi • 11:30',
+    paymentMethod: 'Cash on Delivery',
     paymentStatus: 'PENDING',
-    courierCompany: 'Glovo Express Bucharest',
-    courierPhone: '+40 21 9988',
-    dispatchCallStatus: 'NOT_CALLED',
-    pickupMinutes: 10,
-    deliveryMinutes: 30,
-    assignedRider: undefined,
+    assignedRider: 'Not Yet',
     riderPhone: '',
     riderVerifiedByAdmin: false,
-    notes: 'Sunați la interfon 14. Am pregătit suma exactă în numerar (95 lei).'
+    courierCompany: 'Glovo Express Bucharest',
+    notes: 'On process - Packing and preparing for dispatch.'
   },
   {
     id: 'ord-2',
@@ -2889,6 +2908,17 @@ export const INITIAL_DELIVERIES: DeliveryScheduleItem[] = [
 ];
 
 export const INITIAL_RIDERS: FleetRider[] = [
+  {
+    id: 'rider-siva',
+    name: 'Siva',
+    phone: '071 0234 567',
+    vehicle: 'Motorbike Express',
+    status: 'Available',
+    activeDeliveries: 1,
+    completedToday: 12,
+    rating: 4.9,
+    zone: 'Colombo / Bucharest Sector 1'
+  },
   {
     id: 'rider-glovo',
     name: 'Dispecerat Glovo Riders',
