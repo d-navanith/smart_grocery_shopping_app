@@ -81,7 +81,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
     { name: 'MD Foods Pickles & Jam', logo: '/brands/brand_md.png', category: 'Sambals & Jams' },
     { name: 'Harischandra', logo: '/brands/brand_harischandra.png', category: 'Coffee & Flour' },
     { name: 'Watawala Tea', logo: '/brands/brand_watawala.png', category: 'Tea & Beverages' },
-    { name: 'Annam', logo: '/brands/brand_annam.png', category: 'Spices & Coffee' }
+    { name: 'Annam', logo: '/brands/brand_annam.png', category: 'Spices & Coffee' },
+    { name: 'Elephant House', logo: '/brands/brand_elephant_house.png', category: 'Beverages & Soft Drinks' },
+    { name: 'Munchee CBL', logo: '/brands/brand_munchee.png', category: 'Biscuits & Snacks' },
+    { name: 'Link Natural', logo: '/brands/brand_link_natural.svg', category: 'Health & Wellness' },
+    { name: 'Siddhalepa', logo: '/brands/brand_siddhalepa.svg', category: 'Health & Wellness' }
   ];
 
   // Find backing store products so clicking "Add" or the card works seamlessly with Cart & Modals
@@ -94,18 +98,18 @@ export const HomeView: React.FC<HomeViewProps> = ({
     {
       id: 'pop-rice',
       displayTitle: 'Keeri Samba Rice',
-      unitLabel: 'Bag : 5 kg',
-      displayPrice: '44.50 lei',
-      oldPrice: '52.00 lei',
+      unitLabel: '1kg / 5kg',
+      displayPrice: '14.50 lei',
+      oldPrice: '17.50 lei',
       image: riceProduct?.imageUrl || '/products/prod-supiri-keeri-rice.jpg',
       product: riceProduct
     },
     {
       id: 'pop-curry',
       displayTitle: 'Wijaya Roasted Curry',
-      unitLabel: 'Pack : 250g',
-      displayPrice: '12.50 lei',
-      oldPrice: '15.00 lei',
+      unitLabel: '100g / 250g',
+      displayPrice: '10.50 lei',
+      oldPrice: '13.00 lei',
       image: curryProduct?.imageUrl || '/products/prod-wijaya-roasted-curry-powder.jpg',
       product: curryProduct
     },
@@ -113,8 +117,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
       id: 'pop-coconut',
       displayTitle: 'Maggi Coconut Powder',
       unitLabel: 'Pack : 300g',
-      displayPrice: '19.50 lei',
-      oldPrice: '23.00 lei',
+      displayPrice: '28.00 lei',
+      oldPrice: '32.00 lei',
       image: coconutProduct?.imageUrl || '/products/prod-maggi-coconut-powder.jpg',
       product: coconutProduct
     },
@@ -122,8 +126,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
       id: 'pop-biscuit',
       displayTitle: 'Maliban Lemon Puff',
       unitLabel: 'Pack : 200g',
-      displayPrice: '9.50 lei',
-      oldPrice: '12.00 lei',
+      displayPrice: '9.00 lei',
+      oldPrice: '11.00 lei',
       image: biscuitProduct?.imageUrl || '/products/prod-maliban-lemon-puff.jpg',
       product: biscuitProduct
     }

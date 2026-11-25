@@ -130,6 +130,22 @@ export const Modals: React.FC<ModalsProps> = ({
     return 1;
   };
 
+  const getProductPriceForWeight = (product: Product, weight?: string) => {
+    if (!weight) return product.price;
+    if (product.weightPrices && product.weightPrices[weight]) {
+      return product.weightPrices[weight];
+    }
+    return product.price * calculateWeightMultiplier(weight);
+  };
+
+  const getProductOriginalPriceForWeight = (product: Product, weight?: string) => {
+    if (!weight) return product.originalPrice || product.price * 1.2;
+    if (product.weightPrices && product.weightPrices[weight]) {
+      return Math.round(product.weightPrices[weight] * 1.2 * 10) / 10;
+    }
+    return (product.originalPrice || product.price * 1.2) * calculateWeightMultiplier(weight);
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthLoading(true);
@@ -429,11 +445,11 @@ export const Modals: React.FC<ModalsProps> = ({
 
                 <div className="text-right shrink-0">
                   <span className="text-2xl font-bold text-[#0A6847] dark:text-[#80F6C7] block">
-                    {(selectedProduct.price * calculateWeightMultiplier(modalWeight) * modalQty).toFixed(2)} lei
+                    {(getProductPriceForWeight(selectedProduct, modalWeight) * modalQty).toFixed(2)} lei
                   </span>
                   {selectedProduct.originalPrice && (
                     <span className="text-sm text-[#C7C7C7] line-through font-medium block">
-                      {(selectedProduct.originalPrice * calculateWeightMultiplier(modalWeight) * modalQty).toFixed(2)} lei
+                      {(getProductOriginalPriceForWeight(selectedProduct, modalWeight) * modalQty).toFixed(2)} lei
                     </span>
                   )}
                   <span className="inline-block mt-1 px-2.5 py-0.5 rounded bg-[#F2F7F4] text-[#9E9E9E] text-xs font-medium">

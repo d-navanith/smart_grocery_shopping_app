@@ -140,10 +140,10 @@ export default function ClientWebSupermarket() {
   });
   const [wishlist, setWishlist] = useState<string[]>(() => {
     if (typeof window !== 'undefined') {
-      if (!localStorage.getItem('ceylonfoods_clean_v1')) {
+      if (!localStorage.getItem('ceylonfoods_clean_v2')) {
         localStorage.removeItem('ceylonfoods_wishlist');
         localStorage.removeItem('ceylonfoods_cart');
-        localStorage.setItem('ceylonfoods_clean_v1', 'true');
+        localStorage.setItem('ceylonfoods_clean_v2', 'true');
         return [];
       }
       const saved = localStorage.getItem('ceylonfoods_wishlist');
@@ -240,6 +240,12 @@ export default function ClientWebSupermarket() {
   // Clean Cart — Empty for fresh visitor, persisted to localStorage
   const [cart, setCart] = useState<CartItem[]>(() => {
     if (typeof window !== 'undefined') {
+      if (!localStorage.getItem('ceylonfoods_clean_v2')) {
+        localStorage.removeItem('ceylonfoods_cart');
+        localStorage.removeItem('ceylonfoods_wishlist');
+        localStorage.setItem('ceylonfoods_clean_v2', 'true');
+        return [];
+      }
       const saved = localStorage.getItem('ceylonfoods_cart');
       try {
         return saved ? JSON.parse(saved) : [];
@@ -355,7 +361,7 @@ export default function ClientWebSupermarket() {
 
   const handleAddToCart = (product: Product, qty: number = 1, weight: string = '1kg') => {
     const multiplier = weight === '250g' ? 0.25 : weight === '500g' ? 0.5 : weight === '2kg' ? 2 : weight === '5kg' ? 5 : 1;
-    const effectivePrice = product.price * multiplier;
+    const effectivePrice = product.weightPrices?.[weight] ?? (product.price * multiplier);
 
     setCart(prev => {
       const existing = prev.find(item => item.product.id === product.id && item.selectedWeight === weight);

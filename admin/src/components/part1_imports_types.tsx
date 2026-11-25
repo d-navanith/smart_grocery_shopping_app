@@ -90,6 +90,7 @@ export interface Product {
   rating?: number;
   reviewsCount?: number;
   availableWeights?: string[];
+  weightPrices?: Record<string, number>;
   productType?: string;
 }
 
