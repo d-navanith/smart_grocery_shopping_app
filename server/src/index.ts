@@ -52,6 +52,8 @@ let orders: Order[] = [
     customerId: 'cust-1',
     customerName: 'Mihai Enache',
     customerPhone: '+40 722 456 789',
+    customerAddress: 'Strada Mihai Eminescu nr. 42, Bl. 12, Ap. 14, București',
+    address: 'Strada Mihai Eminescu nr. 42, Bl. 12, Ap. 14, București',
     items: [
       {
         productId: 'prod-supiri-keeri-rice',
@@ -114,6 +116,8 @@ let orders: Order[] = [
     customerId: 'cust-1',
     customerName: 'Mihai Enache',
     customerPhone: '+40 722 456 789',
+    customerAddress: 'Strada Mihai Eminescu nr. 42, Bl. 12, Ap. 14, București',
+    address: 'Strada Mihai Eminescu nr. 42, Bl. 12, Ap. 14, București',
     items: [
       {
         productId: 'prod-tea',
@@ -177,6 +181,8 @@ let orders: Order[] = [
     customerId: 'cust-1',
     customerName: 'Mihai Enache',
     customerPhone: '+40 722 456 789',
+    customerAddress: 'Strada Mihai Eminescu nr. 42, Bl. 12, Ap. 14, București',
+    address: 'Strada Mihai Eminescu nr. 42, Bl. 12, Ap. 14, București',
     items: [
       {
         productId: 'prod-supiri-keeri-rice',
@@ -565,6 +571,8 @@ app.post('/api/orders', (req: Request, res: Response) => {
     customerId: req.body.customerId || 'cust-1',
     customerName: req.body.customerName || 'Mihai Enache',
     customerPhone: req.body.customerPhone || '+40 722 456 789',
+    customerAddress: req.body.address || 'Strada Mihai Eminescu nr. 42, București',
+    address: req.body.address || 'Strada Mihai Eminescu nr. 42, București',
     items: req.body.items || [],
     subtotal: req.body.subtotal || 0,
     vatAmount: 0,

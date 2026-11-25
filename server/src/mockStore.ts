@@ -62,6 +62,8 @@ export interface Order {
   customerId: string;
   customerName: string;
   customerPhone: string;
+  customerAddress?: string;
+  address?: string;
   items: OrderItem[];
   subtotal: number;
   vatAmount: number;

@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
 import {
   Truck,
-  Clock,
-  CheckCircle,
-  Navigation,
   Plus,
   Search,
-  Filter,
-  Phone,
   Check,
-  UserCheck,
   MapPin,
   Trash2
 } from 'lucide-react';
@@ -67,21 +61,24 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
   const deliveredCount = deliveriesList.filter(d => d.status === 'Delivered').length;
 
   return (
-    <div className="space-y-6 animate-fadeIn">
-      {/* Header */}
+    <div className="w-full flex flex-col space-y-6 animate-fadeIn pb-12">
+      {/* 1. Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[11px] font-black tracking-widest text-[#0C6237] uppercase">Last-Mile Operations</span>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight">Deliveries</h2>
-          <p className="text-xs text-slate-500 font-medium">Keep Colombo orders moving. Assign riders, track routes and confirm delivery.</p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#6DB33F] tracking-tight uppercase">
+            DELIVERIES
+          </h1>
+          <p className="text-xs text-gray-500 font-medium mt-1">
+            Dispatch fleet riders, track delivery progress, and coordinate doorstep handovers.
+          </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3">
           <button
             onClick={onOpenAddRiderModal}
-            className="px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-xs flex items-center gap-2 transition"
+            className="px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-xs font-bold text-gray-700 hover:bg-gray-50 shadow-2xs flex items-center gap-2 transition"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-4 h-4 text-[#6DB33F]" />
             <span>+ Add Fleet Rider</span>
           </button>
           <button
@@ -89,258 +86,158 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
               const unassigned = deliveriesList.find(d => d.status === 'Unassigned');
               if (unassigned) onOpenAssignModal(unassigned);
             }}
-            className="px-4 py-2.5 rounded-xl bg-[#0C4E3B] hover:bg-[#083b2d] text-white text-xs font-bold flex items-center gap-2 shadow-sm transition active:scale-95"
+            className="px-5 py-2.5 rounded-xl bg-[#107B55] hover:bg-[#0c6344] text-white text-xs font-bold flex items-center gap-2 shadow-sm transition active:scale-95 cursor-pointer"
           >
-            <Truck className="w-3.5 h-3.5" />
-            <span>+ Assign delivery</span>
+            <Truck className="w-4 h-4" />
+            <span>+ Assign Delivery</span>
           </button>
         </div>
       </div>
 
-      {/* 4 Metric Cards */}
+      {/* 2. Four Soft-Gray Stat Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold">Today's deliveries</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-[#0C6237] flex items-center justify-center">
-              <Truck className="w-3.5 h-3.5" />
-            </div>
-          </div>
-          <p className="text-2xl font-black text-slate-900 tracking-tight">{deliveriesList.length || 86}</p>
-          <p className="text-[11px] font-bold text-emerald-600">+12% vs yesterday</p>
+        <div className="bg-[#E5E7EB] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-2xs">
+          <span className="text-sm font-bold text-gray-800 mb-2">Today's Parcels</span>
+          <span className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight">
+            {deliveriesList.length}
+          </span>
+          <span className="text-xs text-gray-500 mt-2 font-medium">Scheduled</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold">Awaiting assignment</span>
-            <div className="w-7 h-7 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
-              <Clock className="w-3.5 h-3.5" />
-            </div>
-          </div>
-          <p className="text-2xl font-black text-slate-900 tracking-tight">{unassignedCount}</p>
-          <p className="text-[11px] font-bold text-orange-600">Ready to be allocated</p>
+        <div className="bg-[#E5E7EB] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-2xs">
+          <span className="text-sm font-bold text-gray-800 mb-2">Unassigned</span>
+          <span className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight">
+            {unassignedCount}
+          </span>
+          <span className="text-xs text-amber-600 mt-2 font-bold">Needs allocation</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold">On the road</span>
-            <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
-              <Navigation className="w-3.5 h-3.5" />
-            </div>
-          </div>
-          <p className="text-2xl font-black text-slate-900 tracking-tight">{onRoadCount}</p>
-          <p className="text-[11px] font-bold text-slate-500">Across active couriers</p>
+        <div className="bg-[#E5E7EB] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-2xs">
+          <span className="text-sm font-bold text-gray-800 mb-2">On the Road</span>
+          <span className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight">
+            {onRoadCount}
+          </span>
+          <span className="text-xs text-blue-600 mt-2 font-bold">In transit</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold">Delivered today</span>
-            <div className="w-7 h-7 rounded-lg bg-emerald-50 text-[#0C6237] flex items-center justify-center">
-              <CheckCircle className="w-3.5 h-3.5" />
-            </div>
-          </div>
-          <p className="text-2xl font-black text-slate-900 tracking-tight">{deliveredCount}</p>
-          <p className="text-[11px] font-bold text-emerald-600">97.1% on-time delivery</p>
+        <div className="bg-[#E5E7EB] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-2xs">
+          <span className="text-sm font-bold text-gray-800 mb-2">Delivered</span>
+          <span className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight">
+            {deliveredCount}
+          </span>
+          <span className="text-xs text-emerald-600 mt-2 font-bold">Completed</span>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-6 border-b border-slate-200/80 text-xs font-extrabold text-slate-500 overflow-x-auto">
-        {[
-          { id: 'TODAY', label: `Today (${deliveriesList.length})` },
-          { id: 'UNASSIGNED', label: `Unassigned (${unassignedCount})` },
-          { id: 'OUT_FOR_DELIVERY', label: `Out for delivery (${onRoadCount})` },
-          { id: 'DELIVERED', label: `Delivered (${deliveredCount})` }
-        ].map(t => (
-          <button
-            key={t.id}
-            onClick={() => setDeliveriesTab(t.id as any)}
-            className={`pb-3 transition relative whitespace-nowrap ${
-              deliveriesTab === t.id ? 'text-[#0C6237] border-b-2 border-[#0C6237]' : 'hover:text-slate-800'
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+      {/* 3. Search & Tabs Filter Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="relative w-full sm:max-w-md">
+          <input
+            type="text"
+            placeholder="Search address, order, or customer..."
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+            className="w-full bg-[#EFEFEF] hover:bg-gray-200/70 focus:bg-white border border-transparent focus:border-[#6DB33F] rounded-xl px-5 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition shadow-2xs"
+          />
+        </div>
 
-      {/* Delivery Schedule Table */}
-      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <h3 className="font-black text-base text-slate-900">Delivery Schedule</h3>
-            <span className="px-2 py-0.5 rounded-md bg-slate-100 text-xs font-bold text-slate-600">
-              {filteredDeliveries.length} orders
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search address or order..."
-                value={localSearch}
-                onChange={(e) => setLocalSearch(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-[#0C4E3B]"
-              />
-            </div>
-            <select
-              value={deliveryRiderFilter}
-              onChange={(e) => setDeliveryRiderFilter(e.target.value)}
-              className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white"
+        <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
+          {[
+            { id: 'TODAY', label: `All (${deliveriesList.length})` },
+            { id: 'UNASSIGNED', label: `Unassigned (${unassignedCount})` },
+            { id: 'OUT_FOR_DELIVERY', label: `On the Road (${onRoadCount})` },
+            { id: 'DELIVERED', label: `Delivered (${deliveredCount})` }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setDeliveriesTab(tab.id as any)}
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                deliveriesTab === tab.id
+                  ? 'bg-[#E4F8B0] text-black shadow-xs font-black'
+                  : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100'
+              }`}
             >
-              <option value="ALL">Rider: All active</option>
-              {riders.map(r => (
-                <option key={r.id} value={r.name}>{r.name}</option>
-              ))}
-            </select>
-          </div>
+              {tab.label}
+            </button>
+          ))}
         </div>
+      </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+      {/* 4. Table Card */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-6 space-y-4">
+        <h2 className="text-lg font-bold text-gray-900">
+          Delivery Dispatch Board
+        </h2>
+
+        <div className="overflow-x-auto rounded-xl border border-gray-300">
+          <table className="w-full border-collapse text-left text-xs sm:text-sm">
             <thead>
-              <tr className="border-b border-slate-100 text-slate-400 font-bold uppercase text-[10px]">
-                <th className="py-2.5 px-3">Order & Customer</th>
-                <th className="py-2.5 px-3">Delivery Address</th>
-                <th className="py-2.5 px-3">Time Window</th>
-                <th className="py-2.5 px-3">Assigned Courier</th>
-                <th className="py-2.5 px-3">Payment</th>
-                <th className="py-2.5 px-3">Status Action</th>
-                <th className="py-2.5 px-3 text-right">Quick Assign</th>
+              <tr className="bg-[#E2E5E9] text-gray-900 font-bold border-b border-gray-300 divide-x divide-gray-300">
+                <th className="py-3 px-4 min-w-[180px]">Order & Customer</th>
+                <th className="py-3 px-4 min-w-[220px]">Delivery Address</th>
+                <th className="py-3 px-4 min-w-[120px]">Time Window</th>
+                <th className="py-3 px-4 min-w-[160px]">Assigned Courier</th>
+                <th className="py-3 px-4 min-w-[120px]">Payment</th>
+                <th className="py-3 px-4 min-w-[140px] text-center">Status Action</th>
+                <th className="py-3 px-4 w-28 text-center">Quick Assign</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 font-medium">
-              {filteredDeliveries.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="py-8 text-center text-slate-400 font-bold">
-                    No deliveries match this view.
+            <tbody className="divide-y divide-gray-300 bg-white">
+              {filteredDeliveries.map(del => (
+                <tr key={del.id} className="hover:bg-gray-50/80 transition divide-x divide-gray-300 text-gray-800">
+                  <td className="py-3.5 px-4 font-bold text-gray-900">
+                    <div>{del.orderNumber} • {del.customerName}</div>
+                    <div className="text-xs text-gray-400 font-mono font-normal">{del.customerPhone}</div>
                   </td>
-                </tr>
-              ) : (
-                filteredDeliveries.map((del) => (
-                  <tr key={del.id} className="hover:bg-slate-50/80 transition">
-                    <td className="py-3 px-3">
-                      <p className="font-extrabold text-slate-900">{del.orderNumber} • {del.customerName}</p>
-                      <p className="text-[11px] font-mono text-slate-400">{del.customerPhone}</p>
-                    </td>
-                    <td className="py-3 px-3 text-slate-600 font-medium">
-                      {del.address}
-                    </td>
-                    <td className="py-3 px-3 font-bold text-slate-700">
-                      {del.timeWindow}
-                    </td>
-                    <td className="py-3 px-3">
-                      {del.assignedRider === 'Unassigned' ? (
-                        <button
-                          onClick={() => onOpenAssignModal(del)}
-                          className="text-orange-600 font-bold hover:underline flex items-center gap-1"
-                        >
-                          <span>⚠️ Unassigned</span>
-                        </button>
-                      ) : (
-                        <span className="font-extrabold text-slate-900 flex items-center gap-1">
-                          <Truck className="w-3.5 h-3.5 text-[#0C6237]" />
-                          <span>{del.assignedRider}</span>
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 px-3 font-bold text-slate-700">
-                      {del.payment}
-                    </td>
-                    <td className="py-3 px-3">
-                      {/* Clickable Quick Status toggle */}
-                      {del.status === 'Unassigned' ? (
-                        <button
-                          onClick={() => onOpenAssignModal(del)}
-                          className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#FEF3EC] text-[#D96528] hover:bg-orange-100 transition active:scale-95"
-                        >
-                          + Assign Now
-                        </button>
-                      ) : del.status === 'On the road' ? (
-                        <button
-                          onClick={() => onMarkStatus(del.id, 'Delivered')}
-                          className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-sky-50 text-sky-700 hover:bg-sky-100 transition active:scale-95 flex items-center gap-1"
-                          title="Click to complete delivery"
-                        >
-                          <span>On Road → Mark Delivered</span>
-                        </button>
-                      ) : (
-                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#E6F7EF] text-[#0C6237]">
-                          ✓ Delivered
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 px-3 text-right">
+                  <td className="py-3.5 px-4 text-gray-700 font-medium">
+                    {del.address}
+                  </td>
+                  <td className="py-3.5 px-4 text-gray-700 font-semibold">
+                    {del.timeWindow}
+                  </td>
+                  <td className="py-3.5 px-4 font-bold text-gray-900">
+                    {del.assignedRider === 'Unassigned' ? (
+                      <span className="text-amber-600 font-medium">Not Yet</span>
+                    ) : (
+                      <span className="text-gray-900">{del.assignedRider}</span>
+                    )}
+                  </td>
+                  <td className="py-3.5 px-4 font-medium text-gray-700">
+                    {del.payment}
+                  </td>
+                  <td className="py-3.5 px-4 text-center">
+                    {del.status === 'Unassigned' ? (
                       <button
                         onClick={() => onOpenAssignModal(del)}
-                        className="px-3 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs transition"
+                        className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 hover:bg-amber-200 transition"
                       >
-                        {del.status === 'Unassigned' ? 'Assign Rider' : 'Reassign'}
+                        + Assign Rider
                       </button>
-                    </td>
-                  </tr>
-                ))
-              )}
+                    ) : del.status === 'On the road' ? (
+                      <button
+                        onClick={() => onMarkStatus(del.id, 'Delivered')}
+                        className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 hover:bg-blue-200 transition"
+                      >
+                        Mark Delivered
+                      </button>
+                    ) : (
+                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#E4F8B0] text-gray-900">
+                        ✓ Delivered
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-3.5 px-4 text-center">
+                    <button
+                      onClick={() => onOpenAssignModal(del)}
+                      className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-bold text-xs transition"
+                    >
+                      Assign
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
-        </div>
-      </div>
-
-      {/* Rider Availability Cards */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="font-black text-base text-slate-900">Active Fleet Riders</h3>
-          <span className="text-xs text-slate-400 font-medium">Click "Toggle Shift" to update duty status</span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {riders.map((rider) => (
-            <div
-              key={rider.id}
-              className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between space-y-3"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <h4 className="font-black text-sm text-slate-900">{rider.name}</h4>
-                  <p className="text-[11px] text-slate-500 font-medium">{rider.vehicle}</p>
-                  <p className="text-[11px] text-slate-400 font-mono mt-0.5">{rider.phone} • {rider.zone}</p>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={() => onToggleRiderDuty(rider.id)}
-                    className={`px-2 py-0.5 rounded text-[10px] font-black transition active:scale-95 ${
-                      rider.status === 'Available' || rider.status === 'On Delivery'
-                        ? 'bg-[#E6F7EF] text-[#0C6237] hover:bg-emerald-100'
-                        : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
-                    }`}
-                    title="Click to toggle shift status"
-                  >
-                    {rider.status === 'Available' || rider.status === 'On Delivery' ? '● On duty' : '○ On break'}
-                  </button>
-                  {onDeleteRider && (
-                    <button
-                      onClick={() => {
-                        if (window.confirm(`Remove rider ${rider.name} from fleet?`)) {
-                          onDeleteRider(rider.id);
-                        }
-                      }}
-                      className="p-1 rounded text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
-                      title="Remove rider"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100">
-                <span className="text-slate-500 font-medium">{rider.completedToday} done today ({rider.activeDeliveries} active)</span>
-                <span className="font-black text-amber-500">★ {rider.rating}</span>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </div>

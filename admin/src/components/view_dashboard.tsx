@@ -237,7 +237,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     {ord.customerName}
                   </td>
                   <td className="py-3 px-4 text-gray-700">
-                    {ord.customerAddress}
+                    {ord.customerAddress || (ord as any).address || (typeof (ord as any).deliveryAddress === 'string' ? (ord as any).deliveryAddress : ((ord as any).deliveryAddress?.street ? `${(ord as any).deliveryAddress.street}, ${(ord as any).deliveryAddress.city || ''}` : '')) || 'Strada Mihai Eminescu nr. 42, București'}
                   </td>
                   <td className="py-3 px-4 font-mono text-gray-700 font-medium">
                     {ord.customerPhone}

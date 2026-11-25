@@ -202,7 +202,11 @@ export function useAdminCockpitState() {
           anySuccess = true;
         }
         if (ordRes.status === 'fulfilled' && ordRes.value?.data?.length) {
-          setOrders(ordRes.value.data);
+          const normalizedOrders = ordRes.value.data.map((o: any) => ({
+            ...o,
+            customerAddress: o.customerAddress || o.address || (typeof o.deliveryAddress === 'string' ? o.deliveryAddress : (o.deliveryAddress?.street ? `${o.deliveryAddress.street}, ${o.deliveryAddress.city || ''}` : '')) || 'Strada Mihai Eminescu nr. 42, București'
+          }));
+          setOrders(normalizedOrders);
           anySuccess = true;
         }
         if (catRes.status === 'fulfilled' && catRes.value?.data?.length) {
@@ -281,7 +285,7 @@ export function useAdminCockpitState() {
   const [excludeDeliveryFees, setExcludeDeliveryFees] = useState(true);
 
   // Settings subtab
-  const [settingsTab, setSettingsTab] = useState<'STORE' | 'NOTIFICATIONS' | 'SECURITY' | 'INTEGRATIONS'>('STORE');
+  const [settingsTab, setSettingsTab] = useState<'STORE' | 'LOGISTICS' | 'NOTIFICATIONS' | 'SECURITY'>('STORE');
 
   // Search & Filters
   const [searchTerm, setSearchTerm] = useState('');

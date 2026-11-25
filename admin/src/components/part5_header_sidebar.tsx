@@ -24,8 +24,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'inventory', label: 'Inventory' },
     { id: 'customers', label: 'Customers' },
     { id: 'deliveries', label: 'Deliveries' },
-    { id: 'settings', label: 'Settings' },
-    { id: 'super-admin', label: '⚡ Super Admin' }
+    { id: 'settings', label: 'Settings' }
   ];
 
   return (

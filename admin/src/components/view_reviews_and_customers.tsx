@@ -257,71 +257,69 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
   const totalLkrSpend = customers.reduce((sum, c) => sum + c.totalSpend, 0);
 
   return (
-    <div className="space-y-6 animate-fadeIn">
-      {/* Header */}
+    <div className="w-full flex flex-col space-y-6 animate-fadeIn pb-12">
+      {/* 1. Header */}
       <div>
-        <span className="text-[11px] font-black tracking-widest text-[#0C6237] uppercase">Customer Relationship Management</span>
-        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Customer Accounts & Loyalty</h2>
-        <p className="text-xs text-slate-500 font-medium">View shopper profiles, promote loyalty tiers and manage account access.</p>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#6DB33F] tracking-tight uppercase">
+          CUSTOMERS
+        </h1>
+        <p className="text-xs text-gray-500 font-medium mt-1">
+          Shopper accounts, order history, and customer profile management.
+        </p>
       </div>
 
-      {/* 4 Metric Cards */}
+      {/* 2. Four Soft-Gray Stat Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold">Total shoppers</span>
-            <Users className="w-4 h-4 text-[#0C6237]" />
-          </div>
-          <p className="text-2xl font-black text-slate-900 tracking-tight">{customers.length}</p>
-          <p className="text-[11px] font-bold text-slate-500">Registered accounts</p>
+        <div className="bg-[#E5E7EB] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-2xs">
+          <span className="text-sm font-bold text-gray-800 mb-2">Total Shoppers</span>
+          <span className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight">
+            {customers.length}
+          </span>
+          <span className="text-xs text-gray-500 mt-2 font-medium">Registered accounts</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold">Platinum VIPs</span>
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-          </div>
-          <p className="text-2xl font-black text-slate-900 tracking-tight">{platinumCount}</p>
-          <p className="text-[11px] font-bold text-emerald-600">&gt; LKR 100K spend</p>
+        <div className="bg-[#E5E7EB] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-2xs">
+          <span className="text-sm font-bold text-gray-800 mb-2">Platinum VIPs</span>
+          <span className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight">
+            {platinumCount}
+          </span>
+          <span className="text-xs text-emerald-600 mt-2 font-bold">&gt; 500 lei spend</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold">Gold Tier</span>
-            <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-          </div>
-          <p className="text-2xl font-black text-slate-900 tracking-tight">{goldCount}</p>
-          <p className="text-[11px] font-bold text-amber-600">High repeat rate</p>
+        <div className="bg-[#E5E7EB] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-2xs">
+          <span className="text-sm font-bold text-gray-800 mb-2">Gold Tier</span>
+          <span className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight">
+            {goldCount}
+          </span>
+          <span className="text-xs text-amber-600 mt-2 font-bold">Repeat buyers</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-bold">Lifetime spend</span>
-            <DollarSign className="w-4 h-4 text-emerald-600" />
-          </div>
-          <p className="text-2xl font-black text-slate-900 tracking-tight">LKR {totalLkrSpend.toLocaleString()}</p>
-          <p className="text-[11px] font-bold text-emerald-600">Total customer LTV</p>
+        <div className="bg-[#E5E7EB] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-2xs">
+          <span className="text-sm font-bold text-gray-800 mb-2">Lifetime Orders</span>
+          <span className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight">
+            {customers.reduce((sum, c) => sum + c.totalOrders, 0)}
+          </span>
+          <span className="text-xs text-gray-500 mt-2 font-medium">Fulfilled</span>
         </div>
       </div>
 
-      {/* Search & Filter Bar */}
-      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search customer name, email, phone, city..."
-              value={localSearch}
-              onChange={(e) => setLocalSearch(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0C4E3B]"
-            />
-          </div>
+      {/* 3. Search & Filter Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="relative w-full sm:max-w-md">
+          <input
+            type="text"
+            placeholder="Search customer name, email, phone, city..."
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+            className="w-full bg-[#EFEFEF] hover:bg-gray-200/70 focus:bg-white border border-transparent focus:border-[#6DB33F] rounded-xl px-5 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition shadow-2xs"
+          />
+        </div>
 
+        <div className="w-full sm:w-auto">
           <select
             value={customerTierFilter}
             onChange={(e) => setCustomerTierFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700"
+            className="px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-xs font-bold text-gray-700 shadow-2xs cursor-pointer"
           >
             <option value="ALL">All Loyalty Tiers</option>
             <option value="Platinum">Platinum VIP</option>
@@ -330,42 +328,48 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
             <option value="Bronze">Bronze Tier</option>
           </select>
         </div>
+      </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+      {/* 4. Table Card */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs p-6 space-y-4">
+        <h2 className="text-lg font-bold text-gray-900">
+          Customer Directory
+        </h2>
+
+        <div className="overflow-x-auto rounded-xl border border-gray-300">
+          <table className="w-full border-collapse text-left text-xs sm:text-sm">
             <thead>
-              <tr className="border-b border-slate-100 text-slate-400 font-bold uppercase text-[10px]">
-                <th className="py-2.5 px-3">Customer</th>
-                <th className="py-2.5 px-3">Location</th>
-                <th className="py-2.5 px-3">Total Orders</th>
-                <th className="py-2.5 px-3">Lifetime Spend</th>
-                <th className="py-2.5 px-3">Loyalty Tier (Editable)</th>
-                <th className="py-2.5 px-3">Account Status</th>
-                <th className="py-2.5 px-3 text-right">Profile</th>
+              <tr className="bg-[#E2E5E9] text-gray-900 font-bold border-b border-gray-300 divide-x divide-gray-300">
+                <th className="py-3 px-4 min-w-[200px]">Customer</th>
+                <th className="py-3 px-4 min-w-[140px]">Location</th>
+                <th className="py-3 px-4 min-w-[120px]">Total Orders</th>
+                <th className="py-3 px-4 min-w-[140px]">Lifetime Spend</th>
+                <th className="py-3 px-4 min-w-[140px]">Loyalty Tier</th>
+                <th className="py-3 px-4 min-w-[100px] text-center">Status</th>
+                <th className="py-3 px-4 w-24 text-right">Profile</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 font-medium">
+            <tbody className="divide-y divide-gray-300 bg-white">
               {filteredCustomers.map(c => (
-                <tr key={c.id} className="hover:bg-slate-50/80 transition">
-                  <td className="py-3 px-3">
-                    <p className="font-extrabold text-slate-900">{c.name}</p>
-                    <p className="text-[11px] text-slate-400 font-mono">{c.email} • {c.phone}</p>
+                <tr key={c.id} className="hover:bg-gray-50/80 transition divide-x divide-gray-300 text-gray-800">
+                  <td className="py-3.5 px-4 font-bold text-gray-900">
+                    <div>{c.name}</div>
+                    <div className="text-xs text-gray-400 font-mono font-normal">{c.email} • {c.phone}</div>
                   </td>
-                  <td className="py-3 px-3 text-slate-600 font-medium">
+                  <td className="py-3.5 px-4 text-gray-700 font-medium">
                     {c.city}
                   </td>
-                  <td className="py-3 px-3 font-bold text-slate-800">
+                  <td className="py-3.5 px-4 font-bold text-gray-900">
                     {c.totalOrders} orders
                   </td>
-                  <td className="py-3 px-3 font-mono font-bold text-slate-900">
-                    LKR {c.totalSpend.toLocaleString()}.00
+                  <td className="py-3.5 px-4 font-mono font-bold text-gray-900">
+                    {c.totalSpend.toFixed(2)} lei
                   </td>
-                  <td className="py-3 px-3">
-                    {/* Clickable Loyalty Tier Dropdown */}
+                  <td className="py-3.5 px-4">
                     <select
                       value={c.loyaltyTier}
                       onChange={(e) => onUpdateTier(c.id, e.target.value as any)}
-                      className="px-2.5 py-1 rounded-xl border border-slate-200 text-xs font-black text-slate-800 bg-white focus:outline-none focus:border-[#0C6237]"
+                      className="px-2.5 py-1 rounded-xl border border-gray-300 text-xs font-bold text-gray-800 bg-white focus:outline-none focus:border-[#6DB33F]"
                     >
                       <option value="Platinum">★ Platinum VIP</option>
                       <option value="Gold">● Gold Tier</option>
@@ -373,41 +377,25 @@ export const CustomersView: React.FC<CustomersViewProps> = ({
                       <option value="Bronze">Bronze Tier</option>
                     </select>
                   </td>
-                  <td className="py-3 px-3">
-                    {/* Clickable Status toggle */}
+                  <td className="py-3.5 px-4 text-center">
                     <button
                       onClick={() => onToggleStatus(c.id)}
-                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-black transition active:scale-95 ${
+                      className={`px-3 py-1 rounded-full text-xs font-bold transition ${
                         c.status === 'Active'
-                          ? 'bg-[#E6F7EF] text-[#0C6237] hover:bg-emerald-100'
-                          : 'bg-red-50 text-red-700 hover:bg-red-100'
+                          ? 'bg-[#E4F8B0] text-gray-900'
+                          : 'bg-red-100 text-red-700'
                       }`}
                     >
                       {c.status === 'Active' ? '✓ Active' : 'Suspended'}
                     </button>
                   </td>
-                  <td className="py-3 px-3 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
-                      <button
-                        onClick={() => onOpenCustomerDrawer(c)}
-                        className="px-3 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition"
-                      >
-                        View Details
-                      </button>
-                      {onDeleteCustomer && (
-                        <button
-                          onClick={() => {
-                            if (window.confirm(`Delete customer account for ${c.name}?`)) {
-                              onDeleteCustomer(c.id);
-                            }
-                          }}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
-                          title="Delete customer record"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                    </div>
+                  <td className="py-3.5 px-4 text-right">
+                    <button
+                      onClick={() => onOpenCustomerDrawer(c)}
+                      className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-bold text-xs transition"
+                    >
+                      View
+                    </button>
                   </td>
                 </tr>
               ))}

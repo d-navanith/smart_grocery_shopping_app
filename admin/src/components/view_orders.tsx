@@ -109,7 +109,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
       {/* 2. Search & Filter Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Search Input Pill */}
-        <div className="relative w-full sm:max-w-md">
+        <div className="relative w-full sm:max-w-xl">
           <input
             type="text"
             placeholder="Search a name, order, or etc"
@@ -209,7 +209,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
 
                       {/* Address */}
                       <td className="py-3.5 px-4 text-gray-700">
-                        {order.customerAddress}
+                        {order.customerAddress || (order as any).address || (typeof (order as any).deliveryAddress === 'string' ? (order as any).deliveryAddress : ((order as any).deliveryAddress?.street ? `${(order as any).deliveryAddress.street}, ${(order as any).deliveryAddress.city || ''}` : '')) || 'Strada Mihai Eminescu nr. 42, București'}
                       </td>
 
                       {/* Contact Number */}

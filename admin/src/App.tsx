@@ -139,13 +139,10 @@ export default function AdminApp() {
         <div className="max-w-md w-full bg-white rounded-3xl border border-slate-200/80 p-8 shadow-xl space-y-6">
           <div className="text-center space-y-2">
             <img
-              src="/ceylon_foods_emblem.png"
-              alt="Ceylon Foods Emblem"
-              className="w-16 h-16 mx-auto object-contain rounded-2xl shadow-sm"
+              src="/ceylon_foods_logo.png"
+              alt="Ceylon Foods"
+              className="w-48 h-auto mx-auto object-contain mb-1"
             />
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-              Ceylon Foods
-            </h1>
             <p className="text-xs text-slate-500 font-medium">
               Administrative & Fulfillment Operations Portal
             </p>
@@ -229,7 +226,7 @@ export default function AdminApp() {
           isBackendConnected={state.isBackendConnected}
         />
 
-        <main className="p-8 max-w-7xl mx-auto w-full flex-1">
+        <main className="p-8 w-full flex-1 min-w-0">
           {state.activeMenu === 'dashboard' && (
             <DashboardView
               orders={state.orders}
@@ -376,14 +373,6 @@ export default function AdminApp() {
               openingTime={state.openingTime} setOpeningTime={state.setOpeningTime}
               closingTime={state.closingTime} setClosingTime={state.setClosingTime}
               isAcceptingOrders={state.isAcceptingOrders} setIsAcceptingOrders={state.setIsAcceptingOrders}
-              cardPaymentsEnabled={state.cardPaymentsEnabled} setCardPaymentsEnabled={state.setCardPaymentsEnabled}
-              codEnabled={state.codEnabled} setCodEnabled={state.setCodEnabled}
-              bankTransferEnabled={state.bankTransferEnabled} setBankTransferEnabled={state.setBankTransferEnabled}
-              lankaQrEnabled={state.lankaQrEnabled} setLankaQrEnabled={state.setLankaQrEnabled}
-              collectVat={state.collectVat} setCollectVat={state.setCollectVat}
-              standardTaxRate={state.standardTaxRate} setStandardTaxRate={state.setStandardTaxRate}
-              vatRegNumber={state.vatRegNumber} setVatRegNumber={state.setVatRegNumber}
-              pricesIncludeTax={state.pricesIncludeTax} setPricesIncludeTax={state.setPricesIncludeTax}
               minOrderLkr={state.minOrderLkr} setMinOrderLkr={state.setMinOrderLkr}
               freeDeliveryAboveLkr={state.freeDeliveryAboveLkr} setFreeDeliveryAboveLkr={state.setFreeDeliveryAboveLkr}
               sameDayCutoff={state.sameDayCutoff} setSameDayCutoff={state.setSameDayCutoff}
