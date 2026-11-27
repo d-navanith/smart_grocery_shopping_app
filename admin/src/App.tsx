@@ -231,6 +231,7 @@ export default function AdminApp() {
             <DashboardView
               orders={state.orders}
               products={state.products}
+              categories={state.categories}
               onOpenOrder={(o) => state.setSelectedOrderForDetail(o)}
               onOpenDispatchModal={(o) => state.setDispatchingOrder(o)}
               onNavigateTab={(tab) => state.setActiveMenu(tab)}
@@ -280,132 +281,6 @@ export default function AdminApp() {
               onOpenEditModal={(c) => state.setEditingCategory(c)}
               onDeleteCategory={mut.deleteCategory}
               onToggleVisibility={mut.toggleCategoryVisibility}
-            />
-          )}
-
-          {state.activeMenu === 'inventory' && (
-            <InventoryView
-              products={state.products}
-              stockAdjustments={state.stockAdjustments}
-              inventoryTab={state.inventoryTab}
-              setInventoryTab={state.setInventoryTab}
-              onQuickRestock={(id, amt) => mut.adjustProductStock(id, amt, '1-Click fast restock')}
-              onOpenAdjustModal={(p) => state.setAdjustingStockProduct(p)}
-            />
-          )}
-
-          {state.activeMenu === 'deliveries' && (
-            <DeliveriesView
-              deliveriesList={state.deliveriesList}
-              riders={state.riders}
-              deliveriesTab={state.deliveriesTab}
-              setDeliveriesTab={state.setDeliveriesTab}
-              deliveryRiderFilter={state.deliveryRiderFilter}
-              setDeliveryRiderFilter={state.setDeliveryRiderFilter}
-              onOpenAssignModal={(del) => {
-                state.setSelectedDeliveryOrder(del);
-                state.setIsAssignDeliveryModalOpen(true);
-              }}
-              onMarkStatus={mut.markDeliveryStatus}
-              onToggleRiderDuty={mut.toggleRiderDuty}
-              onOpenAddRiderModal={() => state.setIsAddRiderModalOpen(true)}
-              onDeleteRider={mut.deleteRider}
-            />
-          )}
-
-          {state.activeMenu === 'promotions' && (
-            <PromotionsView
-              promotions={state.promotionsRegister}
-              promotionsTab={state.promotionsTab}
-              setPromotionsTab={state.setPromotionsTab}
-              preventCouponStacking={state.preventCouponStacking}
-              setPreventCouponStacking={state.setPreventCouponStacking}
-              excludeDeliveryFees={state.excludeDeliveryFees}
-              setExcludeDeliveryFees={state.setExcludeDeliveryFees}
-              onOpenCreateModal={() => state.setIsCreatePromoModalOpen(true)}
-              onOpenEditModal={(p) => state.setEditingPromo(p)}
-              onToggleStatus={mut.togglePromoStatus}
-              onDeletePromo={mut.deletePromo}
-              onCopyCode={mut.copyPromoCode}
-            />
-          )}
-
-          {state.activeMenu === 'reports' && (
-            <ReportsView
-              orders={state.orders}
-              products={state.products}
-              categories={state.categories}
-              reportsDateFilter={state.reportsDateFilter}
-              setReportsDateFilter={state.setReportsDateFilter}
-              reportsSubTab={state.reportsSubTab}
-              setReportsSubTab={state.setReportsSubTab}
-              onExportCsv={mut.exportReportsCsv}
-            />
-          )}
-
-          {state.activeMenu === 'staff' && (
-            <StaffView
-              staffDirectory={state.staffDirectory}
-              permissionsMatrix={state.permissionsMatrix}
-              staffRoleFilter={state.staffRoleFilter}
-              setStaffRoleFilter={state.setStaffRoleFilter}
-              onOpenInviteModal={() => state.setIsInviteStaffModalOpen(true)}
-              onUpdateRole={mut.updateStaffRole}
-              onToggle2FA={mut.toggleStaff2FA}
-              onToggleStatus={mut.toggleStaffStatus}
-              onDeleteStaff={mut.deleteStaff}
-              onTogglePermission={mut.togglePermission}
-            />
-          )}
-
-          {state.activeMenu === 'settings' && (
-            <SettingsView
-              settingsTab={state.settingsTab}
-              setSettingsTab={state.setSettingsTab}
-              storeName={state.storeName} setStoreName={state.setStoreName}
-              supportEmail={state.supportEmail} setSupportEmail={state.setSupportEmail}
-              phone={state.phone} setPhone={state.setPhone}
-              address={state.address} setAddress={state.setAddress}
-              domain={state.domain} setDomain={state.setDomain}
-              currency={state.currency} setCurrency={state.setCurrency}
-              country={state.country} setCountry={state.setCountry}
-              timezone={state.timezone} setTimezone={state.setTimezone}
-              openingTime={state.openingTime} setOpeningTime={state.setOpeningTime}
-              closingTime={state.closingTime} setClosingTime={state.setClosingTime}
-              isAcceptingOrders={state.isAcceptingOrders} setIsAcceptingOrders={state.setIsAcceptingOrders}
-              minOrderLkr={state.minOrderLkr} setMinOrderLkr={state.setMinOrderLkr}
-              freeDeliveryAboveLkr={state.freeDeliveryAboveLkr} setFreeDeliveryAboveLkr={state.setFreeDeliveryAboveLkr}
-              sameDayCutoff={state.sameDayCutoff} setSameDayCutoff={state.setSameDayCutoff}
-              deliveryWindowLength={state.deliveryWindowLength} setDeliveryWindowLength={state.setDeliveryWindowLength}
-              deliveryZones={state.deliveryZones}
-              onOpenEditZoneModal={(z) => state.setEditingDeliveryZone(z)}
-              onOpenAddZoneModal={() => state.setIsAddDeliveryZoneModalOpen(true)}
-              onDeleteZone={mut.deleteDeliveryZone}
-              onToggleZoneStatus={mut.toggleDeliveryZoneStatus}
-              onSaveSettings={mut.saveSettings}
-            />
-          )}
-
-          {state.activeMenu === 'reviews' && (
-            <ReviewsView
-              reviews={state.customerReviews}
-              reviewsFilter={state.reviewsFilter}
-              setReviewsFilter={state.setReviewsFilter}
-              onReplyReview={mut.replyReview}
-              onTogglePublish={mut.toggleReviewPublish}
-              onDeleteReview={mut.deleteReview}
-            />
-          )}
-
-          {state.activeMenu === 'customers' && (
-            <CustomersView
-              customers={state.customers}
-              customerTierFilter={state.customerTierFilter}
-              setCustomerTierFilter={state.setCustomerTierFilter}
-              onOpenCustomerDrawer={(c) => state.setSelectedCustomerForDrawer(c)}
-              onUpdateTier={mut.updateCustomerTier}
-              onToggleStatus={mut.toggleCustomerStatus}
-              onDeleteCustomer={mut.deleteCustomer}
             />
           )}
 

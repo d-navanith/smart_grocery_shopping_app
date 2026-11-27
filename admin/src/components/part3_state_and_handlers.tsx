@@ -47,7 +47,7 @@ export function useAdminCockpitState() {
   >(() => {
     const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const tab = params?.get('tab');
-    if (tab && ['dashboard', 'orders', 'products', 'categories', 'inventory', 'customers', 'promotions', 'deliveries', 'reviews', 'reports', 'staff', 'settings', 'super-admin'].includes(tab)) {
+    if (tab && ['dashboard', 'orders', 'products', 'categories', 'super-admin'].includes(tab)) {
       return tab as any;
     }
     return 'dashboard';
