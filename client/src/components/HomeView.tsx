@@ -263,7 +263,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 className="flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-white border border-slate-200/90 shadow-2xs min-w-[130px] sm:min-w-[165px] h-[64px] sm:h-[78px] shrink-0 cursor-default pointer-events-none"
               >
                 <img
-                  src={brand.logo}
+                  src={`${brand.logo}?v=20261127`}
                   alt={brand.name}
                   className="max-h-[38px] sm:max-h-[48px] max-w-[110px] sm:max-w-[135px] w-auto h-auto object-contain"
                   loading="lazy"

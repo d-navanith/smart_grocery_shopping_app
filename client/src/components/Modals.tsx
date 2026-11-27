@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import officialLogo from '../assets/ceylon_foods_official_logo.png';
 import {
   X,
   Plus,
@@ -384,7 +385,7 @@ export const Modals: React.FC<ModalsProps> = ({
             <div className="bg-[#1B8057] px-5 py-3.5 flex items-center justify-between text-white">
               <div className="flex items-center gap-2.5">
                 <div className="bg-white rounded-md px-2 py-1 shadow-sm">
-                  <img src="/figma_logo_tight.png" alt="Ceylon Foods" className="h-5 w-auto object-contain" />
+                  <img src={officialLogo} alt="Ceylon Foods" className="h-5 w-auto object-contain" />
                 </div>
                 <span className="text-xs font-semibold tracking-wide text-[#80F6C7]">
                   • {selectedProduct.category}
@@ -552,7 +553,7 @@ export const Modals: React.FC<ModalsProps> = ({
             <div className="bg-[#1B8057] px-6 py-4 flex items-center justify-between text-white">
               <div className="flex items-center gap-3">
                 <div className="bg-white rounded-md px-2.5 py-1 shadow-sm">
-                  <img src="/figma_logo_tight.png" alt="Ceylon Foods" className="h-6 w-auto object-contain" />
+                  <img src={officialLogo} alt="Ceylon Foods" className="h-6 w-auto object-contain" />
                 </div>
                 <div>
                   <h3 className="font-bold text-sm text-white leading-tight">
@@ -851,7 +852,7 @@ export const Modals: React.FC<ModalsProps> = ({
               <div className="flex items-center justify-between gap-4">
                 <div className="space-y-2">
                   <div className="bg-white inline-block rounded-lg px-3 py-1.5 shadow-sm border border-[#15875D]/20">
-                    <img src="/figma_logo_tight.png" alt="Ceylon Foods" className="h-8 w-auto object-contain" />
+                    <img src={officialLogo} alt="Ceylon Foods" className="h-8 w-auto object-contain" />
                   </div>
                   <img
                     src="/figma_ayubowan.png"

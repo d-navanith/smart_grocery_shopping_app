@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import officialLogo from './assets/ceylon_foods_official_logo.png';
 import {
   Lock,
   Mail,
@@ -139,7 +140,7 @@ export default function AdminApp() {
         <div className="max-w-md w-full bg-white rounded-3xl border border-slate-200/80 p-8 shadow-xl space-y-6">
           <div className="text-center space-y-2">
             <img
-              src="/ceylon_foods_logo.png"
+              src={officialLogo}
               alt="Ceylon Foods"
               className="w-48 h-auto mx-auto object-contain mb-1"
             />

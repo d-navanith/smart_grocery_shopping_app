@@ -1,4 +1,5 @@
 import React from 'react';
+import officialLogo from '../assets/ceylon_foods_official_logo.png';
 import { 
   ShieldCheck, 
   Truck, 
@@ -169,7 +170,7 @@ export const AboutUsView: React.FC<AboutUsViewProps> = ({ onNavigatePage, isDark
               <div className="relative z-10 space-y-5">
                 <div className="flex items-center gap-3">
                   <div className="bg-white rounded-xl p-2 shadow-md">
-                    <img src="/figma_logo_tight.png" alt="Ceylon Foods" className="h-10 w-auto object-contain" />
+                    <img src={officialLogo} alt="Ceylon Foods" className="h-10 w-auto object-contain" />
                   </div>
                   <div>
                     <h3 className="font-black text-lg text-white">Ceylon Foods Supermarket</h3>

@@ -1,4 +1,5 @@
 import React from 'react';
+import officialLogo from '../assets/ceylon_foods_official_logo.png';
 import {
   Mail,
   PhoneCall,
@@ -30,7 +31,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigatePage, onOpenSplash, t 
               className="bg-[#FBFBFB] rounded-2xl px-5 py-3 inline-flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] cursor-pointer hover:scale-[1.01] transition"
             >
               <img
-                src="/figma_logo_tight.png"
+                src={officialLogo}
                 alt="Ceylon Foods"
                 className="h-20 sm:h-24 w-auto object-contain"
               />

@@ -1,5 +1,6 @@
 import React from 'react';
 import { LogOut, CheckCircle, AlertTriangle, Info, X } from 'lucide-react';
+import officialLogo from '../assets/ceylon_foods_official_logo.png';
 
 interface SidebarProps {
   activeMenu: string;
@@ -33,7 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Brand Header */}
         <div className="pt-6 pb-4 px-5 flex flex-col items-center justify-center">
           <img
-            src="/ceylon_foods_logo.png"
+            src={officialLogo}
             alt="Ceylon Foods Logo"
             className="w-36 h-auto object-contain cursor-pointer"
             onClick={() => setActiveMenu('dashboard')}

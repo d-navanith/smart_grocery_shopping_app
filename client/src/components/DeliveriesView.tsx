@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import officialLogo from '../assets/ceylon_foods_official_logo.png';
 import {
   Phone,
   Lock,
@@ -609,7 +610,7 @@ export const DeliveriesView: React.FC<DeliveriesViewProps> = ({
             <div className="bg-[#1B8057] px-5 py-3.5 flex items-center justify-between text-white">
               <div className="flex items-center gap-2.5">
                 <div className="bg-white rounded px-2 py-1">
-                  <img src="/figma_logo_tight.png" alt="Ceylon Foods" className="h-5 w-auto object-contain" />
+                  <img src={officialLogo} alt="Ceylon Foods" className="h-5 w-auto object-contain" />
                 </div>
                 <div>
                   <h4 className="font-bold text-sm text-white">{t.invoiceModalStoreName}</h4>

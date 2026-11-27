@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import officialLogo from '../assets/ceylon_foods_official_logo.png';
 import {
   Search,
   Heart,
@@ -241,7 +242,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             className="bg-[#FBFBFB] rounded-2xl px-4 sm:px-5 py-2 sm:py-2.5 shadow-[0_4px_12px_rgba(0,0,0,0.15)] cursor-pointer hover:scale-[1.01] transition shrink-0 flex items-center justify-center"
           >
             <img
-              src="/figma_logo_tight.png"
+              src={officialLogo}
               alt="Ceylon Foods - Fresh from our island to your home"
               className="h-14 sm:h-[78px] w-auto object-contain"
             />
