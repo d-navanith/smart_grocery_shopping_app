@@ -284,6 +284,93 @@ export default function AdminApp() {
             />
           )}
 
+          {state.activeMenu === 'promotions' && (
+            <PromotionsView
+              promotions={state.promotionsRegister}
+              promotionsTab={state.promotionsTab}
+              setPromotionsTab={state.setPromotionsTab}
+              preventCouponStacking={state.preventCouponStacking}
+              setPreventCouponStacking={state.setPreventCouponStacking}
+              excludeDeliveryFees={state.excludeDeliveryFees}
+              setExcludeDeliveryFees={state.setExcludeDeliveryFees}
+              onOpenCreateModal={() => state.setIsCreatePromoModalOpen(true)}
+              onOpenEditModal={(p) => state.setEditingPromo(p)}
+              onToggleStatus={mut.togglePromoStatus}
+              onDeletePromo={mut.deletePromo}
+              onCopyCode={mut.copyPromoCode}
+            />
+          )}
+
+          {state.activeMenu === 'inventory' && (
+            <InventoryView
+              products={state.products}
+              stockAdjustments={state.stockAdjustments}
+              inventoryTab={state.inventoryTab}
+              setInventoryTab={state.setInventoryTab}
+              onQuickRestock={(id, amt) => mut.adjustProductStock(id, amt, '1-Click fast restock')}
+              onOpenAdjustModal={(p) => state.setAdjustingStockProduct(p)}
+            />
+          )}
+
+          {state.activeMenu === 'customers' && (
+            <CustomersView
+              customers={state.customers}
+              customerTierFilter={state.customerTierFilter}
+              setCustomerTierFilter={state.setCustomerTierFilter}
+              onOpenCustomerDrawer={(c) => state.setSelectedCustomerForDrawer(c)}
+              onUpdateTier={mut.updateCustomerTier}
+              onToggleStatus={mut.toggleCustomerStatus}
+              onDeleteCustomer={mut.deleteCustomer}
+            />
+          )}
+
+          {state.activeMenu === 'deliveries' && (
+            <DeliveriesView
+              deliveriesList={state.deliveriesList}
+              riders={state.riders}
+              deliveriesTab={state.deliveriesTab}
+              setDeliveriesTab={state.setDeliveriesTab}
+              deliveryRiderFilter={state.deliveryRiderFilter}
+              setDeliveryRiderFilter={state.setDeliveryRiderFilter}
+              onOpenAssignModal={(del) => {
+                state.setSelectedDeliveryOrder(del);
+                state.setIsAssignDeliveryModalOpen(true);
+              }}
+              onMarkStatus={mut.markDeliveryStatus}
+              onToggleRiderDuty={mut.toggleRiderDuty}
+              onOpenAddRiderModal={() => state.setIsAddRiderModalOpen(true)}
+              onDeleteRider={mut.deleteRider}
+            />
+          )}
+
+          {state.activeMenu === 'settings' && (
+            <SettingsView
+              settingsTab={state.settingsTab}
+              setSettingsTab={state.setSettingsTab}
+              storeName={state.storeName} setStoreName={state.setStoreName}
+              supportEmail={state.supportEmail} setSupportEmail={state.setSupportEmail}
+              phone={state.phone} setPhone={state.setPhone}
+              address={state.address} setAddress={state.setAddress}
+              domain={state.domain} setDomain={state.setDomain}
+              currency={state.currency} setCurrency={state.setCurrency}
+              country={state.country} setCountry={state.setCountry}
+              timezone={state.timezone} setTimezone={state.setTimezone}
+              openingTime={state.openingTime} setOpeningTime={state.setOpeningTime}
+              closingTime={state.closingTime} setClosingTime={state.setClosingTime}
+              isAcceptingOrders={state.isAcceptingOrders} setIsAcceptingOrders={state.setIsAcceptingOrders}
+              minOrderLkr={state.minOrderLkr} setMinOrderLkr={state.setMinOrderLkr}
+              freeDeliveryAboveLkr={state.freeDeliveryAboveLkr} setFreeDeliveryAboveLkr={state.setFreeDeliveryAboveLkr}
+              sameDayCutoff={state.sameDayCutoff} setSameDayCutoff={state.setSameDayCutoff}
+              deliveryWindowLength={state.deliveryWindowLength} setDeliveryWindowLength={state.setDeliveryWindowLength}
+              deliveryZones={state.deliveryZones}
+              onOpenEditZoneModal={(z) => state.setEditingDeliveryZone(z)}
+              onOpenAddZoneModal={() => state.setIsAddDeliveryZoneModalOpen(true)}
+              onDeleteZone={mut.deleteDeliveryZone}
+              onToggleZoneStatus={mut.toggleDeliveryZoneStatus}
+              onSaveSettings={mut.saveSettings}
+            />
+          )}
+
           {state.activeMenu === 'super-admin' && (
             <SuperAdminView onShowToast={state.showToast} />
           )}

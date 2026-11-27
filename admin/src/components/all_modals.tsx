@@ -44,11 +44,14 @@ export const OrderDetailDrawer: React.FC<{
   onUpdateStatus,
   onUpdatePayment,
   onAssignRider,
-  onPrintInvoice,
-  onOpenDispatchModal,
-  riders
+  onPrintInvoice
 }) => {
   if (!order) return null;
+
+  const [manualRiderName, setManualRiderName] = useState(order.assignedRider && order.assignedRider !== 'Not Yet' ? order.assignedRider : '');
+  const [manualRiderPhone, setManualRiderPhone] = useState(order.riderPhone || '');
+  const [manualNotes, setManualNotes] = useState(order.courierCompany || '');
+  const [riderSaved, setRiderSaved] = useState(false);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
@@ -98,7 +101,7 @@ export const OrderDetailDrawer: React.FC<{
                   <th className="py-2.5 px-3">Item Description</th>
                   <th className="py-2.5 px-3 text-center">Qty</th>
                   <th className="py-2.5 px-3 text-right">Unit Price</th>
-                  <th className="py-2.5 px-3 text-right">Total (LKR)</th>
+                  <th className="py-2.5 px-3 text-right">Total (lei)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
@@ -106,9 +109,9 @@ export const OrderDetailDrawer: React.FC<{
                   <tr key={idx}>
                     <td className="py-2.5 px-3 font-bold text-slate-800">{it.productTitle}</td>
                     <td className="py-2.5 px-3 text-center">{it.quantity}</td>
-                    <td className="py-2.5 px-3 text-right text-slate-600">Rs. {it.price.toFixed(2)}</td>
+                    <td className="py-2.5 px-3 text-right text-slate-600">{it.price.toFixed(2)} lei</td>
                     <td className="py-2.5 px-3 text-right font-bold text-slate-900">
-                      Rs. {(it.price * it.quantity).toFixed(2)}
+                      {(it.price * it.quantity).toFixed(2)} lei
                     </td>
                   </tr>
                 ))}
@@ -123,105 +126,148 @@ export const OrderDetailDrawer: React.FC<{
           </div>
         </div>
 
-        {/* Dispatch to Delivery Company Banner */}
-        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-xs">
-            <span className="font-black text-amber-950 flex items-center gap-1.5">
-              <span>📞 Dispecerat Curier Rapid (Glovo / Bolt / Sameday / Fan Courier)</span>
-            </span>
-            <p className="text-[11px] text-amber-800 mt-0.5">
-              {order.courierCompany ? `Curier alocat: ${order.courierCompany} (${order.courierPhone || 'În curs de preluare'})` : 'Comandă pregătită pentru livrare. Apelează firma de curierat pentru ridicare.'}
-            </p>
+        {/* Manual Delivery Person Assignment */}
+        <div className="p-4 rounded-2xl bg-gray-50 border border-gray-200 text-xs space-y-3">
+          <div className="flex items-center justify-between">
+            <label className="font-bold text-gray-800 text-sm">Delivery Person Assignment (Manual Entry)</label>
+            {order.assignedRider && order.assignedRider !== 'Not Yet' ? (
+              <span className="px-2.5 py-0.5 rounded-full bg-[#E4F8B0] text-gray-900 font-bold text-[11px]">
+                Assigned: {order.assignedRider}
+              </span>
+            ) : (
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-[11px]">
+                Not Assigned Yet
+              </span>
+            )}
           </div>
-          {onOpenDispatchModal && (
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="text-[11px] font-bold text-gray-600 block mb-1">Delivery Person Name</label>
+              <input
+                type="text"
+                placeholder="Enter driver name"
+                value={manualRiderName}
+                onChange={(e) => { setManualRiderName(e.target.value); setRiderSaved(false); }}
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-white text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#6DB33F]"
+              />
+            </div>
+            <div>
+              <label className="text-[11px] font-bold text-gray-600 block mb-1">Contact Phone</label>
+              <input
+                type="text"
+                placeholder="e.g. +40 722 000 000"
+                value={manualRiderPhone}
+                onChange={(e) => { setManualRiderPhone(e.target.value); setRiderSaved(false); }}
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-white text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#6DB33F]"
+              />
+            </div>
+            <div>
+              <label className="text-[11px] font-bold text-gray-600 block mb-1">Company / Vehicle (Optional)</label>
+              <input
+                type="text"
+                placeholder="e.g. Scooter / Delivery service"
+                value={manualNotes}
+                onChange={(e) => { setManualNotes(e.target.value); setRiderSaved(false); }}
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-white text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#6DB33F]"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-2 pt-1">
+            {riderSaved && (
+              <span className="text-emerald-700 font-bold text-xs">✓ Saved</span>
+            )}
             <button
               type="button"
-              onClick={() => onOpenDispatchModal(order)}
-              className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow-xs transition active:scale-95 shrink-0"
+              onClick={() => {
+                const name = manualRiderName.trim();
+                if (!name) {
+                  order.assignedRider = 'Not Yet';
+                  order.riderPhone = '';
+                  onAssignRider(order.id, 'Not Yet');
+                  setRiderSaved(true);
+                  return;
+                }
+                order.assignedRider = name;
+                order.riderPhone = manualRiderPhone.trim();
+                order.courierCompany = manualNotes.trim();
+                order.riderVerifiedByAdmin = true;
+                onAssignRider(order.id, name);
+                if (order.status === 'PENDING' || order.status === 'PROCESSING') {
+                  onUpdateStatus(order.id, 'ON_THE_WAY');
+                }
+                setRiderSaved(true);
+              }}
+              className="px-4 py-2 rounded-xl bg-[#6DB33F] hover:bg-[#5da033] text-white font-bold text-xs shadow-xs transition cursor-pointer"
             >
-              📞 Deschide Dispecerat Curier
+              Save Delivery Person
             </button>
-          )}
+          </div>
         </div>
 
-        {/* Courier Rider Assignment & Payment Controls */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl border border-slate-200 text-xs">
-          <div>
-            <label className="font-black text-slate-700 block mb-1">Assign Fleet Courier</label>
-            <select
-              value={order.assignedRider || ''}
-              onChange={(e) => onAssignRider(order.id, e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white font-bold text-slate-800 focus:outline-none focus:border-[#0C6237]"
+        {/* Payment Controls */}
+        <div className="p-4 rounded-2xl border border-gray-200 text-xs">
+          <label className="font-bold text-gray-700 block mb-2">Payment Status</label>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => onUpdatePayment(order.id, 'PAID')}
+              className={`flex-1 py-2 rounded-xl font-bold text-xs transition cursor-pointer ${
+                order.paymentStatus === 'PAID'
+                  ? 'bg-[#E4F8B0] text-gray-900 border border-emerald-400 font-black'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
             >
-              <option value="">Unassigned</option>
-              {riders.map(r => (
-                <option key={r.id} value={r.name}>{r.name} ({r.vehicle})</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="font-black text-slate-700 block mb-1">Payment Status</label>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => onUpdatePayment(order.id, 'PAID')}
-                className={`flex-1 py-2 rounded-xl font-black text-xs transition ${
-                  order.paymentStatus === 'PAID'
-                    ? 'bg-[#E6F7EF] text-[#0C6237] border border-emerald-300'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                ✓ Paid Online
-              </button>
-              <button
-                onClick={() => onUpdatePayment(order.id, 'PENDING')}
-                className={`flex-1 py-2 rounded-xl font-black text-xs transition ${
-                  order.paymentStatus === 'PENDING'
-                    ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                ⏳ COD / Pending
-              </button>
-            </div>
+              ✓ Paid
+            </button>
+            <button
+              onClick={() => onUpdatePayment(order.id, 'PENDING')}
+              className={`flex-1 py-2 rounded-xl font-bold text-xs transition cursor-pointer ${
+                order.paymentStatus === 'PENDING'
+                  ? 'bg-amber-100 text-amber-800 border border-amber-300 font-black'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              ⏳ Cash on Delivery (COD) / Pending
+            </button>
           </div>
         </div>
 
         {/* Quick Status Stepper */}
         <div>
-          <label className="font-black text-xs text-slate-700 block mb-2">Advance Fulfillment Pipeline</label>
+          <label className="font-bold text-xs text-gray-700 block mb-2">Fulfillment Status Pipeline</label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             <button
               onClick={() => onUpdateStatus(order.id, 'PENDING')}
-              className={`py-2 rounded-xl font-bold text-xs border transition ${
-                order.status === 'PENDING' ? 'bg-amber-500 text-white border-amber-600 shadow-xs' : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+              className={`py-2 rounded-xl font-bold text-xs border transition cursor-pointer ${
+                order.status === 'PENDING' ? 'bg-amber-500 text-white border-amber-600 shadow-xs' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
               }`}
             >
               1. Pending
             </button>
             <button
               onClick={() => onUpdateStatus(order.id, 'PROCESSING')}
-              className={`py-2 rounded-xl font-bold text-xs border transition ${
-                order.status === 'PROCESSING' ? 'bg-orange-500 text-white border-orange-600 shadow-xs' : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+              className={`py-2 rounded-xl font-bold text-xs border transition cursor-pointer ${
+                order.status === 'PROCESSING' ? 'bg-orange-500 text-white border-orange-600 shadow-xs' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
               }`}
             >
-              2. Processing
+              2. On Process
             </button>
             <button
               onClick={() => onUpdateStatus(order.id, 'ON_THE_WAY')}
-              className={`py-2 rounded-xl font-bold text-xs border transition ${
-                order.status === 'ON_THE_WAY' ? 'bg-sky-600 text-white border-sky-700 shadow-xs' : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+              className={`py-2 rounded-xl font-bold text-xs border transition cursor-pointer ${
+                order.status === 'ON_THE_WAY' ? 'bg-sky-600 text-white border-sky-700 shadow-xs' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
               }`}
             >
-              3. Dispatched
+              3. On the way
             </button>
             <button
               onClick={() => onUpdateStatus(order.id, 'DELIVERED')}
-              className={`py-2 rounded-xl font-bold text-xs border transition ${
-                order.status === 'DELIVERED' ? 'bg-[#0C6237] text-white border-emerald-700 shadow-xs' : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+              className={`py-2 rounded-xl font-bold text-xs border transition cursor-pointer ${
+                order.status === 'DELIVERED' ? 'bg-[#6DB33F] text-white border-[#5da033] shadow-xs' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
               }`}
             >
-              4. Delivered
+              4. Completed
             </button>
           </div>
         </div>
@@ -259,53 +305,78 @@ export const EditProductModal: React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-200 space-y-4 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-2 border-b">
-          <h3 className="font-black text-base text-slate-900">Edit Product: {product.title}</h3>
-          <button onClick={onClose} className="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+          <h3 className="font-bold text-base text-gray-900">Edit Product: {product.title}</h3>
+          <button onClick={onClose} className="p-1 rounded-lg text-gray-400 hover:text-gray-600 cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         <div className="space-y-3 text-xs">
           <div>
-            <label className="font-bold text-slate-700 block mb-1">Product Title</label>
+            <label className="font-bold text-gray-700 block mb-1">Product Title</label>
             <input
               type="text"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0C6237]"
+              className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="font-bold text-slate-700 block mb-1">Price (LKR)</label>
+              <label className="font-bold text-gray-700 block mb-1">Price (lei)</label>
               <input
                 type="number"
+                step="0.1"
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0C6237]"
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
               />
             </div>
             <div>
-              <label className="font-bold text-slate-700 block mb-1">Stock (Units)</label>
+              <label className="font-bold text-gray-700 block mb-1">Was Price (lei) [Optional]</label>
               <input
                 type="number"
-                value={form.stock}
-                onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) || 0 })}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0C6237]"
+                step="0.1"
+                value={form.originalPrice || ''}
+                onChange={(e) => setForm({ ...form, originalPrice: parseFloat(e.target.value) || undefined })}
+                placeholder="Sale strike price"
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="font-bold text-slate-700 block mb-1">Category</label>
+              <label className="font-bold text-gray-700 block mb-1">Stock (Units)</label>
+              <input
+                type="number"
+                value={form.stock}
+                onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) || 0 })}
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
+              />
+            </div>
+            <div>
+              <label className="font-bold text-gray-700 block mb-1">Unit Weight / Pack</label>
+              <input
+                type="text"
+                placeholder="e.g. 100g, 250g, 1kg"
+                value={form.unit || ''}
+                onChange={(e) => setForm({ ...form, unit: e.target.value, unitWeight: e.target.value })}
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="font-bold text-gray-700 block mb-1">Category</label>
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-[#0C6237]"
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-white focus:outline-none focus:border-[#6DB33F]"
               >
                 {categories.map(c => (
                   <option key={c.id} value={c.name}>{c.name}</option>
@@ -313,21 +384,31 @@ export const EditProductModal: React.FC<{
               </select>
             </div>
             <div>
-              <label className="font-bold text-slate-700 block mb-1">Status</label>
+              <label className="font-bold text-gray-700 block mb-1">Status</label>
               <select
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value as any })}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-[#0C6237]"
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-white focus:outline-none focus:border-[#6DB33F]"
               >
                 <option value="Active">Active (Available)</option>
                 <option value="Inactive">Inactive (Draft)</option>
               </select>
             </div>
           </div>
+
+          <div>
+            <label className="font-bold text-gray-700 block mb-1">Image URL</label>
+            <input
+              type="text"
+              value={form.imageUrl || ''}
+              onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+              className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
+            />
+          </div>
         </div>
 
         <div className="flex items-center justify-end gap-2.5 pt-3 border-t">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50">
+          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-gray-300 text-xs font-bold text-gray-600 hover:bg-gray-50 cursor-pointer">
             Cancel
           </button>
           <button
@@ -335,7 +416,7 @@ export const EditProductModal: React.FC<{
               onSave(form);
               onClose();
             }}
-            className="px-4 py-2 rounded-xl bg-[#0C4E3B] text-white text-xs font-bold hover:bg-[#083b2d]"
+            className="px-5 py-2 rounded-xl bg-[#6DB33F] hover:bg-[#5da033] text-white text-xs font-bold shadow-xs transition cursor-pointer"
           >
             Save Changes
           </button>
@@ -355,125 +436,155 @@ export const AddProductModal: React.FC<{
 
   const [title, setTitle] = useState('');
   const [sku, setSku] = useState(`CF-PROD-${Math.floor(100 + Math.random() * 900)}`);
-  const [price, setPrice] = useState('450.00');
+  const [price, setPrice] = useState('12.50');
+  const [originalPrice, setOriginalPrice] = useState('');
   const [stock, setStock] = useState('50');
-  const [category, setCategory] = useState(categories[0]?.name || 'Fruits & Vegetables');
-  const [brand, setBrand] = useState('Ceylon Agro');
-  const [unit, setUnit] = useState('1kg Pack');
-  const [imageUrl, setImageUrl] = useState('https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=600&q=80');
+  const [category, setCategory] = useState(categories[0]?.name || 'Spices & Curry');
+  const [brand, setBrand] = useState('Ceylon Foods');
+  const [unit, setUnit] = useState('100g');
+  const [imageUrl, setImageUrl] = useState('/products/prod-wijaya-chilli-powder.jpg');
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-200 space-y-4 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-2 border-b">
           <div>
-            <h3 className="font-black text-base text-slate-900">+ Add Grocery Product</h3>
-            <p className="text-xs text-slate-400">Expand the Ceylon Foods supermarket catalog</p>
+            <h3 className="font-bold text-base text-gray-900">+ Add Grocery Product</h3>
+            <p className="text-xs text-gray-400">Expand the Ceylon Foods supermarket catalog</p>
           </div>
-          <button onClick={onClose} className="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+          <button onClick={onClose} className="p-1 rounded-lg text-gray-400 hover:text-gray-600 cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         <div className="space-y-3 text-xs">
           <div>
-            <label className="font-bold text-slate-700 block mb-1">Product Title</label>
+            <label className="font-bold text-gray-700 block mb-1">Product Title *</label>
             <input
               type="text"
-              placeholder="e.g. Ambewela Fresh Pasteurized Curd (500ml)"
+              placeholder="e.g. Wijaya Roasted Curry Powder (250g)"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0C6237]"
+              className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
+              required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="font-bold text-slate-700 block mb-1">SKU</label>
+              <label className="font-bold text-gray-700 block mb-1">SKU</label>
               <input
                 type="text"
                 value={sku}
                 onChange={(e) => setSku(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 font-mono focus:outline-none focus:border-[#0C6237]"
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 font-mono focus:outline-none focus:border-[#6DB33F]"
               />
             </div>
             <div>
-              <label className="font-bold text-slate-700 block mb-1">Brand Name</label>
+              <label className="font-bold text-gray-700 block mb-1">Brand Name</label>
               <input
                 type="text"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0C6237]"
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="font-bold text-slate-700 block mb-1">Price (LKR)</label>
+              <label className="font-bold text-gray-700 block mb-1">Price (lei) *</label>
               <input
                 type="number"
+                step="0.1"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0C6237]"
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
+                required
               />
             </div>
             <div>
-              <label className="font-bold text-slate-700 block mb-1">Stock Units</label>
+              <label className="font-bold text-gray-700 block mb-1">Stock Units</label>
               <input
                 type="number"
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0C6237]"
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
               />
             </div>
             <div>
-              <label className="font-bold text-slate-700 block mb-1">Unit Weight</label>
+              <label className="font-bold text-gray-700 block mb-1">Unit Weight</label>
               <input
                 type="text"
+                placeholder="e.g. 250g"
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0C6237]"
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="font-bold text-gray-700 block mb-1">Category</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-white focus:outline-none focus:border-[#6DB33F]"
+              >
+                {categories.map(c => (
+                  <option key={c.id} value={c.name}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="font-bold text-gray-700 block mb-1">Was / Sale Price (lei)</label>
+              <input
+                type="number"
+                step="0.1"
+                placeholder="Optional strike price"
+                value={originalPrice}
+                onChange={(e) => setOriginalPrice(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
               />
             </div>
           </div>
 
           <div>
-            <label className="font-bold text-slate-700 block mb-1">Category</label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-[#0C6237]"
-            >
-              {categories.map(c => (
-                <option key={c.id} value={c.name}>{c.name}</option>
-              ))}
-            </select>
+            <label className="font-bold text-gray-700 block mb-1">Image URL</label>
+            <input
+              type="text"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-[#6DB33F]"
+            />
           </div>
         </div>
 
         <div className="flex items-center justify-end gap-2.5 pt-3 border-t">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50">
+          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-gray-300 text-xs font-bold text-gray-600 hover:bg-gray-50 cursor-pointer">
             Cancel
           </button>
           <button
             onClick={() => {
-              if (!title) return alert('Please enter product title');
+              if (!title.trim()) return alert('Please enter product title');
               onAdd({
-                title,
-                sku,
+                title: title.trim(),
+                sku: sku.trim(),
                 category,
-                brand,
+                brand: brand.trim(),
                 price: parseFloat(price) || 0,
+                originalPrice: originalPrice ? parseFloat(originalPrice) : undefined,
                 stock: parseInt(stock) || 0,
-                unit,
-                store: 'Colombo Central Hub',
+                unit: unit.trim(),
+                unitWeight: unit.trim(),
+                store: 'Ceylon Foods Supermarket Bucharest',
                 status: 'Active',
-                imageUrl
-              });
+                imageUrl: imageUrl.trim() || '/figma_prod_rice_sack.png'
+              } as any);
               onClose();
             }}
-            className="px-4 py-2 rounded-xl bg-[#0C4E3B] text-white text-xs font-bold hover:bg-[#083b2d]"
+            className="px-5 py-2 rounded-xl bg-[#6DB33F] hover:bg-[#5da033] text-white text-xs font-bold shadow-xs transition cursor-pointer"
           >
             Create Product
           </button>

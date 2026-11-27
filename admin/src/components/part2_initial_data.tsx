@@ -2755,10 +2755,10 @@ export const INITIAL_ORDERS: Order[] = [
     placedAt: 'Astăzi • 10:15',
     paymentMethod: 'Cash on Delivery',
     paymentStatus: 'PAID',
-    assignedRider: 'Siva',
-    riderPhone: '071 0234 567',
-    riderVerifiedByAdmin: true,
-    courierCompany: 'Express Delivery Colombo / Bucharest',
+    assignedRider: 'Not Yet',
+    riderPhone: '',
+    riderVerifiedByAdmin: false,
+    courierCompany: '',
     notes: 'Order confirmed and completed.'
   },
   {
@@ -2781,7 +2781,7 @@ export const INITIAL_ORDERS: Order[] = [
     assignedRider: 'Not Yet',
     riderPhone: '',
     riderVerifiedByAdmin: false,
-    courierCompany: 'Glovo Express Bucharest',
+    courierCompany: '',
     notes: 'On process - Packing and preparing for dispatch.'
   },
   {
@@ -2907,63 +2907,7 @@ export const INITIAL_DELIVERIES: DeliveryScheduleItem[] = [
   }
 ];
 
-export const INITIAL_RIDERS: FleetRider[] = [
-  {
-    id: 'rider-siva',
-    name: 'Siva',
-    phone: '071 0234 567',
-    vehicle: 'Motorbike Express',
-    status: 'Available',
-    activeDeliveries: 1,
-    completedToday: 12,
-    rating: 4.9,
-    zone: 'Colombo / Bucharest Sector 1'
-  },
-  {
-    id: 'rider-glovo',
-    name: 'Dispecerat Glovo Riders',
-    phone: '+40 21 9988',
-    vehicle: 'Rețea Curieri Glovo (Scutere & Mașini)',
-    status: 'Available',
-    activeDeliveries: 4,
-    completedToday: 28,
-    rating: 4.9,
-    zone: 'București Sectoarele 1-6'
-  },
-  {
-    id: 'rider-bolt',
-    name: 'Dispecerat Bolt Delivery',
-    phone: '+40 31 229 5555',
-    vehicle: 'Rețea Curieri Bolt Food',
-    status: 'Available',
-    activeDeliveries: 3,
-    completedToday: 19,
-    rating: 4.8,
-    zone: 'București & Ilfov'
-  },
-  {
-    id: 'rider-sameday',
-    name: 'Sameday 2H Bucharest Express',
-    phone: '+40 21 637 0660',
-    vehicle: 'Flotă Autoutilitare Frigorifice',
-    status: 'Available',
-    activeDeliveries: 2,
-    completedToday: 15,
-    rating: 4.9,
-    zone: 'București & Toată România'
-  },
-  {
-    id: 'rider-inhouse',
-    name: 'Rajitha Perera (Curier Intern)',
-    phone: '+40 720 334 119',
-    vehicle: 'Honda PCX 150 (B-99-CEY)',
-    status: 'Available',
-    activeDeliveries: 1,
-    completedToday: 12,
-    rating: 4.96,
-    zone: 'Comenzi Rapide Sector 1 & 2'
-  }
-];
+export const INITIAL_RIDERS: FleetRider[] = [];
 
 export const INITIAL_PROMOTIONS: PromotionCoupon[] = [
   {

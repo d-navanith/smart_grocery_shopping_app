@@ -1,14 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Search,
   ChevronDown,
-  UserPlus,
-  Eye,
-  CheckCircle,
-  Clock,
-  Truck,
-  Phone,
-  Plus
+  UserPlus
 } from 'lucide-react';
 import { Order } from './part1_imports_types';
 
@@ -30,34 +23,51 @@ interface OrdersViewProps {
 export const OrdersView: React.FC<OrdersViewProps> = ({
   orders,
   onOpenOrder,
-  onUpdateStatus,
-  onOpenDispatchModal
+  onUpdateStatus
 }) => {
   const [localSearch, setLocalSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'ALL' | 'ON_PROCESS' | 'COMPLETED' | 'PENDING'>('ALL');
-  const [availableRiders, setAvailableRiders] = useState<string[]>(['Siva', 'Ion Popescu', 'Andrei Vasile', 'Glovo Express']);
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'ON_PROCESS' | 'ON_THE_WAY' | 'COMPLETED' | 'PENDING'>('ALL');
+  
+  // Manual delivery guys entered by admin
+  const [availableRiders, setAvailableRiders] = useState<{ name: string; phone: string }[]>(() => {
+    try {
+      const saved = localStorage.getItem('ceylonfoods_manual_riders');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('ceylonfoods_manual_riders', JSON.stringify(availableRiders));
+    } catch {}
+  }, [availableRiders]);
+
   const [newRiderName, setNewRiderName] = useState('');
+  const [newRiderPhone, setNewRiderPhone] = useState('');
+  const [newRiderNotes, setNewRiderNotes] = useState('');
   const [isAddRiderModalOpen, setIsAddRiderModalOpen] = useState(false);
   const [selectedOrderForRider, setSelectedOrderForRider] = useState<Order | null>(null);
 
-  // Filter logic matching Screenshot 1
+  // Filter logic matching Attachment 3
   const filteredOrders = orders.filter((o) => {
-    // Status filter
     if (statusFilter === 'ON_PROCESS') {
-      if (o.status !== 'PROCESSING' && o.status !== 'ON_THE_WAY' && o.status !== 'PENDING') return false;
+      if (o.status !== 'PROCESSING') return false;
+    } else if (statusFilter === 'ON_THE_WAY') {
+      if (o.status !== 'ON_THE_WAY') return false;
     } else if (statusFilter === 'COMPLETED') {
       if (o.status !== 'DELIVERED') return false;
     } else if (statusFilter === 'PENDING') {
       if (o.status !== 'PENDING') return false;
     }
 
-    // Search query matching Order Number (e.g. 10567), Name, Phone, or Address
     if (localSearch.trim()) {
       const q = localSearch.trim().toLowerCase();
       const num = (o.orderNumber || '').toLowerCase();
       const name = (o.customerName || '').toLowerCase();
       const phone = (o.customerPhone || '').toLowerCase();
-      const addr = (o.customerAddress || '').toLowerCase();
+      const addr = (o.customerAddress || (o as any).address || '').toLowerCase();
       if (!num.includes(q) && !name.includes(q) && !phone.includes(q) && !addr.includes(q)) {
         return false;
       }
@@ -69,37 +79,57 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
   const handleRiderChange = (order: Order, riderName: string) => {
     if (riderName === '__ADD_NEW__') {
       setSelectedOrderForRider(order);
+      setNewRiderName('');
+      setNewRiderPhone('');
+      setNewRiderNotes('');
       setIsAddRiderModalOpen(true);
       return;
     }
 
     order.assignedRider = riderName;
-    if (riderName !== 'Not Yet' && order.status === 'PENDING') {
-      onUpdateStatus(order.id, 'PROCESSING');
+    const existing = availableRiders.find(r => r.name === riderName);
+    if (existing) {
+      order.riderPhone = existing.phone;
+      order.riderVerifiedByAdmin = true;
+    }
+
+    if (riderName !== 'Not Yet') {
+      if (order.status === 'PENDING' || order.status === 'PROCESSING') {
+        onUpdateStatus(order.id, 'ON_THE_WAY');
+      }
     }
   };
 
   const handleAddNewRiderSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newRiderName.trim()) return;
     const name = newRiderName.trim();
-    if (!availableRiders.includes(name)) {
-      setAvailableRiders((prev) => [...prev, name]);
+    if (!name) return;
+    const phone = newRiderPhone.trim();
+
+    if (!availableRiders.some(r => r.name.toLowerCase() === name.toLowerCase())) {
+      setAvailableRiders(prev => [...prev, { name, phone }]);
     }
+
     if (selectedOrderForRider) {
       selectedOrderForRider.assignedRider = name;
-      if (selectedOrderForRider.status === 'PENDING') {
-        onUpdateStatus(selectedOrderForRider.id, 'PROCESSING');
+      selectedOrderForRider.riderPhone = phone;
+      selectedOrderForRider.riderVerifiedByAdmin = true;
+      if (newRiderNotes.trim()) {
+        selectedOrderForRider.courierCompany = newRiderNotes.trim();
       }
+      onUpdateStatus(selectedOrderForRider.id, 'ON_THE_WAY');
     }
+
     setNewRiderName('');
+    setNewRiderPhone('');
+    setNewRiderNotes('');
     setIsAddRiderModalOpen(false);
     setSelectedOrderForRider(null);
   };
 
   return (
     <div className="w-full flex flex-col space-y-6">
-      {/* 1. Green Heading matching Screenshot 1 */}
+      {/* 1. Green Heading matching Attachment 3 */}
       <div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-[#6DB33F] tracking-tight">
           ORDERS
@@ -129,6 +159,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
             >
               <option value="ALL">All</option>
               <option value="ON_PROCESS">On Process</option>
+              <option value="ON_THE_WAY">On the way</option>
               <option value="COMPLETED">Completed</option>
               <option value="PENDING">Pending Confirmation</option>
             </select>
@@ -138,9 +169,12 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
           <button
             onClick={() => {
               setSelectedOrderForRider(null);
+              setNewRiderName('');
+              setNewRiderPhone('');
+              setNewRiderNotes('');
               setIsAddRiderModalOpen(true);
             }}
-            className="px-4 py-3 rounded-xl bg-white border border-gray-300 hover:bg-gray-50 text-xs font-bold text-gray-700 inline-flex items-center gap-2 shadow-2xs transition"
+            className="px-4 py-3 rounded-xl bg-white border border-gray-300 hover:bg-gray-50 text-xs font-bold text-gray-700 inline-flex items-center gap-2 shadow-2xs transition cursor-pointer"
           >
             <UserPlus className="w-4 h-4 text-[#6DB33F]" />
             <span>+ Add Delivery Guy</span>
@@ -148,7 +182,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         </div>
       </div>
 
-      {/* 3. Order List Card & Table matching Screenshot 1 */}
+      {/* 3. Order List Card & Table matching Attachment 3 */}
       <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs p-6">
         <h2 className="text-lg font-bold text-gray-900 mb-4">
           Order List
@@ -217,7 +251,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                         {order.customerPhone}
                       </td>
 
-                      {/* Assigned Rider Dropdown */}
+                      {/* Assigned Rider Dropdown / Manual Assignment */}
                       <td className="py-3 px-3">
                         <div className="relative">
                           <select
@@ -227,11 +261,14 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                           >
                             <option value="Not Yet">Not Yet</option>
                             {availableRiders.map((r) => (
-                              <option key={r} value={r}>
-                                {r}
+                              <option key={r.name} value={r.name}>
+                                {r.name} {r.phone ? `(${r.phone})` : ''}
                               </option>
                             ))}
-                            <option value="__ADD_NEW__">+ New Rider...</option>
+                            {assigned !== 'Not Yet' && !availableRiders.some(r => r.name === assigned) && (
+                              <option value={assigned}>{assigned}</option>
+                            )}
+                            <option value="__ADD_NEW__">+ Enter Delivery Guy...</option>
                           </select>
                           <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
                         </div>
@@ -272,29 +309,58 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         </div>
       </div>
 
-      {/* Add New Delivery Guy Modal */}
+      {/* Manual Delivery Guy Entry Modal */}
       {isAddRiderModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-modal-pop">
-            <h3 className="text-lg font-bold text-gray-900">
-              Enter Delivery Guy Details
-            </h3>
-            <p className="text-xs text-gray-500">
-              When calling the courier center (Glovo, Bolt, Fan Courier, etc.), enter the assigned rider name to assign to the order.
-            </p>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900">
+                Enter Delivery Guy Details
+              </h3>
+              <p className="text-xs text-gray-500 mt-1">
+                Manually record the delivery driver details to assign to the order.
+              </p>
+            </div>
 
             <form onSubmit={handleAddNewRiderSubmit} className="space-y-4">
               <div>
                 <label className="text-xs font-bold text-gray-700 block mb-1">
-                  Delivery Guy Name
+                  Delivery Guy Name *
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Siva, Ion Popescu, Alex Dumitru"
+                  placeholder="Enter full name"
                   value={newRiderName}
                   onChange={(e) => setNewRiderName(e.target.value)}
                   className="w-full bg-[#EFEFEF] rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#6DB33F] border border-transparent"
                   autoFocus
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-700 block mb-1">
+                  Contact Phone Number
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. +40 722 123 456"
+                  value={newRiderPhone}
+                  onChange={(e) => setNewRiderPhone(e.target.value)}
+                  className="w-full bg-[#EFEFEF] rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#6DB33F] border border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-700 block mb-1">
+                  Delivery Company / Vehicle Notes (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Courier express / Scooter"
+                  value={newRiderNotes}
+                  onChange={(e) => setNewRiderNotes(e.target.value)}
+                  className="w-full bg-[#EFEFEF] rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#6DB33F] border border-transparent"
                 />
               </div>
 
@@ -302,13 +368,13 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAddRiderModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-bold text-gray-700 transition"
+                  className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs font-bold text-gray-700 transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-[#6DB33F] hover:bg-[#5da033] text-xs font-bold text-white shadow-xs transition"
+                  className="px-5 py-2 rounded-xl bg-[#6DB33F] hover:bg-[#5da033] text-xs font-bold text-white shadow-xs transition cursor-pointer"
                 >
                   Save & Assign
                 </button>
